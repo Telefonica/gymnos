@@ -1,0 +1,8 @@
+{
+    "paths" : {
+        "training": {
+            "execution": "/home/sysadmin/aitp/trainings/executed"
+        },
+        "datasets": "/home/sysadmin/aitp/datasets"
+    }
+}
