@@ -47,7 +47,7 @@
     },
 
     "loggers": {
-        "cipd": {
+        "aitpd": {
             "level": "DEBUG",
             "handlers": ["console", "debug_file_handler", "info_file_handler", "error_file_handler"],
             "propagate": "no"
