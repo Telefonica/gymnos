@@ -1,4 +1,4 @@
-import os, time, h5py, logging, inspect
+import os, time, h5py, logging, inspect, json
 import numpy as np
 import tensorflow as tf
 import keras
@@ -25,7 +25,7 @@ class Trainer(object):
 
         # KEY                ID      TARGET             DESCRIPTION
         # ------------------------------------------------------------------------------
-        'vgg16':           [ 100,   'VGG16'       ],   # Model based on VGG16
+        'vgg16':           [ 100,   'vgg16'       ],   # Model based on VGG16
         'vgg19':           [ 200,   'VGG19'       ],   # Model based on VGG19
         'xception':        [ 300,   'Xception'    ],   # Model based on Xception
         'resnet50':        [ 400,   'ResNet50'    ],   # Model based on ResNet50
@@ -37,24 +37,35 @@ class Trainer(object):
         self._log = logging.getLogger('aitpd')
         self._log_prefix = "TRAINER"
         self._log.info("{0} - Initializing...".format(self._log_prefix))
+        self._log.info("{0} - Configuration received - {1} ".format(self._log_prefix, json.dumps(config, indent=4, sort_keys=True)))
         self._config = config
 
 
-    def __checkIfTestAlreadyExecuted():
+    def __checkIfTestAlreadyExecuted(self):
         targetDir = '{0}/{1}'.format(TRAINING_EXECUTION_PATH, self._trainingId)
+        self._log.debug("{0} - __checkIfTestAlreadyExecuted - training id - {1}".format(self._log_prefix, self._trainingId))
         if os.path.isdir(targetDir):
             self._log.warning("{0} - Training already executed.".format(self._log_prefix))
         else:
             self._log.info("{0} - Training never executed before.".format(self._log_prefix))
 
+    def __createTrainingDirectory(self):
+        if not os.path.exists(self._train_dir): 
+            os.makedirs(self._train_dir)
+            self._log.debug("{0} - __createTrainingDirectory - training directory created at - {1}".format(self._log_prefix, self._train_dir))
 
     def __loadModelFromLibrary(self):
         modelId = self._config["model"]["id"]
-        if not modelId in inspect.getmembers(models):
-            self._log.error("{0} - Model not supported.".format(self._log_prefix))
-        else:
-            target = self._modelList[modelId][self.MODEL_LIST_OFFSET_TARGET]
-            self._model = globals()[target]()
+        self._log.debug("{0} - __loadModelFromLibrary - looking for model id - {1}".format(self._log_prefix, modelId))
+        for name, data in inspect.getmembers(models):
+            if name == '__builtins__':
+                continue
+            if name == modelId:
+                self._log.error("{0} - Model {1} supported.".format(self._log_prefix, modelId))
+                target = self._modelList[modelId][self.MODEL_LIST_OFFSET_TARGET]
+                self._model = globals()[target]()
+        if self._model is None:
+            self._log.error("{0} - Model {1} not supported.".format(self._log_prefix, modelId))
         
 
     def __loadPretrainedWeights(self):
@@ -149,19 +160,16 @@ class Trainer(object):
 
 
     def prepareTrainingSession(self):
-        print self._config['dataset']['id']
-        self._trainingId = '{0}_lr_{1}_update_G{2}'.format( self._config.dataset.id,
-                                                            self._config.hyper_params.learning_rate,
-                                                            self._config.hyper_params.update_rate )
+        self._trainingId = '{0}_lr_{1}_update_G{2}'.format( self._config['dataset']['id'],
+                                                            self._config['hyper_params']['learning_rate'],
+                                                            self._config['hyper_params']['update_rate'] )
+        self._log.info("{0} - prepareTrainingSession - generated id - {1}".format(self._log_prefix, self._trainingId))
         self.__checkIfTestAlreadyExecuted()
         self._trainingTimeStamp = time.strftime("%Y%m%d-%H%M%S")
         self._train_dir = '{0}/{1}/{2}'.format( TRAINING_EXECUTION_PATH,
                                                 self._trainingId,
                                                 self._trainingTimeStamp )
-    
-        if not os.path.exists(self.train_dir): os.makedirs(self._train_dir)
-        self._log.info("Train Dir created at: {0}".format(self._train_dir))
-
+        self.__createTrainingDirectory()
         self.__loadModelFromLibrary()
         self.__loadPretrainedWeights()
         self.__loadDataSet()
