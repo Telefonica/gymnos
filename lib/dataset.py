@@ -1,4 +1,4 @@
-import os, tarfile, subprocess, argparse, h5py, json
+import os, tarfile, subprocess, argparse, h5py, json, logging, progressbar
 import numpy as np
 
 BASE_PATH = '/home/sysadmin/aitp/'
@@ -12,19 +12,83 @@ DATASETS_PATH = sys_config['paths']['datasets']
 parser = argparse.ArgumentParser(description='Download dataset for SSGAN.')
 parser.add_argument('--datasets', metavar='N', type=str, nargs='+', choices=['MNIST', 'SVHN', 'CIFAR10'])
 
-class DataSetDownloader(object):
+MNIST_DIGITS = "mnist-digits"
+
+class DataSetFactory(object):
+
     def __init__(self, dataSetId):
-     
-        if not os.path.exists(path): os.mkdir(path)
+        self._log = logging.getLogger('aitpd')
+        self._log_prefix = "DATA_SET_FACTORY"
+        self._dataSetId = dataSetId
 
-        if 'MNIST' in args.datasets:
-            download_mnist('./datasets')
-        if 'SVHN' in args.datasets:
-            download_svhn('./datasets')
-        if 'CIFAR10' in args.datasets:
-            download_cifar10('./datasets')
+    
+    def factory(self):
+        class DataSet(object):
+            def __init__(self):
+                pass
 
-    def prepare_h5py(train_image, train_label, test_image, test_label, data_dir, shape=None):
+        class MNIST(DataSet):
+            def __init__(self):
+                self._datasetLocalDir = os.path.join(DATASETS_PATH, MNIST_DIGITS)
+                self._datasetUrl = 'http://yann.lecun.com/exdb/mnist/'
+                os.mkdir(self._datasetLocalDir)
+                
+
+            def download(self):
+                bar = progressbar.ProgressBar( maxval=100,
+                                               widgets=[progressbar.Bar('=', '[', ']'), ' ',
+                                               progressbar.Percentage()] )
+                bar.start()
+                
+                keys = ['train-images-idx3-ubyte.gz',          # train images
+                        'train-labels-idx1-ubyte.gz',
+                        't10k-images-idx3-ubyte.gz',           # test images
+                        't10k-labels-idx1-ubyte.gz']
+                i=1
+                progress_rate=100/len(keys)
+                for k in keys:
+                    url = (self._datasetUrl+k).format(**locals())
+                    target_path = os.path.join(self._datasetLocalDir, k)
+                    cmd = ['curl', url, '-o', target_path, '-s']
+                    #print('Downloading ', k)
+                    #print "Executing [{0}] command.".format(cmd)
+                    subprocess.call(cmd)
+                    bar.update(i*progress_rate)
+                    cmd = ['gzip', '-d', target_path]
+                    #print('Unzip ', k)
+                    subprocess.call(cmd)
+                    i+=1
+
+                bar.finish()
+        '''
+        class CIFAR10(DataSet):
+            pass
+
+        class ImageNet(DataSet):
+            pass
+
+        class IMDBDataBase(DataSet):
+            pass
+
+        class Kaggle(DataSet):
+            pass
+        '''
+        if self._dataSetId == MNIST_DIGITS: 
+            self._log.debug("{0} - Instantiating {1} dataset ...".format(self._log_prefix, MNIST_DIGITS))
+            return MNIST()
+        '''
+        if type == "CIFAR10": return CIFAR10()
+        if type == "ImageNet": return ImageNet()
+        if type == "IMDBDataBase": return IMDBDataBase()
+        if type == "Kaggle": return Kaggle()
+        '''
+
+        errMsg = "{0} - Data set suppport for {1} not available.".format(self._log_prefix, self._dataSetId)
+        self._log.error(errMsg)
+        raise ValueError(errMsg)
+
+'''
+        def prepare_h5py(train_image, train_label, test_image, test_label, data_dir, shape=None):
 
         image = np.concatenate((train_image, test_image), axis=0).astype(np.uint8)
         label = np.concatenate((train_label, test_label), axis=0).astype(np.uint8)
@@ -67,26 +131,6 @@ class DataSetDownloader(object):
             os.mkdir(data_dir)
         return False
 
-    def download_mnist(download_path):
-        data_dir = os.path.join(download_path, 'mnist')
-
-        if check_file(data_dir):
-            print('MNIST was downloaded.')
-            return
-
-        data_url = 'http://yann.lecun.com/exdb/mnist/'
-        keys = ['train-images-idx3-ubyte.gz', 'train-labels-idx1-ubyte.gz',
-                't10k-images-idx3-ubyte.gz', 't10k-labels-idx1-ubyte.gz']
-
-        for k in keys:
-            url = (data_url+k).format(**locals())
-            target_path = os.path.join(data_dir, k)
-            cmd = ['curl', url, '-o', target_path]
-            print('Downloading ', k)
-            subprocess.call(cmd)
-            cmd = ['gzip', '-d', target_path]
-            print('Unzip ', k)
-            subprocess.call(cmd)
 
         num_mnist_train = 60000
         num_mnist_test = 10000
@@ -189,4 +233,4 @@ class DataSetDownloader(object):
         subprocess.call(cmd)
         cmd = ['rm', '-rf', os.path.join(data_dir, 'cifar-10-batches-py')]
         subprocess.call(cmd)
-
+'''

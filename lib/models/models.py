@@ -10,7 +10,7 @@ from keras.layers.core import Lambda
 from keras import backend as K
 from keras import regularizers
 
-class vgg16:
+class VGG16(object):
     def __init__(self,train=True):
         self.num_classes = 10
         self.weight_decay = 0.0005

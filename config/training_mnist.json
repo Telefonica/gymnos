@@ -1,0 +1,26 @@
+{
+    "model": {
+        "name": "VGG16",
+        "id": "vgg16",
+        "optimizer": "rmsprop",
+        "loss": "categorical_crossentropy",
+        "metrics": "accuracy"
+    },
+    "dataset": {
+        "source": "mnist",
+        "id": "mnist-digits",
+        "type": "images",
+        "properties": {
+            "image_width": 28,
+            "image_heigth": 28,
+            "color_mode": "greyscale",
+            "class_mode": "binary",
+            "batch_size": 512
+        } 
+    },
+    "hyper_params": {
+        "epochs": 10,
+        "learning_rate": 0.0001,
+        "update_rate": 0.002
+    }
+}

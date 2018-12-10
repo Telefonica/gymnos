@@ -1,11 +1,10 @@
-import os, time, h5py, logging, inspect, json
+import os, time, h5py, logging, inspect, json, importlib, progressbar
 import numpy as np
 import tensorflow as tf
 import keras
 import keras.datasets
 from keras.preprocessing.image import ImageDataGenerator
 import models
-from dataset_downloader import *
 
 BASE_PATH = '/home/sysadmin/aitp/'
 SYS_CONFIG_PATH = BASE_PATH + 'config/system.json'
@@ -25,7 +24,7 @@ class Trainer(object):
 
         # KEY                ID      TARGET             DESCRIPTION
         # ------------------------------------------------------------------------------
-        'vgg16':           [ 100,   'vgg16'       ],   # Model based on VGG16
+        'vgg16':           [ 100,   'VGG16'       ],   # Model based on VGG16
         'vgg19':           [ 200,   'VGG19'       ],   # Model based on VGG19
         'xception':        [ 300,   'Xception'    ],   # Model based on Xception
         'resnet50':        [ 400,   'ResNet50'    ],   # Model based on ResNet50
@@ -41,6 +40,28 @@ class Trainer(object):
         self._config = config
 
 
+    def run(self):
+       self.prepareTrainingSession()
+       self.executeTraining()
+       self.generateTrainingStats()
+
+
+    def prepareTrainingSession(self):
+        self._trainingId = '{0}_lr_{1}_update_G{2}'.format( self._config['dataset']['id'],
+                                                            self._config['hyper_params']['learning_rate'],
+                                                            self._config['hyper_params']['update_rate'] )
+        self._log.info("{0} - prepareTrainingSession - generated id - {1}".format(self._log_prefix, self._trainingId))
+        self.__checkIfTestAlreadyExecuted()
+        self._trainingTimeStamp = time.strftime("%Y%m%d-%H%M%S")
+        self._train_dir = '{0}/{1}/{2}'.format( TRAINING_EXECUTION_PATH,
+                                                self._trainingId,
+                                                self._trainingTimeStamp )
+        self.__createTrainingDirectory()
+        self.__loadModelFromLibrary()
+        self.__loadPretrainedWeights()
+        self.__loadDataSet()
+       
+
     def __checkIfTestAlreadyExecuted(self):
         targetDir = '{0}/{1}'.format(TRAINING_EXECUTION_PATH, self._trainingId)
         self._log.debug("{0} - __checkIfTestAlreadyExecuted - training id - {1}".format(self._log_prefix, self._trainingId))
@@ -49,36 +70,19 @@ class Trainer(object):
         else:
             self._log.info("{0} - Training never executed before.".format(self._log_prefix))
 
+
     def __createTrainingDirectory(self):
         if not os.path.exists(self._train_dir): 
             os.makedirs(self._train_dir)
             self._log.debug("{0} - __createTrainingDirectory - training directory created at - {1}".format(self._log_prefix, self._train_dir))
 
-    def __loadModelFromLibrary(self):
-        modelId = self._config["model"]["id"]
-        self._log.debug("{0} - __loadModelFromLibrary - looking for model id - {1}".format(self._log_prefix, modelId))
-        for name, data in inspect.getmembers(models):
-            if name == '__builtins__':
-                continue
-            if name == modelId:
-                self._log.error("{0} - Model {1} supported.".format(self._log_prefix, modelId))
-                target = self._modelList[modelId][self.MODEL_LIST_OFFSET_TARGET]
-                self._model = globals()[target]()
-        if self._model is None:
-            self._log.error("{0} - Model {1} not supported.".format(self._log_prefix, modelId))
-        
-
-    def __loadPretrainedWeights(self):
-        pass
-        # lookup and load
-
 
     def __dataSetInKeras(self):
         retval = False
         if not self._dataSetId in inspect.getmembers(keras.datasets):
-            self._log.warning("{0} - Data set not found in keras.".format(self._log_prefix))
+            self._log.warning("{0} - Data set '{1}' not found in keras.".format(self._log_prefix, self._dataSetId))
         else:
-            self._log.info("{0} - Data set found in keras.".format(self._log_prefix))
+            self._log.info("{0} - Data set '{1}' found in keras.".format(self._log_prefix, self._dataSetId))
             retval = True
 
         return retval
@@ -88,9 +92,10 @@ class Trainer(object):
         retval = False
         targetDir = '{0}/{1}'.format(DATASETS_PATH, self._dataSetId)
         if os.path.isdir(targetDir):
-            self._log.info("{0} - Data set found in local volume.".format(self._log_prefix))
+            self._log.info("{0} - Data set '{1}' found in local volume.".format(self._log_prefix, self._dataSetId))
+            retval = True
         else:
-            self._log.warning("{0} - Data set not found in local volume.".format(self._log_prefix))
+            self._log.warning("{0} - Data set '{1}' not found in local volume.".format(self._log_prefix, self._dataSetId))
 
         return retval
 
@@ -101,10 +106,10 @@ class Trainer(object):
             self.__loadDataSetFromKeras()
         else:
             if self.__dataSetInLocalVolume():
-                self.__loadImagesFromLocalDataSet()
+                self.__loadDataSetFromLocal()
             else:
-                self.__downloadDataSet()
-            
+                self.__loadDataSetFromRemote()
+
 
     def __loadDataSetFromKeras(self):
         self._dataSet = globals()[self._dataSetId]()
@@ -113,6 +118,23 @@ class Trainer(object):
         self.x_test = x_test.astype('float32')
         self.y_train = keras.utils.to_categorical(y_train, 10)
         self.y_test = keras.utils.to_categorical(y_test, 10)
+
+
+    def __loadDataSetFromLocal(self):
+        dataSetType = self._config.dataset.type
+        if dataSetType == 'image':
+            self.__loadImagesFromLocalDataSet()
+        elif dataSetType == 'text':
+            self.__loadTextFromLocalDataSet()
+
+
+    def __loadDataSetFromRemote(self):
+        from dataset import DataSetFactory
+        self._log.info("{0} - Downloading {1} dataset ...".format(self._log_prefix, self._dataSetId))
+        dsf = DataSetFactory(self._dataSetId)
+        ds = dsf.factory()
+        ds.download()
+        ds.load()
 
 
     def __loadImagesFromLocalDataSet(self):        
@@ -144,45 +166,36 @@ class Trainer(object):
                                                                 batch_size=batch_size,
                                                                 class_mode=class_mode )
 
-    def __downloadDataSet(self):
-        pass
-
     def __loadTextFromLocalDataSet(self): 
         pass
 
 
-    def __loadDataSetFromLocal(self, dataSetId):
-        dataSetType = self._config.dataset.type
-        if dataSetType == 'image':
-            self.__loadImagesFromLocalDataSet(dataSetId)
-        elif dataSetType == 'text':
-            self.__loadTextFromLocalDataSet(dataSetId)
+    def __loadModelFromLibrary(self):
+        modelIdFromConfig = self._config["model"]["id"]
+        if modelIdFromConfig not in self._modelList:
+            errMsg = "{0} - Model {1} not supported.".format(self._log_prefix, modelIdFromConfig)
+            self._log.error(errMsg)
+            raise ValueError(errMsg)
+        internalModelId = self._modelList[modelIdFromConfig][self.MODEL_LIST_OFFSET_TARGET]
+        module = importlib.import_module("models")
+        self._log.debug("{0} - __loadModelFromLibrary - requested model id - {1}".format(self._log_prefix, modelIdFromConfig))
+        self._log.debug("{0} - __loadModelFromLibrary - looking for internal model id - {1}".format(self._log_prefix, internalModelId))
+        for name, data in inspect.getmembers(models):
+            if name == '__builtins__':
+                continue
+            if name == internalModelId:
+                self._log.info("{0} - Model {1} supported.".format(self._log_prefix, internalModelId))
+                self._model = getattr(module, internalModelId)
 
 
-    def prepareTrainingSession(self):
-        self._trainingId = '{0}_lr_{1}_update_G{2}'.format( self._config['dataset']['id'],
-                                                            self._config['hyper_params']['learning_rate'],
-                                                            self._config['hyper_params']['update_rate'] )
-        self._log.info("{0} - prepareTrainingSession - generated id - {1}".format(self._log_prefix, self._trainingId))
-        self.__checkIfTestAlreadyExecuted()
-        self._trainingTimeStamp = time.strftime("%Y%m%d-%H%M%S")
-        self._train_dir = '{0}/{1}/{2}'.format( TRAINING_EXECUTION_PATH,
-                                                self._trainingId,
-                                                self._trainingTimeStamp )
-        self.__createTrainingDirectory()
-        self.__loadModelFromLibrary()
-        self.__loadPretrainedWeights()
-        self.__loadDataSet()
-
-       
-    def run(self):
-       self.prepareTrainingSession()
-       self.executeTraining()
-       self.generateTrainingStats()
+    def __loadPretrainedWeights(self):
+        self._log.debug("{0} - __loadPretrainedWeights - looking for pretrained weights with id - {1}".format(self._log_prefix, self._trainingId))
+        # lookup and load
 
 
 
-       '''
+
+    '''
 
         # --- checkpoint and monitoring ---
         all_vars = tf.trainable_variables()
