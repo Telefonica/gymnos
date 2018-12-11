@@ -129,11 +129,12 @@ class Trainer(object):
 
 
     def __loadDataSetFromRemote(self):
-        from dataset import DataSetFactory
+        from dataset_factory import DataSetFactory
         self._log.info("{0} - Downloading {1} dataset ...".format(self._log_prefix, self._dataSetId))
         dsf = DataSetFactory(self._dataSetId)
         ds = dsf.factory()
         ds.download()
+        self._log.info("{0} - Loading {1} dataset ...".format(self._log_prefix, self._dataSetId))
         ds.load()
 
 
