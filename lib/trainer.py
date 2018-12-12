@@ -2,9 +2,10 @@ import os, time, h5py, logging, inspect, json, importlib, progressbar
 import numpy as np
 import tensorflow as tf
 import keras
-import keras.datasets
-from keras.preprocessing.image import ImageDataGenerator
 import models
+
+from dataset_manager import DataSetManager
+from session_manager import SessionManager
 
 BASE_PATH = '/home/sysadmin/aitp/'
 SYS_CONFIG_PATH = BASE_PATH + 'config/system.json'
@@ -38,6 +39,9 @@ class Trainer(object):
         self._log.info("{0} - Initializing...".format(self._log_prefix))
         self._log.info("{0} - Configuration received - {1} ".format(self._log_prefix, json.dumps(config, indent=4, sort_keys=True)))
         self._config = config
+        self._dataSetId = self._config["dataset"]["id"]
+        self._dsm = DataSetManager(self._dataSetId)
+        self._sm = SessionManager(self._config["session"])
 
 
     def run(self):
@@ -60,7 +64,44 @@ class Trainer(object):
         self.__loadModelFromLibrary()
         self.__loadPretrainedWeights()
         self.__loadDataSet()
-       
+    
+    def executeTraining(self):
+        numFitSamplesFromConfig = self._config["training"]["fit_samples"]
+        numValSamplesFromConfig = self._config["training"]["validation_samples"]
+        numTestSamplesFromConfig = self._config["training"]["test_samples"]
+        (fl, tl)= self._dsm.getLabelsForTraining()
+        (fs, vs, ts) = self._dsm.getDataForTraining( numFitSamplesFromConfig, 
+                                                     numValSamplesFromConfig, 
+                                                     numTestSamplesFromConfig )
+        self._log.info("{0} - Training starts ...".format(self._log_prefix))
+        
+        #pprint(self.batch_train)
+
+        max_steps = 100000
+
+        output_save_step = 1000
+
+        for s in xrange(max_steps):
+            step, summary, d_loss, g_loss, step_time, prediction_train, gt_train = \
+                self.run_single_step(self.batch_train, step=s, is_train=True)
+
+            if s % 10 == 0:
+                self.log_step_message(step, d_loss, g_loss, step_time)
+
+            self.summary_writer.add_summary(summary, global_step=step)
+
+            if s % output_save_step == 0:
+                log.infov("Saved checkpoint at %d", s)
+                save_path = self.saver.save(self.session, os.path.join(self.train_dir, 'model'), global_step=step)
+                f = h5py.File(os.path.join(self.train_dir, 'generated_'+str(s)+'.hy'), 'w')
+                f['image'] = prediction_train
+                f.close()
+
+        #print "fit: ", fs.shape
+        #print "val: ", vs.shape
+        #print "test: ", ts.shape
+        #print "labels: ", fl.shape
+        #print "labels: ", tl.shape
 
     def __checkIfTestAlreadyExecuted(self):
         targetDir = '{0}/{1}'.format(TRAINING_EXECUTION_PATH, self._trainingId)
@@ -77,98 +118,9 @@ class Trainer(object):
             self._log.debug("{0} - __createTrainingDirectory - training directory created at - {1}".format(self._log_prefix, self._train_dir))
 
 
-    def __dataSetInKeras(self):
-        retval = False
-        if not self._dataSetId in inspect.getmembers(keras.datasets):
-            self._log.warning("{0} - Data set '{1}' not found in keras.".format(self._log_prefix, self._dataSetId))
-        else:
-            self._log.info("{0} - Data set '{1}' found in keras.".format(self._log_prefix, self._dataSetId))
-            retval = True
-
-        return retval
-
-
-    def __dataSetInLocalVolume(self):
-        retval = False
-        targetDir = '{0}/{1}'.format(DATASETS_PATH, self._dataSetId)
-        if os.path.isdir(targetDir):
-            self._log.info("{0} - Data set '{1}' found in local volume.".format(self._log_prefix, self._dataSetId))
-            retval = True
-        else:
-            self._log.warning("{0} - Data set '{1}' not found in local volume.".format(self._log_prefix, self._dataSetId))
-
-        return retval
-
-
     def __loadDataSet(self):
-        self._dataSetId = self._config["dataset"]["id"]
-        if self.__dataSetInKeras():
-            self.__loadDataSetFromKeras()
-        else:
-            if self.__dataSetInLocalVolume():
-                self.__loadDataSetFromLocal()
-            else:
-                self.__loadDataSetFromRemote()
-
-
-    def __loadDataSetFromKeras(self):
-        self._dataSet = globals()[self._dataSetId]()
-        (x_train, y_train), (x_test, y_test) = self._dataSet.load_data()
-        self.x_train = x_train.astype('float32')
-        self.x_test = x_test.astype('float32')
-        self.y_train = keras.utils.to_categorical(y_train, 10)
-        self.y_test = keras.utils.to_categorical(y_test, 10)
-
-
-    def __loadDataSetFromLocal(self):
-        dataSetType = self._config.dataset.type
-        if dataSetType == 'image':
-            self.__loadImagesFromLocalDataSet()
-        elif dataSetType == 'text':
-            self.__loadTextFromLocalDataSet()
-
-
-    def __loadDataSetFromRemote(self):
-        from dataset_factory import DataSetFactory
-        self._log.info("{0} - Downloading {1} dataset ...".format(self._log_prefix, self._dataSetId))
-        dsf = DataSetFactory(self._dataSetId)
-        ds = dsf.factory()
-        ds.download()
         self._log.info("{0} - Loading {1} dataset ...".format(self._log_prefix, self._dataSetId))
-        ds.load()
-
-
-    def __loadImagesFromLocalDataSet(self):        
-        train_dir = '{0}/{1}/train'.format(DATASETS_PATH, self._dataSetId)
-        val_dir = '{0}/{1}/val'.format(DATASETS_PATH, self._dataSetId)
-        test_dir = '{0}/{1}/test'.format(DATASETS_PATH, self._dataSetId)
-
-        train_datagen = ImageDataGenerator(rescale=1./255)       # Pixel Normalization
-        val_datagen = ImageDataGenerator(rescale=1./255)         # Pixel Normalization
-        test_datagen = ImageDataGenerator(rescale=1./255)        # Pixel Normalization
-
-        imgage_width = self._config.dataset.properties.image_width
-        imgage_heigth = self._config.dataset.properties.imgage_heigth
-        batch_size = self._config.dataset.properties.batch_size
-        class_mode = self._config.dataset.properties.class_mode
-
-        self._train_generator = train_datagen.flow_from_directory( train_dir, 
-                                                                   target_size=(imgage_width, imgage_heigth),
-                                                                   batch_size=batch_size,
-                                                                   class_mode=class_mode )
-
-        self._val_generator = val_datagen.flow_from_directory( val_dir,
-                                                               target_size=(imgage_width, imgage_heigth),
-                                                               batch_size=batch_size,
-                                                               class_mode=class_mode )
-
-        self._test_generator = val_datagen.flow_from_directory( test_dir,
-                                                                target_size=(imgage_width, imgage_heigth),
-                                                                batch_size=batch_size,
-                                                                class_mode=class_mode )
-
-    def __loadTextFromLocalDataSet(self): 
-        pass
+        self._dsm.loadDataSet()
 
 
     def __loadModelFromLibrary(self):

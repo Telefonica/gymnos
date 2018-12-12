@@ -18,6 +18,15 @@
             "batch_size": 512
         } 
     },
+    "session": {
+        "num_cores": 6,
+        "num_physical_cpus": 1
+    },
+    "training": {
+        "fit_samples": 50000,
+        "validation_samples": 10000,
+        "test_samples": 10000
+    },
     "hyper_params": {
         "epochs": 10,
         "learning_rate": 0.0001,
