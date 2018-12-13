@@ -10,19 +10,21 @@ class DataSetFactory(object):
         self._dataSetId = dataSetId
 
     def factory(self):
-        if self._dataSetId == MNIST_DIGITS: 
-            self._log.debug("{0} - Instantiating {1} dataset ...".format(self._log_prefix, MNIST_DIGITS))
-            return MNIST()
+        dsInstance = None
+        if self._dataSetId == MNIST_DIGITS: dsInstance = MNIST()
         '''
         if type == "CIFAR10": return CIFAR10()
         if type == "ImageNet": return ImageNet()
         if type == "IMDBDataBase": return IMDBDataBase()
         if type == "Kaggle": return Kaggle()
         '''
-
-        errMsg = "{0} - Data set suppport for {1} not available.".format(self._log_prefix, self._dataSetId)
-        self._log.error(errMsg)
-        raise ValueError(errMsg)
+        if dsInstance is not None:
+            self._log.debug("{0} - Instantiating {1} dataset ...".format(self._log_prefix, dsInstance.dataSetId))
+            return dsInstance
+        else:
+            errMsg = "{0} - Data set suppport for {1} not available.".format(self._log_prefix, self._dataSetId)
+            self._log.error(errMsg)
+            raise ValueError(errMsg)
 
 '''
 

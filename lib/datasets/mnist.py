@@ -14,6 +14,7 @@ class MNIST(dataset.DataSet):
 
     def __init__(self):
         dataset.DataSet.__init__(self)
+        self.dataSetId = MNIST_DIGITS
         self._log = logging.getLogger('aitpd')
         self._log_prefix = "MNIST"
         self._sourceFiles = [ 'train-images-idx3-ubyte.gz',          # train images
@@ -31,11 +32,14 @@ class MNIST(dataset.DataSet):
         self.__checkSplitConsistency(numFitSamples, numValSamples, numTestSamples)
         fitSamples = self._data["train_img"][:numFitSamples]
         valSamples = self._data["train_img"][numFitSamples:]
-        testSamples = self._data["test_img"][:, ...]
+        testSamples = self._data["test_img"][:numTestSamples]
         return fitSamples, valSamples, testSamples 
 
-    def getLabels(self):
-        return self._data["train_labels"][:, ...], self._data["test_labels"][:, ...]
+    def getLabels(self, numFitSamples, numValSamples, numTestSamples):
+        fitLabels = self._data["train_labels"][:numFitSamples]
+        valLabels = self._data["train_labels"][numFitSamples:]
+        testLabels = self._data["test_labels"][:numTestSamples]
+        return fitLabels, valLabels, testLabels
 
     def load(self):
         self._data = h5py.File(self._hdfDataPath, 'r')

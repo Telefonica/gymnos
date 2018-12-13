@@ -19,8 +19,8 @@ class DataSetManager(object):
     def getDataForTraining(self, fitSamples, valSamples=0, testSamples=0):
         return self._ds.getData(fitSamples, valSamples, testSamples)
 
-    def getLabelsForTraining(self):
-        return  self._ds.getLabels()
+    def getLabelsForTraining(self, fitSamples, valSamples=0, testSamples=0):
+        return  self._ds.getLabels(fitSamples, valSamples, testSamples)
 
     def __lookForDataSetSource(self):
         if self.__dataSetInKeras():

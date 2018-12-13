@@ -4,6 +4,7 @@ import tensorflow as tf
 import keras
 import models
 
+from datetime import datetime
 from dataset_manager import DataSetManager
 from session_manager import SessionManager
 
@@ -51,9 +52,11 @@ class Trainer(object):
 
 
     def prepareTrainingSession(self):
-        self._trainingId = '{0}_lr_{1}_update_G{2}'.format( self._config['dataset']['id'],
-                                                            self._config['hyper_params']['learning_rate'],
-                                                            self._config['hyper_params']['update_rate'] )
+        self._trainingId = '{0}_{1}_{2}_{3}_{4}'.format( self._config['problem']['source'],
+                                                         self._config['problem']['id'],
+                                                         self._config['model']['id'],
+                                                         self._config['dataset']['id'],
+                                                         self._config['hyper_params']['learning_strategy'] )
         self._log.info("{0} - prepareTrainingSession - generated id - {1}".format(self._log_prefix, self._trainingId))
         self.__checkIfTestAlreadyExecuted()
         self._trainingTimeStamp = time.strftime("%Y%m%d-%H%M%S")
@@ -69,33 +72,29 @@ class Trainer(object):
         numFitSamplesFromConfig = self._config["training"]["fit_samples"]
         numValSamplesFromConfig = self._config["training"]["validation_samples"]
         numTestSamplesFromConfig = self._config["training"]["test_samples"]
-        (fl, tl)= self._dsm.getLabelsForTraining()
-        (fs, vs, ts) = self._dsm.getDataForTraining( numFitSamplesFromConfig, 
-                                                     numValSamplesFromConfig, 
-                                                     numTestSamplesFromConfig )
+        (fitLabels, valLabels, testLabels) = self._dsm.getLabelsForTraining( numFitSamplesFromConfig, 
+                                                                             numValSamplesFromConfig, 
+                                                                             numTestSamplesFromConfig )
+        (fitSamples, valSamples, testSamples) = self._dsm.getDataForTraining( numFitSamplesFromConfig, 
+                                                                              numValSamplesFromConfig, 
+                                                                              numTestSamplesFromConfig )
         self._log.info("{0} - Training starts ...".format(self._log_prefix))
         
-        #pprint(self.batch_train)
-
-        max_steps = 100000
-
-        output_save_step = 1000
-
-        for s in xrange(max_steps):
-            step, summary, d_loss, g_loss, step_time, prediction_train, gt_train = \
-                self.run_single_step(self.batch_train, step=s, is_train=True)
-
-            if s % 10 == 0:
-                self.log_step_message(step, d_loss, g_loss, step_time)
-
-            self.summary_writer.add_summary(summary, global_step=step)
-
-            if s % output_save_step == 0:
-                log.infov("Saved checkpoint at %d", s)
-                save_path = self.saver.save(self.session, os.path.join(self.train_dir, 'model'), global_step=step)
-                f = h5py.File(os.path.join(self.train_dir, 'generated_'+str(s)+'.hy'), 'w')
-                f['image'] = prediction_train
-                f.close()
+        start = datetime.now()
+        history = self._model.fit( fitSamples, 
+                                   fitLabels, 
+                                   epochs=self._config['hyper_params']['epochs'],
+                                   batch_size=self._config['hyper_params']['batch_size'],
+                                   validation_data=(valSamples, valLabels),
+                                   verbose=1 )
+        end = datetime.now()
+        elapsed = end - start
+        self._log.info("{0} - Training completed in - {1} (s): {2} (us)".format( self._log_prefix, 
+                                                                          elapsed.seconds,
+                                                                          elapsed.microseconds,)) 
+        trainedWeightsPath = '{0}/weights.h5'.format(self._train_dir)
+        self._log.info("{0} - Saving weights at - {1}".format( self._log_prefix, trainedWeightsPath ))
+        model.save(trainedWeightsPath)
 
         #print "fit: ", fs.shape
         #print "val: ", vs.shape
