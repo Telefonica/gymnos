@@ -9,3 +9,4 @@ export PYTHONPATH=$pythonPath
 # Make sure logs folder exists
 mkdir -p /home/sysadmin/aitp/logs
 mkdir -p /home/sysadmin/aitp/datasets
+mkdir -p /home/sysadmin/aitp/models

@@ -2,11 +2,12 @@ import os, time, h5py, logging, inspect, json, importlib, progressbar
 import numpy as np
 import tensorflow as tf
 import keras
-import models
+#import models
 
 from datetime import datetime
 from dataset_manager import DataSetManager
 from session_manager import SessionManager
+from model_manager import ModelManager
 
 BASE_PATH = '/home/sysadmin/aitp/'
 SYS_CONFIG_PATH = BASE_PATH + 'config/system.json'
@@ -18,22 +19,6 @@ TRAINING_EXECUTION_PATH = sys_config['paths']['training']['execution']
 DATASETS_PATH = sys_config['paths']['datasets']
 
 class Trainer(object):
-
-    MODEL_LIST_OFFSET_ID         = 0
-    MODEL_LIST_OFFSET_TARGET     = 1
-
-    _modelList = {
-
-        # KEY                ID      TARGET             DESCRIPTION
-        # ------------------------------------------------------------------------------
-        'vgg16':           [ 100,   'VGG16'       ],   # Model based on VGG16
-        'vgg19':           [ 200,   'VGG19'       ],   # Model based on VGG19
-        'xception':        [ 300,   'Xception'    ],   # Model based on Xception
-        'resnet50':        [ 400,   'ResNet50'    ],   # Model based on ResNet50
-        'inceptionv3':     [ 500,   'InceptionV3' ]    # Model based on InceptionV3
-    }
-    
-
     def __init__(self, config):
         self._log = logging.getLogger('aitpd')
         self._log_prefix = "TRAINER"
@@ -43,6 +28,7 @@ class Trainer(object):
         self._dataSetId = self._config["dataset"]["id"]
         self._dsm = DataSetManager(self._dataSetId)
         self._sm = SessionManager(self._config["session"])
+        self._mm = ModelManager(self._config["model"]["id"])
 
 
     def run(self):
@@ -64,8 +50,7 @@ class Trainer(object):
                                                 self._trainingId,
                                                 self._trainingTimeStamp )
         self.__createTrainingDirectory()
-        self.__loadModelFromLibrary()
-        self.__loadPretrainedWeights()
+        self.__loadModel()
         self.__loadDataSet()
     
     def executeTraining(self):
@@ -96,12 +81,7 @@ class Trainer(object):
         self._log.info("{0} - Saving weights at - {1}".format( self._log_prefix, trainedWeightsPath ))
         model.save(trainedWeightsPath)
 
-        #print "fit: ", fs.shape
-        #print "val: ", vs.shape
-        #print "test: ", ts.shape
-        #print "labels: ", fl.shape
-        #print "labels: ", tl.shape
-
+ 
     def __checkIfTestAlreadyExecuted(self):
         targetDir = '{0}/{1}'.format(TRAINING_EXECUTION_PATH, self._trainingId)
         self._log.debug("{0} - __checkIfTestAlreadyExecuted - training id - {1}".format(self._log_prefix, self._trainingId))
@@ -122,64 +102,16 @@ class Trainer(object):
         self._dsm.loadDataSet()
 
 
-    def __loadModelFromLibrary(self):
-        modelIdFromConfig = self._config["model"]["id"]
-        if modelIdFromConfig not in self._modelList:
-            errMsg = "{0} - Model {1} not supported.".format(self._log_prefix, modelIdFromConfig)
-            self._log.error(errMsg)
-            raise ValueError(errMsg)
-        internalModelId = self._modelList[modelIdFromConfig][self.MODEL_LIST_OFFSET_TARGET]
-        module = importlib.import_module("models")
-        self._log.debug("{0} - __loadModelFromLibrary - requested model id - {1}".format(self._log_prefix, modelIdFromConfig))
-        self._log.debug("{0} - __loadModelFromLibrary - looking for internal model id - {1}".format(self._log_prefix, internalModelId))
-        for name, data in inspect.getmembers(models):
-            if name == '__builtins__':
-                continue
-            if name == internalModelId:
-                self._log.info("{0} - Model {1} supported.".format(self._log_prefix, internalModelId))
-                self._model = getattr(module, internalModelId)
-
-
-    def __loadPretrainedWeights(self):
-        self._log.debug("{0} - __loadPretrainedWeights - looking for pretrained weights with id - {1}".format(self._log_prefix, self._trainingId))
-        # lookup and load
-
-
+    def __loadModel(self):
+        self._model = self._mm.getModel()
+        self._model.addDatasetProperties(self._config["dataset"]["properties"])
+        self._model.addCompilationOptions(self._config["model"]["compilation_options"])
+        self._model.init()
+        self._model.compile()
+        self._model.summary()
 
 
     '''
-
-        # --- checkpoint and monitoring ---
-        all_vars = tf.trainable_variables()
-
-        d_var = [v for v in all_vars if v.name.startswith('Discriminator')]
-        log.warn("********* d_var ********** "); slim.model_analyzer.analyze_vars(d_var, print_info=True)
-
-        g_var = [v for v in all_vars if v.name.startswith(('Generator'))]
-        log.warn("********* g_var ********** "); slim.model_analyzer.analyze_vars(g_var, print_info=True)
-
-        rem_var = (set(all_vars) - set(d_var) - set(g_var))
-        print([v.name for v in rem_var]); assert not rem_var
-
-        self.d_optimizer = tf.contrib.layers.optimize_loss(
-            loss=self.model.d_loss,
-            global_step=self.global_step,
-            learning_rate=self.learning_rate*0.5,
-            optimizer=tf.train.AdamOptimizer(beta1=0.5),
-            clip_gradients=20.0,
-            name='d_optimize_loss',
-            variables=d_var
-        )
-
-        self.g_optimizer = tf.contrib.layers.optimize_loss(
-            loss=self.model.g_loss,
-            global_step=self.global_step,
-            learning_rate=self.learning_rate,
-            optimizer=tf.train.AdamOptimizer(beta1=0.5),
-            clip_gradients=20.0,
-            name='g_optimize_loss',
-            variables=g_var
-        )
 
         self.summary_op = tf.summary.merge_all()
 
@@ -300,37 +232,4 @@ class Trainer(object):
                          instance_per_sec = self.batch_size / step_time
                          )
                )
-
-def main():
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--batch_size', type=int, default=64)
-    parser.add_argument('--prefix', type=str, default='default')
-    parser.add_argument('--checkpoint', type=str, default=None)
-    parser.add_argument('--dataset', type=str, default='CIFAR10', choices=['MNIST', 'SVHN', 'CIFAR10'])
-    parser.add_argument('--learning_rate', type=float, default=1e-4)
-    parser.add_argument('--update_rate', type=int, default=5)
-    parser.add_argument('--lr_weight_decay', action='store_true', default=False)
-    parser.add_argument('--dump_result', action='store_true', default=False)
-    config = parser.parse_args()
-
-    if config.dataset == 'MNIST':
-        import  datasets.mnist as dataset
-    elif config.dataset == 'SVHN':
-        import datasets.svhn as dataset
-    elif config.dataset == 'CIFAR10':
-        import datasets.cifar10 as dataset
-    else:
-        raise ValueError(config.dataset)
-
-    config.data_info = dataset.get_data_info()
-    config.conv_info = dataset.get_conv_info()
-    config.deconv_info = dataset.get_deconv_info()
-    dataset_train, dataset_test = dataset.create_default_splits()
-
-    trainer = Trainer(config,
-                      dataset_train, dataset_test)
-
-    log.warning("dataset: %s, learning_rate: %f", config.dataset, config.learning_rate)
-    trainer.train()
-    '''
+'''

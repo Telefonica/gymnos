@@ -7,9 +7,11 @@
     "model": {
         "name": "VGG16",
         "id": "vgg16",
-        "optimizer": "rmsprop",
-        "loss": "categorical_crossentropy",
-        "metrics": "accuracy"
+        "compilation_options": {
+            "optimizer": "rmsprop",
+            "loss": "categorical_crossentropy",
+            "metrics": ["accuracy"]
+        }
     },
     "dataset": {
         "source": "mnist",
@@ -17,7 +19,8 @@
         "type": "images",
         "properties": {
             "image_width": 28,
-            "image_heigth": 28,
+            "image_height": 28,
+            "image_depth": 1,
             "color_mode": "greyscale",
             "class_mode": "binary",
             "batch_size": 512
