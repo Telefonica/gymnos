@@ -7,10 +7,20 @@
     "model": {
         "name": "VGG16",
         "id": "vgg16",
-        "compilation_options": {
-            "optimizer": "rmsprop",
-            "loss": "categorical_crossentropy",
-            "metrics": ["accuracy"]
+        "options": {
+            "compilation": {
+                "optimizer": "rmsprop",
+                "loss": "categorical_crossentropy",
+                "metrics": ["accuracy"]
+            },
+            "custom":{
+                "fine-tunning": {
+                    "input_width": 48,
+                    "input_height": 48,
+                    "input_depth": 3,
+                    "batch_size": 512
+                }
+            }
         }
     },
     "dataset": {
@@ -18,10 +28,10 @@
         "id": "mnist-digits",
         "type": "images",
         "properties": {
-            "image_width": 28,
-            "image_height": 28,
-            "image_depth": 1,
-            "color_mode": "greyscale",
+            "image_width": 48,
+            "image_height": 48,
+            "image_depth": 3,
+            "color_mode": "multi",
             "class_mode": "binary",
             "batch_size": 512
         } 
@@ -31,9 +41,11 @@
         "num_physical_cpus": 1
     },
     "training": {
-        "fit_samples": 50000,
-        "validation_samples": 10000,
-        "test_samples": 10000
+        "samples": {
+            "fit": 50000,
+            "validation": 10000,
+            "test": 10000
+        }
     },
     "hyper_params": {
         "batch_size": 512,

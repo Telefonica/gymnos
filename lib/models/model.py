@@ -20,10 +20,6 @@ class Model(object):
     def addDatasetProperties(self, dsProperties):
         self._datasetProperties = dsProperties
 
-    def init(self):
-        if self._kerasModel is True: self.__tryToLoadModelFromKeras()
-        if self._localModel is True: self.__tryToLoadModelFromLocalVolume()
-
     def lookForModelSource(self):
         if self.__modelInKeras():
             self._log.info("{0} - Model '{1}' found in keras.".format(self._log_prefix, self._modelId))
@@ -49,19 +45,6 @@ class Model(object):
             errMsg = "{0} - Can not display model summary. Model instance does not exist".format(self._log_prefix)
             self._log.error(errMsg)
             raise ValueError(errMsg)                           
-
-
-    def __tryToLoadModelFromKeras(self):
-        if self._modelNameFromKeras:
-            if self._datasetProperties:
-                inputShape = ( self._datasetProperties["image_height"], 
-                               self._datasetProperties["image_width"],
-                               self._datasetProperties["image_depth"] )
-                inputShape = (24,24,1)
-                self._modelInstance = getattr(self._kerasAppsModule, self._modelNameFromKeras)( include_top=False,
-                                                                                                input_shape=inputShape)
-            else:
-                self._modelInstance = getattr(self._kerasAppsModule, self._modelNameFromKeras)()
 
     def __modelInKeras(self):
         retval = False

@@ -26,9 +26,10 @@ class Trainer(object):
         self._log.info("{0} - Configuration received - {1} ".format(self._log_prefix, json.dumps(config, indent=4, sort_keys=True)))
         self._config = config
         self._dataSetId = self._config["dataset"]["id"]
-        self._dsm = DataSetManager(self._dataSetId)
+        dsmConfig = {key: value for (key, value) in (self._config["dataset"].items() + self._config["training"].items())}
+        self._dsm = DataSetManager(dsmConfig)
         self._sm = SessionManager(self._config["session"])
-        self._mm = ModelManager(self._config["model"]["id"])
+        self._mm = ModelManager(self._config["model"])
 
 
     def run(self):
@@ -54,15 +55,8 @@ class Trainer(object):
         self.__loadDataSet()
     
     def executeTraining(self):
-        numFitSamplesFromConfig = self._config["training"]["fit_samples"]
-        numValSamplesFromConfig = self._config["training"]["validation_samples"]
-        numTestSamplesFromConfig = self._config["training"]["test_samples"]
-        (fitLabels, valLabels, testLabels) = self._dsm.getLabelsForTraining( numFitSamplesFromConfig, 
-                                                                             numValSamplesFromConfig, 
-                                                                             numTestSamplesFromConfig )
-        (fitSamples, valSamples, testSamples) = self._dsm.getDataForTraining( numFitSamplesFromConfig, 
-                                                                              numValSamplesFromConfig, 
-                                                                              numTestSamplesFromConfig )
+        (fitLabels, valLabels, testLabels) = self._dsm.getLabelsForTraining()
+        (fitSamples, valSamples, testSamples) = self._dsm.getDataForTraining()
         self._log.info("{0} - Training starts ...".format(self._log_prefix))
         
         start = datetime.now()
@@ -104,8 +98,6 @@ class Trainer(object):
 
     def __loadModel(self):
         self._model = self._mm.getModel()
-        self._model.addDatasetProperties(self._config["dataset"]["properties"])
-        self._model.addCompilationOptions(self._config["model"]["compilation_options"])
         self._model.init()
         self._model.compile()
         self._model.summary()

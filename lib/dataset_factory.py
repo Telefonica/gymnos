@@ -4,14 +4,15 @@ from datasets.mnist import *
 from var.datasets import *
 
 class DataSetFactory(object):
-    def __init__(self, dataSetId):
+    def __init__(self, config):
         self._log = logging.getLogger('aitpd')
         self._log_prefix = "DATA_SET_FACTORY"
-        self._dataSetId = dataSetId
+        self._config = config
+        self._dataSetId = config["id"]
 
     def factory(self):
         dsInstance = None
-        if self._dataSetId == MNIST_DIGITS: dsInstance = MNIST()
+        if self._dataSetId == MNIST_DIGITS: dsInstance = MNIST(self._config)
         '''
         if type == "CIFAR10": return CIFAR10()
         if type == "ImageNet": return ImageNet()

@@ -5,11 +5,11 @@ from var.models import *
 from model_factory import ModelFactory
 
 class ModelManager(object):
-    def __init__(self, modelId):
+    def __init__(self, config):
         self._log = logging.getLogger('aitpd')
         self._log_prefix = "MODEL_MGR"
-        self._modelId = modelId
-        mf = ModelFactory(self._modelId)
+        self._modelId = config["id"]
+        mf = ModelFactory(config)
         self._model = mf.factory()
         
     def getModel(self): 

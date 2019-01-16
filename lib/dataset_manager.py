@@ -6,21 +6,21 @@ from var.system_paths import *
 from dataset_factory import DataSetFactory
 
 class DataSetManager(object):
-    def __init__(self, dataSetId):
+    def __init__(self, config):
         self._log = logging.getLogger('aitpd')
         self._log_prefix = "DATA_SET_MGR"
-        self._dataSetId = dataSetId
-        dsf = DataSetFactory(self._dataSetId)
+        self._dataSetId = config["id"]
+        dsf = DataSetFactory(config)
         self._ds = dsf.factory()
-    
+
     def loadDataSet(self):
        self.__lookForDataSetSource()
     
-    def getDataForTraining(self, fitSamples, valSamples=0, testSamples=0):
-        return self._ds.getData(fitSamples, valSamples, testSamples)
+    def getDataForTraining(self):
+        return self._ds.getData()
 
-    def getLabelsForTraining(self, fitSamples, valSamples=0, testSamples=0):
-        return  self._ds.getLabels(fitSamples, valSamples, testSamples)
+    def getLabelsForTraining(self):
+        return  self._ds.getLabels()
 
     def __lookForDataSetSource(self):
         if self.__dataSetInKeras():
@@ -31,7 +31,6 @@ class DataSetManager(object):
             else:
                 self.__loadDataSetFromRemote()
 
-
     def __dataSetInKeras(self):
         retval = False
         if not self._dataSetId in inspect.getmembers(keras.datasets):
@@ -41,7 +40,6 @@ class DataSetManager(object):
             retval = True
 
         return retval
-
 
     def __dataSetInLocalVolume(self):
         retval = False
@@ -54,7 +52,6 @@ class DataSetManager(object):
 
         return retval
 
-
     def __loadDataSetFromKeras(self):
         self._dataSet = globals()[self._dataSetId]()
         (x_train, y_train), (x_test, y_test) = self._dataSet.load_data()
@@ -62,7 +59,6 @@ class DataSetManager(object):
         self.x_test = x_test.astype('float32')
         self.y_train = keras.utils.to_categorical(y_train, 10)
         self.y_test = keras.utils.to_categorical(y_test, 10)
-
 
     def __loadDataSetFromLocal(self):
         self._log.info("{0} - Loading {1} dataset ...".format(self._log_prefix, self._dataSetId))
@@ -80,7 +76,6 @@ class DataSetManager(object):
         self._ds.download()
         self._log.info("{0} - Loading {1} dataset ...".format(self._log_prefix, self._dataSetId))
         self._ds.load()
-
 
     def __loadImagesFromLocalDataSet(self):        
         train_dir = '{0}/{1}/train'.format(DATASETS_PATH, self._dataSetId)
