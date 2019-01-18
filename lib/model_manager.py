@@ -14,5 +14,5 @@ class ModelManager(object):
         
     def getModel(self): 
         self._model.lookForModelSource()
-        self._model.lookForPretrainedWeights()
+        #self._model.lookForPretrainedWeights()
         return self._model

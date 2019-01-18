@@ -51,20 +51,18 @@ class Trainer(object):
                                                 self._trainingId,
                                                 self._trainingTimeStamp )
         self.__createTrainingDirectory()
-        self.__loadModel()
         self.__loadDataSet()
+        self.__loadModel()
+        
     
     def executeTraining(self):
-        (fitLabels, valLabels, testLabels) = self._dsm.getLabelsForTraining()
-        (fitSamples, valSamples, testSamples) = self._dsm.getDataForTraining()
-        self._log.info("{0} - Training starts ...".format(self._log_prefix))
-        
+        self._log.info("{0} - Training starts ...".format(self._log_prefix))       
         start = datetime.now()
-        history = self._model.fit( fitSamples, 
-                                   fitLabels, 
+        history = self._model.fit( self._fitSamples, 
+                                   self._fitLabels, 
                                    epochs=self._config['hyper_params']['epochs'],
                                    batch_size=self._config['hyper_params']['batch_size'],
-                                   validation_data=(valSamples, valLabels),
+                                   validation_data=(self._valSamples, self._valLabels),
                                    verbose=1 )
         end = datetime.now()
         elapsed = end - start
@@ -84,24 +82,43 @@ class Trainer(object):
         else:
             self._log.info("{0} - Training never executed before.".format(self._log_prefix))
 
-
     def __createTrainingDirectory(self):
         if not os.path.exists(self._train_dir): 
             os.makedirs(self._train_dir)
             self._log.debug("{0} - __createTrainingDirectory - training directory created at - {1}".format(self._log_prefix, self._train_dir))
 
-
+    def __loadTrainingSamples(self):
+        self._log.debug("{0} - __loadTrainingSamples - obtaining training samples...".format(self._log_prefix))
+        (self._fitSamples, self._valSamples, self._testSamples) = self._dsm.getSamplesForTraining()
+        (self._fitLabels, self._valLabels, self._testLabels) = self._dsm.getLabelsForTraining()
+        
     def __loadDataSet(self):
         self._log.info("{0} - Loading {1} dataset ...".format(self._log_prefix, self._dataSetId))
         self._dsm.loadDataSet()
-
-
+        self.__loadTrainingSamples()
+       
     def __loadModel(self):
         self._model = self._mm.getModel()
         self._model.init()
+        if self._model.checkFineTunning() is True:
+            self._log.info("{0} - Fine tunning required.".format(self._log_prefix))
+            self.__loadTrainingSamples()
+            (flattenFit, flattenVal, flattenTest) = self._model.fineTune( self._fitSamples, 
+                                                                          self._valSamples, 
+                                                                          self._testSamples,
+                                                                          self._fitLabels, 
+                                                                          self._valLabels, 
+                                                                          self._testLabels,
+                                                                          self._train_dir )
+            # Update training samples with flatten values
+            self._fitSamples = flattenFit
+            self._valSamples = flattenVal
+            self._testSamples = flattenTest
+            
         self._model.compile()
         self._model.summary()
 
+        
 
     '''
 

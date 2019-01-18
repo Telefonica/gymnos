@@ -4,21 +4,23 @@ import keras
 from var.system_paths import *
 
 class Model(object):
-    def __init__(self):
+    def __init__(self, config):
         self._log = logging.getLogger('aitpd')
         self._log_prefix = "MODEL"
+        self._config = config
         self._kerasAppsModule = importlib.import_module("keras.applications")
         self._modelNameFromKeras = None
         self._datasetProperties = None
         self._compilationOptions = None
         self._kerasModel = False
         self._localModel = False
-
-    def addCompilationOptions(self, compilationOptions):
-        self._compilationOptions = compilationOptions
-
-    def addDatasetProperties(self, dsProperties):
-        self._datasetProperties = dsProperties
+        self._fineTunning = False
+        self.checkFineTunning()
+    
+    def checkFineTunning(self):
+        if "fine-tunning" in self._config["options"]["custom"]:
+            self._fineTunning = True
+        return self._fineTunning
 
     def lookForModelSource(self):
         if self.__modelInKeras():

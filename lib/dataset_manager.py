@@ -16,8 +16,8 @@ class DataSetManager(object):
     def loadDataSet(self):
        self.__lookForDataSetSource()
     
-    def getDataForTraining(self):
-        return self._ds.getData()
+    def getSamplesForTraining(self):
+        return self._ds.getSamples()
 
     def getLabelsForTraining(self):
         return  self._ds.getLabels()

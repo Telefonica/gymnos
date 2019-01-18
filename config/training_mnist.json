@@ -18,7 +18,14 @@
                     "input_width": 48,
                     "input_height": 48,
                     "input_depth": 3,
-                    "batch_size": 512
+                    "batch_size": 512,
+                    "extra_layers":{
+                        "classifier": { 
+                            "relu": { 
+                                "alpha": 0.1 
+                            }
+                        }
+                    }
                 }
             }
         }

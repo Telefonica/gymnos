@@ -30,7 +30,7 @@ class MNIST(dataset.DataSet):
 
         self.__checkSplitConsistency()
         
-    def getData(self):
+    def getSamples(self):
         return self._fitSamples, self._valSamples, self._testSamples 
 
     def getLabels(self):
@@ -73,7 +73,7 @@ class MNIST(dataset.DataSet):
         # Convert 28x28 grayscale to WIDTH x HEIGHT rgb channels
         self._log.debug("{0} - __preprocess: original fitSamples shape = {1}".format(self._log_prefix, self._fitSamples.shape))
         self._log.debug("{0} - __preprocess: original fitLabels shape = {1}".format(self._log_prefix, self._fitLabels.shape))
-        fitSamples = np.concatenate((self._fitSamples, self._valSamples), axis = 0)
+        trainSamples = np.concatenate((self._fitSamples, self._valSamples, self._testSamples), axis = 0)
         dim = (self._image_width, self._image_height)
         
         def to_rgb(img):
@@ -81,21 +81,27 @@ class MNIST(dataset.DataSet):
             img_rgb = np.asarray(np.dstack((img, img, img)), dtype=np.uint8)
             return img_rgb
         rgb_list = []
-        # Convert fitSamples to WIDTH x HEIGHT rgb values
-        for i in range(len(fitSamples)):
-            rgb = to_rgb(fitSamples[i])
+
+        # Convert trainSamples to WIDTH x HEIGHT rgb values
+        for i in range(len(trainSamples)):
+            rgb = to_rgb(trainSamples[i])
             rgb_list.append(rgb)
         rgb_arr = np.stack([rgb_list],axis=4)
-        fitSamples = np.squeeze(rgb_arr, axis=4)
-        self._valSamples = fitSamples[self._numFitSamples:]
-        self._fitSamples = fitSamples[:self._numFitSamples]
+        trainSamples = np.squeeze(rgb_arr, axis=4)
+        self._fitSamples = trainSamples[:self._numFitSamples]
+        self._valSamples = trainSamples[self._numFitSamples:self._numFitSamples+self._numValidationSamples]
+        self._testSamples = trainSamples[self._numFitSamples+self._numValidationSamples:]
+
         # Convert to one-hot encoding
         self._fitLabels = to_categorical(self._fitLabels)
         self._valLables = to_categorical(self._valLabels)
+        self._testLables = to_categorical(self._testLabels)
         self._log.debug("{0} - __preprocess: preprocessed fitSamples shape = {1}".format(self._log_prefix, self._fitSamples.shape))
         self._log.debug("{0} - __preprocess: preprocessed fitLabels shape = {1}".format(self._log_prefix, self._fitLabels.shape))
         self._log.debug("{0} - __preprocess: preprocessed valSamples shape = {1}".format(self._log_prefix, self._valSamples.shape))
         self._log.debug("{0} - __preprocess: preprocessed valLabels shape = {1}".format(self._log_prefix, self._valLabels.shape))
+        self._log.debug("{0} - __preprocess: preprocessed testSamples shape = {1}".format(self._log_prefix, self._testSamples.shape))
+        self._log.debug("{0} - __preprocess: preprocessed testLabels shape = {1}".format(self._log_prefix, self._testLabels.shape))
         
     def __checkSplitConsistency(self):
         errMsg = None
@@ -190,7 +196,7 @@ class MNIST(dataset.DataSet):
         for i in range(lenTestImages):
             if i%(lenTestImages/100)==0:
                 bar.update(i/(lenTestImages/100))
-            hdf5_file["train_img"][i, ...] = self._testImages[i]
+            hdf5_file["test_img"][i, ...] = self._testImages[i]
            
         bar.finish()
         hdf5_file.close()

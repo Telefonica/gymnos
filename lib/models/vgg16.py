@@ -1,4 +1,4 @@
-import logging
+import logging, os
 import model
 import numpy as np
 from keras.applications.vgg16 import VGG16
@@ -7,17 +7,16 @@ from var.models import *
 
 class VGG16(model.Model):  
     def __init__(self, config):
-        model.Model.__init__(self)
+        model.Model.__init__(self, config)
         self._log = logging.getLogger('aitpd')
         self._log_prefix = "VGG16"
         self._modelInstance = None
+        self._config = config
         self._modelId = config["id"]
         self._optimizer = config["options"]["compilation"]["optimizer"]
         self._loss = config["options"]["compilation"]["loss"]
         self._metrics = config["options"]["compilation"]["metrics"]
-        self._fineTunning = False
-        if "fine-tunning" in config["options"]["custom"]:
-            self._fineTunning = True
+        if self._fineTunning is True:
             self._input_height = config["options"]["custom"]["fine-tunning"]["input_height"]
             self._input_width = config["options"]["custom"]["fine-tunning"]["input_width"]
             self._input_depth = config["options"]["custom"]["fine-tunning"]["input_depth"]
@@ -39,28 +38,69 @@ class VGG16(model.Model):
         if self._kerasModel is True: self.__tryToLoadModelFromKeras()
         if self._localModel is True: self.__tryToLoadModelFromLocalVolume()
 
+    def fineTune(self, fitSamples, valSamples, testSamples, fitLabels, valLabels, testLabels, trainDir):
+        # TODO: Remove [:500]. Added to simplify development
+        # TODO: Add mechanism to use pre-calculated features
+        fineTunningFolder = "{}/fine-tunning".format(os.path.dirname(trainDir))
+        (fitFeatures, valFeatures, testFeatures) = self.__lookForPreviousExtractedFeatures(fineTunningFolder)
+        if fitFeatures is None: # existing previous extracted features
+            # Extracting features
+            self._log.debug("{0} - fineTune - Initiating feature extraction from conv_base ...".format(self._log_prefix))
+            fitFeatures = self._conv_base.predict(np.array(fitSamples[:500]), batch_size=self._batch_size, verbose=1)
+            valFeatures = self._conv_base.predict(np.array(valSamples[:500]), batch_size=self._batch_size, verbose=1)
+            testFeatures = self._conv_base.predict(np.array(testSamples[:500]), batch_size=self._batch_size, verbose=1)
+            # Saving the features so that they can be used for future
+            os.makedirs(fineTunningFolder)
+            self._log.debug("{0} - fineTune - Directory created at - {1}".format(self._log_prefix, fineTunningFolder))
+            self._log.debug("{0} - fineTune - Saving features at: {1}".format(self._log_prefix, fineTunningFolder))
+            np.savez("{0}/fitFeatures".format(trainDir), fitFeatures, fitLabels)
+            np.savez("{0}/valFeatures".format(trainDir), valFeatures, valLabels)
+            np.savez("{0}/testFeatures".format(trainDir), testFeatures, testLabels)
+
+        # Flatten extracted features
+        self._log.debug("{0} - fineTune - Flattening values to: 1*1*{1}".format(self._log_prefix, self._batch_size))
+        fitFeatures = np.reshape(fitFeatures, (len(fitSamples[:500]), 1*1*self._batch_size))
+        valFeatures = np.reshape(valFeatures, (len(valSamples[:500]), 1*1*self._batch_size))
+        testFeatures = np.reshape(testFeatures, (len(testSamples[:500]), 1*1*self._batch_size))
+        # Compose new model
+        self._classifierNumClasses = len(np.unique(np.argmax(fitLabels, axis=1)))
+        self.__addExtraLayers()
+        # Return flatten extracted features
+        return fitFeatures, valFeatures, testFeatures
+
     def fit(self, fitSamples, fitLabels, epochs, batch_size, validation_data, verbose):
         self._log.debug("{0} - fitting model ...".format(self._log_prefix))
         self._modelInstance.fit(fitSamples, fitLabels, epochs, batch_size, validation_data, verbose)
 
+    def __addExtraLayers(self):
+        # TODO: Provide a more elegant way to generate fine tunning models
+        from keras import models
+        from keras import layers
+        self._classifier = self._config["options"]["custom"]["fine-tunning"]["extra_layers"]["classifier"]
+        model = models.Sequential()
+        model.add(layers.Dense(self._batch_size, activation='relu', input_dim=(1*1*self._batch_size)))
+        model.add(layers.LeakyReLU(alpha=self._classifier["relu"]["alpha"]))
+        model.add(layers.Dense(self._classifierNumClasses, activation='softmax'))
+        self._modelInstance = model
+
     def __checkIfSuitableDataSetProperties(self):
         self.__checkNumberOfChannels()
-    
+
+    def __lookForPreviousExtractedFeatures(self, path):
+        retArray = []
+        if os.path.exists(path): 
+            compressedFiles = ["fitFeatures", "valFeatures", "testFeatures"]
+            for i, fileName in enumerate(compressedFiles):
+                retArray[i] = np.load("{0}/{1}.npz".format(path, fileName))
+
+        return retArray[0], retArray[1], retArray[2]
+
     def __tryToLoadModelFromKeras(self):
         if self._fineTunning is True:
+            self._log.debug("{0} - __tryToLoadModelFromKeras - Instanciating conv_base for fine tunning".format(self._log_prefix))
             inputShape = (self._input_height, self._input_width, self._input_depth)
             #self._modelInstance = VGG16(include_top=False, input_shape=inputShape)
-            self._modelInstance = getattr(self._kerasAppsModule, self._modelNameFromKeras)( include_top=False, input_shape=inputShape)
+            self._conv_base = getattr(self._kerasAppsModule, self._modelNameFromKeras)( include_top=False, input_shape=inputShape)
         else:
             # Model for prediction as: weights="imagenet" and include_top=True by default
             self._modelInstance = getattr(self._kerasAppsModule, self._modelNameFromKeras)()
-
-        '''
-         if self._modelNameFromKeras:
-            if self._datasetProperties:
-                inputShape = ( self._image_height, self._image_width, self.image_depth"] )
-                self._modelInstance = getattr(self._kerasAppsModule, self._modelNameFromKeras)( include_top=False,
-                                                                                                input_shape=inputShape)
-            else:
-                self._modelInstance = getattr(self._kerasAppsModule, self._modelNameFromKeras)()
-        '''
