@@ -11,7 +11,7 @@
             "compilation": {
                 "optimizer": "rmsprop",
                 "loss": "categorical_crossentropy",
-                "metrics": ["accuracy"]
+                "metrics": ["acc"]
             },
             "custom":{
                 "fine-tunning": {
@@ -58,5 +58,18 @@
         "batch_size": 512,
         "epochs": 10,
         "learning_strategy": "supervised"
+    }, 
+    "artifacts": {
+        "tensorboard":{
+            "graphs": {
+                "default": true,
+                "session": true
+            },
+            "summaries":{
+                "scalars": true,
+                "histograms": true,
+                "images": true
+            }
+        }
     }
 }

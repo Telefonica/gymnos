@@ -22,15 +22,6 @@ class DataSetManager(object):
     def getLabelsForTraining(self):
         return  self._ds.getLabels()
 
-    def __lookForDataSetSource(self):
-        if self.__dataSetInKeras():
-            self.__loadDataSetFromKeras()
-        else:
-            if self.__dataSetInLocalVolume():
-                self.__loadDataSetFromLocal()
-            else:
-                self.__loadDataSetFromRemote()
-
     def __dataSetInKeras(self):
         retval = False
         if not self._dataSetId in inspect.getmembers(keras.datasets):
@@ -108,3 +99,12 @@ class DataSetManager(object):
 
     def __loadTextFromLocalDataSet(self): 
         pass
+
+    def __lookForDataSetSource(self):
+        if self.__dataSetInKeras():
+            self.__loadDataSetFromKeras()
+        else:
+            if self.__dataSetInLocalVolume():
+                self.__loadDataSetFromLocal()
+            else:
+                self.__loadDataSetFromRemote()

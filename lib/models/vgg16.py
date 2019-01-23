@@ -39,38 +39,43 @@ class VGG16(model.Model):
         if self._localModel is True: self.__tryToLoadModelFromLocalVolume()
 
     def fineTune(self, fitSamples, valSamples, testSamples, fitLabels, valLabels, testLabels, trainDir):
-        # TODO: Remove [:500]. Added to simplify development
-        # TODO: Add mechanism to use pre-calculated features
         fineTunningFolder = "{}/fine-tunning".format(os.path.dirname(trainDir))
-        (fitFeatures, valFeatures, testFeatures) = self.__lookForPreviousExtractedFeatures(fineTunningFolder)
-        if fitFeatures is None: # existing previous extracted features
-            # Extracting features
+        if self.__lookForPreviousExtractedFeatures(fineTunningFolder) is True:
+            self._log.debug("{0} - fineTune - Found previous extracted features. Loading files from {1}".format(self._log_prefix, fineTunningFolder))
+            fitFeatures = np.load("{0}/fitFeatures.npz".format(fineTunningFolder))["samples"]
+            valFeatures = np.load("{0}/valFeatures.npz".format(fineTunningFolder))["samples"]
+            testFeatures = np.load("{0}/testFeatures.npz".format(fineTunningFolder))["samples"]
+        else:  # could not found existing previous extracted features
+            # Extract features
             self._log.debug("{0} - fineTune - Initiating feature extraction from conv_base ...".format(self._log_prefix))
-            fitFeatures = self._conv_base.predict(np.array(fitSamples[:500]), batch_size=self._batch_size, verbose=1)
-            valFeatures = self._conv_base.predict(np.array(valSamples[:500]), batch_size=self._batch_size, verbose=1)
-            testFeatures = self._conv_base.predict(np.array(testSamples[:500]), batch_size=self._batch_size, verbose=1)
-            # Saving the features so that they can be used for future
+            fitFeatures = self._conv_base.predict(np.array(fitSamples), batch_size=self._batch_size, verbose=1)
+            valFeatures = self._conv_base.predict(np.array(valSamples), batch_size=self._batch_size, verbose=1)
+            testFeatures = self._conv_base.predict(np.array(testSamples), batch_size=self._batch_size, verbose=1)
+            # Save the features so that they can be used for future
             os.makedirs(fineTunningFolder)
             self._log.debug("{0} - fineTune - Directory created at - {1}".format(self._log_prefix, fineTunningFolder))
             self._log.debug("{0} - fineTune - Saving features at: {1}".format(self._log_prefix, fineTunningFolder))
-            np.savez("{0}/fitFeatures".format(trainDir), fitFeatures, fitLabels)
-            np.savez("{0}/valFeatures".format(trainDir), valFeatures, valLabels)
-            np.savez("{0}/testFeatures".format(trainDir), testFeatures, testLabels)
-
+            np.savez("{0}/fitFeatures".format(fineTunningFolder), samples=fitFeatures, labels=fitLabels)
+            np.savez("{0}/valFeatures".format(fineTunningFolder), samples=valFeatures, labels=valLabels)
+            np.savez("{0}/testFeatures".format(fineTunningFolder), samples=testFeatures, labels=testLabels)
+        
         # Flatten extracted features
         self._log.debug("{0} - fineTune - Flattening values to: 1*1*{1}".format(self._log_prefix, self._batch_size))
-        fitFeatures = np.reshape(fitFeatures, (len(fitSamples[:500]), 1*1*self._batch_size))
-        valFeatures = np.reshape(valFeatures, (len(valSamples[:500]), 1*1*self._batch_size))
-        testFeatures = np.reshape(testFeatures, (len(testSamples[:500]), 1*1*self._batch_size))
+        fitFeatures = np.reshape(fitFeatures, (len(fitSamples), 1*1*self._batch_size))
+        valFeatures = np.reshape(valFeatures, (len(valSamples), 1*1*self._batch_size))
+        testFeatures = np.reshape(testFeatures, (len(testSamples), 1*1*self._batch_size))
         # Compose new model
         self._classifierNumClasses = len(np.unique(np.argmax(fitLabels, axis=1)))
         self.__addExtraLayers()
         # Return flatten extracted features
         return fitFeatures, valFeatures, testFeatures
 
-    def fit(self, fitSamples, fitLabels, epochs, batch_size, validation_data, verbose):
+    def fit(self, fitSamples, fitLabels, epochs, batch_size, validation_data, callbacks, verbose):
         self._log.debug("{0} - fitting model ...".format(self._log_prefix))
-        self._modelInstance.fit(fitSamples, fitLabels, epochs, batch_size, validation_data, verbose)
+        self._modelInstance.fit(fitSamples, fitLabels, epochs, batch_size, validation_data, callbacks, verbose)
+
+    def save(self, path):
+        self._modelInstance.save(path)
 
     def __addExtraLayers(self):
         # TODO: Provide a more elegant way to generate fine tunning models
@@ -87,19 +92,12 @@ class VGG16(model.Model):
         self.__checkNumberOfChannels()
 
     def __lookForPreviousExtractedFeatures(self, path):
-        retArray = []
-        if os.path.exists(path): 
-            compressedFiles = ["fitFeatures", "valFeatures", "testFeatures"]
-            for i, fileName in enumerate(compressedFiles):
-                retArray[i] = np.load("{0}/{1}.npz".format(path, fileName))
-
-        return retArray[0], retArray[1], retArray[2]
+        return os.path.exists(path)
 
     def __tryToLoadModelFromKeras(self):
         if self._fineTunning is True:
             self._log.debug("{0} - __tryToLoadModelFromKeras - Instanciating conv_base for fine tunning".format(self._log_prefix))
             inputShape = (self._input_height, self._input_width, self._input_depth)
-            #self._modelInstance = VGG16(include_top=False, input_shape=inputShape)
             self._conv_base = getattr(self._kerasAppsModule, self._modelNameFromKeras)( include_top=False, input_shape=inputShape)
         else:
             # Model for prediction as: weights="imagenet" and include_top=True by default
