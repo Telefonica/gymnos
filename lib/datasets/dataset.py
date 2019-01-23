@@ -1,4 +1,4 @@
-import os, h5py, progressbar, logging
+import os, logging
 import numpy as np
 
 class DataSet(object):

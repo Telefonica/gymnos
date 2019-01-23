@@ -1,4 +1,4 @@
-import os, time, h5py, logging, inspect, json, importlib, progressbar
+import os, time, logging, inspect, json, importlib, progressbar
 import numpy as np
 import tensorflow as tf
 import keras
@@ -8,6 +8,7 @@ from datetime import datetime
 from dataset_manager import DataSetManager
 from session_manager import SessionManager
 from model_manager import ModelManager
+from callback_provider import CallbackProvider
 
 BASE_PATH = '/home/sysadmin/aitp/'
 SYS_CONFIG_PATH = BASE_PATH + 'config/system.json'
@@ -30,6 +31,7 @@ class Trainer(object):
         self._dsm = DataSetManager(dsmConfig)
         self._sm = SessionManager(self._config["session"])
         self._mm = ModelManager(self._config["model"])
+        self._cp = CallbackProvider(self._config["training"]["callbacks"])
 
     def run(self):
        self.prepareTrainingSession()
@@ -55,32 +57,13 @@ class Trainer(object):
     def executeTraining(self):
         self._log.info("{0} - Training starts ...".format(self._log_prefix))       
         start = datetime.now()
-        # TODO: A better mechanism to provide callbacks
-        from keras import callbacks
-        reduce_learning = callbacks.ReduceLROnPlateau(
-            monitor='loss',
-            factor=0.2,
-            patience=2,
-            verbose=1,
-            mode='auto',
-            epsilon=0.0001,
-            cooldown=2,
-            min_lr=0)
-
-        eary_stopping = callbacks.EarlyStopping(
-            monitor='loss',
-            min_delta=0,
-            patience=7,
-            verbose=1,
-            mode='auto')
-
-        callbacks = [reduce_learning, eary_stopping]
+        self._cp.buildCallbackList({"train_dir": self._train_dir})
         history = self._model.fit( self._fitSamples, 
                                    self._fitLabels, 
                                    epochs=self._config['hyper_params']['epochs'],
                                    batch_size=self._config['hyper_params']['batch_size'],
                                    validation_data=(self._valSamples, self._valLabels),
-                                   callbacks=callbacks,
+                                   callbacks=self._cp.getList(),
                                    verbose=1 )
         end = datetime.now()
         elapsed = end - start

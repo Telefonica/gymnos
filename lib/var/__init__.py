@@ -1,4 +1,6 @@
 __all__ = [
     "system_paths",
-    "datasets"
+    "datasets",
+    "models",
+    "callbacks"
 ]
