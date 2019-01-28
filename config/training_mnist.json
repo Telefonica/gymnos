@@ -11,7 +11,7 @@
             "compilation": {
                 "optimizer": "rmsprop",
                 "loss": "categorical_crossentropy",
-                "metrics": ["acc"]
+                "metrics": ["accuracy"]
             },
             "custom":{
                 "fine-tunning": {
@@ -58,7 +58,7 @@
                 {
                     "id": "reduce_learning",
                     "options": {
-                        "monitor": "loss",
+                        "monitor": "val_loss",
                         "factor": 0.2,
                         "patience": 2,
                         "verbose": 1,
@@ -70,7 +70,7 @@
                 },{
                     "id": "early_stopping",
                     "options": {
-                        "monitor": "loss",
+                        "monitor": "val_loss",
                         "min_delta": 0,
                         "patience": 7,
                         "verbose": 1,
@@ -79,7 +79,8 @@
                 },{
                     "id": "model_checkpoint",
                     "options": {
-                        "monitor": "loss",
+                        "filename": "weights.epoch-{epoch:02d}_val_loss-{val_loss:.2f}.hdf5",
+                        "monitor": "val_loss",
                         "verbose": 1,
                         "save_best_only": true,
                         "save_weights_only": false,
@@ -89,11 +90,11 @@
                 },{
                     "id": "tensorboard",
                     "options": { 
-                        "histogram_freq":0, 
+                        "histogram_freq":1, 
                         "batch_size":32, 
                         "write_graph": true, 
-                        "write_grads": false, 
-                        "write_images": false, 
+                        "write_grads": true, 
+                        "write_images": true, 
                         "embeddings_freq": 0,
                         "update_freq": "epoch" 
                     }
@@ -103,7 +104,7 @@
     },
     "hyper_params": {
         "batch_size": 512,
-        "epochs": 10,
+        "epochs": 100,
         "learning_strategy": "supervised"
     }, 
     "artifacts": {

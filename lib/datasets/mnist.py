@@ -94,8 +94,8 @@ class MNIST(dataset.DataSet):
 
         # Convert to one-hot encoding
         self._fitLabels = to_categorical(self._fitLabels)
-        self._valLables = to_categorical(self._valLabels)
-        self._testLables = to_categorical(self._testLabels)
+        self._valLabels = to_categorical(self._valLabels)
+        self._testLabels = to_categorical(self._testLabels)
         self._log.debug("{0} - __preprocess: preprocessed fitSamples shape = {1}".format(self._log_prefix, self._fitSamples.shape))
         self._log.debug("{0} - __preprocess: preprocessed fitLabels shape = {1}".format(self._log_prefix, self._fitLabels.shape))
         self._log.debug("{0} - __preprocess: preprocessed valSamples shape = {1}".format(self._log_prefix, self._valSamples.shape))

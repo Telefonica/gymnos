@@ -25,6 +25,12 @@ class CallbackProvider(object):
         for callback in self._config["list"]: 
             self._callbackList.append(self.__factory(callback["id"], callback["options"]).getInstance())
 
+    def isCallbackPresentInList(self, callbackId):
+        retVal = False
+        for callback in self._config["list"]: 
+            if callback["id"] == callbackId: retVal = True
+        return retVal
+
     def __factory(self, callbackId, config):
         cbInstance = None
         if callbackId == REDUCE_LEARNING: cbInstance = ReduceLearning(config)

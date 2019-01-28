@@ -11,13 +11,14 @@ class ModelCheckpoint(callback.Callback):
         self._log_prefix = "MODEL_CHECKPOINT"
         self._config = config
         self._runTimeConfig = runTimeConfig
-        self._log_dir = "{0}/{1}".format(runTimeConfig["train_dir"], 'logs-model_checkpoint') if "train_dir" in runTimeConfig else './logs'
-        self._monitor = config["histogram_freq"] if "histogram_freq" in config else 'val_loss'
-        self._verbose = config["histogram_freq"] if "histogram_freq" in config else 0
-        self._save_best_only = config["histogram_freq"] if "histogram_freq" in config else False
-        self._save_weights_only = config["histogram_freq"] if "histogram_freq" in config else False
-        self._mode = config["histogram_freq"] if "histogram_freq" in config else "auto"
-        self._period = config["histogram_freq"] if "histogram_freq" in config else 1
+        self._filename = config["filename"] if "filename" in config else 'weights.\{epoch:02d\}.hdf5'
+        self._log_dir = "{0}/{1}".format(runTimeConfig["train_dir"], self._filename) if "train_dir" in runTimeConfig else './logs'
+        self._monitor = config["monitor"] if "monitor" in config else 'val_loss'
+        self._verbose = config["verbose"] if "verbose" in config else 0
+        self._save_best_only = config["save_best_only"] if "save_best_only" in config else False
+        self._save_weights_only = config["ave_weights_only"] if "ave_weights_only" in config else False
+        self._mode = config["mode"] if "mode" in config else "auto"
+        self._period = config["period"] if "period" in config else 1
         self.__buildCallback()
 
     def getInstance(self):
