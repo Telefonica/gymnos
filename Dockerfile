@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow
+FROM tensorflow/tensorflow:devel-gpu
 
 MAINTAINER pablo.lopezcoya@telefonica.com
 
@@ -17,8 +17,8 @@ RUN { \
 RUN apt-get install tree -y \
     && apt-get install apt-utils -y \
     && apt-get install vim -y \
-    && apt-get install libsm6 libxext6 -y \ 
-    && apt-get install libfontconfig1 libxrender1 -y \
+    #&& apt-get install libsm6 libxext6 -y \ 
+    #&& apt-get install libfontconfig1 libxrender1 -y \
     && apt-get install python-pip -y \
     && pip install --upgrade pip \
     && pip install tensorflow \
@@ -39,6 +39,5 @@ RUN mkdir -p /home/sysadmin/aitp/logs \
     && mkdir -p /home/sysadmin/aitp/datasets \
     && chmod 777 -R /home/sysadmin/aitp/
 
-#USER sysadmin
-USER root
+USER sysadmin
 WORKDIR /home/sysadmin
