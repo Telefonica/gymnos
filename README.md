@@ -17,12 +17,12 @@ To unify model training criteria
 
 ## Build and Install
 
-Instructions about how to build and install the AITP framework can be found in the [AITP documentation](https://solidity.readthedocs.io/en/latest/installing-solidity.html#building-from-source)
+Instructions about how to build and install the AITP framework can be found in the [AITP documentation](https://latest/installinhtml#building-from-source)
 
 
 ## Example
 
-Would you like to train your model as simply as this?:
+Would you like to train your model as simple as this?:
 
 ```
 python aitpd.py -c my_config.json
@@ -31,13 +31,13 @@ python aitpd.py -c my_config.json
 
 ## Documentation
 
-The AITP documentation is hosted at [Read the docs](https://solidity.readthedocs.io).
+The AITP documentation is hosted at [Read the docs](https://readthedocs.io).
 
 ## Development
 
 AITP is still under development. Contributions are always welcome!
 Please follow the
-[Developers Guide](https://solidity.readthedocs.io/en/latest/contributing.html)
+[Developers Guide](https://contributing.html)
 if you want to help.
 
 ## Maintainers
