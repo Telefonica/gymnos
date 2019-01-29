@@ -5,6 +5,10 @@ from keras.utils import to_categorical
 from var.system_paths import *
 from var.datasets import *
 
+DEFAULT_STORAGE_IMAGE_WIDTH = 28
+DEFAULT_STORAGE_IMAGE_HEIGTH = 28
+DEFAULT_STORAGE_IMAGE_DEPTH = 1
+
 class MNIST(dataset.DataSet):  
     def __init__(self, config):
         dataset.DataSet.__init__(self)
@@ -120,9 +124,6 @@ class MNIST(dataset.DataSet):
            Predefined image shape by default: (width=28, height=28, depth=1).
            H5PY format will be used for performance reasons.
         '''
-        DEFAULT_STORAGE_IMAGE_WIDTH = 28
-        DEFAULT_STORAGE_IMAGE_HEIGTH = 28
-        DEFAULT_STORAGE_IMAGE_DEPTH = 1
 
         fd = open(os.path.join(self._datasetLocalDir,'train-images-idx3-ubyte'))
         loaded = np.fromfile(file=fd,dtype=np.uint8)
@@ -146,9 +147,7 @@ class MNIST(dataset.DataSet):
         loaded = np.fromfile(file=fd,dtype=np.uint8)
         self._testLabels = np.asarray(loaded[8:].reshape((self._maxTestSamples)).astype(np.float))
 
-        self.__prepare_h5py( DEFAULT_STORAGE_IMAGE_WIDTH,
-                             DEFAULT_STORAGE_IMAGE_HEIGTH,
-                             DEFAULT_STORAGE_IMAGE_DEPTH )
+        self.__prepare_h5py()
 
         for k in self._sourceFiles:
             cmd = ['rm', '-f', os.path.join(self._datasetLocalDir, k[:-3])]

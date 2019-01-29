@@ -142,7 +142,6 @@ class Trainer(object):
         self._log.debug("{0} - __saveOriginalConfigToFile - saving original config to train directory...".format(self._log_prefix))
         with open('{0}/experiment_original_config.json'.format(self._train_dir), 'w') as outfile:
             json.dump(self._config, outfile, indent=4, sort_keys=True)
-            assert()
 
     def __showTrainingHistory(self):
         self._log.info("{0} - Training was executed with:\n[\n\t - metrics = {1}\
