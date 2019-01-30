@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:devel-gpu
+FROM tensorflow/tensorflow
 
 MAINTAINER pablo.lopezcoya@telefonica.com
 
@@ -37,5 +37,6 @@ RUN mkdir -p /home/sysadmin/aitp/logs \
     && mkdir -p /home/sysadmin/aitp/datasets \
     && chmod 777 -R /home/sysadmin/aitp/
 
-USER sysadmin
+#USER sysadmin
+USER root
 WORKDIR /home/sysadmin
