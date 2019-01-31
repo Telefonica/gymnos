@@ -1,12 +1,12 @@
 {
     "problem": {
-        "id": "multi-classification_single-label",
+        "id": "kaggleCompetitionDogsVsCats2013",
         "machine_learning_field": "deep_learning",
         "source": "image"
     },
     "model": {
-        "name": "VGG16",
-        "id": "vgg16",
+        "name": "CustomGraph",
+        "id": "custom-graph",
         "options": {
             "compilation": {
                 "optimizer": "rmsprop",
@@ -14,29 +14,33 @@
                 "metrics": ["accuracy"]
             },
             "custom":{
-                "fine-tunning": {
-                    "input_width": 48,
-                    "input_height": 48,
-                    "input_depth": 3,
-                    "batch_size": 512,
-                    "extra_layers":{
-                        "classifier": { 
-                            "relu": { 
-                                "alpha": 0.1 
-                            }
-                        }
-                    }
+                "framework": "keras",
+                "graph": {
+                    "input_shape": [ 150, 150, 3 ],
+                    "layers": [
+                        { "type":"convolutional-2D", "filter": 32, "kernel_size":[3, 3], "activation": "relu" },
+                        { "type":"maxpooling-2D", "pool_size":[2, 2]},
+                        { "type":"convolutional-2D", "filter": 64, "kernel_size":[3, 3], "activation": "relu" },
+                        { "type":"maxpooling-2D", "pool_size":[2, 2]},
+                        { "type":"convolutional-2D", "filter": 128, "kernel_size":[3, 3], "activation": "relu" },
+                        { "type":"maxpooling-2D", "pool_size":[2, 2]},
+                        { "type":"convolutional-2D", "filter": 128, "kernel_size":[3, 3], "activation": "relu" },
+                        { "type":"maxpooling-2D", "pool_size":[2, 2] },
+                        { "type":"flatten" },
+                        { "type":"dense", "units": 512, "activation": "relu"},
+                        { "type":"dense", "units": 1, "activation": "sigmoid"}
+                    ]
                 }
             }
         }
     },
     "dataset": {
-        "source": "mnist",
-        "id": "mnist-digits",
+        "source": "kaggle",
+        "id": "dogs-vs-cats",
         "type": "images",
         "properties": {
-            "image_width": 48,
-            "image_height": 48,
+            "image_width": 150,
+            "image_height": 150,
             "image_depth": 3,
             "color_mode": "multi",
             "class_mode": "binary",
@@ -45,10 +49,9 @@
     },
     "session": {
         "device":{
-            "type": "cpu",
+            "type": "gpu",
             "options": {
-                "num_cores": 6,
-                "num_physical_cpus": 1
+                "allow_memory_growth": true
             }
         }
     },
