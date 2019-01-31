@@ -13,14 +13,16 @@ class SessionManager(object):
         self.__loadSessionSettings()
         
     def __parseDeviceOptions(self):
-        if self._device["type"] is "cpu":
-            self._configProto.intra_op_parallelism_threads = self._device["options"]["num_cores"] if "num_cores" in self._device["options"]
-            self._configProto.inter_op_parallelism_threads = self._device["options"]["num_physical_cpus"] if "num_physical_cpus" in self._device["options"]
-        elif self._device["type"] is "gpu":
-            self._configProto["gpu_options"].allow_growth = self._device["options"]["allow_memory_growth"] if "allow_memory_growth" in self._device["options"]
+        if self._device["type"] == "cpu":
+            self._configProto.intra_op_parallelism_threads = self._device["options"]["num_cores"] if "num_cores" in self._device["options"] else None
+            self._configProto.inter_op_parallelism_threads = self._device["options"]["num_physical_cpus"] if "num_physical_cpus" in self._device["options"] else None
+        elif self._device["type"] == "gpu":
+            self._configProto.gpu_options.allow_growth = self._device["options"]["allow_memory_growth"] if "allow_memory_growth" in self._device["options"] else None
 
     def __loadSessionSettings(self):
-        self._log.debug("{0} - Loading session settings with:\n[\n\t - config protocol = {1}\
-                                                    \n]".format( self._log_prefix,
-                                                                 self._configProto ) )
+        aux = ""
+        for attr in self._device["options"]:  
+            aux+="\n\t - {0} = {1}".format(attr, self._device["options"][attr])
+        self._log.debug("{0} - Loading session settings for [{1}] device with:\n[{2}\n]".format( self._log_prefix, self._device["type"], aux))
         set_session(tf.Session(config=self._configProto))
+        
