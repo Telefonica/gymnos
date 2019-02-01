@@ -1,5 +1,5 @@
 # Gymnos
-[![Build Status](https://dev.azure.com/pablolopezcoya/gymnos/_apis/build/status/Telefonica.gymnos?branchName=devel)](https://dev.azure.com/pablolopezcoya/gymnos/_build/latest?definitionId=2&branchName=devel)
+[![Build Status](https://dev.azure.com/pablolopezcoya/gymnos/_apis/build/status/Telefonica.gymnos-devel?branchName=devel)](https://dev.azure.com/pablolopezcoya/gymnos/_build/latest?definitionId=3&branchName=devel)
 
 A training platform for AI models
 
