@@ -22,5 +22,5 @@ steps:
   displayName: 'Generate image from Dockerfile'
 
 - script:
-    docker push kawatis/gymnos-devel:first-commit
+    docker push gymnos-devel:first-commit
   displayName: 'Push container to DockerHub'
