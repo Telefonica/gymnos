@@ -20,10 +20,9 @@ pool:
 steps:
 - script: |
     echo Generate docker image from Dockerfile
-    docker build -t $(dockerId)/$(imageName)-$(date +%Y-%m-%d-%H-%M-%S) -f Dockerfile.devel .
-  displayName: 'Generate image from Dockerfile'
-
-- script: |
+    DATE=$(date +%Y-%m-%d-%H-%M-%S)
+    docker build -t $(dockerId)/$(imageName)-$DATE -f Dockerfile.devel .
+    echo Push image to DockerHub
     docker login -u $(dockerId) -p $(dockerPassword)
-    docker push $(dockerId)/$(imageName)-$(date +%Y-%m-%d-%H-%M-%S)
-  displayName: 'Push image to DockerHub'
+    docker push $(dockerId)/$(imageName)-$DATE
+  displayName: 'Generate docker image and push it to DockerHub'
