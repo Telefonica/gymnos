@@ -21,5 +21,6 @@ steps:
   displayName: 'Generate image from Dockerfile'
 
 - script:
+    docker login -u $(dockerId) -p $(dockerPassword)
     docker push $(dockerId)/$(imageName)
   displayName: 'Push container to DockerHub'
