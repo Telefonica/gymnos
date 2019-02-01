@@ -17,9 +17,9 @@ steps:
 
 - script: |
     echo Generate docker image from Dockerfile
-    docker build -t gymnos-devel .
+    docker build -t $(dockerId)/$(imageName) .
   displayName: 'Generate image from Dockerfile'
 
 - script:
-    docker push gymnos-devel
+    docker push $(dockerId)/$(imageName)
   displayName: 'Push container to DockerHub'
