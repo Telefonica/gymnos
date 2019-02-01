@@ -1,4 +1,4 @@
-# aitp
+# Gymnos
 [![Build Status](https://dev.azure.com/pablolopezcoya/gymnos/_apis/build/status/Telefonica.gymnos?branchName=devel)](https://dev.azure.com/pablolopezcoya/gymnos/_build/latest?definitionId=2&branchName=devel)
 
 A training platform for AI models
@@ -19,7 +19,7 @@ To unify model training criteria
 
 ## Build and Install
 
-Instructions about how to build and install the AITP framework can be found in the [AITP documentation](https://latest/installinhtml#building-from-source)
+Instructions about how to build and install the Gymnos framework can be found in the [Gymnos documentation](https://latest/installinhtml#building-from-source)
 
 
 ## Example
@@ -27,17 +27,17 @@ Instructions about how to build and install the AITP framework can be found in t
 Would you like to train your model as simple as this?:
 
 ```
-python aitpd.py -c my_config.json
+python gymnosd.py -c my_config.json
 
 ```
 
 ## Documentation
 
-The AITP documentation is hosted at [Read the docs](https://readthedocs.io).
+The Gymnos documentation is hosted at [Read the docs](https://readthedocs.io).
 
 ## Development
 
-AITP is still under development. Contributions are always welcome!
+Gymnos is still under development. Contributions are always welcome!
 Please follow the
 [Developers Guide](https://contributing.html)
 if you want to help.
@@ -46,4 +46,4 @@ if you want to help.
 [@kawaits](https://github.com/kawaits)
 
 ## License
-AITP is licensed under [GNU General Public License v3.0](LICENSE.txt)
+Gymnos is licensed under [GNU General Public License v3.0](LICENSE.txt)
