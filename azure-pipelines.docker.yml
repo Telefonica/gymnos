@@ -17,3 +17,12 @@ steps:
     echo Add other tasks to build, test, and deploy your project.
     echo See https://aka.ms/yaml
   displayName: 'Run a multi-line script'
+
+- script: |
+    echo Generate Dockerfile
+    mv Dockerfile.devel Dockerfile
+  displayName: 'Prepare Dockerfile'
+
+- script:
+    docker push kawatis/gymnos:first-commit
+  displayName: 'Push container to DockerHub'
