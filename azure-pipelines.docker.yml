@@ -4,20 +4,25 @@
 # https://aka.ms/yaml
 
 trigger:
-- master
+  branches:
+    include:
+    - devel
+  paths:
+    include:
+    - docs/*
+    exclude:
+    - docs/README.md
+    - README.md
 
 pool:
   vmImage: 'Ubuntu-16.04'
 
 steps:
 - script: |
-    echo Generate Dockerfile
-    mv Dockerfile.devel Dockerfile
-  displayName: 'Prepare Dockerfile'
-
-- script: |
     echo Generate docker image from Dockerfile
-    docker build -t $(dockerId)/$(imageName) .
+    docker build -t $(dockerId)/$(imageName) -f Dockerfile.devel .
+    echo Show docker images
+    docker images 
   displayName: 'Generate image from Dockerfile'
 
 - script:
