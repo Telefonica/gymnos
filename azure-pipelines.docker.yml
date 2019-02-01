@@ -20,12 +20,10 @@ pool:
 steps:
 - script: |
     echo Generate docker image from Dockerfile
-    docker build -t kawatis/gymnos-devel:latest -f Dockerfile.devel .
-    echo Show docker images
-    docker images 
+    docker build -t $(dockerId)/$(imageName) -f Dockerfile.devel .
   displayName: 'Generate image from Dockerfile'
- # docker build -t kawatis/gymnos-devel:latest -f Dockerfile.devel .
+
 - script: |
     docker login -u $(dockerId) -p $(dockerPassword)
-    docker push kawatis/gymnos-devel:latest
-  displayName: 'Push container to DockerHub'
+    docker push $(dockerId)/$(imageName)
+  displayName: 'Push image to DockerHub'
