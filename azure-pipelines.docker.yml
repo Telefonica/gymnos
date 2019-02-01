@@ -10,7 +10,6 @@ pool:
   vmImage: 'Ubuntu-16.04'
 
 steps:
-
 - script: |
     echo Generate Dockerfile
     mv Dockerfile.devel Dockerfile
@@ -22,5 +21,5 @@ steps:
   displayName: 'Generate image from Dockerfile'
 
 - script:
-    docker push gymnos-devel:first-commit
+    docker push gymnos-devel
   displayName: 'Push container to DockerHub'
