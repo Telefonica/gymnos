@@ -1,0 +1,23 @@
+{
+    "model": {
+        "name": "keras-kaggleCompetitionDogsVsCats2013n",
+        "id": "vgg16"
+    },
+    "dataset": {
+        "source": "kaggle",
+        "id": "dogs-vs-cats",
+        "type": "images",
+        "properties": {
+            "image_width": 150,
+            "image_heigth": 150,
+            "color_mode": "rgb",
+            "classes": ["dogs", "cats"],
+            "class_mode": "binary",
+            "batch_size": 20
+        } 
+    },
+    "hyper_params": {
+        "learning_rate": 0.0001,
+        "update_rate": 0.002
+    }
+}

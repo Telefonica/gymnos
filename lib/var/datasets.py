@@ -1,0 +1,1 @@
+MNIST_DIGITS = "mnist-digits"
