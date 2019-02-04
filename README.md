@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-# aitp
-[![Build Status](https://dev.azure.com/pablolopezcoya/gymnos/_apis/build/status/Telefonica.gymnos?branchName=master)](https://dev.azure.com/pablolopezcoya/gymnos/_build/latest?definitionId=2&branchName=master)
-=======
 # Gymnos
 [![Build Status](https://dev.azure.com/pablolopezcoya/gymnos/_apis/build/status/Telefonica.gymnos-devel?branchName=devel)](https://dev.azure.com/pablolopezcoya/gymnos/_build/latest?definitionId=3&branchName=devel)
->>>>>>> cc468033062fe8000d7ed3df9aa4b47b32b751f5
 
 A training platform for AI models
 
