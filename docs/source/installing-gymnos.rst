@@ -1,9 +1,9 @@
 .. index:: ! installing
 
-.. _installing-aitp:
+.. _installing-gymnos:
 
 ################################
-Installing the AITP environment
+Installing the Gymnos environment
 ################################
 
 Docker
@@ -15,12 +15,12 @@ repository contains potentially unstable changes in the develop branch.
 
 .. code-block:: bash
 
-    docker build -t aitp-devel .
+    docker build -t gymnos-devel .
 
 
 .. code-block:: bash
 
-    docker run aitp-devel:latest --version
+    docker run gymnos-devel:latest --version
 
 You need to install the following dependencies:
 

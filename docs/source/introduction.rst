@@ -1,5 +1,5 @@
 ###############################
-Introduction to AITP
+Introduction to Gymnos
 ###############################
 
 .. _lets-keep-it-simple:
@@ -15,19 +15,7 @@ Code snipet
 
 ::
 
-    pragma solidity >=0.4.0 <0.6.0;
-
-    contract SimpleStorage {
-        uint storedData;
-
-        function set(uint x) public {
-            storedData = x;
-        }
-
-        function get() public view returns (uint) {
-            return storedData;
-        }
-    }
+    This is a code snipet
 
 
 .. note::

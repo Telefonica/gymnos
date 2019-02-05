@@ -1,5 +1,5 @@
 ###################
-AITP by Example
+Gymnos by Example
 ###################
 
 .. include:: examples/ex1.rst
