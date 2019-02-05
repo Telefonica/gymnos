@@ -9,7 +9,7 @@ from session_manager import SessionManager
 from model_manager import ModelManager
 from callback_provider import CallbackProvider
 
-BASE_PATH = '/home/sysadmin/aitp/'
+BASE_PATH = '/home/sysadmin/gymnos/'
 SYS_CONFIG_PATH = BASE_PATH + 'config/system.json'
 
 with open(SYS_CONFIG_PATH, 'rb') as fp:
@@ -20,7 +20,7 @@ DATASETS_PATH = sys_config['paths']['datasets']
 
 class Trainer(object):
     def __init__(self, config):
-        self._log = logging.getLogger('aitpd')
+        self._log = logging.getLogger('gymnosd')
         self._log_prefix = "TRAINER"
         self._log.info("{0} - Initializing...".format(self._log_prefix))
         self._log.info("{0} - Configuration received - {1} ".format(self._log_prefix, json.dumps(config, indent=4, sort_keys=True)))
@@ -155,38 +155,3 @@ class Trainer(object):
                                                                          self._history.params["epochs"],
                                                                          self._history.params["steps"],
                                                                          self._history.params["do_validation"] ))
-
-    '''
-
-        self.summary_op = tf.summary.merge_all()
-
-        self.saver = tf.train.Saver(max_to_keep=100)
-        self.summary_writer = tf.summary.FileWriter(self.train_dir)
-
-        self.checkpoint_secs = 600  # 10 min
-
-        self.supervisor =  tf.train.Supervisor(
-            logdir=self.train_dir,
-            is_chief=True,
-            saver=None,
-            summary_op=None,
-            summary_writer=self.summary_writer,
-            save_summaries_secs=300,
-            save_model_secs=self.checkpoint_secs,
-            global_step=self.global_step,
-        )
-
-        session_config = tf.ConfigProto(
-            allow_soft_placement=True,
-            gpu_options=tf.GPUOptions(allow_growth=True),
-            device_count={'GPU': 1},
-        )
-        self.session = self.supervisor.prepare_or_wait_for_session(config=session_config)
-
-        self.ckpt_path = config.checkpoint
-        if self.ckpt_path is not None:
-            log.info("Checkpoint path: %s", self.ckpt_path)
-            self.saver.restore(self.session, self.ckpt_path)
-            log.info("Loaded the pretrain parameters from the provided checkpoint path")
-
-'''

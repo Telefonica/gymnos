@@ -1,5 +1,5 @@
 #################
-AITP in Depth
+Gymnos in Depth
 #################
 
 Example of a secondary index tree

@@ -22,20 +22,21 @@ RUN apt-get install tree -y \
     && pip install tensorflow \
     && pip install keras \
     && pip install opencv-python \
-    && pip install progressbar
+    && pip install progressbar \
+    && pip install kaggle
 
-ENV PYTHONPATH=":/home/sysadmin/aitp/lib\
-:/home/sysadmin/aitp/lib/models\
-:/home/sysadmin/aitp/lib/services\
-:/home/sysadmin/aitp/lib/datasets\
-:/home/sysadmin/aitp/lib/var"
+ENV PYTHONPATH=":/home/sysadmin/gymnos/lib\
+:/home/sysadmin/gymnos/lib/models\
+:/home/sysadmin/gymnos/lib/services\
+:/home/sysadmin/gymnos/lib/datasets\
+:/home/sysadmin/gymnos/lib/var"
 
 RUN useradd -d /home/sysadmin -ms /bin/bash -g root -p sysadmin sysadmin
 
-COPY . /home/sysadmin/aitp/
-RUN mkdir -p /home/sysadmin/aitp/logs \
-    && mkdir -p /home/sysadmin/aitp/datasets \
-    && chmod 777 -R /home/sysadmin/aitp/
+COPY . /home/sysadmin/gymnos/
+RUN mkdir -p /home/sysadmin/gymnos/logs \
+    && mkdir -p /home/sysadmin/gymnos/datasets \
+    && chmod 777 -R /home/sysadmin/gymnos/
 
 #USER sysadmin
 USER root

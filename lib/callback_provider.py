@@ -11,7 +11,7 @@ from var.callbacks import *
 
 class CallbackProvider(object):
     def __init__(self, config):
-        self._log = logging.getLogger('aitpd')
+        self._log = logging.getLogger('gymnosd')
         self._log_prefix = "CALLBACK_PROVIDER"
         self._config = config
         self._callbackList = []

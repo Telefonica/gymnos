@@ -8,6 +8,8 @@ from var.datasets import *
 DEFAULT_STORAGE_IMAGE_WIDTH = 28
 DEFAULT_STORAGE_IMAGE_HEIGTH = 28
 DEFAULT_STORAGE_IMAGE_DEPTH = 1
+MAX_TRAIN_SAMPLES = 60000
+MAX_TEST_SAMPLES = 10000
 
 class MNIST(dataset.DataSet):  
     def __init__(self, config):
@@ -22,8 +24,6 @@ class MNIST(dataset.DataSet):
         self._datasetLocalDir = os.path.join(DATASETS_PATH, MNIST_DIGITS)
         self._hdfDataPath = os.path.join(self._datasetLocalDir, self._hdfDataFilename)
         self._textIdsPath = os.path.join(self._datasetLocalDir, self._textIdsFilename)
-        self._maxTrainSamples = 60000
-        self._maxTestSamples = 10000
         self.dataSetId = config["id"]
         self._image_width = config["properties"]["image_width"]
         self._image_height = config["properties"]["image_height"]
@@ -31,7 +31,6 @@ class MNIST(dataset.DataSet):
         self._numFitSamples = config["samples"]["fit"]
         self._numValidationSamples = config["samples"]["validation"]
         self._numTestSamples = config["samples"]["test"]
-
         self.__checkSplitConsistency()
         
     def getSamples(self):
@@ -110,9 +109,9 @@ class MNIST(dataset.DataSet):
     def __checkSplitConsistency(self):
         errMsg = None
         numTrainSamples = self._numFitSamples + self._numValidationSamples
-        if self._numTestSamples > self._maxTestSamples:
+        if self._numTestSamples > MAX_TEST_SAMPLES:
             errMsg = "{0} - Number of test samples out of range: {1} .".format(self._log_prefix, self._numTestSamples)
-        if numTrainSamples > self._maxTrainSamples:
+        if numTrainSamples > MAX_TRAIN_SAMPLES:
             errMsg = "{0} - Number of train samples out of range: {1} .".format(self._log_prefix, numTrainSamples)
         if errMsg is not None:
             self._log.error(errMsg)
@@ -127,25 +126,25 @@ class MNIST(dataset.DataSet):
 
         fd = open(os.path.join(self._datasetLocalDir,'train-images-idx3-ubyte'))
         loaded = np.fromfile(file=fd,dtype=np.uint8)
-        self._trainImages = loaded[16:].reshape(( self._maxTrainSamples,
+        self._trainImages = loaded[16:].reshape(( MAX_TRAIN_SAMPLES,
                                                   DEFAULT_STORAGE_IMAGE_WIDTH,
                                                   DEFAULT_STORAGE_IMAGE_HEIGTH,
                                                   DEFAULT_STORAGE_IMAGE_DEPTH) ).astype(np.float)
 
         fd = open(os.path.join(self._datasetLocalDir,'train-labels-idx1-ubyte'))
         loaded = np.fromfile(file=fd,dtype=np.uint8)
-        self._trainLabels = np.asarray(loaded[8:].reshape((self._maxTrainSamples)).astype(np.float))
+        self._trainLabels = np.asarray(loaded[8:].reshape((MAX_TRAIN_SAMPLES)).astype(np.float))
 
         fd = open(os.path.join(self._datasetLocalDir,'t10k-images-idx3-ubyte'))
         loaded = np.fromfile(file=fd,dtype=np.uint8)
-        self._testImages = loaded[16:].reshape((self._maxTestSamples,
+        self._testImages = loaded[16:].reshape((  MAX_TEST_SAMPLES,
                                                   DEFAULT_STORAGE_IMAGE_WIDTH,
                                                   DEFAULT_STORAGE_IMAGE_HEIGTH,
                                                   DEFAULT_STORAGE_IMAGE_DEPTH) ).astype(np.float)
 
         fd = open(os.path.join(self._datasetLocalDir,'t10k-labels-idx1-ubyte'))
         loaded = np.fromfile(file=fd,dtype=np.uint8)
-        self._testLabels = np.asarray(loaded[8:].reshape((self._maxTestSamples)).astype(np.float))
+        self._testLabels = np.asarray(loaded[8:].reshape((MAX_TEST_SAMPLES)).astype(np.float))
 
         self.__prepare_h5py()
 

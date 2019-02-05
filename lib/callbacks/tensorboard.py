@@ -6,7 +6,7 @@ from keras import callbacks
 class TensorBoard(callback.Callback):  
     def __init__(self, config, runTimeConfig):
         callback.Callback.__init__(self)
-        self._log = logging.getLogger('aitpd')
+        self._log = logging.getLogger('gymnosd')
         self._log_prefix = "TENSORBOARD"
         self._config = config
         self._runTimeConfig = runTimeConfig

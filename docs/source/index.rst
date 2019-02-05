@@ -1,9 +1,9 @@
-.. aitp documentation master file, created by
+.. gymnos documentation master file, created by
    sphinx-quickstart on Tue Jan 29 10:37:02 2019.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-AITP
+Gymnos
 ================================
 
 .. toctree::
@@ -11,9 +11,9 @@ AITP
    :caption: Contents:
 
    introduction.rst
-   installing-aitp.rst
-   aitp-by-example.rst
-   aitp-in-depth.rst
+   installing-gymnos.rst
+   gymnos-by-example.rst
+   gymnos-in-depth.rst
 
 
 Indices and tables

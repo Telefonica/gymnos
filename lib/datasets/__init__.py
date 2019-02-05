@@ -1,4 +1,5 @@
 __all__ = [
     "dataset", 
-    "mnist"
+    "mnist",
+    "kaggle_base"
 ]

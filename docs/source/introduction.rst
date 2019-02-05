@@ -1,5 +1,5 @@
 ###############################
-Introduction to AITP
+Introduction to Gymnos
 ###############################
 
 .. _lets-keep-it-simple:

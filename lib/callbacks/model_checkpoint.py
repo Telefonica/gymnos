@@ -7,7 +7,7 @@ from var.system_paths import *
 class ModelCheckpoint(callback.Callback):  
     def __init__(self, config, runTimeConfig):
         callback.Callback.__init__(self)
-        self._log = logging.getLogger('aitpd')
+        self._log = logging.getLogger('gymnosd')
         self._log_prefix = "MODEL_CHECKPOINT"
         self._config = config
         self._runTimeConfig = runTimeConfig

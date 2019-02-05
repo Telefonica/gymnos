@@ -7,7 +7,7 @@ from dataset_factory import DataSetFactory
 
 class DataSetManager(object):
     def __init__(self, config):
-        self._log = logging.getLogger('aitpd')
+        self._log = logging.getLogger('gymnosd')
         self._log_prefix = "DATA_SET_MGR"
         self._dataSetId = config["id"]
         dsf = DataSetFactory(config)
@@ -54,13 +54,6 @@ class DataSetManager(object):
     def __loadDataSetFromLocal(self):
         self._log.info("{0} - Loading {1} dataset ...".format(self._log_prefix, self._dataSetId))
         self._ds.load()
-        '''
-        dataSetType = self._config.dataset.type
-        if dataSetType == 'image':
-            self.__loadImagesFromLocalDataSet()
-        elif dataSetType == 'text':
-            self.__loadTextFromLocalDataSet()
-        '''
 
     def __loadDataSetFromRemote(self):
         self._log.info("{0} - Downloading {1} dataset ...".format(self._log_prefix, self._dataSetId))

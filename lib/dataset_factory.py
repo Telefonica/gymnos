@@ -1,11 +1,12 @@
 import os, tarfile, subprocess, argparse, h5py, json, logging, progressbar
 import numpy as np
 from datasets.mnist import *
+from datasets.kaggle_base import *
 from var.datasets import *
 
 class DataSetFactory(object):
     def __init__(self, config):
-        self._log = logging.getLogger('aitpd')
+        self._log = logging.getLogger('gymnosd')
         self._log_prefix = "DATA_SET_FACTORY"
         self._config = config
         self._dataSetId = config["id"]
@@ -13,19 +14,19 @@ class DataSetFactory(object):
     def factory(self):
         dsInstance = None
         if self._dataSetId == MNIST_DIGITS: dsInstance = MNIST(self._config)
-        '''
-        if type == "CIFAR10": return CIFAR10()
-        if type == "ImageNet": return ImageNet()
-        if type == "IMDBDataBase": return IMDBDataBase()
-        if type == "Kaggle": return Kaggle()
-        '''
-        if dsInstance is not None:
-            self._log.debug("{0} - Instantiating {1} dataset ...".format(self._log_prefix, dsInstance.dataSetId))
-            return dsInstance
+        elif self._dataSetId  == KAGGLE: dsInstance = KaggleBase(self._config)
         else:
             errMsg = "{0} - Data set suppport for {1} not available.".format(self._log_prefix, self._dataSetId)
             self._log.error(errMsg)
             raise ValueError(errMsg)
+        '''
+        if type == "CIFAR10": return CIFAR10()
+        if type == "ImageNet": return ImageNet()
+        if type == "IMDBDataBase": return IMDBDataBase()
+        '''
+        if dsInstance:
+            return dsInstance
+
 
 '''
 

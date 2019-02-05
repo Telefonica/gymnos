@@ -5,30 +5,29 @@
         "source": "image"
     },
     "model": {
-        "name": "CustomGraph",
-        "id": "custom-graph",
+        "name": "CustomStack",
+        "id": "custom-stack",
         "options": {
             "compilation": {
                 "optimizer": "rmsprop",
-                "loss": "categorical_crossentropy",
+                "loss": "binary_crossentropy",
                 "metrics": ["accuracy"]
             },
             "custom":{
                 "framework": "keras",
-                "graph": {
-                    "input_shape": [ 150, 150, 3 ],
+                "stack": {
                     "layers": [
-                        { "type":"convolutional-2D", "filter": 32, "kernel_size":[3, 3], "activation": "relu" },
-                        { "type":"maxpooling-2D", "pool_size":[2, 2]},
-                        { "type":"convolutional-2D", "filter": 64, "kernel_size":[3, 3], "activation": "relu" },
-                        { "type":"maxpooling-2D", "pool_size":[2, 2]},
-                        { "type":"convolutional-2D", "filter": 128, "kernel_size":[3, 3], "activation": "relu" },
-                        { "type":"maxpooling-2D", "pool_size":[2, 2]},
-                        { "type":"convolutional-2D", "filter": 128, "kernel_size":[3, 3], "activation": "relu" },
-                        { "type":"maxpooling-2D", "pool_size":[2, 2] },
+                        { "type":"convolutional2D", "settings": { "filter": 32, "kernel_size":[3, 3], "activation": "relu", "input_shape": [ 150, 150, 3 ] } },
+                        { "type":"maxpooling2D", "settings": { "pool_size":[2, 2] } },
+                        { "type":"convolutional2D", "settings": { "filter": 64, "kernel_size":[3, 3], "activation": "relu" } },
+                        { "type":"maxpooling2D", "settings": { "pool_size":[2, 2] } },
+                        { "type":"convolutional2D", "settings": { "filter": 128, "kernel_size":[3, 3], "activation": "relu" } },
+                        { "type":"maxpooling2D", "settings": { "pool_size":[2, 2] } },
+                        { "type":"convolutional2D", "settings": { "filter": 128, "kernel_size":[3, 3], "activation": "relu" } },
+                        { "type":"maxpooling2D", "settings": { "pool_size":[2, 2] } },
                         { "type":"flatten" },
-                        { "type":"dense", "units": 512, "activation": "relu"},
-                        { "type":"dense", "units": 1, "activation": "sigmoid"}
+                        { "type":"dense", "settings": { "units": 512, "activation": "relu" } },
+                        { "type":"dense", "settings": { "units": 1, "activation": "sigmoid" } }
                     ]
                 }
             }
@@ -36,9 +35,13 @@
     },
     "dataset": {
         "source": "kaggle",
-        "id": "dogs-vs-cats",
-        "type": "images",
+        "id": "kaggle",
         "properties": {
+            "kaggle_source": {
+                "type": "competitions",
+                "id": "dogs-vs-cats"
+            },
+            "type": "images",
             "image_width": 150,
             "image_height": 150,
             "image_depth": 3,
@@ -57,9 +60,9 @@
     },
     "training": {
         "samples": {
-            "fit": 50000,
-            "validation": 10000,
-            "test": 10000
+            "fit": 20000,
+            "validation": 5000,
+            "test": 12500
         },
         "callbacks": { 
             "list":[

@@ -4,7 +4,7 @@ from keras.backend.tensorflow_backend import set_session
 
 class SessionManager(object):
     def __init__(self, sessionConfigFromFile):
-        self._log = logging.getLogger('aitpd')
+        self._log = logging.getLogger('gymnosd')
         self._log_prefix = "SESSION_MGR"
         self._log.info("{0} - Setting up device options for training session ...".format(self._log_prefix))
         self._configProto = tf.ConfigProto()

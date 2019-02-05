@@ -6,7 +6,7 @@ from keras import callbacks
 class ReduceLearning(callback.Callback):  
     def __init__(self, config):
         callback.Callback.__init__(self)
-        self._log = logging.getLogger('aitpd')
+        self._log = logging.getLogger('gymnosd')
         self._log_prefix = "REDUCE_LEARNING"
         self._config = config
         self._monitor = config["monitor"] if "monitor" in config else 'val_loss'

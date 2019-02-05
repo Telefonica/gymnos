@@ -1,9 +1,9 @@
 {
     "paths" : {
         "training": {
-            "execution": "/home/sysadmin/aitp/trainings/executed"
+            "execution": "/home/sysadmin/gymnos/trainings/executed"
         },
-        "datasets": "/home/sysadmin/aitp/datasets",
-        "models": "/home/sysadmin/aitp/models"
+        "datasets": "/home/sysadmin/gymnos/datasets",
+        "models": "/home/sysadmin/gymnos/models"
     }
 }

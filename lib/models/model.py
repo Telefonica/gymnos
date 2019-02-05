@@ -5,7 +5,7 @@ from var.system_paths import *
 
 class Model(object):
     def __init__(self, config):
-        self._log = logging.getLogger('aitpd')
+        self._log = logging.getLogger('gymnosd')
         self._log_prefix = "MODEL"
         self._config = config
         self._kerasAppsModule = importlib.import_module("keras.applications")

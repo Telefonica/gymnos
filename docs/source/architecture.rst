@@ -1,6 +1,6 @@
 #################
-AITP Architecture
+Gymnos Architecture
 #################
 
-.. image:: images/aitp-system-config.png
+.. image:: images/gymnos-system-config.png
    :width: 600

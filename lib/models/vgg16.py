@@ -8,7 +8,7 @@ from var.models import *
 class VGG16(model.Model):  
     def __init__(self, config):
         model.Model.__init__(self, config)
-        self._log = logging.getLogger('aitpd')
+        self._log = logging.getLogger('gymnosd')
         self._log_prefix = "VGG16"
         self._modelInstance = None
         self._config = config

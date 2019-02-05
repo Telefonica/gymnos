@@ -19,7 +19,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = u'aitp'
+project = u'gymnos'
 copyright = u'2019, Pablo Ignacio Lopez Coya'
 author = u'Pablo Ignacio Lopez Coya'
 
@@ -125,7 +125,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'aitpdoc'
+htmlhelp_basename = 'gymnosdoc'
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -152,7 +152,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'aitp.tex', u'aitp Documentation',
+    (master_doc, 'gymnos.tex', u'gymnos Documentation',
      u'Pablo Ignacio Lopez Coya', 'manual'),
 ]
 
@@ -162,7 +162,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'aitp', u'aitp Documentation',
+    (master_doc, 'gymnos', u'gymnos Documentation',
      [author], 1)
 ]
 
@@ -173,8 +173,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'aitp', u'aitp Documentation',
-     author, 'aitp', 'One line description of project.',
+    (master_doc, 'gymnos', u'gymnos Documentation',
+     author, 'gymnos', 'One line description of project.',
      'Miscellaneous'),
 ]
 
