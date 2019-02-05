@@ -1,0 +1,28 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+  branches:
+    include:
+    - devel
+  paths:
+    include:
+    - docs/*
+    exclude:
+    - docs/README.md
+    - README.md
+
+pool:
+  vmImage: 'Ubuntu-16.04'
+
+steps:
+- script: |
+    echo Generate docker image from Dockerfile
+    DATE=$(date +%Y-%m-%d-%H-%M-%S)
+    docker build -t $(dockerId)/$(imageName)-$DATE -f Dockerfile.devel .
+    echo Push image to DockerHub
+    docker login -u $(dockerId) -p $(dockerPassword)
+    docker push $(dockerId)/$(imageName)-$DATE
+  displayName: 'Generate docker image and push it to DockerHub'
