@@ -1,7 +1,7 @@
 import os, tarfile, subprocess, argparse, h5py, json, logging, progressbar
 import numpy as np
 from datasets.mnist import *
-from datasets.kaggle_base import *
+from datasets.kaggle_dogs_vs_cats import *
 from var.datasets import *
 
 class DataSetFactory(object):
@@ -14,7 +14,7 @@ class DataSetFactory(object):
     def factory(self):
         dsInstance = None
         if self._dataSetId == MNIST_DIGITS: dsInstance = MNIST(self._config)
-        elif self._dataSetId  == KAGGLE: dsInstance = KaggleBase(self._config)
+        elif self._dataSetId  == KAGGLE_DOGS_VS_CATS: dsInstance = KaggleDogsVsCats(self._config)
         else:
             errMsg = "{0} - Data set suppport for {1} not available.".format(self._log_prefix, self._dataSetId)
             self._log.error(errMsg)

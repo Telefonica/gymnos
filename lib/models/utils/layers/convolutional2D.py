@@ -6,8 +6,11 @@ class Convolutional2D(object):
         self._log_prefix = "CONV_2D"
         self._settings = settings
         self._framework = framework
-        self._inputShape = settings["input_shape"] if input_shape in "settings" else None
+        self._inputShape = settings["input_shape"] if "input_shape" in settings else None
         self.__buildLayer()
+
+    def getInstance(self):
+        return self._instance
 
     def __buildLayer(self):
         if self._framework == "keras":
@@ -15,8 +18,10 @@ class Convolutional2D(object):
             kernelSize = self._settings["kernel_size"]
             activation = self._settings["activation"]
             from keras import layers
-            layers.Conv2D( myFilter, kSize, activation=act, input_shape=self._inputShape )
-
+            if self._inputShape: 
+                self._instance = layers.Conv2D( myFilter, kernelSize, activation=activation, input_shape=self._inputShape )
+            else:
+                self._instance = layers.Conv2D( myFilter, kernelSize, activation=activation)
             self._log.debug("{0} - Building layer with params:\n[\n\t - filter = {1}\
                                                                  \n\t - kernel_size = {2}\
                                                                  \n\t - activation = {3}\

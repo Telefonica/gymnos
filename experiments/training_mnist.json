@@ -31,10 +31,9 @@
         }
     },
     "dataset": {
-        "source": "mnist",
         "id": "mnist-digits",
-        "type": "images",
         "properties": {
+            "type": "images",
             "image_width": 48,
             "image_height": 48,
             "image_depth": 3,

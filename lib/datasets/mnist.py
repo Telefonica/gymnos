@@ -47,7 +47,6 @@ class MNIST(dataset.DataSet):
         self._fitLabels = self._data["train_labels"][:self._numFitSamples]
         self._valLabels = self._data["train_labels"][self._numFitSamples:]
         self._testLabels = self._data["test_labels"][:self._numTestSamples]
-
         self.__preprocess()
 
     def download(self):

@@ -11,17 +11,17 @@ class LayerFactory(object):
         self._fw = framework
 
     def factory(self, layerConfig):
-        layerInstance = None
-        layerType = config["type"]
-        layerSettings = config["settings"]
-        if layerType == "convolutional2D": layerInstance = Convolutional2D(layerSettings, self._fw)
-        elif layerType == "maxpooling2D": layerInstance = MaxPooling2D(layerSettings, self._fw)
-        elif layerType == "flatten": layerInstance = Flatten(layerSettings, self._fw)
-        elif layerType == "dense": layerInstance = Dense(layerSettings, self._fw)
+        layerWrapper = None
+        layerType = layerConfig["type"]
+        layerSettings = layerConfig["settings"]
+        if layerType == "convolutional2D": layerWrapper = Convolutional2D(layerSettings, self._fw)
+        elif layerType == "maxpooling2D": layerWrapper = MaxPooling2D(layerSettings, self._fw)
+        elif layerType == "flatten": layerWrapper = Flatten(layerSettings, self._fw)
+        elif layerType == "dense": layerWrapper = Dense(layerSettings, self._fw)
         else:
             errMsg = "{0} - Layer suppport for {1} not available.".format(self._log_prefix, layerType)
             self._log.error(errMsg)
             raise ValueError(errMsg)
         
-        if layerInstance: 
-            return layerInstance
+        if layerWrapper: 
+            return layerWrapper.getInstance()

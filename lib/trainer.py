@@ -99,24 +99,23 @@ class Trainer(object):
                                                     \n]".format( self._log_prefix,
                                                                  self._testSamples.shape, 
                                                                  self._testLabels.shape ))
-        self._results = self._model.evaluate(self._testSamples, self._testLabels)     
-                        
+        self._results = self._model.evaluate(self._testSamples, self._testLabels)                    
         self._log.info("{0} - Evaluation results:\n[\n\t - loss = {1}\
                                                     \n\t - accuracy = {2}\
                                                     \n]".format( self._log_prefix,
                                                                  self._results[0], 
                                                                  self._results[1] ))
 
-    def __loadTrainingSamples(self):
-        self._log.debug("{0} - __loadTrainingSamples - obtaining training samples...".format(self._log_prefix))
-        (self._fitSamples, self._valSamples, self._testSamples) = self._dsm.getSamplesForTraining()
-        (self._fitLabels, self._valLabels, self._testLabels) = self._dsm.getLabelsForTraining()
-        
     def __loadDataSet(self):
         self._log.info("{0} - Loading {1} dataset ...".format(self._log_prefix, self._dataSetId))
         self._dsm.loadDataSet()
         self.__loadTrainingSamples()
-       
+
+    def __loadTrainingSamples(self):
+        self._log.debug("{0} - __loadTrainingSamples - obtaining training samples...".format(self._log_prefix))
+        (self._fitSamples, self._valSamples, self._testSamples) = self._dsm.getSamplesForTraining()
+        (self._fitLabels, self._valLabels, self._testLabels) = self._dsm.getLabelsForTraining()       
+    
     def __loadModel(self):
         self._model = self._mm.getModel()
         self._model.init()

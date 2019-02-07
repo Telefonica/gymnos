@@ -25,7 +25,7 @@
                         { "type":"maxpooling2D", "settings": { "pool_size":[2, 2] } },
                         { "type":"convolutional2D", "settings": { "filter": 128, "kernel_size":[3, 3], "activation": "relu" } },
                         { "type":"maxpooling2D", "settings": { "pool_size":[2, 2] } },
-                        { "type":"flatten" },
+                        { "type":"flatten", "settings": { }},
                         { "type":"dense", "settings": { "units": 512, "activation": "relu" } },
                         { "type":"dense", "settings": { "units": 1, "activation": "sigmoid" } }
                     ]
@@ -34,10 +34,9 @@
         }
     },
     "dataset": {
-        "source": "kaggle",
-        "id": "kaggle",
+        "id": "kaggle-dogs-vs-cats",
         "properties": {
-            "kaggle_source": {
+            "service": {
                 "type": "competitions",
                 "id": "dogs-vs-cats"
             },
@@ -60,9 +59,9 @@
     },
     "training": {
         "samples": {
-            "fit": 20000,
+            "fit": 10000,
             "validation": 5000,
-            "test": 12500
+            "test": 5000
         },
         "callbacks": { 
             "list":[
