@@ -17,10 +17,13 @@ pool:
 
 steps:
 - script: |
-    echo Generate docker image from Dockerfile
     DATE=$(date +%Y-%m-%d-%H-%M-%S)
+    echo Generate docker image from Dockerfile.devel
     docker build -t $(dockerId)/$(imageName)-$DATE -f Dockerfile.devel .
-    echo Push image to DockerHub
+    echo Generate docker image from Dockerfile.devel
+    docker build -t $(dockerId)/$(imageName)-gpu-$DATE -f Dockerfile.devel-gpu .
+    echo Push images to DockerHub
     docker login -u $(dockerId) -p $(dockerPassword)
     docker push $(dockerId)/$(imageName)-$DATE
+    docker push $(dockerId)/$(imageName)-gpu-$DATE
   displayName: 'Generate docker image and push it to DockerHub'
