@@ -11,7 +11,7 @@ Lets Keep It Simple
 A training platform for AI **models**
 
 Code snipet
-=======
+===========
 
 ::
 

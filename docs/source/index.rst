@@ -14,6 +14,7 @@ Gymnos
    installing-gymnos.rst
    gymnos-by-example.rst
    gymnos-in-depth.rst
+   support.rst
 
 
 Indices and tables
