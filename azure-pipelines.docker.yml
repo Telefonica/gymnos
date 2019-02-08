@@ -8,8 +8,6 @@ trigger:
     include:
     - devel
   paths:
-    include:
-    - docs/*
     exclude:
     - docs/README.md
     - README.md
