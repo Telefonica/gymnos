@@ -20,10 +20,12 @@ steps:
     DATE=$(date +%Y-%m-%d-%H-%M-%S)
     echo Generate docker image from Dockerfile.devel
     docker build -t $(dockerId)/$(imageName)-$DATE -f Dockerfile.devel .
-    echo Generate docker image from Dockerfile.devel
+    echo Generate docker image from Dockerfile.devel-gpu
     docker build -t $(dockerId)/$(imageName)-gpu-$DATE -f Dockerfile.devel-gpu .
+    echo Generate docker image from Dockerfile.prod-gpu
+    docker build -t $(dockerId)/$(imageName)-gpu-$DATE -f Dockerfile.prod-gpu .
     echo Push images to DockerHub
     docker login -u $(dockerId) -p $(dockerPassword)
     docker push $(dockerId)/$(imageName)-$DATE
     docker push $(dockerId)/$(imageName)-gpu-$DATE
-  displayName: 'Generate docker image and push it to DockerHub'
+  displayName: 'Generate docker images and push it to DockerHub'
