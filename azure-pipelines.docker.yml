@@ -23,9 +23,10 @@ steps:
     echo Generate docker image from Dockerfile.devel-gpu
     docker build -t $(dockerId)/$(imageName)-gpu-$DATE -f Dockerfile.devel-gpu .
     echo Generate docker image from Dockerfile.prod-gpu
-    docker build -t $(dockerId)/$(imageName)-gpu-$DATE -f Dockerfile.prod-gpu .
+    docker build -t $(dockerId)/prod-gpu-$DATE -f Dockerfile.prod-gpu .
     echo Push images to DockerHub
     docker login -u $(dockerId) -p $(dockerPassword)
     docker push $(dockerId)/$(imageName)-$DATE
     docker push $(dockerId)/$(imageName)-gpu-$DATE
+    docker push $(dockerId)/prod-gpu-$DATE
   displayName: 'Generate docker images and push it to DockerHub'
