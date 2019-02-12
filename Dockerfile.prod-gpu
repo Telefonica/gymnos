@@ -39,6 +39,5 @@ RUN mkdir -p /home/sysadmin/gymnos/logs \
     && mkdir -p /home/sysadmin/gymnos/datasets \
     && chmod 777 -R /home/sysadmin/gymnos/
 
-#USER sysadmin
-USER root
-WORKDIR /home/sysadmin
+USER sysadmin
+WORKDIR /home/sysadmin/gymnos
