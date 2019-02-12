@@ -21,7 +21,6 @@ RUN apt-get install tree -y \
     && apt-get install libfontconfig1 libxrender1 -y \
     && apt-get install python-pip -y \
     && pip install --upgrade pip \
-    && pip install tensorflow \
     && pip install keras \
     && pip install opencv-python \
     && pip install progressbar \
