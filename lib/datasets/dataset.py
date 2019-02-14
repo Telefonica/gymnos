@@ -1,4 +1,4 @@
-import os, logging, h5py, progressbar, cv2
+import os, logging, h5py, progressbar, cv2, random
 import datetime as dt
 import numpy as np
 
@@ -6,7 +6,7 @@ class DataSet(object):
     def __init__(self):
         self._log = logging.getLogger('gymnosd')
         self._log_prefix = "DATASET"
-        self._hdfDataFilename = 'training-data-set.hy'
+        self._hdfDataFilename = 'training-data-set.hdf5'
         self._textIdsFilename = 'id.txt'
 
     def loadRawImagesFromFolder(self, folderPath, resizeParams):
@@ -44,8 +44,9 @@ class DataSet(object):
         time_end = dt.datetime.now()
         self._log.debug("{0} - loadImagesFromFolder: Processed images = [{1}] in {2} seconds.".format( self._log_prefix,
                                                                                                        lenImages,
-                                                                                                       (time_end-time_start).seconds) )
-        return imgArr
+                                                                                                       (time_end-time_start).seconds) )     
+        return imgArr                                                                        
+
     
     def prepareH5PY(self, folderPath, trainImages, trainLabels):
         h5pyFilePath = os.path.join(folderPath, self._hdfDataFilename)
@@ -61,14 +62,11 @@ class DataSet(object):
         hdf5_file = h5py.File(h5pyFilePath, 'w')
         hdf5_file.create_dataset("train_labels", trainLabelsShape, np.uint8)
         hdf5_file["train_labels"][...] = trainLabels
-        hdf5_file.create_dataset("train_img", trainImagesShape, np.uint8)
-        
+        hdf5_file.create_dataset("train_samples", trainImagesShape, np.uint8)
         for i in range(lenTrainImages):
             if i%(lenTrainImages/100)==0:
                 bar.update(i/(lenTrainImages/100))
-            hdf5_file["train_img"][i, ...] = trainImages[i]
-           
+            hdf5_file["train_samples"][i, ...] = trainImages[i]
         bar.finish()
         hdf5_file.close()
-        
         return

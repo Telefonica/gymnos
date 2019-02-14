@@ -46,7 +46,8 @@
             "image_depth": 3,
             "color_mode": "multi",
             "class_mode": "binary",
-            "batch_size": 512
+            "batch_size": 512,
+            "shuffle": true
         } 
     },
     "session": {
@@ -59,8 +60,8 @@
     },
     "training": {
         "samples": {
-            "fit": 10000,
-            "validation": 5000,
+            "fit": 18000,
+            "validation": 7000,
             "test": 5000
         },
         "callbacks": { 
