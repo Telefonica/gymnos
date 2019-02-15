@@ -1,6 +1,6 @@
 # Gymnos
 [![Build Status](https://dev.azure.com/pablolopezcoya/gymnos/_apis/build/status/Telefonica.gymnos?branchName=master)](https://dev.azure.com/pablolopezcoya/gymnos/_build/latest?definitionId=3&branchName=master)
-[![Documentation Status](https://readthedocs.org/projects/gymnos/badge/?version=latest)](https://gymnos.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/gymnos/badge/?version=master)](https://gymnos.readthedocs.io/en/latest/?badge=master)
 ![Open Issues Status](https://img.shields.io/github/issues-raw/Telefonica/gymnos.svg?style=flat)
 
 A training platform for AI models
