@@ -3,48 +3,62 @@
 .. _installing-gymnos:
 
 ################################
-Installing the Gymnos environment
+Installing Gymnos
 ################################
 
 Docker
 ==========
 
-We provide up to date docker builds for the compiler. The ``stable``
-repository contains released versions while the ``nightly``
-repository contains potentially unstable changes in the develop branch.
+We provide up to date docker builds for different execution environments and working modalities.
+
+Build image
+-----------
+
+If you are a developer and want to build the gymnos image from scratch, choose a Dockerfile that suits 
+your development environment:
 
 .. code-block:: bash
 
-    docker build -t gymnos-devel .
+    docker build -t gymnos-devel -f Dockerfile.devel .
+    docker build -t gymnos-devel-gpu -f Dockerfile.devel-gpu .
 
+Pull image
+-----------
+
+If you just want to get the latest docker build:
 
 .. code-block:: bash
 
-    docker run gymnos-devel:latest --version
+    docker pull telefonica/gymnos:devel-2019-02-12-15-25-29
+    docker pull telefonica/gymnos:devel-gpu-2019-02-12-15-25-29
 
-You need to install the following dependencies:
+GPU environments
+-------------------
 
-+-----------------------------------+-------------------------------------------------------+
-| Software                          | Notes                                                 |
-+===================================+=======================================================+
-| `Git for Linux`_                  | Command-line tool for retrieving source from Github.  |
-+-----------------------------------+-------------------------------------------------------+
-| `Visual Studio 2017 Build Tools`_ | C++ compiler                                          |
-+-----------------------------------+-------------------------------------------------------+
-| `Visual Studio 2017`_  (Optional) | C++ compiler and dev environment.                     |
-+-----------------------------------+-------------------------------------------------------+
+If you are lucky enough to have a GPU for development, you just need to execute the following command
+to get your gymnos docker image running on a GPU.  
 
-.. _Git for Linux: https://git-scm.com/download/linux
-.. _Visual Studio 2017: https://www.visualstudio.com/vs/
-.. _Visual Studio 2017 Build Tools: https://www.visualstudio.com/downloads/#build-tools-for-visual-studio-2017
+.. code-block:: bash
 
-Example with bullets:
+   nvidia-docker run -it telefonica/gymnos:devel-gpu-2019-02-12-15-25-29 bash
 
-* Visual Studio C++ core features
-* VC++ 2017 v141 toolset (x86,x64)
-* Windows Universal CRT SDK
-* Windows 8.1 SDK
-* C++/CLI support
+.. note::
+
+   Previous example was executed in a GPU environment with the following settings:
+
+   * NVIDIA-SMI:          410.79
+   * Driver Version:      410.79
+   * CUDA Version:        10.0
+
+
+
+.. warning::
+
+   Make sure you meet the following dependencies:
+
+   * docker version:      18.09.1 (or higher)
+   * CUDA version:        10.0
+   * GPU docker support:  CUDA version compatible
 
 
 Clone the Repository
@@ -54,70 +68,7 @@ To clone the source code, execute the following command:
 
 .. code-block:: bash
 
-    git clone --recursive https://github.com/ethereum/solidity.git
-    cd solidity
+    git clone --recursive https://github.com/Telefonica/gymnos.git
+    cd gymnos
 
-If you want to help developing Solidity,
-you should fork Solidity and add your personal fork as a second remote:
-
-.. code-block:: bash
-
-    git remote add personal git@github.com:[username]/solidity.git
-
-External Dependencies
----------------------
-
-We have a helper script which installs all required external dependencies
-on macOS, Windows and on numerous Linux distros.
-
-.. code-block:: bash
-
-    ./scripts/install_deps.sh
-
-Or, on Windows:
-
-.. code-block:: bat
-
-    scripts\install_deps.bat
-
-
-Command-Line Build
-------------------
-
-**Be sure to install External Dependencies (see above) before build.**
-
-Solidity project uses CMake to configure the build.
-You might want to install ccache to speed up repeated builds.
-CMake will pick it up automatically.
-Building Solidity is quite similar on Linux, macOS and other Unices:
-
-.. code-block:: bash
-
-    mkdir build
-    cd build
-    cmake .. && make
-
-or even easier:
-
-.. code-block:: bash
-
-    #note: this will install binaries solc and soltest at usr/local/bin
-    ./scripts/build.sh
-
-And for Windows:
-
-.. code-block:: bash
-
-    mkdir build
-    cd build
-    cmake -G "Visual Studio 15 2017 Win64" ..
-
-
-
-Other example with bullets:
-
-- the version number
-- pre-release tag, usually set to ``develop.YYYY.MM.DD`` or ``nightly.YYYY.MM.DD``
-- commit in the format of ``commit.GITHASH``
-- platform, which has an arbitrary number of items, containing details about the platform and compiler
-
+If you want to help developing Gymnos, start working at ``devel`` branch
