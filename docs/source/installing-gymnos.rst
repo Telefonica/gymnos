@@ -61,14 +61,3 @@ to get your gymnos docker image running on a GPU.
    * GPU docker support:  CUDA version compatible
 
 
-Clone the Repository
---------------------
-
-To clone the source code, execute the following command:
-
-.. code-block:: bash
-
-    git clone --recursive https://github.com/Telefonica/gymnos.git
-    cd gymnos
-
-If you want to help developing Gymnos, start working at ``devel`` branch
