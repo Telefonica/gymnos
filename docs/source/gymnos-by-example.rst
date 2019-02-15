@@ -1,5 +1,11 @@
 ###################
 Gymnos by Example
 ###################
+This section intends to provide newcomers with enough guidance to develop single parts of the system.
 
-.. include:: examples/ex1.rst
+.. toctree::
+   :maxdepth: 2
+
+   examples/howto-dataset-handler.rst
+   examples/howto-model-handler.rst
+
