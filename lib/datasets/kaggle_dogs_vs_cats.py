@@ -1,4 +1,4 @@
-import os, logging, subprocess, zipfile, random, h5py
+import os, logging, subprocess, random, h5py
 import numpy as np
 import dataset
 from glob import glob
@@ -108,9 +108,15 @@ class KaggleDogsVsCats(dataset.DataSet):
 
     def __shuffleDataset(self):
         shuffledList = []
+        print self._trainImages[1:3]
+        print self._trainLabels[1:3]
         for i, image in enumerate(self._trainImages):
             shuffledList.append([self._trainImages[i], self._trainLabels[i]])
+        print "before: ", shuffledList[1:3]
         np.random.shuffle(shuffledList)
+        print "after: ", shuffledList[1:3]
         for i, item in enumerate(shuffledList):
             self._trainImages[i] = item[0]
             self._trainLabels[i] = item[1]
+        print self._trainImages[1:3]
+        print self._trainLabels[1:3]

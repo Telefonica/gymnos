@@ -38,8 +38,8 @@ class DataSet(object):
                                 resizeParams, 
                                 interpolation=cv2.INTER_CUBIC )
             imgList.append(image)
-            imgArr = np.stack([imgList],axis=4)
-            imgArr = np.squeeze(imgArr, axis=4)
+        imgArr = np.stack([imgList],axis=4)
+        imgArr = np.squeeze(imgArr, axis=4)
         bar.finish()
         time_end = dt.datetime.now()
         self._log.debug("{0} - loadImagesFromFolder: Processed images = [{1}] in {2} seconds.".format( self._log_prefix,

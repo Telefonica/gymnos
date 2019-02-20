@@ -1,4 +1,4 @@
-import os, tarfile, subprocess, progressbar, logging, h5py, cv2
+import os, subprocess, progressbar, logging, h5py, cv2
 import dataset
 import numpy as np
 from keras.utils import to_categorical
