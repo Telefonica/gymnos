@@ -47,7 +47,11 @@
             "color_mode": "multi",
             "class_mode": "binary",
             "batch_size": 512,
-            "shuffle": true
+            "shuffle": true,
+            "prediction": [
+		{ "result": 0, "class_name": "cat" },
+  		{ "result": 1, "class_name": "dog" }
+            ]
         } 
     },
     "session": {
