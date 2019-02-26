@@ -64,9 +64,9 @@
     },
     "training": {
         "samples": {
-            "fit": 100,
-            "validation": 70,
-            "test": 50
+            "fit": 18000,
+            "validation": 7000,
+            "test": 5000
         },
         "callbacks": { 
             "list":[
@@ -119,7 +119,7 @@
     },
     "hyper_params": {
         "batch_size": 512,
-        "epochs": 1,
+        "epochs": 100,
         "learning_strategy": "supervised"
     }, 
     "artifacts": {
