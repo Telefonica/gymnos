@@ -4,6 +4,10 @@
             "execution": "/home/sysadmin/gymnos/trainings/executed"
         },
         "datasets": "/home/sysadmin/gymnos/datasets",
-        "models": "/home/sysadmin/gymnos/models"
+        "models": "/home/sysadmin/gymnos/models",
+        "logs": "/home/sysadmin/gymnos/logs"
+    },
+    "filenames" : {
+        "logs": "gymnos.log"
     }
 }

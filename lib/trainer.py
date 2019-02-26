@@ -17,6 +17,8 @@ with open(SYS_CONFIG_PATH, 'rb') as fp:
 
 TRAINING_EXECUTION_PATH = sys_config['paths']['training']['execution']
 DATASETS_PATH = sys_config['paths']['datasets']
+LOGGING_PATH = sys_config['paths']['logs']
+LOGGING_FILENAME = sys_config['filenames']['logs']
 
 class Trainer(object):
     def __init__(self, config):
@@ -70,7 +72,6 @@ class Trainer(object):
         self._log.info("{0} - Training completed in - {1} (s): {2} (us)".format( self._log_prefix, 
                                                                           elapsed.seconds,
                                                                           elapsed.microseconds,)) 
-
         if self._cp.isCallbackPresentInList("model_checkpoint") is False:                                                                       
             trainedWeightsPath = '{0}/weights.h5'.format(self._train_dir)
             self._log.info("{0} - Saving weights by default at - {1}".format( self._log_prefix, trainedWeightsPath ))
@@ -79,6 +80,7 @@ class Trainer(object):
     def generateTrainingStats(self):
         self.__showTrainingHistory()
         self.__evaluateModel()
+        self.__saveLogsToTrainDirectory()
         
     def __checkIfTestAlreadyExecuted(self):
         targetDir = '{0}/{1}'.format(TRAINING_EXECUTION_PATH, self._trainingId)
@@ -136,6 +138,10 @@ class Trainer(object):
             
         self._model.compile()
         self._model.summary()
+
+    def __saveLogsToTrainDirectory(self):
+        self._log.debug("{0} - __saveLogsToTrainDirectory - saving execution logs to train directory...".format(self._log_prefix))
+        os.rename("{0}/{1}".format(LOGGING_PATH, LOGGING_FILENAME),"{0}/{1}".format(self._train_dir, LOGGING_FILENAME))
 
     def __saveOriginalConfigToFile(self):
         self._log.debug("{0} - __saveOriginalConfigToFile - saving original config to train directory...".format(self._log_prefix))

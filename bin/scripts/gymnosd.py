@@ -16,35 +16,31 @@ FOLDER_PATH = BASE_PATH + 'data/json'
 with open(SYS_CONFIG_PATH, 'rb') as fp:
   sys_config = json.load(fp)
 
-def setup_logging(
-    default_path=CD_LOG_CONFIG_PATH,
-    default_level=logging.INFO,
-    env_key='LOG_CFG'
-):
-    """Setup logging configuration
-    """
-    path = default_path
-    value = os.getenv(env_key, None)
-    if value:
-        path = value
-    if os.path.exists(path):
-        with open(path, 'rt') as f:
-            config = json.load(f)
-        logging.config.dictConfig(config)
-    else:
-        logging.basicConfig(level=default_level)
+LOGGING_PATH = sys_config['paths']['logs']
+LOGGING_FILENAME = sys_config['filenames']['logs']
 
-    logger = logging.getLogger('gymnosd')
-    logger.propagate = False  
+def setup_logging( default_path=CD_LOG_CONFIG_PATH, default_level=logging.INFO):
+  # removing log files from previous session
+  logFilePath = "{0}/{1}".format(LOGGING_PATH, LOGGING_FILENAME)
+  if os.path.exists(logFilePath):
+    os.remove(logFilePath)
+  if os.path.exists(default_path):
+      with open(default_path, 'rt') as f:
+          config = json.load(f)
+      logging.config.dictConfig(config)
+  else:
+      logging.basicConfig(level=default_level)
 
-    return logger
+  logger = logging.getLogger('gymnosd')
+  logger.propagate = False  
+
+  return logger
 
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument("-c", "--training_config", help="sets training configuration file path", action='store')
   config = parser.parse_args()
-  
   log = setup_logging()
   TRAINING_CONFIG_PATH = BASE_PATH + config.training_config
   with open(TRAINING_CONFIG_PATH, 'rb') as fp:
