@@ -19,7 +19,7 @@
             "class": "logging.handlers.RotatingFileHandler",
             "level": "DEBUG",
             "formatter": "simple",
-            "filename": "logs/debug.log",
+            "filename": "logs/gymnos.log",
             "maxBytes": 10485760,
             "backupCount": 20,
             "encoding": "utf8"
@@ -29,7 +29,7 @@
             "class": "logging.handlers.RotatingFileHandler",
             "level": "INFO",
             "formatter": "simple",
-            "filename": "logs/info.log",
+            "filename": "logs/gymnos.log",
             "maxBytes": 10485760,
             "backupCount": 20,
             "encoding": "utf8"
@@ -39,7 +39,7 @@
             "class": "logging.handlers.RotatingFileHandler",
             "level": "ERROR",
             "formatter": "simple",
-            "filename": "logs/errors.log",
+            "filename": "logs/gymnos.log",
             "maxBytes": 10485760,
             "backupCount": 20,
             "encoding": "utf8"
@@ -49,14 +49,15 @@
     "loggers": {
         "gymnosd": {
             "level": "DEBUG",
-            "handlers": ["console", "debug_file_handler", "info_file_handler", "error_file_handler"],
+            "handlers": ["console", "debug_file_handler"],
             "propagate": "no"
         }
     },
 
     "root": {
         "level": "DEBUG",
-        "handlers": ["console", "info_file_handler", "error_file_handler"]
+        "handlers": ["console", "info_file_handler", "error_file_handler"],
+        "propagate": "no"
     }
 }
 
