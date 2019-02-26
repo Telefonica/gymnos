@@ -5,7 +5,33 @@ Datasets
 .. _datasets:
 
 This section shows a collection of datasets currently supoorted by Gymnos
+***********************
+MNIST
+***********************
+The MNIST database of handwritten digits, available from this page, has a training set of 60,000 examples, 
+and a test set of 10,000 examples. Please visit `mnist`_ web site for a complete description.
 
+.. _mnist: http://yann.lecun.com/exdb/mnist/
+
+Config example:
+
+.. code-block:: json
+
+   {
+       "dataset": {
+           "id": "mnist-digits",
+           "properties": {
+                "type": "images",
+                "image_width": 48,
+                "image_height": 48,
+                "image_depth": 3,
+                "color_mode": "multi",
+                "class_mode": "binary",
+                "batch_size": 512
+           } 
+       }
+   }
+   
 ***********************
 Kaggle
 ***********************
