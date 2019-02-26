@@ -5,9 +5,11 @@ Datasets
 .. _datasets:
 
 This section shows a collection of datasets currently supoorted by Gymnos
+
 ***********************
 MNIST
 ***********************
+
 The MNIST database of handwritten digits, available from this page, has a training set of 60,000 examples, 
 and a test set of 10,000 examples. Please visit `mnist`_ web site for a complete description.
 
@@ -31,6 +33,7 @@ Config example:
            } 
        }
    }
+   
    
 ***********************
 Kaggle
