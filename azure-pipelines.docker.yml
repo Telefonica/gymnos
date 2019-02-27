@@ -19,14 +19,14 @@ steps:
 - script: |
     DATE=$(date +%Y-%m-%d-%H-%M-%S)
     echo Generate docker image from Dockerfile.devel
-    docker build -t $(dockerId)/$(develImageName)-$DATE -f Dockerfile.devel .
+    docker build -t $(telefonicaDockerHubPath)/$(auraPrototypesRepo)/$(develImageName)-$DATE -f Dockerfile.devel .
     echo Generate docker image from Dockerfile.devel-gpu
-    docker build -t $(dockerId)/$(develImageName)-gpu-$DATE -f Dockerfile.devel-gpu .
+    docker build -t $(telefonicaDockerHubPath)/$(auraPrototypesRepo)/$(develImageName)-gpu-$DATE -f Dockerfile.devel-gpu .
     echo Generate docker image from Dockerfile.prod-gpu
-    docker build -t $(dockerId)/$(prodImageName)-gpu-$DATE -f Dockerfile.prod-gpu .
+    docker build -t $(telefonicaDockerHubPath)/$(auraPrototypesRepo)/$(prodImageName)-gpu-$DATE -f Dockerfile.prod-gpu .
     echo Push images to DockerHub
     docker login -u $(dockerId) -p $(dockerPassword)
-    docker push $(dockerId)/$(develImageName)-$DATE
-    docker push $(dockerId)/$(develImageName)-gpu-$DATE
-    docker push $(dockerId)/$(prodImageName)-gpu-$DATE
+    docker push $(telefonicaDockerHubPath)/$(auraPrototypesRepo)/$(develImageName)-$DATE
+    docker push $(telefonicaDockerHubPath)/$(auraPrototypesRepo)/$(develImageName)-gpu-$DATE
+    docker push $(telefonicaDockerHubPath)/$(auraPrototypesRepo)/$(prodImageName)-gpu-$DATE
   displayName: 'Generate docker images and push it to DockerHub'
