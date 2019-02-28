@@ -20,7 +20,7 @@ To unify model training criteria
 
 ## Build and Install
 
-Instructions about how to build and install the Gymnos framework can be found in the [Gymnos documentation](https://gymnos.readthedocs.io/en/latest/)
+Instructions about how to build and install the Gymnos framework can be found in the [Gymnos documentation](https://gymnos.readthedocs.io/en/devel/)
 
 
 ## Example
@@ -34,7 +34,7 @@ python gymnosd.py -c my_config.json
 
 ## Documentation
 
-The Gymnos documentation is hosted at [Read the docs](https://gymnos.readthedocs.io/en/latest/).
+The Gymnos documentation is hosted at [Read the docs](https://gymnos.readthedocs.io/en/devel/).
 
 ## Development
 
