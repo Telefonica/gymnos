@@ -4,7 +4,7 @@ Models
 
 .. _models:
 
-This section shows a collection of models currently supoorted by Gymnos
+This section shows a collection of models currently supported by Gymnos
 
 ***********************
 VGG16
