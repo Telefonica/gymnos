@@ -39,7 +39,7 @@ def setup_logging( default_path=CD_LOG_CONFIG_PATH, default_level=logging.INFO):
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
-  parser.add_argument("-c", "--training_config", help="sets training configuration file path", action='store')
+  parser.add_argument("-c", "--training_config", help="sets training configuration file path", action='store', required=True)
   config = parser.parse_args()
   log = setup_logging()
   TRAINING_CONFIG_PATH = BASE_PATH + config.training_config
