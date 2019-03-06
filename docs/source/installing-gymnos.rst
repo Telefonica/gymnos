@@ -32,15 +32,19 @@ If you just want to get the latest docker build:
     docker pull telefonica/gymnos:devel-2019-02-12-15-25-29
     docker pull telefonica/gymnos:devel-gpu-2019-02-12-15-25-29
 
-GPU environments
+Run image
 -------------------
+
+.. code-block:: bash
+
+   docker run -it gymnos-devel bash
 
 If you are lucky enough to have a GPU for development, you just need to execute the following command
 to get your gymnos docker image running on a GPU.  
 
 .. code-block:: bash
 
-   nvidia-docker run -it telefonica/gymnos:devel-gpu-2019-02-12-15-25-29 bash
+   nvidia-docker run -it gymnos-devel-gpu bash
 
 .. note::
 
