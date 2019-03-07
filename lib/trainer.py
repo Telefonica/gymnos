@@ -2,6 +2,7 @@ import time
 import logging
 import json
 import os
+import shutil
 
 from datetime import datetime
 
@@ -91,7 +92,7 @@ class Trainer(object):
 
     def __createTrainingDirectory(self):
         if not os.path.exists(self._train_dir): 
-            os.makedirs(self._train_dir)
+            os.makedirs(self._train_dir, exist_ok=True)
             self._log.debug("{0} - __createTrainingDirectory - training directory created at - {1}".format(self._log_prefix, self._train_dir))
 
     def __evaluateModel(self):
@@ -140,7 +141,7 @@ class Trainer(object):
 
     def __saveLogsToTrainDirectory(self):
         self._log.debug("{0} - __saveLogsToTrainDirectory - saving execution logs to train directory...".format(self._log_prefix))
-        os.rename("{0}/{1}".format(LOGGING_PATH, LOGGING_FILENAME),"{0}/{1}".format(self._train_dir, LOGGING_FILENAME))
+        shutil.move("{0}/{1}".format(LOGGING_PATH, LOGGING_FILENAME),"{0}/{1}".format(self._train_dir, LOGGING_FILENAME))
 
     def __saveOriginalConfigToFile(self):
         self._log.debug("{0} - __saveOriginalConfigToFile - saving original config to train directory...".format(self._log_prefix))

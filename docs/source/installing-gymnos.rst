@@ -37,7 +37,7 @@ Run image
 
 .. code-block:: bash
 
-   docker run -it gymnos-devel bash
+   docker run gymnos-devel -c <training_configuration>
 
 If you are lucky enough to have a GPU for development, you just need to execute the following command
 to get your gymnos docker image running on a GPU.  

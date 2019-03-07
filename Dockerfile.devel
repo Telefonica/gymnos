@@ -18,6 +18,9 @@ RUN pipenv install
 
 COPY . ./
 
+VOLUME ["usr/src/app/trainings"]
 
-RUN mkdir -p ./logs \
-    && mkdir -p ./datasets
+RUN    mkdir logs \
+    && mkdir datasets
+
+ENTRYPOINT ["pipenv", "run", "python", "-m", "bin.scripts.gymnosd"]
