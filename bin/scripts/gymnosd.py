@@ -11,10 +11,8 @@ import argparse
 
 from lib.trainer import Trainer
 
-BASE_PATH = '/home/sysadmin/gymnos/'
-CD_LOG_CONFIG_PATH = BASE_PATH + 'config/logging.json'
-SYS_CONFIG_PATH = BASE_PATH + 'config/system.json'
-FOLDER_PATH = BASE_PATH + 'data/json'
+CD_LOG_CONFIG_PATH = 'config/logging.json'
+SYS_CONFIG_PATH = 'config/system.json'
 
 with open(SYS_CONFIG_PATH, 'rb') as fp:
   sys_config = json.load(fp)
@@ -45,8 +43,7 @@ if __name__ == '__main__':
   parser.add_argument("-c", "--training_config", help="sets training configuration file path", action='store', required=True)
   config = parser.parse_args()
   log = setup_logging()
-  TRAINING_CONFIG_PATH = BASE_PATH + config.training_config
-  with open(TRAINING_CONFIG_PATH, 'rb') as fp:
+  with open(config.training_config, 'rb') as fp:
     training_config = json.load(fp)
   tr = Trainer(training_config)
   try:

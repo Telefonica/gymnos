@@ -1,11 +1,11 @@
 {
     "paths" : {
         "training": {
-            "execution": "/home/sysadmin/gymnos/trainings/executed"
+            "execution": "trainings/executed"
         },
-        "datasets": "/home/sysadmin/gymnos/datasets",
-        "models": "/home/sysadmin/gymnos/models",
-        "logs": "/home/sysadmin/gymnos/logs"
+        "datasets": "datasets",
+        "models": "models",
+        "logs": "logs"
     },
     "filenames" : {
         "logs": "gymnos.log"

@@ -2,41 +2,22 @@ FROM python:3.6.8
 
 MAINTAINER pablo.lopezcoya@telefonica.com
 
+WORKDIR /usr/src/app
 
-
-RUN { \
-    echo '[Ubuntu-base]'; \
-    echo 'VERSION="16.04.5 LTS (Xenial Xerus)"'; \
-    echo 'ID=ubuntu'; \
-    echo 'ID_LIKE=debian'; \
-    echo 'PRETTY_NAME="Ubuntu 16.04.5 LTS"'; \
-    echo 'VERSION_ID="16.04"';} \
-    && apt-get update
-
-
-RUN apt-get install tree -y \
-    && apt-get install apt-utils -y \
-    && apt-get install vim -y \
-    && apt-get install python-pip -y \
-    && apt-get install libglib2.0-0 -y \
+RUN apt-get install libglib2.0-0 -y \
     && apt-get install libsm6 -y \
     && apt-get install libxrender-dev -y \
     && apt-get install libxext6 -y \
-    && apt-get install curl -y \
-    && pip install --upgrade pip \
-    && pip install tensorflow \
-    && pip install keras \
-    && pip install opencv-python \
-    && pip install kaggle \
-    && pip install tqdm
+    && apt-get install curl -y
+
+RUN pip install pipenv
+
+COPY Pipfile* ./
+
+RUN pipenv install
+
+COPY . ./
 
 
-RUN useradd -d /home/sysadmin -ms /bin/bash -g root -p sysadmin sysadmin
-
-COPY . /home/sysadmin/gymnos/
-RUN mkdir -p /home/sysadmin/gymnos/logs \
-    && mkdir -p /home/sysadmin/gymnos/datasets \
-    && chmod 777 -R /home/sysadmin/gymnos/
-
-USER sysadmin
-WORKDIR /home/sysadmin/gymnos
+RUN mkdir -p ./logs \
+    && mkdir -p ./datasets

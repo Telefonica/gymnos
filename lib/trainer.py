@@ -10,8 +10,7 @@ from .session_manager import SessionManager
 from .model_manager import ModelManager
 from .callback_provider import CallbackProvider
 
-BASE_PATH = '/home/sysadmin/gymnos/'
-SYS_CONFIG_PATH = BASE_PATH + 'config/system.json'
+SYS_CONFIG_PATH = 'config/system.json'
 
 with open(SYS_CONFIG_PATH, 'rb') as fp:
   sys_config = json.load(fp)
