@@ -1,8 +1,9 @@
 
-import os, logging, inspect
-import keras.datasets
-from var.system_paths import *
-from dataset_factory import DataSetFactory
+import os
+import logging
+
+from .var.system_paths import DATASETS_PATH
+from .dataset_factory import DataSetFactory
 
 class DataSetManager(object):
     def __init__(self, config):

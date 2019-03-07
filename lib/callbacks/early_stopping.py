@@ -1,5 +1,6 @@
-import os, logging
-import callback
+import logging
+
+from . import callback
 
 from keras import callbacks
 

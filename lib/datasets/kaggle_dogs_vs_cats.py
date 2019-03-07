@@ -1,10 +1,15 @@
-import os, logging, subprocess, random, h5py
+import os
+import logging
+import subprocess
+import h5py
 import numpy as np
-import dataset
+
 from glob import glob
-from var.system_paths import *
-from var.datasets import *
-from services.kaggle_base import KaggleBase
+
+from . import dataset
+from ..var.system_paths import DATASETS_PATH
+from ..services.kaggle_base import KaggleBase
+
 
 DEFAULT_STORAGE_IMAGE_WIDTH = 150
 DEFAULT_STORAGE_IMAGE_HEIGTH = 150
@@ -15,6 +20,7 @@ DEFAULT_LABEL_CAT = 0
 DEFAULT_LABEL_DOG = 1
 MAX_TRAIN_SAMPLES = 25000
 MAX_TEST_SAMPLES = 12500
+
 
 class KaggleDogsVsCats(dataset.DataSet):  
     def __init__(self, config):

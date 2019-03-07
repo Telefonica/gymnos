@@ -1,7 +1,9 @@
 import logging
-from models.vgg16 import *
-from models.custom_stack import *
-from var.models import *
+
+from .models.vgg16 import VGG16
+from .models.custom_stack import CustomStack
+from .var.models import ID_VGG16, ID_CUSTOM_STACK
+
 
 class ModelFactory(object):
     def __init__(self, config):
@@ -18,7 +20,6 @@ class ModelFactory(object):
             errMsg = "{0} - Model suppport for {1} not available.".format(self._log_prefix, self._modelId)
             self._log.error(errMsg)
             raise ValueError(errMsg)
-        
-        if modelInstance: 
+
+        if modelInstance:
             return modelInstance
- 

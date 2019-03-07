@@ -1,8 +1,6 @@
-import os, logging, inspect
-import keras.applications
-from var.system_paths import *
-from var.models import *
-from model_factory import ModelFactory
+import logging
+
+from .model_factory import ModelFactory
 
 class ModelManager(object):
     def __init__(self, config):

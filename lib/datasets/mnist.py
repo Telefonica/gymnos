@@ -1,9 +1,16 @@
-import os, subprocess, progressbar, logging, h5py, cv2
-import dataset
+import os
+import subprocess
+import logging
+import h5py
+import cv2
 import numpy as np
+
+from tqdm import tqdm
 from keras.utils import to_categorical
-from var.system_paths import *
-from var.datasets import *
+
+from . import dataset
+from ..var.system_paths import DATASETS_PATH
+from ..var.datasets import MNIST_DIGITS
 
 DEFAULT_STORAGE_IMAGE_WIDTH = 28
 DEFAULT_STORAGE_IMAGE_HEIGTH = 28
@@ -11,10 +18,11 @@ DEFAULT_STORAGE_IMAGE_DEPTH = 1
 MAX_TRAIN_SAMPLES = 60000
 MAX_TEST_SAMPLES = 10000
 
-class MNIST(dataset.DataSet):  
+
+class MNIST(dataset.DataSet):
     def __init__(self, config):
         dataset.DataSet.__init__(self)
-        self._log = logging.getLogger('aitpd')
+        self._log = logging.getLogger('gymnos')
         self._log_prefix = "MNIST"
         self._sourceFiles = [ 'train-images-idx3-ubyte.gz',          # train images
                               'train-labels-idx1-ubyte.gz',
@@ -51,26 +59,16 @@ class MNIST(dataset.DataSet):
 
     def download(self):
         os.mkdir(self._datasetLocalDir)
-        bar = progressbar.ProgressBar( maxval=100,
-                                       widgets=[progressbar.Bar('=', '[', ']'), ' ',
-                                       progressbar.Percentage()] )
-        bar.start()
-        i=1
-        progress_rate=100/len(self._sourceFiles)
-        for k in self._sourceFiles:
-            url = (self._datasetUrl+k).format(**locals())
-            target_path = os.path.join(self._datasetLocalDir, k)
+        for sourceFile in tqdm(self._sourceFiles):
+            url = (self._datasetUrl + sourceFile).format(**locals())
+            target_path = os.path.join(self._datasetLocalDir, sourceFile)
             cmd = ['curl', url, '-o', target_path, '-s']
             subprocess.call(cmd)
-            bar.update(i*progress_rate)
             cmd = ['gzip', '-d', target_path]
             subprocess.call(cmd)
-            i+=1
-
-        bar.finish()
 
         self.__defaultStorage()
-    
+
     def __preprocess(self):
         # Convert 28x28 grayscale to WIDTH x HEIGHT rgb channels
         self._log.debug("{0} - __preprocess: original fitSamples shape = {1}".format(self._log_prefix, self._fitSamples.shape))
@@ -152,51 +150,18 @@ class MNIST(dataset.DataSet):
             subprocess.call(cmd)
 
     def __prepare_h5py(self):
-        lenTrainImages = len(self._trainImages)
-        lenTestImages = len(self._testImages)
-        lenTrainLabels = len(self._trainLabels)
-        lenTestLabels = len(self._testLabels)
-
-        train_shape = ( lenTrainImages, 
-                        DEFAULT_STORAGE_IMAGE_WIDTH, 
-                        DEFAULT_STORAGE_IMAGE_HEIGTH, 
-                        DEFAULT_STORAGE_IMAGE_DEPTH )
-
-        test_shape = ( lenTestImages, 
-                        DEFAULT_STORAGE_IMAGE_WIDTH, 
-                        DEFAULT_STORAGE_IMAGE_HEIGTH, 
-                        DEFAULT_STORAGE_IMAGE_DEPTH )
-
         self._log.info("{0} - Storing dataset at: {1}".format(self._log_prefix, self._hdfDataPath))
-        bar = progressbar.ProgressBar( maxval=100,
-                                       widgets=[progressbar.Bar('=', '[', ']'),
-                                       ' ', 
-                                       progressbar.Percentage()] )
-        bar.start()
 
         hdf5_file = h5py.File(self._hdfDataPath, 'w')
         data_ids = open(self._textIdsPath, 'w')
 
-        hdf5_file.create_dataset("train_labels", (lenTrainLabels,), np.uint8)
-        hdf5_file.create_dataset("test_labels", (lenTestLabels,), np.uint8)
-        hdf5_file["train_labels"][...] = self._trainLabels
-        hdf5_file["test_labels"][...] = self._testLabels
-        
-        hdf5_file.create_dataset("train_img", train_shape, np.uint8)
-        hdf5_file.create_dataset("test_img", test_shape, np.uint8)        
-        
-        for i in range(lenTrainImages):
-            if i%(lenTrainImages/100)==0:
-                bar.update(i/(lenTrainImages/100))
-            hdf5_file["train_img"][i, ...] = self._trainImages[i]
-        
-        for i in range(lenTestImages):
-            if i%(lenTestImages/100)==0:
-                bar.update(i/(lenTestImages/100))
-            hdf5_file["test_img"][i, ...] = self._testImages[i]
-           
-        bar.finish()
+        hdf5_file.create_dataset("train_labels", data=self._trainLabels, dtype=np.uint8)
+        hdf5_file.create_dataset("test_labels", data=self._testLabels, dtype=np.uint8)
+
+        hdf5_file.create_dataset("train_img", data=self._trainImages, dtype=np.uint8)
+        hdf5_file.create_dataset("test_img", data=self._testImages, dtype=np.uint8)
+
         hdf5_file.close()
         data_ids.close()
-        
+
         return

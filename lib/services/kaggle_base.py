@@ -1,6 +1,10 @@
-import os, logging, subprocess, zipfile
+import os
+import logging
+import subprocess
+import zipfile
 
-class KaggleBase(object):  
+
+class KaggleBase(object):
     '''
         Works as a service for kaggle data sets 
     '''

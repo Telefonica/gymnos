@@ -1,9 +1,11 @@
-import os, logging
-import callback
+import logging
+
+from . import callback
 
 from keras import callbacks
 
-class TensorBoard(callback.Callback):  
+
+class TensorBoard(callback.Callback):
     def __init__(self, config, runTimeConfig):
         callback.Callback.__init__(self)
         self._log = logging.getLogger('gymnosd')

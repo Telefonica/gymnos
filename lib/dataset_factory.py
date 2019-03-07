@@ -1,8 +1,9 @@
-import os, tarfile, subprocess, argparse, h5py, json, logging, progressbar
-import numpy as np
-from datasets.mnist import *
-from datasets.kaggle_dogs_vs_cats import *
-from var.datasets import *
+import logging
+
+from .datasets.mnist import MNIST
+from .datasets.kaggle_dogs_vs_cats import KaggleDogsVsCats
+from .var.datasets import MNIST_DIGITS, KAGGLE_DOGS_VS_CATS
+
 
 class DataSetFactory(object):
     def __init__(self, config):

@@ -1,8 +1,8 @@
 import logging
-from convolutional2D import *
-from maxpooling2D import *
-from flatten import *
-from dense import *
+from .convolutional2D import *
+from .maxpooling2D import *
+from .flatten import *
+from .dense import *
 
 class LayerFactory(object):
     def __init__(self, framework):

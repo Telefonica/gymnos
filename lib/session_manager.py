@@ -1,5 +1,6 @@
 import tensorflow as tf
 import logging
+
 from keras.backend.tensorflow_backend import set_session
 
 class SessionManager(object):

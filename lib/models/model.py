@@ -1,7 +1,10 @@
-import logging, inspect, os, importlib
-import keras
+import os
+import logging
+import inspect
+import importlib
 
-from var.system_paths import *
+from ..var.system_paths import MODELS_PATH
+
 
 class Model(object):
     def __init__(self, config):

@@ -1,13 +1,14 @@
-import os, time, logging, inspect, json, importlib, progressbar
-import numpy as np
-import tensorflow as tf
-import keras
+import time
+import logging
+import json
+import os
 
 from datetime import datetime
-from dataset_manager import DataSetManager
-from session_manager import SessionManager
-from model_manager import ModelManager
-from callback_provider import CallbackProvider
+
+from .dataset_manager import DataSetManager
+from .session_manager import SessionManager
+from .model_manager import ModelManager
+from .callback_provider import CallbackProvider
 
 BASE_PATH = '/home/sysadmin/gymnos/'
 SYS_CONFIG_PATH = BASE_PATH + 'config/system.json'
@@ -28,8 +29,7 @@ class Trainer(object):
         self._log.info("{0} - Configuration received - {1} ".format(self._log_prefix, json.dumps(config, indent=4, sort_keys=True)))
         self._config = config
         self._dataSetId = self._config["dataset"]["id"]
-        dsmConfig = {key: value for (key, value) in (self._config["dataset"].items() + self._config["training"].items())}
-        self._dsm = DataSetManager(dsmConfig)
+        self._dsm = DataSetManager(dict(self._config["dataset"], **self._config["training"]))
         self._sm = SessionManager(self._config["session"])
         self._mm = ModelManager(self._config["model"])
         self._cp = CallbackProvider(self._config["training"]["callbacks"])

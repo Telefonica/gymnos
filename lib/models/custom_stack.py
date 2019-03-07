@@ -1,8 +1,5 @@
-import logging, os
-import model
-import numpy as np
-
-from utils.layers.layer_factory import LayerFactory
+from . import model
+from .utils.layers.layer_factory import LayerFactory
 
 class CustomStack(model.Model):  
     def __init__(self, config):

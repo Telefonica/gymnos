@@ -1,10 +1,11 @@
-import os, logging
-import callback
+import logging
 
 from keras import callbacks
-from var.system_paths import *
 
-class ModelCheckpoint(callback.Callback):  
+from . import callback
+
+
+class ModelCheckpoint(callback.Callback):
     def __init__(self, config, runTimeConfig):
         callback.Callback.__init__(self)
         self._log = logging.getLogger('gymnosd')

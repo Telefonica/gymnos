@@ -1,6 +1,12 @@
-import os, logging, h5py, progressbar, cv2, random
+import os
+import logging
+import h5py
+import cv2
 import datetime as dt
 import numpy as np
+
+from tqdm import tqdm
+
 
 class DataSet(object):
     def __init__(self):
@@ -23,27 +29,20 @@ class DataSet(object):
                                                                                          resizeParams ) )
         imgList = []
         images = os.listdir(folderPath)
-        lenImages = len(images)
-        bar = progressbar.ProgressBar( maxval=100,
-                                       widgets=[progressbar.Bar('=', '[', ']'),
-                                       ' ', 
-                                       progressbar.Percentage()] )
-        bar.start()
-        time_start = dt.datetime.now()
-        for i,imgFileName in enumerate(images):
-            if i%(lenImages/100)==0:
-                bar.update(i/(lenImages/100))            
-            image = cv2.imread( os.path.join(folderPath, imgFileName) )        
-            image = cv2.resize( image, 
-                                resizeParams, 
-                                interpolation=cv2.INTER_CUBIC )
+
+        for i, imgFileName in enumerate(tqdm(images)):
+            image = cv2.imread(os.path.join(folderPath, imgFileName))
+            image = cv2.resize(image,
+                               resizeParams,
+                               interpolation=cv2.INTER_CUBIC)
             imgList.append(image)
-        imgArr = np.stack([imgList],axis=4)
+
+        imgArr = np.stack([imgList], axis=4)
         imgArr = np.squeeze(imgArr, axis=4)
-        bar.finish()
+
         time_end = dt.datetime.now()
         self._log.debug("{0} - loadImagesFromFolder: Processed images = [{1}] in {2} seconds.".format( self._log_prefix,
-                                                                                                       lenImages,
+                                                                                                       len(images),
                                                                                                        (time_end-time_start).seconds) )     
         return imgArr                                                                        
 

@@ -1,4 +1,4 @@
-import os,logging
+import logging
 
 class Callback(object):
     def __init__(self):

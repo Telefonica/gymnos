@@ -1,9 +1,10 @@
-import logging, os
-import model
+import os
+import logging
 import numpy as np
+
+from . import model
+
 from keras.applications.vgg16 import VGG16
-from var.system_paths import *
-from var.models import *
 
 class VGG16(model.Model):  
     def __init__(self, config):

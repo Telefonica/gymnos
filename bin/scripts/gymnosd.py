@@ -1,12 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 
-import os, sys, json, traceback
-from trainer import Trainer
+import os
+import json
+import traceback
 
 import logging
 import logging.config
 import argparse
+
+from lib.trainer import Trainer
 
 BASE_PATH = '/home/sysadmin/gymnos/'
 CD_LOG_CONFIG_PATH = BASE_PATH + 'config/logging.json'

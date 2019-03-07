@@ -1,13 +1,12 @@
-import os, logging, json
-import numpy as np
-import tensorflow as tf
+import logging
 
-from callbacks.reduce_learning import *
-from callbacks.early_stopping import *
-from callbacks.model_checkpoint import *
-from callbacks.tensorboard import *
+from .callbacks.reduce_learning import ReduceLearning
+from .callbacks.early_stopping import EarlyStopping
+from .callbacks.model_checkpoint import ModelCheckpoint
+from .callbacks.tensorboard import TensorBoard
 
-from var.callbacks import *
+from .var.callbacks import REDUCE_LEARNING, EARLY_STOPPING, MODEL_CHECKPOINT, TENSORBOARD
+
 
 class CallbackProvider(object):
     def __init__(self, config):
