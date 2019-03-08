@@ -13,7 +13,8 @@ trigger:
     - README.md
 
 pool:
-  vmImage: 'Ubuntu-16.04'
+  name: 'default'
+  #vmImage: 'Ubuntu-16.04'
 
 steps:
 - script: |
