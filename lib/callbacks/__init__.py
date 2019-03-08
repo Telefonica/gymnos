@@ -1,5 +1,5 @@
 __all__ = [
-    "callback", 
+    "callback",
     "early_stopping",
     "model_checkpoint",
     "reduce_learning",

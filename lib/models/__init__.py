@@ -1,5 +1,5 @@
 __all__ = [
-    "model", 
+    "model",
     "vgg16",
     "custom_stack"
 ]

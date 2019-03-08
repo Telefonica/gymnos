@@ -10,6 +10,8 @@ tensorflow = "*"
 keras = "*"
 opencv-python = "*"
 tqdm = "*"
+pydash = "*"
+kaggle = "*"
 
 [requires]
 python_version = "3.6"

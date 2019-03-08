@@ -5,7 +5,9 @@ import logging
 from .var.system_paths import DATASETS_PATH
 from .dataset_factory import DataSetFactory
 
+
 class DataSetManager(object):
+
     def __init__(self, config):
         self._log = logging.getLogger('gymnosd')
         self._log_prefix = "DATA_SET_MGR"
@@ -15,13 +17,13 @@ class DataSetManager(object):
         self._ds = dsf.factory()
 
     def loadDataSet(self):
-       self.__lookForDataSetSource()
-    
+        self.__lookForDataSetSource()
+
     def getSamplesForTraining(self):
         return self._ds.getSamples()
 
     def getLabelsForTraining(self):
-        return  self._ds.getLabels()
+        return self._ds.getLabels()
 
     def __dataSetInLocalVolume(self):
         retval = False
@@ -30,7 +32,8 @@ class DataSetManager(object):
             self._log.info("{0} - Data set '{1}' found in local volume.".format(self._log_prefix, self._dataSetId))
             retval = True
         else:
-            self._log.warning("{0} - Data set '{1}' not found in local volume.".format(self._log_prefix, self._dataSetId))
+            self._log.warning("{0} - Data set '{1}' not found in local volume.".format(self._log_prefix,
+                                                                                       self._dataSetId))
         return retval
 
     def __loadDataSetFromLocal(self):

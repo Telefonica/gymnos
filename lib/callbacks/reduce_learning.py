@@ -7,7 +7,8 @@ from keras import callbacks
 
 class ReduceLearning(callback.Callback):
     def __init__(self, config):
-        callback.Callback.__init__(self)
+        super().__init__()
+
         self._log = logging.getLogger('gymnosd')
         self._log_prefix = "REDUCE_LEARNING"
         self._config = config
@@ -27,22 +28,22 @@ class ReduceLearning(callback.Callback):
     def __buildCallback(self):
         # Only Keras support so far
         self._log.debug("{0} - Instance with params:\n[\n\t - monitor = {1}\
-                                                    \n\t - factor = {2}\
-                                                    \n\t - patience = {3}\
-                                                    \n\t - verbose = {4}\
-                                                    \n\t - mode = {5}\
-                                                    \n\t - min_delta = {6}\
-                                                    \n\t - cooldown = {7}\
-                                                    \n\t - min_lr = {8}\
-                                                    \n]".format(self._log_prefix,
-                                                                self._monitor,
-                                                                self._factor,
-                                                                self._patience,
-                                                                self._verbose,
-                                                                self._mode,
-                                                                self._min_delta,
-                                                                self._cooldown,
-                                                                self._min_lr))
+                         \n\t - factor = {2}\
+                         \n\t - patience = {3}\
+                         \n\t - verbose = {4}\
+                         \n\t - mode = {5}\
+                         \n\t - min_delta = {6}\
+                         \n\t - cooldown = {7}\
+                         \n\t - min_lr = {8}\
+                         \n]".format(self._log_prefix,
+                                     self._monitor,
+                                     self._factor,
+                                     self._patience,
+                                     self._verbose,
+                                     self._mode,
+                                     self._min_delta,
+                                     self._cooldown,
+                                     self._min_lr))
 
         self._instance = callbacks.ReduceLROnPlateau(monitor=self._monitor,
                                                      factor=self._factor,

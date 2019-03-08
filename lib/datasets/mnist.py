@@ -24,10 +24,10 @@ class MNIST(dataset.DataSet):
         dataset.DataSet.__init__(self)
         self._log = logging.getLogger('gymnos')
         self._log_prefix = "MNIST"
-        self._sourceFiles = [ 'train-images-idx3-ubyte.gz',          # train images
-                              'train-labels-idx1-ubyte.gz',
-                              't10k-images-idx3-ubyte.gz',           # test images
-                              't10k-labels-idx1-ubyte.gz' ]
+        self._sourceFiles = ['train-images-idx3-ubyte.gz',          # train images
+                             'train-labels-idx1-ubyte.gz',
+                             't10k-images-idx3-ubyte.gz',           # test images
+                             't10k-labels-idx1-ubyte.gz']
         self._datasetUrl = 'http://yann.lecun.com/exdb/mnist/'
         self._datasetLocalDir = os.path.join(DATASETS_PATH, MNIST_DIGITS)
         self._hdfDataPath = os.path.join(self._datasetLocalDir, self._hdfDataFilename)
@@ -40,9 +40,9 @@ class MNIST(dataset.DataSet):
         self._numValidationSamples = config["samples"]["validation"]
         self._numTestSamples = config["samples"]["test"]
         self.__checkSplitConsistency()
-        
+
     def getSamples(self):
-        return self._fitSamples, self._valSamples, self._testSamples 
+        return self._fitSamples, self._valSamples, self._testSamples
 
     def getLabels(self):
         return self._fitLabels, self._valLabels, self._testLabels
@@ -71,13 +71,15 @@ class MNIST(dataset.DataSet):
 
     def __preprocess(self):
         # Convert 28x28 grayscale to WIDTH x HEIGHT rgb channels
-        self._log.debug("{0} - __preprocess: original fitSamples shape = {1}".format(self._log_prefix, self._fitSamples.shape))
-        self._log.debug("{0} - __preprocess: original fitLabels shape = {1}".format(self._log_prefix, self._fitLabels.shape))
-        trainSamples = np.concatenate((self._fitSamples, self._valSamples, self._testSamples), axis = 0)
+        self._log.debug("{0} - __preprocess: original fitSamples shape = {1}".format(self._log_prefix,
+                                                                                     self._fitSamples.shape))
+        self._log.debug("{0} - __preprocess: original fitLabels shape = {1}".format(self._log_prefix,
+                                                                                    self._fitLabels.shape))
+        trainSamples = np.concatenate((self._fitSamples, self._valSamples, self._testSamples), axis=0)
         dim = (self._image_width, self._image_height)
-        
+
         def to_rgb(img):
-            img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA) 
+            img = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
             img_rgb = np.asarray(np.dstack((img, img, img)), dtype=np.uint8)
             return img_rgb
         rgb_list = []
@@ -86,23 +88,29 @@ class MNIST(dataset.DataSet):
         for i in range(len(trainSamples)):
             rgb = to_rgb(trainSamples[i])
             rgb_list.append(rgb)
-        rgb_arr = np.stack([rgb_list],axis=4)
+        rgb_arr = np.stack([rgb_list], axis=4)
         trainSamples = np.squeeze(rgb_arr, axis=4)
         self._fitSamples = trainSamples[:self._numFitSamples]
-        self._valSamples = trainSamples[self._numFitSamples:self._numFitSamples+self._numValidationSamples]
-        self._testSamples = trainSamples[self._numFitSamples+self._numValidationSamples:]
+        self._valSamples = trainSamples[self._numFitSamples:self._numFitSamples + self._numValidationSamples]
+        self._testSamples = trainSamples[self._numFitSamples + self._numValidationSamples:]
 
         # Convert to one-hot encoding
         self._fitLabels = to_categorical(self._fitLabels)
         self._valLabels = to_categorical(self._valLabels)
         self._testLabels = to_categorical(self._testLabels)
-        self._log.debug("{0} - __preprocess: preprocessed fitSamples shape = {1}".format(self._log_prefix, self._fitSamples.shape))
-        self._log.debug("{0} - __preprocess: preprocessed fitLabels shape = {1}".format(self._log_prefix, self._fitLabels.shape))
-        self._log.debug("{0} - __preprocess: preprocessed valSamples shape = {1}".format(self._log_prefix, self._valSamples.shape))
-        self._log.debug("{0} - __preprocess: preprocessed valLabels shape = {1}".format(self._log_prefix, self._valLabels.shape))
-        self._log.debug("{0} - __preprocess: preprocessed testSamples shape = {1}".format(self._log_prefix, self._testSamples.shape))
-        self._log.debug("{0} - __preprocess: preprocessed testLabels shape = {1}".format(self._log_prefix, self._testLabels.shape))
-        
+        self._log.debug("{0} - __preprocess: preprocessed fitSamples shape = {1}".format(self._log_prefix,
+                                                                                         self._fitSamples.shape))
+        self._log.debug("{0} - __preprocess: preprocessed fitLabels shape = {1}".format(self._log_prefix,
+                                                                                        self._fitLabels.shape))
+        self._log.debug("{0} - __preprocess: preprocessed valSamples shape = {1}".format(self._log_prefix,
+                                                                                         self._valSamples.shape))
+        self._log.debug("{0} - __preprocess: preprocessed valLabels shape = {1}".format(self._log_prefix,
+                                                                                        self._valLabels.shape))
+        self._log.debug("{0} - __preprocess: preprocessed testSamples shape = {1}".format(self._log_prefix,
+                                                                                          self._testSamples.shape))
+        self._log.debug("{0} - __preprocess: preprocessed testLabels shape = {1}".format(self._log_prefix,
+                                                                                         self._testLabels.shape))
+
     def __checkSplitConsistency(self):
         errMsg = None
         numTrainSamples = self._numFitSamples + self._numValidationSamples
@@ -116,31 +124,31 @@ class MNIST(dataset.DataSet):
 
     def __defaultStorage(self):
         '''
-           Standard treatment on the dataset before storage. 
+           Standard treatment on the dataset before storage.
            Predefined image shape by default: (width=28, height=28, depth=1).
            H5PY format will be used for performance reasons.
         '''
 
-        fd = open(os.path.join(self._datasetLocalDir,'train-images-idx3-ubyte'))
-        loaded = np.fromfile(file=fd,dtype=np.uint8)
-        self._trainImages = loaded[16:].reshape(( MAX_TRAIN_SAMPLES,
-                                                  DEFAULT_STORAGE_IMAGE_WIDTH,
-                                                  DEFAULT_STORAGE_IMAGE_HEIGTH,
-                                                  DEFAULT_STORAGE_IMAGE_DEPTH) ).astype(np.float)
+        fd = open(os.path.join(self._datasetLocalDir, 'train-images-idx3-ubyte'))
+        loaded = np.fromfile(file=fd, dtype=np.uint8)
+        self._trainImages = loaded[16:].reshape((MAX_TRAIN_SAMPLES,
+                                                 DEFAULT_STORAGE_IMAGE_WIDTH,
+                                                 DEFAULT_STORAGE_IMAGE_HEIGTH,
+                                                 DEFAULT_STORAGE_IMAGE_DEPTH)).astype(np.float)
 
-        fd = open(os.path.join(self._datasetLocalDir,'train-labels-idx1-ubyte'))
-        loaded = np.fromfile(file=fd,dtype=np.uint8)
+        fd = open(os.path.join(self._datasetLocalDir, 'train-labels-idx1-ubyte'))
+        loaded = np.fromfile(file=fd, dtype=np.uint8)
         self._trainLabels = np.asarray(loaded[8:].reshape((MAX_TRAIN_SAMPLES)).astype(np.float))
 
-        fd = open(os.path.join(self._datasetLocalDir,'t10k-images-idx3-ubyte'))
-        loaded = np.fromfile(file=fd,dtype=np.uint8)
-        self._testImages = loaded[16:].reshape((  MAX_TEST_SAMPLES,
-                                                  DEFAULT_STORAGE_IMAGE_WIDTH,
-                                                  DEFAULT_STORAGE_IMAGE_HEIGTH,
-                                                  DEFAULT_STORAGE_IMAGE_DEPTH) ).astype(np.float)
+        fd = open(os.path.join(self._datasetLocalDir, 't10k-images-idx3-ubyte'))
+        loaded = np.fromfile(file=fd, dtype=np.uint8)
+        self._testImages = loaded[16:].reshape((MAX_TEST_SAMPLES,
+                                                DEFAULT_STORAGE_IMAGE_WIDTH,
+                                                DEFAULT_STORAGE_IMAGE_HEIGTH,
+                                                DEFAULT_STORAGE_IMAGE_DEPTH)).astype(np.float)
 
-        fd = open(os.path.join(self._datasetLocalDir,'t10k-labels-idx1-ubyte'))
-        loaded = np.fromfile(file=fd,dtype=np.uint8)
+        fd = open(os.path.join(self._datasetLocalDir, 't10k-labels-idx1-ubyte'))
+        loaded = np.fromfile(file=fd, dtype=np.uint8)
         self._testLabels = np.asarray(loaded[8:].reshape((MAX_TEST_SAMPLES)).astype(np.float))
 
         self.__prepare_h5py()

@@ -21,26 +21,30 @@ class CallbackProvider(object):
     def buildCallbackList(self, runTimeConfig):
         self._runTimeConfig = runTimeConfig
         self._log.debug("{0} - Building callback list ...".format(self._log_prefix))
-        for callback in self._config["list"]: 
+        for callback in self._config["list"]:
             self._callbackList.append(self.__factory(callback["id"], callback["options"]).getInstance())
 
     def isCallbackPresentInList(self, callbackId):
         retVal = False
-        for callback in self._config["list"]: 
-            if callback["id"] == callbackId: retVal = True
+        for callback in self._config["list"]:
+            if callback["id"] == callbackId:
+                return True
         return retVal
 
     def __factory(self, callbackId, config):
         cbInstance = None
-        if callbackId == REDUCE_LEARNING: cbInstance = ReduceLearning(config)
-        elif callbackId == EARLY_STOPPING: cbInstance = EarlyStopping(config)
-        elif callbackId == MODEL_CHECKPOINT: cbInstance = ModelCheckpoint(config, self._runTimeConfig)
-        elif callbackId == TENSORBOARD: cbInstance = TensorBoard(config, self._runTimeConfig)   
+        if callbackId == REDUCE_LEARNING:
+            cbInstance = ReduceLearning(config)
+        elif callbackId == EARLY_STOPPING:
+            cbInstance = EarlyStopping(config)
+        elif callbackId == MODEL_CHECKPOINT:
+            cbInstance = ModelCheckpoint(config, self._runTimeConfig)
+        elif callbackId == TENSORBOARD:
+            cbInstance = TensorBoard(config, self._runTimeConfig)
         else:
             errMsg = "{0} - Callback suppport for {1} not available.".format(self._log_prefix, callbackId)
             self._log.error(errMsg)
             raise ValueError(errMsg)
-        
+
         if cbInstance:
-            #self._log.debug("{0} - Instantiating {1} callback ...".format(self._log_prefix, callbackId))
             return cbInstance
