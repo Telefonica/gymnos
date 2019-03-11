@@ -13,7 +13,7 @@ from .callback_provider import CallbackProvider
 
 SYS_CONFIG_PATH = 'config/system.json'
 
-with open(SYS_CONFIG_PATH, 'rb') as fp:
+with open(SYS_CONFIG_PATH, 'r') as fp:
     sys_config = json.load(fp)
 
 TRAINING_EXECUTION_PATH = sys_config['paths']['training']['execution']

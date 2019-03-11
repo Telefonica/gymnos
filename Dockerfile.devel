@@ -1,4 +1,4 @@
-FROM python:3.6.8
+FROM python:3.5.6
 
 MAINTAINER pablo.lopezcoya@telefonica.com
 
@@ -15,6 +15,7 @@ RUN pip install pipenv
 COPY Pipfile* ./
 
 RUN pipenv install
+RUN pipenv install tensorflow --skip-lock
 
 COPY . ./
 

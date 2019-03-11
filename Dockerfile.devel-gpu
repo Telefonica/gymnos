@@ -1,41 +1,26 @@
-FROM tensorflow/tensorflow:devel-gpu
+FROM tensorflow/tensorflow:1.13.1-gpu-py3
 
 MAINTAINER pablo.lopezcoya@telefonica.com
 
+WORKDIR /usr/src/app
 
+RUN apt-get install libglib2.0-0 -y \
+    && apt-get install libsm6 -y \
+    && apt-get install libxrender-dev -y \
+    && apt-get install libxext6 -y \
+    && apt-get install curl -y
 
-RUN { \
-    echo '[Ubuntu-base]'; \
-    echo 'VERSION="16.04.5 LTS (Xenial Xerus)"'; \
-    echo 'ID=ubuntu'; \
-    echo 'ID_LIKE=debian'; \
-    echo 'PRETTY_NAME="Ubuntu 16.04.5 LTS"'; \
-    echo 'VERSION_ID="16.04"';} \
-    && apt-get update
+RUN pip3 install pipenv
 
+COPY Pipfile* ./
 
-RUN apt-get install tree -y \
-    && apt-get install apt-utils -y \
-    && apt-get install vim -y \
-    && apt-get install python-pip -y \
-    && pip install --upgrade pip \
-    && pip install keras \
-    && pip install opencv-python \
-    && pip install progressbar \
-    && pip install kaggle
+RUN pipenv install
+RUN pipenv install tensorflow-gpu --skip-lock
 
-ENV PYTHONPATH=":/home/sysadmin/gymnos/lib\
-:/home/sysadmin/gymnos/lib/models\
-:/home/sysadmin/gymnos/lib/services\
-:/home/sysadmin/gymnos/lib/datasets\
-:/home/sysadmin/gymnos/lib/var"
+COPY . ./
 
-RUN useradd -d /home/sysadmin -ms /bin/bash -g root -p sysadmin sysadmin
+VOLUME ["usr/src/app/trainings", "usr/src/app/datasets"]
 
-COPY . /home/sysadmin/gymnos/
-RUN mkdir -p /home/sysadmin/gymnos/logs \
-    && mkdir -p /home/sysadmin/gymnos/datasets \
-    && chmod 777 -R /home/sysadmin/gymnos/
+RUN mkdir logs
 
-USER sysadmin
-WORKDIR /home/sysadmin/gymnos
+ENTRYPOINT ["pipenv", "run", "python3", "-m", "bin.scripts.gymnosd"]

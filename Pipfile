@@ -6,7 +6,6 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-tensorflow = "*"
 keras = "*"
 opencv-python = "*"
 tqdm = "*"
@@ -14,4 +13,4 @@ pydash = "*"
 kaggle = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.5"

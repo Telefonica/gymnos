@@ -14,7 +14,7 @@ from lib.trainer import Trainer
 CD_LOG_CONFIG_PATH = 'config/logging.json'
 SYS_CONFIG_PATH = 'config/system.json'
 
-with open(SYS_CONFIG_PATH, 'rb') as fp:
+with open(SYS_CONFIG_PATH, 'r') as fp:
     sys_config = json.load(fp)
 
 LOGGING_PATH = sys_config['paths']['logs']
@@ -27,7 +27,7 @@ def setup_logging(default_path=CD_LOG_CONFIG_PATH, default_level=logging.INFO):
     if os.path.exists(logFilePath):
         os.remove(logFilePath)
     if os.path.exists(default_path):
-        with open(default_path, 'rt') as f:
+        with open(default_path, 'r') as f:
             config = json.load(f)
         logging.config.dictConfig(config)
     else:
@@ -45,7 +45,7 @@ if __name__ == '__main__':
                         action='store', required=True)
     config = parser.parse_args()
     log = setup_logging()
-    with open(config.training_config, 'rb') as fp:
+    with open(config.training_config, 'r') as fp:
         training_config = json.load(fp)
     tr = Trainer(training_config)
     try:
