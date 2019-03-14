@@ -44,7 +44,7 @@ to get your gymnos docker image running on a GPU.
 
 .. code-block:: bash
 
-   nvidia-docker run -it gymnos-devel-gpu bash
+   nvidia-docker run gymnos-devel-gpu -c <training_configuration>
 
 .. note::
 
