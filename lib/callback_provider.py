@@ -1,17 +1,15 @@
-import logging
-
-from .callbacks.reduce_learning import ReduceLearning
 from .callbacks.early_stopping import EarlyStopping
 from .callbacks.model_checkpoint import ModelCheckpoint
+from .callbacks.reduce_learning import ReduceLearning
 from .callbacks.tensorboard import TensorBoard
-
+from .log import logger
 from .var.callbacks import REDUCE_LEARNING, EARLY_STOPPING, MODEL_CHECKPOINT, TENSORBOARD
 
 
 class CallbackProvider(object):
     def __init__(self, config):
-        self._log = logging.getLogger('gymnosd')
-        self._log_prefix = "CALLBACK_PROVIDER"
+        self._log = logger.get_logger()
+        self._log_prefix = logger.setup_prefix(__class__)
         self._config = config
         self._callbackList = []
 

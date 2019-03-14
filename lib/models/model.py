@@ -1,15 +1,15 @@
-import os
-import logging
-import inspect
 import importlib
+import inspect
+import os
 
+from lib.log import logger
 from ..var.system_paths import MODELS_PATH
 
 
 class Model(object):
     def __init__(self, config):
-        self._log = logging.getLogger('gymnosd')
-        self._log_prefix = "MODEL"
+        self._log = logger.get_logger()
+        self._log_prefix = logger.setup_prefix(__class__)
         self._config = config
         self._kerasAppsModule = importlib.import_module("keras.applications")
         self._modelNameFromKeras = None

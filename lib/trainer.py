@@ -1,15 +1,14 @@
-import time
-import logging
 import json
 import os
 import shutil
-
+import time
 from datetime import datetime
 
-from .dataset_manager import DataSetManager
-from .session_manager import SessionManager
-from .model_manager import ModelManager
 from .callback_provider import CallbackProvider
+from .dataset_manager import DataSetManager
+from .log import logger
+from .model_manager import ModelManager
+from .session_manager import SessionManager
 
 SYS_CONFIG_PATH = 'config/system.json'
 
@@ -25,8 +24,8 @@ LOGGING_FILENAME = sys_config['filenames']['logs']
 class Trainer(object):
 
     def __init__(self, config):
-        self._log = logging.getLogger('gymnosd')
-        self._log_prefix = "TRAINER"
+        self._log = logger.get_logger()
+        self._log_prefix = logger.setup_prefix(__class__)
         self._log.info("{0} - Initializing...".format(self._log_prefix))
         self._log.info("{0} - Configuration received - {1} ".format(self._log_prefix,
                                                                     json.dumps(config, indent=4,

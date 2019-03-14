@@ -1,7 +1,6 @@
-import logging
-
 from keras import callbacks
 
+from lib.log import logger
 from . import callback
 
 
@@ -9,8 +8,8 @@ class ModelCheckpoint(callback.Callback):
     def __init__(self, config, runTimeConfig):
         super().__init__()
 
-        self._log = logging.getLogger('gymnosd')
-        self._log_prefix = "MODEL_CHECKPOINT"
+        self._log = logger.get_logger()
+        self._log_prefix = logger.setup_prefix(__class__)
         self._config = config
         self._runTimeConfig = runTimeConfig
         self._filename = config["filename"] if "filename" in config else 'weights.\{epoch:02d\}.hdf5'

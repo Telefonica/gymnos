@@ -1,5 +1,4 @@
 import os
-import logging
 import h5py
 import cv2
 import time
@@ -7,11 +6,12 @@ import numpy as np
 
 from tqdm import tqdm
 
+from lib.log import logger
 
 class DataSet(object):
     def __init__(self):
-        self._log = logging.getLogger('gymnosd')
-        self._log_prefix = "DATASET"
+        self._log = logger.get_logger()
+        self._log_prefix = logger.setup_prefix(__class__)
         self._hdfDataFilename = 'training-data-set.hdf5'
         self._textIdsFilename = 'id.txt'
 

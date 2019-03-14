@@ -1,15 +1,16 @@
 import os
-import logging
+
 import numpy as np
 
+from lib.log import logger
 from . import model
 
 
 class VGG16(model.Model):
     def __init__(self, config):
         model.Model.__init__(self, config)
-        self._log = logging.getLogger('gymnosd')
-        self._log_prefix = "VGG16"
+        self._log = logger.get_logger()
+        self._log_prefix = logger.setup_prefix(__class__)
         self._modelInstance = None
         self._config = config
         self._modelId = config["id"]

@@ -1,15 +1,14 @@
-import logging
-
-from .models.vgg16 import VGG16
+from .log import logger
 from .models.custom_stack import CustomStack
+from .models.vgg16 import VGG16
 from .var.models import ID_VGG16, ID_CUSTOM_STACK
 
 
 class ModelFactory(object):
 
     def __init__(self, config):
-        self._log = logging.getLogger('gymnosd')
-        self._log_prefix = "MODEL_FACTORY"
+        self._log = logger.get_logger()
+        self._log_prefix = logger.setup_prefix(__class__)
         self._modelId = config["id"]
         self._config = config
 

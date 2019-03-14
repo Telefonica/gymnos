@@ -1,16 +1,16 @@
 import os
 import subprocess
-import logging
-import h5py
+
 import cv2
+import h5py
 import numpy as np
-
-from tqdm import tqdm
 from keras.utils import to_categorical
+from tqdm import tqdm
 
+from lib.log import logger
 from . import dataset
-from ..var.system_paths import DATASETS_PATH
 from ..var.datasets import MNIST_DIGITS
+from ..var.system_paths import DATASETS_PATH
 
 DEFAULT_STORAGE_IMAGE_WIDTH = 28
 DEFAULT_STORAGE_IMAGE_HEIGTH = 28
@@ -22,8 +22,8 @@ MAX_TEST_SAMPLES = 10000
 class MNIST(dataset.DataSet):
     def __init__(self, config):
         dataset.DataSet.__init__(self)
-        self._log = logging.getLogger('gymnos')
-        self._log_prefix = "MNIST"
+        self._log = logger.get_logger()
+        self._log_prefix = logger.setup_prefix(__class__)
         self._sourceFiles = ['train-images-idx3-ubyte.gz',          # train images
                              'train-labels-idx1-ubyte.gz',
                              't10k-images-idx3-ubyte.gz',           # test images

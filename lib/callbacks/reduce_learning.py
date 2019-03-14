@@ -1,16 +1,15 @@
-import logging
-
-from . import callback
-
 from keras import callbacks
+
+from lib.log import logger
+from . import callback
 
 
 class ReduceLearning(callback.Callback):
     def __init__(self, config):
         super().__init__()
 
-        self._log = logging.getLogger('gymnosd')
-        self._log_prefix = "REDUCE_LEARNING"
+        self._log = logger.get_logger()
+        self._log_prefix = logger.setup_prefix(__class__)
         self._config = config
         self._monitor = config["monitor"] if "monitor" in config else 'val_loss'
         self._factor = config["factor"] if "factor" in config else 0.1

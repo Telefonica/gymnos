@@ -1,14 +1,13 @@
-import logging
-
-from .datasets.mnist import MNIST
 from .datasets.kaggle_dogs_vs_cats import KaggleDogsVsCats
+from .datasets.mnist import MNIST
+from .log import logger
 from .var.datasets import MNIST_DIGITS, KAGGLE_DOGS_VS_CATS
 
 
 class DataSetFactory(object):
     def __init__(self, config):
-        self._log = logging.getLogger('gymnosd')
-        self._log_prefix = "DATA_SET_FACTORY"
+        self._log = logger.get_logger()
+        self._log_prefix = logger.setup_prefix(__class__)
         self._config = config
         self._dataSetId = config["id"]
 

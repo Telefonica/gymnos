@@ -1,7 +1,8 @@
 import os
-import logging
 import subprocess
 import zipfile
+
+from lib.log import logger
 
 
 class KaggleBase(object):
@@ -10,8 +11,8 @@ class KaggleBase(object):
     '''
 
     def __init__(self):
-        self._log = logging.getLogger('gymnosd')
-        self._log_prefix = "KAGGLE_BASE"
+        self._log = logger.get_logger()
+        self._log_prefix = logger.setup_prefix(__class__)
 
     def download(self, localDir, sourceType, sourceId):
         self._datasetLocalDir = localDir

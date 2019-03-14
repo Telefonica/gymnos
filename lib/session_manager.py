@@ -1,15 +1,15 @@
 import tensorflow as tf
-import logging
-
-from pydash.objects import get
 from keras.backend.tensorflow_backend import set_session
+from pydash.objects import get
+
+from .log import logger
 
 
 class SessionManager(object):
 
     def __init__(self, sessionConfigFromFile):
-        self._log = logging.getLogger('gymnosd')
-        self._log_prefix = "SESSION_MGR"
+        self._log = logger.get_logger()
+        self._log_prefix = logger.setup_prefix(__class__)
         self._log.info("{0} - Setting up device options for training session ...".format(self._log_prefix))
         self._configProto = tf.ConfigProto()
         self._device = sessionConfigFromFile["device"]

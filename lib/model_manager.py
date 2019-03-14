@@ -1,4 +1,4 @@
-import logging
+from .log import logger
 
 from .model_factory import ModelFactory
 
@@ -6,8 +6,8 @@ from .model_factory import ModelFactory
 class ModelManager(object):
 
     def __init__(self, config):
-        self._log = logging.getLogger('gymnosd')
-        self._log_prefix = "MODEL_MGR"
+        self._log = logger.get_logger()
+        self._log_prefix = logger.setup_prefix(__class__)
         self._modelId = config["id"]
         mf = ModelFactory(config)
         self._model = mf.factory()

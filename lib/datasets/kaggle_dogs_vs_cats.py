@@ -1,15 +1,14 @@
 import os
-import logging
 import subprocess
+from glob import glob
+
 import h5py
 import numpy as np
 
-from glob import glob
-
+from lib.log import logger
 from . import dataset
-from ..var.system_paths import DATASETS_PATH
 from ..services.kaggle_base import KaggleBase
-
+from ..var.system_paths import DATASETS_PATH
 
 DEFAULT_STORAGE_IMAGE_WIDTH = 150
 DEFAULT_STORAGE_IMAGE_HEIGTH = 150
@@ -26,8 +25,8 @@ class KaggleDogsVsCats(dataset.DataSet):
 
     def __init__(self, config):
         dataset.DataSet.__init__(self)
-        self._log = logging.getLogger('gymnosd')
-        self._log_prefix = "KAGGLE_DOGS_VS_CATS"
+        self._log = logger.get_logger()
+        self._log_prefix = logger.setup_prefix(__class__)
         self._config = config
         self._datasetLocalDir = os.path.join(DATASETS_PATH, config["id"])
         self._trainDefaultDir = os.path.join(self._datasetLocalDir, DEFAULT_TRAIN_FOLDER_NAME)
