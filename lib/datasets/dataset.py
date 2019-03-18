@@ -18,8 +18,7 @@ class Dataset:
 
     def __init__(self, cache=None):
         if cache is not None:
-            cache_path = os.path.join(cache, self.__class__.__name__ + ".h5")
-            self.cache = HDFManager(cache_path)
+            self.cache = HDFManager(os.path.join(cache, self.__class__.__name__ + ".h5"))
         else:
             self.cache = None
 
@@ -45,7 +44,7 @@ class Dataset:
             X, y = self.read(temp_dir)
 
         if self.cache is not None:
-            logger.info("Saving to cache ...")
+            logger.info("Saving dataset to cache ({}) ...".format(self.cache.file_path))
             self.cache.save("X", X)
             self.cache.save("y", y)
 

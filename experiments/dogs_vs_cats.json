@@ -5,7 +5,7 @@
     },
     "model": {
         "description": "Convolutional model for Dogs vs Cats dataset",
-        "input_shape": [84, 84, 3],
+        "input_shape": [120, 120, 3],
         "model": "dogs_vs_cats_cnn"
     },
     "dataset": {
@@ -13,8 +13,8 @@
         "preprocessors": [
             {
                 "type": "image_resize",
-                "width": 84,
-                "height": 84
+                "width": 120,
+                "height": 120
             },
             {
                 "type": "divide",
@@ -24,9 +24,9 @@
     },
     "training": {
         "samples": {
-            "fit": 0.4,
-            "val": 0.1,
-            "test": 0.1
+            "fit": 0.6,
+            "val": 0.2,
+            "test": 0.2
         },
         "callbacks": [
             {

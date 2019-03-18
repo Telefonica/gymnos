@@ -15,7 +15,7 @@ from .utils.io_utils import read_from_json
 
 LAYERS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "var", "layers.json")
 MODELS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "var", "models.json")
-ESTIMATORS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "var", "estimators.json")
+APPLICATIONS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "var", "applications.json")
 
 
 class ModelCompilation:
@@ -60,18 +60,22 @@ class Model:
         layer_loc = layers_ids_to_modules[layer_type]
         return locate(layer_loc)
 
-
-    def __retrieve_estimator_from_id(self, estimator_id):
-        estimators_ids_to_modules = read_from_json(ESTIMATORS_IDS_TO_MODULES_PATH)
-        estimator_loc = estimators_ids_to_modules[estimator_id]
-        return locate(estimator_loc)
+    def __retrieve_application_from_application_id(self, application_id):
+        application_ids_to_modules = read_from_json(APPLICATIONS_IDS_TO_MODULES_PATH)
+        application_loc = application_ids_to_modules[application_id]
+        return locate(application_loc)
 
     def __build_keras_model_from_network(self, input_shape, network):
         input_layer = layers.Input(shape=input_shape)
 
         output_layer = input_layer
         for layer_config in network:
-            LayerClass = self.__retrieve_layer_from_type(layer_config.pop("type"))
+            layer_type = layer_config.pop("type")
+            if layer_type == "application":
+                LayerClass = self.__retrieve_application_from_application_id(layer_config.pop("application"))
+            else:
+                LayerClass = self.__retrieve_layer_from_type(layer_type)
+
             keras_layer = LayerClass(**layer_config)
 
             output_layer = keras_layer(output_layer)
