@@ -10,12 +10,15 @@ RUN apt-get install libglib2.0-0 -y \
     && apt-get install libxext6 -y \
     && apt-get install curl -y
 
-RUN pip install pipenv
+RUN pip3 install pipenv
 
 COPY Pipfile* ./
 
 RUN pipenv install
 RUN pipenv install tensorflow --skip-lock
+
+RUN pipenv run python3 -m spacy download en
+RUN pipenv run python3 -m spacy download es
 
 COPY . ./
 
@@ -23,4 +26,4 @@ VOLUME ["usr/src/app/trainings", "usr/src/app/datasets"]
 
 RUN mkdir logs
 
-ENTRYPOINT ["pipenv", "run", "python", "-m", "bin.scripts.gymnosd"]
+ENTRYPOINT ["pipenv", "run", "python3", "-m", "bin.scripts.gymnosd"]

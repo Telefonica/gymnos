@@ -17,6 +17,9 @@ COPY Pipfile* ./
 RUN pipenv install
 RUN pipenv install tensorflow-gpu --skip-lock
 
+RUN pipenv run python3 -m spacy download en
+RUN pipenv run python3 -m spacy download es
+
 COPY . ./
 
 VOLUME ["usr/src/app/trainings", "usr/src/app/datasets"]
