@@ -21,7 +21,7 @@ class Trainer:
         self.tracking = tracking
 
 
-    def run(self, cache_dir=None, seed=0):
+    def run(self, seed=0):
         logger.info("Running experiment: {} ...".format(self.experiment.id))
 
         logger.info("Loading dataset: {} ...".format(self.dataset.id))

@@ -48,24 +48,6 @@ if __name__ == "__main__":
 
     logger.info("-" * 10 + " GYMNOS ENVIRONMENT STARTED " + "-" * 10)
 
-    import pdb
-
-    experiment=Experiment(id=uuid4(), **training_config["experiment"])
-    pdb.set_trace()
-    model=Model(**training_config["model"])
-    pdb.set_trace()
-    dataset=Dataset(**training_config["dataset"])
-    pdb.set_trace()
-
-    training=Training(**training_config["training"])
-    pdb.set_trace()
-
-    tracking=Tracking(**training_config.get("tracking", {}))  # optional field
-    pdb.set_trace()
-
-    session=Session(**training_config.get("session", {}))  # optional field
-
-    pdb.set_trace()
     trainer = Trainer(
         experiment=Experiment(id=uuid4(), **training_config["experiment"]),
         model=Model(**training_config["model"]),
@@ -75,13 +57,8 @@ if __name__ == "__main__":
         session=Session(**training_config.get("session", {}))  # optional field
     )
 
-    pdb.set_trace()
-
     try:
-        # cache_dir = os.path.abspath(system_config["CACHE_PATH"])
-        # os.makedirs(cache_dir, exist_ok=True)
-
-        trainer.run(cache_dir=None)
+        trainer.run()
     except Exception as e:
         logger.error("Exception ocurred: {}".format(e))
         traceback.print_exc()
