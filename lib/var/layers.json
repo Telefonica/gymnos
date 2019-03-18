@@ -3,16 +3,5 @@
     "conv2d": "keras.layers.Conv2D",
     "flatten": "keras.layers.Flatten",
     "dropout": "keras.layers.Dropout",
-    "maxpooling2d": "keras.layers.MaxPooling2D",
-    "xception": "keras.applications.xception.Xception",
-    "vgg16": "keras.applications.vgg16.VGG16",
-    "vgg19": "keras.applications.vgg19.VGG19",
-    "resnet50": "keras.applications.resnet.ResNet50",
-    "resnet101": "keras.applications.resnet.ResNet101",
-    "resnet152": "keras.applications.resnet.ResNet152",
-    "resnet50v2": "keras.applications.resnet_v2.ResNet50V2",
-    "resnet101v2": "keras.applications.resnet_v2.ResNet101V2",
-    "resnet152v2": "keras.applications.resnet_v2.ResNet152V2",
-    "resnetx50" : "keras.applications.resnext.ResNeXt50",
-    "resnetxt101": "keras.applications.resnext.ResNeXt101"
+    "maxpooling2d": "keras.layers.MaxPooling2D"
 }
