@@ -61,11 +61,9 @@ class Trainer:
 
         logger.info("Fitting model with {} samples ...".format(len(X_train)))
 
-        train_results = self.model.model.fit(X_train, y_train, batch_size=self.training.batch_size,
-                                             epochs=self.training.epochs, val_data=[X_val, y_val],
-                                             callbacks=self.training.callbacks + self.tracking.get_keras_callbacks())
-
-        pprint(train_results)
+        self.model.model.fit(X_train, y_train, batch_size=self.training.batch_size,
+                             epochs=self.training.epochs, val_data=[X_val, y_val],
+                             callbacks=self.training.callbacks + self.tracking.get_keras_callbacks())
 
         # EVALUATE MODEL
 

@@ -1,0 +1,57 @@
+{
+    "experiment": {
+        "name": "CIFAR 10",
+        "tags": ["vgg16", "cifar-10"]
+    },
+    "model": {
+        "description": "Transfer Learning using VGG16 for CIFAR-10 dataset",
+        "input_shape": [32, 32, 3],
+        "network": [
+            {"type": "application", "application": "vgg16", "include_top": false},
+            {"type": "flatten"},
+            {"type": "dense", "units": 512, "activation": "relu"},
+            {"type": "dense", "units": 128, "activation": "relu"},
+            {"type": "dense", "units": 10, "activation": "softmax"}
+        ],
+        "compilation": {
+            "optimizer": "adam",
+            "loss": "categorical_crossentropy",
+            "metrics": ["acc"]
+        }
+    },
+    "dataset": {
+        "id": "cifar10",
+        "preprocessors": [
+            {
+                "type": "divide",
+                "factor": 255
+            }
+        ]
+    },
+    "training": {
+        "samples": {
+            "fit": 0.6,
+            "val": 0.2,
+            "test": 0.2
+        },
+        "batch_size": 32,
+        "epochs": 10,
+        "callbacks": [
+            {
+                "type": "early_stopping"
+            }
+        ]
+    },
+    "tracking": {
+        "trackers": [
+            {
+                "type": "tensorboard",
+                "logdir": "tensorboard"
+            },
+            {
+                "type": "mlflow",
+                "run_name": "cifar10"
+            }
+        ]
+    }
+}

@@ -4,17 +4,6 @@
 #
 #
 
-from sklearn.base import TransformerMixin
-
-
-class Transformer(TransformerMixin):
-
-    def fit(self, X, y=None):
-        raise NotImplementedError()
-
-    def transform(self, X, y=None):
-        raise NotImplementedError()
-
 
 class TransformerStack:
 

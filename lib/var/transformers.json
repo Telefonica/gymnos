@@ -1,0 +1,5 @@
+{
+    "tfidf": "lib.transformers.tfidf",
+    "kbest": "lib.transformers.kbest",
+    "standard_scaler": "sklearn.preprocessing.StandardScaler"
+}

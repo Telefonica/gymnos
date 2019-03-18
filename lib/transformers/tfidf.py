@@ -6,11 +6,11 @@
 
 import spacy
 
-from .transformer import Transformer
+from sklearn.base import TransformerMixin
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 
-class Tfidf(Transformer):
+class Tfidf(TransformerMixin):
 
     def __init__(self, lowercase=True, strip_accents=None, language="english", skip_stop_words=True, ngram_range=(1, 1),
                  max_df=1.0, min_df=1.0, max_features=None, use_idf=True, sublinear_tf=False):
