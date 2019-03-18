@@ -34,8 +34,6 @@ class Trainer:
                                                                                   val_size=self.training.samples.val,
                                                                                   test_size=self.training.samples.test,
                                                                                   seed=seed)
-        del X, y
-
         # APPLY PREPROCESSORS
 
         logger.info("Applying {} preprocessors ...".format(len(self.dataset.preprocessor_stack)))

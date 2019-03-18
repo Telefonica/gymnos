@@ -8,6 +8,8 @@ import os
 import h5py
 import pandas as pd
 
+from tqdm import trange
+
 
 class HDFManager:
 
@@ -38,7 +40,10 @@ class HDFManager:
 
     def save_numpy(self, key, data):
         with h5py.File(self.file_path) as h5f:
-            h5f.create_dataset(key, data=data, shape=data.shape, compression="gzip", compression_opts=9)
+            dst = h5f.create_dataset(key, shape=data.shape, dtype=data.dtype, compression="gzip")
+            chunk_size = len(data) // 10
+            for idx in trange(0, len(data), chunk_size):
+                dst[idx:idx + chunk_size] = data[idx:idx + chunk_size]
 
     def save_pandas(self, key, data):
         data.to_hdf(self.file_path, key, complib='zlib', complevel=5, format="table")
