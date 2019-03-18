@@ -9,8 +9,15 @@ verify_ssl = true
 keras = "*"
 opencv-python = "*"
 tqdm = "*"
-pydash = "*"
 kaggle = "*"
+numpy = "*"
+pandas = "*"
+tables = "*"
+scikit-learn = "*"
+spacy = "*"
+comet-ml = "*"
+mlflow = "*"
+joblib = "*"
 
 [requires]
 python_version = "3.5"

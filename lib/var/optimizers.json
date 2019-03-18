@@ -1,0 +1,30 @@
+{
+    "sgd": {
+        "keras": "keras.optimizers.SGD",
+        "tensorflow": "tf.train.GradientDescentOptimizer"
+    },
+    "rmsprop": {
+        "keras": "keras.optimizers.RMSprop",
+        "tensorflow": "tf.train.RMSPropOptimizer",
+    },
+    "adagrad": {
+        "keras": "keras.optimizers.Adagrad",
+        "tensorflow": "tf.train.AdagradOptimizer"
+    },
+    "adadelta": {
+        "keras": "keras.optimizers.Adadelta",
+        "tensorflow": "tf.train.AdadeltaOptimizer"
+    },
+    "adam": {
+        "keras": "keras.optimizers.Adam",
+        "tensorflow": "tf.train.AdamOptimizer"
+    },
+    "adamax": {
+        "keras": "keras.optimizers.Adamax",
+        "tensorflow": "tf.train.AdamOptimizer"
+    },
+    "nadam": {
+        "keras": "keras.optimizers.Nadam",
+        "tensorflow": "tf.contrib.opt.NadamOptimizer"
+    }
+}

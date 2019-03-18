@@ -1,0 +1,10 @@
+{
+    "boston_housing": "lib.datasets.boston_housing.BostonHousing",
+    "cifar10": "lib.datasets.cifar10.CIFAR10",
+    "dogs_vs_cats": "lib.datasets.dogs_vs_cats.DogsVsCats",
+    "fashion_mnist": "lib.datasets.fashion_mnist.FashionMNIST",
+    "imdb": "lib.datasets.imdb.IMDB",
+    "kddcup99": "lib.datasets.kddcup99.KDDCup99",
+    "mnist": "lib.datasets.mnist.MNIST",
+    "tiny_imagenet": "lib.datasets.tiny_imagenet.TinyImagenet"
+}

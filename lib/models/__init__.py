@@ -1,5 +1,2 @@
-__all__ = [
-    "model",
-    "vgg16",
-    "custom_stack"
-]
+from .model import Model, KerasModel, ScikitLearnModel
+from .dogs_vs_cats_cnn import DogsVsCatsCNN

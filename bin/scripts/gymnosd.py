@@ -1,59 +1,87 @@
-#!/usr/bin/python
-# -*- coding: utf8 -*-
+#!/usr/bin/python3
 
 import os
 import json
+import logging
+import argparse
 import traceback
 
-import logging
-import logging.config
-import argparse
+from uuid import uuid4
 
+from lib.logger import logger
 from lib.trainer import Trainer
+from lib.model import Model
+from lib.dataset import Dataset
+from lib.training import Training
+from lib.session import Session
+from lib.tracking import Tracking
+from lib.experiment import Experiment
 
-CD_LOG_CONFIG_PATH = 'config/logging.json'
-SYS_CONFIG_PATH = 'config/system.json'
-
-with open(SYS_CONFIG_PATH, 'r') as fp:
-    sys_config = json.load(fp)
-
-LOGGING_PATH = sys_config['paths']['logs']
-LOGGING_FILENAME = sys_config['filenames']['logs']
-
-
-def setup_logging(default_path=CD_LOG_CONFIG_PATH, default_level=logging.INFO):
-    # removing log files from previous session
-    logFilePath = "{0}/{1}".format(LOGGING_PATH, LOGGING_FILENAME)
-    if os.path.exists(logFilePath):
-        os.remove(logFilePath)
-    if os.path.exists(default_path):
-        with open(default_path, 'r') as f:
-            config = json.load(f)
-        logging.config.dictConfig(config)
-    else:
-        logging.basicConfig(level=default_level)
-
-    logger = logging.getLogger('gymnosd')
-    logger.propagate = False
-
-    return logger
+SYSTEM_CONFIG_PATH = os.path.join("config", "system.json")
+LOGGING_CONFIG_PATH = os.path.join("config", "logging.json")
 
 
-if __name__ == '__main__':
+def setup_logging():
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
+
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(console_handler)
+
+
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-c", "--training_config", help="sets training configuration file path",
-                        action='store', required=True)
-    config = parser.parse_args()
-    log = setup_logging()
-    with open(config.training_config, 'r') as fp:
-        training_config = json.load(fp)
-    tr = Trainer(training_config)
-    try:
-        log.info('---------------------- GYMNOS ENVIRONMENT STARTED ---------------------}')
-        tr.run()
-    except Exception as e:
-        log.error('Exception {0}'.format(e))
-        traceback.print_exc()
+    parser.add_argument("-c", "--training_config", help="sets training training configuration file path",
+                        action="store", required=True)
+    args = parser.parse_args()
 
-    finally:
-        del(tr)
+    with open(args.training_config) as f:
+        training_config = json.load(f)
+
+    with open(SYSTEM_CONFIG_PATH) as f:
+        system_config = json.load(f)
+
+    with open(LOGGING_CONFIG_PATH) as f:
+        logging_config = json.load(f)
+
+    setup_logging()
+
+    logger.info("-" * 10 + " GYMNOS ENVIRONMENT STARTED " + "-" * 10)
+
+    import pdb
+
+    experiment=Experiment(id=uuid4(), **training_config["experiment"])
+    pdb.set_trace()
+    model=Model(**training_config["model"])
+    pdb.set_trace()
+    dataset=Dataset(**training_config["dataset"])
+    pdb.set_trace()
+
+    training=Training(**training_config["training"])
+    pdb.set_trace()
+
+    tracking=Tracking(**training_config.get("tracking", {}))  # optional field
+    pdb.set_trace()
+
+    session=Session(**training_config.get("session", {}))  # optional field
+
+    pdb.set_trace()
+    trainer = Trainer(
+        experiment=Experiment(id=uuid4(), **training_config["experiment"]),
+        model=Model(**training_config["model"]),
+        dataset=Dataset(**training_config["dataset"]),
+        training=Training(**training_config["training"]),
+        tracking=Tracking(**training_config.get("tracking", {})),  # optional field
+        session=Session(**training_config.get("session", {}))  # optional field
+    )
+
+    pdb.set_trace()
+
+    try:
+        # cache_dir = os.path.abspath(system_config["CACHE_PATH"])
+        # os.makedirs(cache_dir, exist_ok=True)
+
+        trainer.run(cache_dir=None)
+    except Exception as e:
+        logger.error("Exception ocurred: {}".format(e))
+        traceback.print_exc()

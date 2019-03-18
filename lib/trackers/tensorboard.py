@@ -5,13 +5,15 @@
 #
 #
 
+import cv2 as cv
 import numpy as np
 import tensorflow as tf
 
 from io import BytesIO
-from PIL import Image
 
 from .tracker import Tracker
+from ..utils.image_utils import imread_rgb
+
 
 
 class Tensorboard(Tracker):
@@ -26,17 +28,14 @@ class Tensorboard(Tracker):
 
 
     def log_image(self, name, file_path):
-        pil_img = Image.open(file_path)
+        img = imread_rgb(file_path)
 
-        if pil_img.mode != 'RGB':
-            pil_img = pil_img.convert('RGB')
-
-        buffer = BytesIO()
-        pil_img.save(buffer, format='png')
+        is_success, img_buffer = cv.imencode(".jpg", img)
+        buffer = BytesIO(img_buffer)
 
         img_summary = tf.Summary.Image(encoded_image_string=buffer.getvalue(),
-                                       width=pil_img.size[0],
-                                       height=pil_img.size[1])
+                                       width=img.shape[1],
+                                       height=img.shape[0])
 
         summary = tf.Summary(value=[tf.Summary.Value(tag=name, image=img_summary)])
         self.writer.add_summary(summary)
@@ -46,12 +45,11 @@ class Tensorboard(Tracker):
         buffer = BytesIO()
         figure.savefig(buffer, format='png')
         buffer.seek(0)
-        img = Image.open(buffer)
-        img_ar = np.array(img)
+        img = cv.imdecode(np.frombuffer(buffer.getbuffer(), np.uint8), -1)
 
         img_summary = tf.Summary.Image(encoded_image_string=buffer.getvalue(),
-                                       height=img_ar.shape[0],
-                                       width=img_ar.shape[1])
+                                       height=img.shape[0],
+                                       width=img.shape[1])
 
         summary = tf.Summary(value=[tf.Summary.Value(tag=name, image=img_summary)])
         self.writer.add_summary(summary)

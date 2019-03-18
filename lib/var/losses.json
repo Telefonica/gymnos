@@ -1,0 +1,11 @@
+{
+    "mean_squared_error": {
+        "keras": "keras.losses.mean_squared_error",
+        "tensorflow": "tf.losses.mean_squared_error"
+    },
+    "mean_absolute_error": {
+        "keras": "keras.losses.mean_absolute_error",
+        "tensorflow": "keras.losses.mean_absolute_error"
+    },
+    ""
+}

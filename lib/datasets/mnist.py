@@ -1,175 +1,24 @@
-import os
-import subprocess
-import logging
-import h5py
-import cv2
+#
+#
+#   MNIST
+#
+#
+
 import numpy as np
 
-from tqdm import tqdm
+from keras.datasets import mnist
 from keras.utils import to_categorical
 
-from . import dataset
-from ..var.system_paths import DATASETS_PATH
-from ..var.datasets import MNIST_DIGITS
-
-DEFAULT_STORAGE_IMAGE_WIDTH = 28
-DEFAULT_STORAGE_IMAGE_HEIGTH = 28
-DEFAULT_STORAGE_IMAGE_DEPTH = 1
-MAX_TRAIN_SAMPLES = 60000
-MAX_TEST_SAMPLES = 10000
+from .dataset import LibraryDataset
 
 
-class MNIST(dataset.DataSet):
-    def __init__(self, config):
-        dataset.DataSet.__init__(self)
-        self._log = logging.getLogger('gymnos')
-        self._log_prefix = "MNIST"
-        self._sourceFiles = ['train-images-idx3-ubyte.gz',          # train images
-                             'train-labels-idx1-ubyte.gz',
-                             't10k-images-idx3-ubyte.gz',           # test images
-                             't10k-labels-idx1-ubyte.gz']
-        self._datasetUrl = 'http://yann.lecun.com/exdb/mnist/'
-        self._datasetLocalDir = os.path.join(DATASETS_PATH, MNIST_DIGITS)
-        self._hdfDataPath = os.path.join(self._datasetLocalDir, self._hdfDataFilename)
-        self._textIdsPath = os.path.join(self._datasetLocalDir, self._textIdsFilename)
-        self.dataSetId = config["id"]
-        self._image_width = config["properties"]["image_width"]
-        self._image_height = config["properties"]["image_height"]
-        self._image_depth = config["properties"]["image_depth"]
-        self._numFitSamples = config["samples"]["fit"]
-        self._numValidationSamples = config["samples"]["validation"]
-        self._numTestSamples = config["samples"]["test"]
-        self.__checkSplitConsistency()
+class MNIST(LibraryDataset):
+    """
+    Dataset of 70,000 28x28 grayscale images of the 10 digits.
+    """
 
-    def getSamples(self):
-        return self._fitSamples, self._valSamples, self._testSamples
-
-    def getLabels(self):
-        return self._fitLabels, self._valLabels, self._testLabels
-
-    def load(self):
-        self._data = h5py.File(self._hdfDataPath, 'r')
-        self._fitSamples = self._data["train_img"][:self._numFitSamples]
-        self._valSamples = self._data["train_img"][self._numFitSamples:]
-        self._testSamples = self._data["test_img"][:self._numTestSamples]
-        self._fitLabels = self._data["train_labels"][:self._numFitSamples]
-        self._valLabels = self._data["train_labels"][self._numFitSamples:]
-        self._testLabels = self._data["test_labels"][:self._numTestSamples]
-        self.__preprocess()
-
-    def download(self):
-        os.mkdir(self._datasetLocalDir)
-        for sourceFile in tqdm(self._sourceFiles):
-            url = (self._datasetUrl + sourceFile).format(**locals())
-            target_path = os.path.join(self._datasetLocalDir, sourceFile)
-            cmd = ['curl', url, '-o', target_path, '-s']
-            subprocess.call(cmd)
-            cmd = ['gzip', '-d', target_path]
-            subprocess.call(cmd)
-
-        self.__defaultStorage()
-
-    def __preprocess(self):
-        # Convert 28x28 grayscale to WIDTH x HEIGHT rgb channels
-        self._log.debug("{0} - __preprocess: original fitSamples shape = {1}".format(self._log_prefix,
-                                                                                     self._fitSamples.shape))
-        self._log.debug("{0} - __preprocess: original fitLabels shape = {1}".format(self._log_prefix,
-                                                                                    self._fitLabels.shape))
-        trainSamples = np.concatenate((self._fitSamples, self._valSamples, self._testSamples), axis=0)
-        dim = (self._image_width, self._image_height)
-
-        def to_rgb(img):
-            img = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
-            img_rgb = np.asarray(np.dstack((img, img, img)), dtype=np.uint8)
-            return img_rgb
-        rgb_list = []
-
-        # Convert trainSamples to WIDTH x HEIGHT rgb values
-        for i in range(len(trainSamples)):
-            rgb = to_rgb(trainSamples[i])
-            rgb_list.append(rgb)
-        rgb_arr = np.stack([rgb_list], axis=4)
-        trainSamples = np.squeeze(rgb_arr, axis=4)
-        self._fitSamples = trainSamples[:self._numFitSamples]
-        self._valSamples = trainSamples[self._numFitSamples:self._numFitSamples + self._numValidationSamples]
-        self._testSamples = trainSamples[self._numFitSamples + self._numValidationSamples:]
-
-        # Convert to one-hot encoding
-        self._fitLabels = to_categorical(self._fitLabels)
-        self._valLabels = to_categorical(self._valLabels)
-        self._testLabels = to_categorical(self._testLabels)
-        self._log.debug("{0} - __preprocess: preprocessed fitSamples shape = {1}".format(self._log_prefix,
-                                                                                         self._fitSamples.shape))
-        self._log.debug("{0} - __preprocess: preprocessed fitLabels shape = {1}".format(self._log_prefix,
-                                                                                        self._fitLabels.shape))
-        self._log.debug("{0} - __preprocess: preprocessed valSamples shape = {1}".format(self._log_prefix,
-                                                                                         self._valSamples.shape))
-        self._log.debug("{0} - __preprocess: preprocessed valLabels shape = {1}".format(self._log_prefix,
-                                                                                        self._valLabels.shape))
-        self._log.debug("{0} - __preprocess: preprocessed testSamples shape = {1}".format(self._log_prefix,
-                                                                                          self._testSamples.shape))
-        self._log.debug("{0} - __preprocess: preprocessed testLabels shape = {1}".format(self._log_prefix,
-                                                                                         self._testLabels.shape))
-
-    def __checkSplitConsistency(self):
-        errMsg = None
-        numTrainSamples = self._numFitSamples + self._numValidationSamples
-        if self._numTestSamples > MAX_TEST_SAMPLES:
-            errMsg = "{0} - Number of test samples out of range: {1} .".format(self._log_prefix, self._numTestSamples)
-        if numTrainSamples > MAX_TRAIN_SAMPLES:
-            errMsg = "{0} - Number of train samples out of range: {1} .".format(self._log_prefix, numTrainSamples)
-        if errMsg is not None:
-            self._log.error(errMsg)
-            raise ValueError(errMsg)
-
-    def __defaultStorage(self):
-        '''
-           Standard treatment on the dataset before storage.
-           Predefined image shape by default: (width=28, height=28, depth=1).
-           H5PY format will be used for performance reasons.
-        '''
-
-        fd = open(os.path.join(self._datasetLocalDir, 'train-images-idx3-ubyte'))
-        loaded = np.fromfile(file=fd, dtype=np.uint8)
-        self._trainImages = loaded[16:].reshape((MAX_TRAIN_SAMPLES,
-                                                 DEFAULT_STORAGE_IMAGE_WIDTH,
-                                                 DEFAULT_STORAGE_IMAGE_HEIGTH,
-                                                 DEFAULT_STORAGE_IMAGE_DEPTH)).astype(np.float)
-
-        fd = open(os.path.join(self._datasetLocalDir, 'train-labels-idx1-ubyte'))
-        loaded = np.fromfile(file=fd, dtype=np.uint8)
-        self._trainLabels = np.asarray(loaded[8:].reshape((MAX_TRAIN_SAMPLES)).astype(np.float))
-
-        fd = open(os.path.join(self._datasetLocalDir, 't10k-images-idx3-ubyte'))
-        loaded = np.fromfile(file=fd, dtype=np.uint8)
-        self._testImages = loaded[16:].reshape((MAX_TEST_SAMPLES,
-                                                DEFAULT_STORAGE_IMAGE_WIDTH,
-                                                DEFAULT_STORAGE_IMAGE_HEIGTH,
-                                                DEFAULT_STORAGE_IMAGE_DEPTH)).astype(np.float)
-
-        fd = open(os.path.join(self._datasetLocalDir, 't10k-labels-idx1-ubyte'))
-        loaded = np.fromfile(file=fd, dtype=np.uint8)
-        self._testLabels = np.asarray(loaded[8:].reshape((MAX_TEST_SAMPLES)).astype(np.float))
-
-        self.__prepare_h5py()
-
-        for k in self._sourceFiles:
-            cmd = ['rm', '-f', os.path.join(self._datasetLocalDir, k[:-3])]
-            subprocess.call(cmd)
-
-    def __prepare_h5py(self):
-        self._log.info("{0} - Storing dataset at: {1}".format(self._log_prefix, self._hdfDataPath))
-
-        hdf5_file = h5py.File(self._hdfDataPath, 'w')
-        data_ids = open(self._textIdsPath, 'w')
-
-        hdf5_file.create_dataset("train_labels", data=self._trainLabels, dtype=np.uint8)
-        hdf5_file.create_dataset("test_labels", data=self._testLabels, dtype=np.uint8)
-
-        hdf5_file.create_dataset("train_img", data=self._trainImages, dtype=np.uint8)
-        hdf5_file.create_dataset("test_img", data=self._testImages, dtype=np.uint8)
-
-        hdf5_file.close()
-        data_ids.close()
-
-        return
+    def read(self, download_dir):
+        (X_train, y_train), (X_test, y_test) = mnist.load_data()
+        X = np.concatenate([X_train, X_test], axis=0)
+        y = np.concatenate([y_train, y_test], axis=0)
+        return X[..., np.newaxis], to_categorical(y, 10)

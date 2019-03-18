@@ -1,55 +1,92 @@
+#
+#
+#   Dataset
+#
+#
+
 import os
-import logging
-import h5py
-import cv2
-import time
-import numpy as np
 
-from tqdm import tqdm
+from tempfile import TemporaryDirectory
 
-
-class DataSet(object):
-    def __init__(self):
-        self._log = logging.getLogger('gymnosd')
-        self._log_prefix = "DATASET"
-        self._hdfDataFilename = 'training-data-set.hdf5'
-        self._textIdsFilename = 'id.txt'
-
-    def loadRawImagesFromFolder(self, folderPath, resizeParams):
-        '''
-             Load set of raw images from folder
-             Notes:
-              - resize required as images comes with different sizes
-              - downsampling interpolation applied to optimize performance
-        '''
-        self._log.debug("{0} - loadRawImagesFromFolder: Loading images with:\n[\n\t - folderPath = {1}"
-                        "\n\t - resizeParams = {2}"
-                        "\n]".format(self._log_prefix,
-                                     folderPath,
-                                     resizeParams))
-        imgList = []
-        images = os.listdir(folderPath)
-
-        time_start = time.time()
-        for i, imgFileName in enumerate(tqdm(images)):
-            image = cv2.imread(os.path.join(folderPath, imgFileName))
-            image = cv2.resize(image,
-                               resizeParams,
-                               interpolation=cv2.INTER_CUBIC)
-            imgList.append(image)
-
-        imgArr = np.stack([imgList], axis=4)
-        imgArr = np.squeeze(imgArr, axis=4)
-
-        self._log.debug("{0} - loadImagesFromFolder: Processed images = [{1}] in {2:.2f} seconds.".format(
-                        self._log_prefix, len(images), (time.time() - time_start)))
-        return imgArr
+from ..logger import logger
+from ..services.hdf_manager import HDFManager
+from ..services.dataset_downloader import KaggleDatasetDownloader
+from ..services.dataset_downloader import PublicDatasetDownloader
 
 
-    def prepareH5PY(self, folderPath, trainImages, trainLabels):
-        h5pyFilePath = os.path.join(folderPath, self._hdfDataFilename)
-        self._log.info("{0} - Preparing H5PY dataset at: {1}".format(self._log_prefix, h5pyFilePath))
+class Dataset:
 
-        with h5py.File(h5pyFilePath, 'w') as hdf5_file:
-            hdf5_file.create_dataset("train_labels", data=trainLabels, dtype=np.uint8)
-            hdf5_file.create_dataset("train_samples", data=trainImages, dtype=np.uint8)
+    def __init__(self, cache=None):
+        if cache is not None:
+            cache_path = os.path.join(cache, self.__class__.__name__ + ".h5")
+            self.cache = HDFManager(cache_path)
+        else:
+            self.cache = None
+
+    def download(self, download_dir):
+        raise NotImplementedError()
+
+    def read(self, download_dir):
+        raise NotImplementedError()
+
+    def load_data(self):
+        if self.cache is not None and self.cache.exists():
+            logger.info("Dataset already exists on cache. Retrieving ...")
+            X = self.cache.retrieve("X")
+            y = self.cache.retrieve("y")
+
+            return X, y
+
+        with TemporaryDirectory() as temp_dir:
+            logger.info("Downloading dataset ...")
+            self.download(temp_dir)
+
+            logger.info("Reading dataset ...")
+            X, y = self.read(temp_dir)
+
+        if self.cache is not None:
+            logger.info("Saving to cache ...")
+            self.cache.save("X", X)
+            self.cache.save("y", y)
+
+        return X, y
+
+
+class KaggleDataset(Dataset):
+
+    kaggle_dataset_name = None  # required field
+    kaggle_dataset_files = None  # optional field
+
+    def __init__(self, cache=None):
+        super().__init__(cache=cache)
+
+        if self.kaggle_dataset_name is None:
+            raise ValueError("kaggle_dataset_name cannot be None")
+
+        self.downloader = KaggleDatasetDownloader()
+
+    def download(self, download_dir):
+        self.downloader.download(self.kaggle_dataset_name, self.kaggle_dataset_files,
+                                 download_dir)
+
+
+class PublicDataset(Dataset):
+
+    public_dataset_files = None  # required field
+
+    def __init__(self, cache=None):
+        super().__init__(cache=None)
+
+        if self.public_dataset_files is None:
+            raise ValueError("public_dataset_files cannot be None")
+
+        self.downloader = PublicDatasetDownloader()
+
+    def download(self, download_dir):
+        self.downloader.download(self.public_dataset_files, download_dir)
+
+
+class LibraryDataset(Dataset):
+
+    def download(self, download_dir):
+        logger.info("Dataset found on Library")

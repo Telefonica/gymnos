@@ -1,0 +1,6 @@
+{
+    "comet_ml": "lib.trackers.comet_ml.CometML",
+    "json": "lib.trackers.json.JSON",
+    "mlflow": "lib.trackers.mlflow.MLFlow",
+    "tensorboard": "lib.trackers.tensorboard.Tensorboard"
+}

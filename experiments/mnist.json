@@ -1,0 +1,78 @@
+{
+    "experiment": {
+        "name": "MNIST",
+        "tags": ["deep-learning", "conv", "vgg16"]
+    },
+    "model": {
+        "description": "Transfer Learning from VGG16 to train model for MNIST dataset",
+        "compilation": {
+            "optimizer": "adam",
+            "loss": "categorical_crossentropy",
+            "metrics": ["acc"]
+        },
+        "input_shape": [84, 84, 3],
+        "network": [
+            {"type": "vgg16", "include_top": false},
+            {"type": "flatten"},
+            {"type": "dense", "units": 1024},
+            {"type": "dense", "units": 512, "activation": "relu"},
+            {"type": "dense", "units": 64, "activation": "relu"},
+            {"type": "dense", "units": 10, "activation": "softmax"}
+        ]
+    },
+    "dataset": {
+        "id": "mnist",
+        "preprocessors": [
+            {
+                "type": "grayscale_to_color"
+            },
+            {
+                "type": "image_resize",
+                "width": 84, 
+                "height": 84
+            },
+            {
+                "type": "divide",
+                "factor": 255
+            }
+        ]
+    },
+    "session": {
+        "device": "gpu"
+    },
+    "training": {
+        "samples": {
+            "fit": 0.6,
+            "val": 0.2,
+            "test": 0.2
+        },
+        "callbacks": [
+            {
+                "type": "early_stopping"
+            }
+        ],
+        "batch_size": 32,
+        "epochs": 10
+    },
+    "tracking": {
+        "log_model_params": true,
+        "log_model_metrics": true,
+        "params": {
+            "GPU": "GTX 1080-TI"
+        },
+        "trackers": [
+            {
+                "type": "tensorboard",
+                "logdir": "tensorboard"
+            },
+            {
+                "type": "mlflow",
+                "run_name": "mnist-vgg16"
+            },
+            {
+                "type": "json",
+                "file_path": "results.json"
+            }
+        ]
+    }
+}
