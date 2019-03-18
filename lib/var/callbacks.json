@@ -1,6 +1,6 @@
 {
-    "early_stopping": "lib.callbacks.early_stopping.EarlyStopping",
-    "model_checkpoint": "lib.callbacks.model_checkpoint.ModelCheckpoint",
-    "reduce_learning": "lib.callbacks.reduce_learning.ReduceLearning",
-    "tensorboard": "lib.callbacks.tensorboard.TensorBoard"   
+    "early_stopping": "keras.callbacks.EarlyStopping",
+    "model_checkpoint": "keras.callbacks.ModelCheckpoint",
+    "reduce_learning": "keras.callbacks.ReduceLROnPlateau",
+    "tensorboard": "keras.callbacks.TensorBoard"   
 }
