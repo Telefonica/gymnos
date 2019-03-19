@@ -15,6 +15,7 @@ from .utils.io_utils import read_from_json
 
 LAYERS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "var", "layers.json")
 MODELS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "var", "models.json")
+OPTIMIZERS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "var", "optimizers.json")
 APPLICATIONS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "var", "applications.json")
 
 
@@ -22,8 +23,19 @@ class ModelCompilation:
 
     def __init__(self, loss, optimizer, metrics=None):
         self.loss = loss
-        self.optimizer = optimizer
         self.metrics = metrics
+
+        if isinstance(optimizer, str):
+            OptimizerClass = self.__retrieve_optimizer_from_id(optimizer)
+            self.optimizer = OptimizerClass()
+        else:
+            OptimizerClass = self.__retrieve_optimizer_from_id(optimizer.pop("type"))
+            self.optimizer = OptimizerClass(**optimizer)
+
+    def __retrieve_optimizer_from_id(self, optimizer_id):
+        optimizers_ids_to_modules = read_from_json(OPTIMIZERS_IDS_TO_MODULES_PATH)
+        optimizer_loc = optimizers_ids_to_modules[optimizer_id]
+        return locate(optimizer_loc)
 
 
 class Model:
@@ -41,12 +53,14 @@ class Model:
         else:
             raise ValueError("You need to provide either a model, or a network")
 
-        if compilation is not None:
-            self.compilation = ModelCompilation(**compilation)
-        else:
-            self.compilation = None
-
         self.description = description
+
+        self.compilation = None
+
+        if isinstance(self.model, KerasModel):
+            self.compilation = ModelCompilation(**compilation)
+            self.model.compile(loss=self.compilation.loss, optimizer=self.compilation.optimizer,
+                               metrics=self.compilation.metrics)
 
 
     def __retrieve_model_from_id(self, model_id):

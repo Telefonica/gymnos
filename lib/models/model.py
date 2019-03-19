@@ -14,9 +14,6 @@ class Model:
     def __init__(self, input_shape, **hyperparameters):
         self.input_shape = input_shape
 
-    def compile(self, loss, optimizer, metrics=None):
-        pass  # optional method
-
     def fit(self, X, y, batch_size=32, epochs=1, callbacks=None, val_data=None, verbose=1):
         raise NotImplementedError()
 
@@ -35,7 +32,7 @@ class Model:
 
 class KerasModel(Model):
 
-    def __init__(self, input_shape, sequential_or_functional_model):
+    def __init__(self, input_shape, sequential_or_functional_model, **hyperparameters):
         super().__init__(input_shape)
 
         self.model = sequential_or_functional_model
@@ -64,7 +61,7 @@ class KerasModel(Model):
 
 class ScikitLearnModel(Model):
 
-    def __init__(self, input_shape, sklearn_model):
+    def __init__(self, input_shape, sklearn_model, **hyperparameters):
         super().__init__(input_shape)
 
         self.model = sklearn_model

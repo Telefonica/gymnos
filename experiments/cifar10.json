@@ -14,7 +14,10 @@
             {"type": "dense", "units": 10, "activation": "softmax"}
         ],
         "compilation": {
-            "optimizer": "adam",
+            "optimizer": {
+                "type": "adam",
+                "lr": 0.01
+            },
             "loss": "categorical_crossentropy",
             "metrics": ["acc"]
         }

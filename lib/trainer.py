@@ -52,13 +52,6 @@ class Trainer:
         X_test = self.dataset.transformer_stack.transform(X_test, y_test)
         X_val = self.dataset.transformer_stack.transform(X_val, y_val)
 
-        # TRAIN MODEL
-        if self.model.compilation is not None:
-            logger.info("Compiling model ...")
-
-            self.model.model.compile(loss=self.model.compilation.loss, optimizer=self.model.compilation.optimizer,
-                                     metrics=self.model.compilation.metrics)
-
         logger.info("Fitting model with {} samples ...".format(len(X_train)))
 
         self.model.model.fit(X_train, y_train, batch_size=self.training.batch_size,
