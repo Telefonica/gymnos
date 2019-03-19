@@ -124,4 +124,4 @@ class PublicDatasetDownloader:
 
     def __download_files(self, urls, save_dir, unzip=True, verbose=False):
         for url in urls:
-            self.download_file(url, save_dir, unzip=unzip, verbose=verbose)
+            self.__download_file(url, save_dir, unzip=unzip, verbose=verbose)
