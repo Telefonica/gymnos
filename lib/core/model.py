@@ -10,13 +10,13 @@ from pydoc import locate
 
 from keras import models, layers
 
-from .models import KerasModel
-from .utils.io_utils import read_from_json
+from ..models import KerasModel
+from ..utils.io_utils import read_from_json
 
-LAYERS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "var", "layers.json")
-MODELS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "var", "models.json")
-OPTIMIZERS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "var", "optimizers.json")
-APPLICATIONS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "var", "applications.json")
+LAYERS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "layers.json")
+MODELS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "models.json")
+OPTIMIZERS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "optimizers.json")
+APPLICATIONS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "applications.json")
 
 
 class ModelCompilation:

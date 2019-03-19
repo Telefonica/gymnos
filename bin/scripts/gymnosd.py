@@ -10,12 +10,12 @@ from uuid import uuid4
 
 from lib.logger import logger
 from lib.trainer import Trainer
-from lib.model import Model
-from lib.dataset import Dataset
-from lib.training import Training
-from lib.session import Session
-from lib.tracking import Tracking
-from lib.experiment import Experiment
+from lib.core.model import Model
+from lib.core.dataset import Dataset
+from lib.core.training import Training
+from lib.core.session import Session
+from lib.core.tracking import Tracking
+from lib.core.experiment import Experiment
 
 CACHE_CONFIG_PATH = os.path.join("config", "cache.json")
 LOGGING_CONFIG_PATH = os.path.join("config", "logging.json")

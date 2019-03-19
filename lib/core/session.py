@@ -14,7 +14,7 @@ class SessionOptions:
 
 class Session:
 
-    def __init__(self, device="cpu", options=None):
+    def __init__(self, device=None, options=None):
         options = options or {}
 
         self.device = device

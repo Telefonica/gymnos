@@ -8,11 +8,11 @@ import os
 
 from pydoc import locate
 
-from .trackers import TrackerList
+from ..trackers import TrackerList
 
-from .utils.io_utils import read_from_json
+from ..utils.io_utils import read_from_json
 
-TRACKERS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "var", "trackers.json")
+TRACKERS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "trackers.json")
 
 
 class Tracking:

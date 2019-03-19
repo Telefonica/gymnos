@@ -10,7 +10,7 @@ import requests
 
 from tqdm import tqdm
 from kaggle import api
-from ..utils.decompressor import Decompressor
+from .decompressor import Decompressor
 
 
 class KaggleDatasetDownloader:

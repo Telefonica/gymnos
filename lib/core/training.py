@@ -7,10 +7,11 @@
 import os
 
 from pydoc import locate
-from .logger import logger
-from .utils.io_utils import read_from_json
 
-CALLBACKS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "var", "callbacks.json")
+from ..logger import logger
+from ..utils.io_utils import read_from_json
+
+CALLBACKS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "callbacks.json")
 
 
 class TrainingSamples:

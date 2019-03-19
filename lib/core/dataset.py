@@ -8,13 +8,13 @@ import os
 
 from pydoc import locate
 
-from .transformers import TransformerStack
-from .utils.io_utils import read_from_json
-from .preprocessors import PreprocessorStack
+from ..transformers import TransformerStack
+from ..utils.io_utils import read_from_json
+from ..preprocessors import PreprocessorStack
 
-TRANSFORMERS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "var", "transformers.json")
-DATASETS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "var", "datasets.json")
-PREPROCESSORS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "var", "preprocessors.json")
+TRANSFORMERS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "transformers.json")
+DATASETS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "datasets.json")
+PREPROCESSORS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "preprocessors.json")
 
 
 class Dataset:
