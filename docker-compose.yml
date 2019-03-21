@@ -28,7 +28,6 @@ services:
         depends_on:
             - spark-master
             - spark-worker-1
-        environment:
-            - KAGGLE_USERNAME=<kaggle_username>
-            - KAGGLE_KEY=<kaggle_key>
+        env_file:
+            - secrets.env
         entrypoint: python3 -m bin.scripts.gymnosd
