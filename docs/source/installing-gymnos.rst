@@ -15,12 +15,33 @@ Build image
 -----------
 
 If you are a developer and want to build the gymnos image from scratch, choose a Dockerfile that suits 
-your development environment:
+your development environment.
 
 .. code-block:: bash
+    docker-compose -f docker-compose.yml build
 
-    docker build -t gymnos-devel -f Dockerfile.devel .
-    docker build -t gymnos-devel-gpu -f Dockerfile.devel-gpu .
+If you are lucky enough to have a GPU, you just need to execute the following command
+to use the GPU in your Docker image.  
+
+.. code-block:: bash
+    docker-compose build
+
+.. note::
+
+   Previous example was executed in a GPU environment with the following settings:
+
+   * NVIDIA-SMI:          410.79
+   * Driver Version:      410.79
+   * CUDA Version:        10.0
+
+
+.. warning::
+
+   Make sure you meet the following dependencies:
+
+   * docker version:      18.09.1 (or higher)
+   * CUDA version:        10.0
+   * GPU docker support:  CUDA version compatible
 
 Pull image
 -----------
@@ -36,33 +57,7 @@ Run image
 -------------------
 
 .. code-block:: bash
-
-   docker run gymnos-devel -c <training_configuration>
-
-If you are lucky enough to have a GPU for development, you just need to execute the following command
-to get your gymnos docker image running on a GPU.  
-
-.. code-block:: bash
-
-   nvidia-docker run -it gymnos-devel-gpu bash
-
-.. note::
-
-   Previous example was executed in a GPU environment with the following settings:
-
-   * NVIDIA-SMI:          410.79
-   * Driver Version:      410.79
-   * CUDA Version:        10.0
-
-
-
-.. warning::
-
-   Make sure you meet the following dependencies:
-
-   * docker version:      18.09.1 (or higher)
-   * CUDA version:        10.0
-   * GPU docker support:  CUDA version compatible
+    docker-compose run gymnos -c <training_configuration>
 
 
 Clone the Repository
