@@ -4,6 +4,8 @@
 #
 #
 
+from tqdm import tqdm
+
 
 class Preprocessor:
 
@@ -25,7 +27,7 @@ class PreprocessorStack:
         self.preprocessors.append(preprocessor)
 
     def transform(self, X):
-        for preprocessor in self.preprocessors:
+        for preprocessor in tqdm(self.preprocessors):
             X = preprocessor.transform(X)
 
         return X

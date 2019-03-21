@@ -89,7 +89,7 @@ class PublicDataset(Dataset):
     public_dataset_files = None  # required field
 
     def __init__(self, cache=None):
-        super().__init__(cache=None)
+        super().__init__(cache=cache)
 
         if self.public_dataset_files is None:
             raise ValueError("public_dataset_files cannot be None")

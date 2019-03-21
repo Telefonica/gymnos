@@ -54,23 +54,30 @@ class Trainer:
 
         self.dataset.transformer_stack.fit(X_train, y_train)
 
-        X_train = self.dataset.transformer_stack.transform(X_train, y_train)
-        X_test = self.dataset.transformer_stack.transform(X_test, y_test)
-        X_val = self.dataset.transformer_stack.transform(X_val, y_val)
+        X_train = self.dataset.transformer_stack.transform(X_train)
+        X_test = self.dataset.transformer_stack.transform(X_test)
+        X_val = self.dataset.transformer_stack.transform(X_val)
 
         logger.info("Fitting model with {} samples ...".format(count(X_train)))
 
+        val_data = None
+
+        if self.training.samples.val > 0:
+            val_data = [X_val, y_val]
+
         train_results = self.model.model.fit(X_train, y_train, batch_size=self.training.batch_size,
-                                             epochs=self.training.epochs, val_data=[X_val, y_val],
+                                             epochs=self.training.epochs, val_data=val_data,
                                              callbacks=self.training.callbacks + self.tracking.get_keras_callbacks())
         pprint(train_results)
 
-        # EVALUATE MODEL
+        # EVALUATE MODEL IF TEST SAMPLES
 
-        logger.info("Evaluating model ...")
+        if self.training.samples.test > 0:
 
-        test_results = self.model.model.evaluate(X_test, y_test)
+            logger.info("Evaluating model ...")
 
-        pprint(test_results)
+            test_results = self.model.model.evaluate(X_test, y_test)
 
-        self.tracking.tracker_list.log_metrics(test_results, prefix="test_")
+            pprint(test_results)
+
+            self.tracking.tracker_list.log_metrics(test_results, prefix="test_")

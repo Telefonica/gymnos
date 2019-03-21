@@ -4,6 +4,11 @@
 #
 #
 
+import os
+import tensorflow as tf
+
+from ..logger import logger
+
 
 class SessionOptions:
 
@@ -19,3 +24,14 @@ class Session:
 
         self.device = device
         self.options = SessionOptions(**options)
+
+        if self.device == "cpu" and self.has_gpu():
+            logger.info("Device has GPU but session is set to CPU")
+            os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+        elif self.device == "gpu" and not self.has_gpu():
+            logger.warning("Device has not GPU but session is set to GPU")
+
+    def has_gpu(self):
+        return bool(tf.test.gpu_device_name())
+
+        os.environ['CUDA_VISIBLE_DEVICES'] = '-1'

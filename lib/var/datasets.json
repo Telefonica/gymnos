@@ -7,5 +7,6 @@
     "kddcup99": "lib.datasets.kddcup99.KDDCup99",
     "mnist": "lib.datasets.mnist.MNIST",
     "tiny_imagenet": "lib.datasets.tiny_imagenet.TinyImagenet",
-    "iris_spark": "lib.datasets.iris_spark.IrisSpark"
+    "iris_spark": "lib.datasets.iris_spark.IrisSpark",
+    "mte": "lib.datasets.mte.MTE"
 }

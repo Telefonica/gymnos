@@ -4,6 +4,7 @@
 #
 #
 
+import scipy
 import pyspark
 import numpy as np
 import pandas as pd
@@ -14,6 +15,8 @@ from tqdm import tqdm
 def count(data):
     if isinstance(data, (pyspark.sql.DataFrame, pyspark.rdd.RDD)):
         return data.count()
+    elif scipy.sparse.issparse(data):
+        return data.shape[0]
     else:
         return len(data)
 

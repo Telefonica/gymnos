@@ -4,6 +4,10 @@
 #
 #
 
+from tqdm import tqdm
+
+from ..utils.iterator_utils import count
+
 
 class TransformerStack:
 
@@ -18,19 +22,20 @@ class TransformerStack:
         self.transformers.append(transformer)
 
     def fit(self, X, y=None):
-        X_fit = X
-
-        for transformer in self.transformers:
-            X_fit = transformer.fit_transform(X_fit)
+        for transformer in tqdm(self.transformers):
+            transformer.fit(X, y)
+            X = transformer.transform(X)
 
         return self
 
-    def transform(self, X, y=None):
-        X_fit = X
-        for transformer in self.transformers:
-            X_fit = transformer.transform(X_fit)
+    def transform(self, X):
+        if count(X) == 0:
+            return X
 
-        return X_fit
+        for transformer in self.transformers:
+            X = transformer.transform(X)
+
+        return X
 
     def __len__(self):
         return len(self.transformers)

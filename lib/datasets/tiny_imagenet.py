@@ -18,7 +18,7 @@ from ..utils.image_utils import imread_rgb
 
 class TinyImagenet(KaggleDataset):
     """
-    TODO
+    Tiny Imagent with images of 64x64x3 and 200 classes.
     """
 
     dataset_name = "tiny_imagenet"
@@ -27,10 +27,8 @@ class TinyImagenet(KaggleDataset):
     def read(self, download_dir):
         data_dir = os.path.join(download_dir, "tiny-imagenet-200")
 
-        lines = read_from_text(os.path.join(data_dir, "words.txt")).splitlines()
-        name2desc = {oid: name.strip() for oid, name in (line.split("\t") for line in lines)}
-        name2num  = {name: idx for idx, name in enumerate(name2desc.keys())}
-        num2desc  = {num: name2desc[name] for name, num in name2num.items()}  # FIXME: save?
+        lines = read_from_text(os.path.join(data_dir, "wnids.txt")).splitlines()
+        name2num  = {name: idx for idx, name in enumerate(lines)}
 
         train_images, classnames = self.__read_train_images(data_dir)
         train_labels = np.array([name2num[classnames[i]] for i in range(len(classnames))])
@@ -41,7 +39,7 @@ class TinyImagenet(KaggleDataset):
         images = np.concatenate([train_images, test_images], axis=0)
         labels = np.concatenate([train_labels, test_labels], axis=0)
 
-        return images, to_categorical(labels)
+        return images, to_categorical(labels, 200)
 
     def __read_train_images(self, data_dir):
         images_glob = os.path.join(data_dir, "train", "**", "images", "*")

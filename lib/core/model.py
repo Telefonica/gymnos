@@ -15,6 +15,7 @@ from ..utils.io_utils import read_from_json
 
 LAYERS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "layers.json")
 MODELS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "models.json")
+METRICS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "metrics.json")
 OPTIMIZERS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "optimizers.json")
 APPLICATIONS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "applications.json")
 
@@ -22,8 +23,9 @@ APPLICATIONS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..",
 class ModelCompilation:
 
     def __init__(self, loss, optimizer, metrics=None):
+        metrics = metrics or []
+
         self.loss = loss
-        self.metrics = metrics
 
         if isinstance(optimizer, str):
             OptimizerClass = self.__retrieve_optimizer_from_id(optimizer)
@@ -32,10 +34,21 @@ class ModelCompilation:
             OptimizerClass = self.__retrieve_optimizer_from_id(optimizer.pop("type"))
             self.optimizer = OptimizerClass(**optimizer)
 
+        self.metrics = [self.__retrieve_metric_from_id(metric) for metric in metrics]
+
+
     def __retrieve_optimizer_from_id(self, optimizer_id):
         optimizers_ids_to_modules = read_from_json(OPTIMIZERS_IDS_TO_MODULES_PATH)
         optimizer_loc = optimizers_ids_to_modules[optimizer_id]
         return locate(optimizer_loc)
+
+    def __retrieve_metric_from_id(self, metric_id):
+        metrics_ids_to_modules = read_from_json(METRICS_IDS_TO_MODULES_PATH)
+        metric_loc = metrics_ids_to_modules.get(metric_id)
+        if metric_loc is None:
+            return metric_id
+
+        return locate(metric_loc)
 
 
 class Model:
@@ -87,10 +100,10 @@ class Model:
             layer_type = layer_config.pop("type")
             if layer_type == "application":
                 LayerClass = self.__retrieve_application_from_application_id(layer_config.pop("application"))
+                keras_layer = LayerClass(input_shape=tuple(input_shape), **layer_config)
             else:
                 LayerClass = self.__retrieve_layer_from_type(layer_type)
-
-            keras_layer = LayerClass(**layer_config)
+                keras_layer = LayerClass(**layer_config)
 
             output_layer = keras_layer(output_layer)
 

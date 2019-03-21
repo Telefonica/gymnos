@@ -1,0 +1,4 @@
+{
+    "accuracy_multilabel": "lib.metrics.accuracy_multilabel.accuracy_multilabel",
+    "precision": "lib.metrics.precision.precision"
+}

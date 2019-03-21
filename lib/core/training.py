@@ -20,7 +20,10 @@ class TrainingSamples:
         if fit + test + val > 1.0:
             raise ValueError("Samples of Fit + test + val must be lower than 1.0")
         if fit + test + val < 1.0:
-            logger.warning("Fit + test + val is lower than 1.0")
+            logger.warning("Samples of Fit + test + val is lower than 1.0")
+
+        if fit <= 0.0:
+            raise ValueError("Fit samples must be greater than 0")
 
         self.fit = fit
         self.val = val

@@ -61,5 +61,5 @@ class Tfidf(TransformerMixin):
         self.tfidf.fit(X, y)
         return self
 
-    def transform(self, X, y=None):
-        return self.transform(X, y)
+    def transform(self, X):
+        return self.tfidf.transform(X)

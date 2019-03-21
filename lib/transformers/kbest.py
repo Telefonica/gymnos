@@ -5,7 +5,6 @@
 #
 
 from sklearn.base import TransformerMixin
-
 from sklearn.feature_selection import SelectKBest, chi2
 
 
@@ -26,5 +25,5 @@ class KBest(TransformerMixin):
         self.kbest.fit(X, y)
         return self
 
-    def transform(self, X, y=None):
-        return self.kbest.transform(X, y)
+    def transform(self, X):
+        return self.kbest.transform(X)
