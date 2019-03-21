@@ -1,0 +1,21 @@
+{
+    "experiment": {
+        "name": "Classificying iris flower using Spark",
+        "tags": ["spark", "iris"]
+    },
+    "model": {
+        "description": "Spark iris model",
+        "input_shape": [4],
+        "model": "iris_spark"
+    },
+    "dataset": {
+        "id": "iris_spark"
+    },
+    "training": {
+        "samples": {
+            "fit": 0.6,
+            "val": 0.2,
+            "test": 0.2
+        }
+    }
+}

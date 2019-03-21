@@ -17,7 +17,7 @@ class BostonHousing(LibraryDataset):
     Targets are the median values of the houses at a location (in k$).
     """
 
-    def read(self, download_dir):
+    def read(self, download_dir=None):
         (X_train, y_train), (X_test, y_test) = boston_housing.load_data()
         X = np.concatenate([X_train, X_test], axis=0)
         y = np.concatenate([y_train, y_test], axis=0)

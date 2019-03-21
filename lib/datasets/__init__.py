@@ -6,3 +6,4 @@ from .kddcup99 import KDDCup99
 from .mnist import MNIST
 from .tiny_imagenet import TinyImagenet
 from .dogs_vs_cats import DogsVsCats
+from .dataset import Dataset, PublicDataset, KaggleDataset, SparkDataset, LibraryDataset

@@ -9,6 +9,7 @@ import numpy as np
 
 from tqdm import tqdm
 from glob import iglob
+from keras.utils import to_categorical
 
 from .dataset import KaggleDataset
 from ..utils.io_utils import read_from_text
@@ -40,7 +41,7 @@ class TinyImagenet(KaggleDataset):
         images = np.concatenate([train_images, test_images], axis=0)
         labels = np.concatenate([train_labels, test_labels], axis=0)
 
-        return images, labels
+        return images, to_categorical(labels)
 
     def __read_train_images(self, data_dir):
         images_glob = os.path.join(data_dir, "train", "**", "images", "*")

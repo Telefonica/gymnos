@@ -51,6 +51,21 @@ class Dataset:
         return X, y
 
 
+class SparkDataset(Dataset):
+
+    def __init__(self, cache=None):
+        super().__init__(cache=None)  # spark dataset is huge so we don't cache data
+
+    def read(self, download_dir=None):
+        raise NotImplementedError()
+
+    def load_data(self):
+        logger.info("Loading dataset into Spark session ...")
+        data = self.read()
+
+        return data
+
+
 class KaggleDataset(Dataset):
 
     kaggle_dataset_name = None  # required field
@@ -66,7 +81,7 @@ class KaggleDataset(Dataset):
 
     def download(self, download_dir):
         self.downloader.download(self.kaggle_dataset_name, self.kaggle_dataset_files,
-                                 download_dir)
+                                 download_dir, verbose=True)
 
 
 class PublicDataset(Dataset):
@@ -82,10 +97,13 @@ class PublicDataset(Dataset):
         self.downloader = PublicDatasetDownloader()
 
     def download(self, download_dir):
-        self.downloader.download(self.public_dataset_files, download_dir)
+        self.downloader.download(self.public_dataset_files, download_dir, verbose=True)
 
 
 class LibraryDataset(Dataset):
+
+    def read(self, download_dir=None):
+        raise NotImplementedError()
 
     def download(self, download_dir):
         logger.info("Dataset found on Library")

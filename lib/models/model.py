@@ -7,6 +7,7 @@
 import joblib
 
 from keras import models
+from keras.utils import to_categorical
 
 
 class Model:
@@ -27,6 +28,15 @@ class Model:
         raise NotImplementedError()
 
     def save(self, file_path):
+        raise NotImplementedError()
+
+
+class SparkModel(Model):
+
+    def fit(self, X, y=None, batch_size=32, epochs=1, callbacks=None, val_data=None, verbose=1):
+        raise NotImplementedError()
+
+    def evaluate(self, X, y=None, batch_size=32, verbose=0):
         raise NotImplementedError()
 
 

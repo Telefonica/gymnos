@@ -4,10 +4,18 @@
 #
 #
 
+import pyspark
 import numpy as np
 import pandas as pd
 
 from tqdm import tqdm
+
+
+def count(data):
+    if isinstance(data, (pyspark.sql.DataFrame, pyspark.rdd.RDD)):
+        return data.count()
+    else:
+        return len(data)
 
 
 def apply(data, func, verbose=True):

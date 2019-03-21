@@ -1,0 +1,8 @@
+version: "2.0"
+services:
+    gymnos:
+        runtime: nvidia
+        build:
+            context: .
+            args:
+                TENSORFLOW_IMAGE: tensorflow/tensorflow:1.13.1-gpu-py3

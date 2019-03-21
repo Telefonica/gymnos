@@ -7,6 +7,9 @@
 from pprint import pprint
 
 from .logger import logger
+from .models import SparkModel
+from .datasets import SparkDataset
+from .utils.iterator_utils import count
 from .utils.ml_utils import train_val_test_split
 
 
@@ -19,6 +22,9 @@ class Trainer:
         self.training = training
         self.session = session
         self.tracking = tracking
+
+        if isinstance(self.dataset.dataset, SparkDataset) and not isinstance(self.model.model, SparkModel):
+            raise ValueError("Spark datasets are only compatible with Spark models")
 
 
     def run(self, seed=0):
@@ -52,11 +58,12 @@ class Trainer:
         X_test = self.dataset.transformer_stack.transform(X_test, y_test)
         X_val = self.dataset.transformer_stack.transform(X_val, y_val)
 
-        logger.info("Fitting model with {} samples ...".format(len(X_train)))
+        logger.info("Fitting model with {} samples ...".format(count(X_train)))
 
-        self.model.model.fit(X_train, y_train, batch_size=self.training.batch_size,
-                             epochs=self.training.epochs, val_data=[X_val, y_val],
-                             callbacks=self.training.callbacks + self.tracking.get_keras_callbacks())
+        train_results = self.model.model.fit(X_train, y_train, batch_size=self.training.batch_size,
+                                             epochs=self.training.epochs, val_data=[X_val, y_val],
+                                             callbacks=self.training.callbacks + self.tracking.get_keras_callbacks())
+        pprint(train_results)
 
         # EVALUATE MODEL
 

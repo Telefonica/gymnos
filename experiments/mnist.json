@@ -1,10 +1,10 @@
 {
     "experiment": {
         "name": "MNIST",
-        "tags": ["deep-learning", "conv", "vgg16"]
+        "tags": ["deep-learning", "conv"]
     },
     "model": {
-        "description": "Transfer Learning from VGG16 to train model for MNIST dataset",
+        "description": "Simple NN to solve MNIST dataset",
         "compilation": {
             "optimizer": "adam",
             "loss": "categorical_crossentropy",

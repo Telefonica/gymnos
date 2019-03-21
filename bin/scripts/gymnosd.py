@@ -29,10 +29,6 @@ def setup_logging():
     logger.addHandler(console_handler)
 
 
-def create_uid():
-    return uuid4()
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--training_config", help="sets training training configuration file path",
@@ -55,7 +51,7 @@ if __name__ == "__main__":
     os.makedirs(cache_config["datasets"], exist_ok=True)
 
     trainer = Trainer(
-        experiment=Experiment(id=create_uid(), **training_config["experiment"]),
+        experiment=Experiment(id=uuid4(), **training_config["experiment"]),
         model=Model(**training_config["model"]),
         dataset=Dataset(cache=cache_config["datasets"], **training_config["dataset"]),
         training=Training(**training_config["training"]),
