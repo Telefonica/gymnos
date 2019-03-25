@@ -7,7 +7,6 @@
 import joblib
 
 from keras import models
-from keras.utils import to_categorical
 
 
 class Model:
