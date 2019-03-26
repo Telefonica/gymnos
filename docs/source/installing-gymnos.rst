@@ -18,13 +18,13 @@ If you are a developer and want to build the gymnos image from scratch, choose a
 your development environment.
 
 .. code-block:: bash
-    docker-compose build
+    docker-compose build gymnos
 
 If you are lucky enough to have a GPU, you just need to execute the following command
 to use the GPU in your Docker image.  
 
 .. code-block:: bash
-    docker-compose -f docker-compose.yml -f docker-compose.gpu.yml build
+    docker-compose build gymnos-gpu
 
 .. warning::
 
@@ -53,7 +53,7 @@ Run image
 GPU version.
 
 .. code-block:: bash
-    docker-compose -f docker-compose.yml -f docker-compose.gpu.yml run gymnos -c <training_configuration>
+    docker-compose run gymnos-gpu -c <training_configuration>
 
 .. note::
 

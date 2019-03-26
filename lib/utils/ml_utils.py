@@ -4,24 +4,11 @@
 #
 #
 
-import pyspark
 import numpy as np
 import pandas as pd
 
 
 def train_val_test_split(X, y=None, train_size=0.6, val_size=0.2, test_size=0.2, seed=None):
-    if isinstance(X, (pyspark.sql.DataFrame, pyspark.rdd.RDD)):
-        seed = seed or 0  # same seed for X and y
-
-        (X_train, X_val, X_test) = X.randomSplit([train_size, val_size, test_size], seed=seed)
-
-        if y is None:
-            return (X_train, X_val, X_test), (None, None, None)
-
-        (y_train, y_val, y_test) = y.randomSplit([train_size, val_size, test_size], seed=seed)
-
-        return (X_train, X_val, X_test), (y_train, y_val, y_test)
-
     len_data = len(X)
 
     train_num_samples = int(len_data * train_size)

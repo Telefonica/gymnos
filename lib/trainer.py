@@ -7,8 +7,6 @@
 from pprint import pprint
 
 from .logger import logger
-from .models import SparkModel
-from .datasets import SparkDataset
 from .utils.iterator_utils import count
 from .utils.ml_utils import train_val_test_split
 
@@ -22,10 +20,6 @@ class Trainer:
         self.training = training
         self.session = session
         self.tracking = tracking
-
-        if isinstance(self.dataset.dataset, SparkDataset) and not isinstance(self.model.model, SparkModel):
-            raise ValueError("Spark datasets are only compatible with Spark models")
-
 
     def run(self, seed=0):
         logger.info("Running experiment: {} ...".format(self.experiment.id))

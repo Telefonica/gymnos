@@ -18,7 +18,6 @@ spacy = "*"
 comet-ml = "*"
 mlflow = "*"
 joblib = "*"
-pyspark = "*"
 
 [requires]
 python_version = "3.5"

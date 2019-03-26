@@ -51,21 +51,6 @@ class Dataset:
         return X, y
 
 
-class SparkDataset(Dataset):
-
-    def __init__(self, cache=None):
-        super().__init__(cache=None)  # spark dataset is huge so we don't cache data
-
-    def read(self, download_dir=None):
-        raise NotImplementedError()
-
-    def load_data(self):
-        logger.info("Loading dataset into Spark session ...")
-        data = self.read()
-
-        return data
-
-
 class KaggleDataset(Dataset):
 
     kaggle_dataset_name = None  # required field

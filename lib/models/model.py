@@ -30,15 +30,6 @@ class Model:
         raise NotImplementedError()
 
 
-class SparkModel(Model):
-
-    def fit(self, X, y=None, batch_size=32, epochs=1, callbacks=None, val_data=None, verbose=1):
-        raise NotImplementedError()
-
-    def evaluate(self, X, y=None, batch_size=32, verbose=0):
-        raise NotImplementedError()
-
-
 class KerasModel(Model):
 
     def __init__(self, input_shape, sequential_or_functional_model, **hyperparameters):

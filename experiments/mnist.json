@@ -32,7 +32,7 @@
         ]
     },
     "session": {
-        "device": "gpu"
+        "device": "cpu"
     },
     "training": {
         "samples": {
