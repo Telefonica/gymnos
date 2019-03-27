@@ -1,6 +1,4 @@
 *.pyc
 *.DS_Store
 .env
-sftp-config.json
 cache
-secrets.env
