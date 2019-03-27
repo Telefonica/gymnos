@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="fca8ed7c-989f-46d1-90d4-87f024928492" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.dockerignore" beforeDir="false" afterPath="$PROJECT_DIR$/.dockerignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.python-version" beforeDir="false" afterPath="$PROJECT_DIR$/.python-version" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pipfile" beforeDir="false" afterPath="$PROJECT_DIR$/Pipfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pipfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Pipfile.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/azure-pipelines.docker.yml" beforeDir="false" afterPath="$PROJECT_DIR$/azure-pipelines.docker.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/scripts/gymnosd.py" beforeDir="false" afterPath="$PROJECT_DIR$/bin/scripts/gymnosd.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/cache.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/cache.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/logging.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/logging.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/make.bat" beforeDir="false" afterPath="$PROJECT_DIR$/docs/make.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/source/architecture.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/architecture.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/source/conf.py" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/conf.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/source/datasets.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/datasets.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/source/examples/howto-dataset-handler.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/examples/howto-dataset-handler.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/source/examples/howto-model-handler.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/examples/howto-model-handler.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/source/gymnos-by-example.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/gymnos-by-example.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/source/gymnos-in-depth.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/gymnos-in-depth.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/source/images/gymnos-callbacks.png" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/images/gymnos-callbacks.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/source/images/gymnos-dataset-manager.png" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/images/gymnos-dataset-manager.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/source/images/gymnos-docker-images.png" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/images/gymnos-docker-images.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/source/images/gymnos-model-manager.png" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/images/gymnos-model-manager.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/source/images/gymnos-session-manager.png" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/images/gymnos-session-manager.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/source/images/gymnos-system-config.png" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/images/gymnos-system-config.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/source/images/gymnos-training.png" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/images/gymnos-training.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/source/index.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/index.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/source/installing-gymnos.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/installing-gymnos.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/source/introduction.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/introduction.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/source/models.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/models.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/boston_housing.json" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/boston_housing.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/cifar10.json" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/cifar10.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/dogs_vs_cats.json" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/dogs_vs_cats.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/mnist.json" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/mnist.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/mte.json" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/mte.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/tiny_imagenet.json" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/tiny_imagenet.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/core/dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/core/dataset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/core/experiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/core/experiment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/core/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/core/model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/core/session.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/core/session.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/core/tracking.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/core/tracking.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/core/training.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/core/training.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/datasets/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/datasets/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/datasets/boston_housing.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/datasets/boston_housing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/datasets/cifar10.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/datasets/cifar10.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/datasets/dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/datasets/dataset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/datasets/dogs_vs_cats.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/datasets/dogs_vs_cats.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/datasets/fashion_mnist.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/datasets/fashion_mnist.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/datasets/imdb.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/datasets/imdb.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/datasets/kddcup99.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/datasets/kddcup99.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/datasets/mnist.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/datasets/mnist.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/datasets/mte.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/datasets/mte.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/datasets/resources/mte/genre_to_subscription.json" beforeDir="false" afterPath="$PROJECT_DIR$/lib/datasets/resources/mte/genre_to_subscription.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/datasets/tiny_imagenet.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/datasets/tiny_imagenet.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/logger.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/metrics/accuracy_multilabel.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/metrics/accuracy_multilabel.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/metrics/precision.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/metrics/precision.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/models/dogs_vs_cats_cnn.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/dogs_vs_cats_cnn.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/models/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/preprocessors/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/preprocessors/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/preprocessors/alphanumeric.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/preprocessors/alphanumeric.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/preprocessors/divide.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/preprocessors/divide.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/preprocessors/grayscale.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/preprocessors/grayscale.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/preprocessors/grayscale_to_color.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/preprocessors/grayscale_to_color.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/preprocessors/image_resize.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/preprocessors/image_resize.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/preprocessors/lemmatization.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/preprocessors/lemmatization.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/preprocessors/preprocessor.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/preprocessors/preprocessor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/preprocessors/replace.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/preprocessors/replace.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/services/dataset_downloader.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/services/dataset_downloader.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/services/decompressor.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/services/decompressor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/services/hdf_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/services/hdf_manager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/trackers/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/trackers/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/trackers/comet_ml.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/trackers/comet_ml.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/trackers/json.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/trackers/json.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/trackers/mlflow.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/trackers/mlflow.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/trackers/tensorboard.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/trackers/tensorboard.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/trackers/tracker.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/trackers/tracker.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/trainer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/transformers/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/transformers/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/transformers/kbest.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/transformers/kbest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/transformers/tfidf.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/transformers/tfidf.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/transformers/transformer.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/transformers/transformer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/utils/image_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utils/image_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/utils/io_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utils/io_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/utils/iterator_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utils/iterator_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/utils/ml_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utils/ml_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/var/applications.json" beforeDir="false" afterPath="$PROJECT_DIR$/lib/var/applications.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/var/callbacks.json" beforeDir="false" afterPath="$PROJECT_DIR$/lib/var/callbacks.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/var/datasets.json" beforeDir="false" afterPath="$PROJECT_DIR$/lib/var/datasets.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/var/layers.json" beforeDir="false" afterPath="$PROJECT_DIR$/lib/var/layers.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/var/losses.json" beforeDir="false" afterPath="$PROJECT_DIR$/lib/var/losses.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/var/metrics.json" beforeDir="false" afterPath="$PROJECT_DIR$/lib/var/metrics.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/var/models.json" beforeDir="false" afterPath="$PROJECT_DIR$/lib/var/models.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/var/optimizers.json" beforeDir="false" afterPath="$PROJECT_DIR$/lib/var/optimizers.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/var/preprocessors.json" beforeDir="false" afterPath="$PROJECT_DIR$/lib/var/preprocessors.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/var/trackers.json" beforeDir="false" afterPath="$PROJECT_DIR$/lib/var/trackers.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/var/transformers.json" beforeDir="false" afterPath="$PROJECT_DIR$/lib/var/transformers.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secrets.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/secrets.env.example" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/models/data_usage_holt_winters.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1064" />
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/models/data_usage_linear_regression.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-539" />
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/lib/models/unusual_data_usage_weighted_threlholds.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="301">
+              <caret line="92" column="14" selection-start-line="92" selection-start-column="8" selection-end-line="92" selection-end-column="14" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/utils/temporal_series_utils.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-3194" />
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/LICENSE.txt">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectConfigurationFiles">
+    <option name="files">
+      <list>
+        <option value="$PROJECT_DIR$/.idea/gymnos.iml" />
+        <option value="$PROJECT_DIR$/.idea/misc.xml" />
+        <option value="$PROJECT_DIR$/.idea/vcs.xml" />
+        <option value="$PROJECT_DIR$/.idea/modules.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="260" />
+    <option name="y" value="40" />
+    <option name="width" value="1380" />
+    <option name="height" value="1000" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="gymnos" type="b2602c69:ProjectViewProjectNode" />
+              <item name="gymnos" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="gymnos" type="b2602c69:ProjectViewProjectNode" />
+              <item name="gymnos" type="462c0819:PsiDirectoryNode" />
+              <item name="bin" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="gymnos" type="b2602c69:ProjectViewProjectNode" />
+              <item name="gymnos" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="gymnos" type="b2602c69:ProjectViewProjectNode" />
+              <item name="gymnos" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
+              <item name="models" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="gymnos" type="b2602c69:ProjectViewProjectNode" />
+              <item name="gymnos" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
+              <item name="utils" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="configurable.group.appearance" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/lib/utils" />
+      <recent name="$PROJECT_DIR$/lib/models" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="fca8ed7c-989f-46d1-90d4-87f024928492" name="Default Changelist" comment="" />
+      <created>1553699279143</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1553699279143</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="67" y="25" width="1853" height="1055" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Favorites" side_tool="true" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24972677" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info anchor="bottom" id="Version Control" />
+      <window_info anchor="bottom" id="Python Console" />
+      <window_info anchor="bottom" id="Terminal" />
+      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+    </layout>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/LICENSE.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/models/data_usage_holt_winters.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1064" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/models/data_usage_linear_regression.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-539" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/utils/temporal_series_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3194" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/models/unusual_data_usage_weighted_threlholds.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="301">
+          <caret line="92" column="14" selection-start-line="92" selection-start-column="8" selection-end-line="92" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>
