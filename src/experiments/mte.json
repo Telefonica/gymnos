@@ -1,0 +1,59 @@
+{
+    "experiment": {
+        "name": "Media Tagging Engine",
+        "tags": ["mte", "network"]
+    },
+    "model": {
+        "description": "Media Tagging Engine Subscription Classifier",
+        "input_shape": [20000],
+        "network": [
+            {"type": "dense", "units": 512, "activation": "relu", "kernel_initializer": "glorot_uniform"},
+            {"type": "dropout", "rate": 0.5},
+            {"type": "dense", "units": 256, "activation": "relu", "kernel_initializer": "glorot_uniform"},
+            {"type": "dropout", "rate": 0.5},
+            {"type": "dense", "units": 256, "activation": "relu", "kernel_initializer": "glorot_uniform"},
+            {"type": "dropout", "rate": 0.5},
+            {"type": "dense", "units": 17, "activation": "sigmoid", "kernel_initializer": "glorot_uniform"}
+        ],
+        "compilation": {
+            "optimizer": "adam",
+            "loss": "binary_crossentropy",
+            "metrics": ["accuracy_multilabel", "precision"]
+        }
+    },
+    "dataset": {
+        "id": "mte",
+        "preprocessors": [
+            {
+                "type": "alphanumeric"
+            },
+            {
+                "type": "lemmatization",
+                "language": "spanish"
+            }
+        ],
+        "transformers": [
+            {
+                "type": "tfidf",
+                "lowercase": true,
+                "language": "spanish",
+                "sublinear_tf": true,
+                "ngram_range": [1, 2],
+                "min_df": 5
+            },
+            {
+                "type": "kbest",
+                "scorer": "chi2",
+                "k": 20000
+            }
+        ]
+    },
+    "training": {
+        "samples": {
+            "fit": 0.8,
+            "test": 0.2
+        },
+        "batch_size": 32,
+        "epochs": 16
+    }
+}

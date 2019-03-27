@@ -1,17 +1,19 @@
 ARG TENSORFLOW_IMAGE=tensorflow/tensorflow:1.12.0-py3
-
 FROM $TENSORFLOW_IMAGE
 
 MAINTAINER pablo.lopezcoya@telefonica.com
 
-WORKDIR /usr/src/app
+WORKDIR /home/gymnos
 
-ENV LC_ALL C.UTF-8
 ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
 ENV GIT_PYTHON_REFRESH quiet
+ENV KAGGLE_USERNAME ""
+ENV KAGGLE_KEY ""
 
 # Install OpenCV libraries
 RUN \
+    apt-get update && \
     apt-get install libglib2.0-0 -y && \
     apt-get install libsm6 -y && \
     apt-get install libxrender-dev -y && \
@@ -27,6 +29,14 @@ RUN pip3 install --upgrade pip  && \
 RUN python3 -m spacy download en
 RUN python3 -m spacy download es
 
-COPY . ./
+# Save keras cache into gymnos cache
+RUN mkdir /root/.keras/ /home/gymnos/cache
+RUN ln -s /root/.keras/ /home/gymnos/cache/keras
+
+VOLUME ["/home/gymnos/cache"]
+
+COPY src ./
 
 RUN mkdir logs
+
+ENTRYPOINT ["python3", "-m", "bin.scripts.gymnosd"]

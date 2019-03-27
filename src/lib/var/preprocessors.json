@@ -1,0 +1,10 @@
+{
+    "divide": "lib.preprocessors.divide.Divide",
+    "grayscale": "lib.preprocessors.grayscale.Grayscale",
+    "image_resize": "lib.preprocessors.image_resize.ImageResize",
+    "normalize": "lib.preprocessors.normalize.Normalize",
+    "replace": "lib.preprocessors.replace.Replace",
+    "grayscale_to_color": "lib.preprocessors.grayscale_to_color.GrayscaleToColor",
+    "lemmatization": "lib.preprocessors.lemmatization.Lemmatization",
+    "alphanumeric": "lib.preprocessors.alphanumeric.Alphanumeric"
+}

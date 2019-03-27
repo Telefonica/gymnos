@@ -1,9 +1,0 @@
-{
-    "sgd": "keras.optimizers.SGD",
-    "rmsprop": "keras.optimizers.RMSprop",
-    "adagrad": "keras.optimizers.Adagrad",
-    "adadelta": "keras.optimizers.Adadelta",
-    "adam": "keras.optimizers.Adam",
-    "adamax": "keras.optimizers.Adamax",
-    "nadam": "keras.optimizers.Nadam"
-}
