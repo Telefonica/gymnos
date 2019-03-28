@@ -10,6 +10,7 @@ ENV LC_ALL C.UTF-8
 ENV GIT_PYTHON_REFRESH quiet
 ENV KAGGLE_USERNAME ""
 ENV KAGGLE_KEY ""
+ENV TF_CPP_MIN_LOG_LEVEL 2  # supress tensorflow info output, only logs errors
 
 # Install OpenCV libraries
 RUN \
