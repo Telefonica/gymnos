@@ -17,9 +17,7 @@ class DataUsageLinearRegression(Model):
     def __init__(self, input_shape, **hyperparameters):
         super().__init__(input_shape)
 
-        self.input = self.input_shape
-
-        self.n_preds = hyperparameters.pop("n_preds")
+        self.n_preds = hyperparameters.get("n_preds", 3)
 
     def fit(self, X, y, batch_size=32, epochs=1, callbacks=None, val_data=None, verbose=1):
         pass
@@ -43,7 +41,7 @@ class DataUsageLinearRegression(Model):
 
             # Training
             model_lr.fit(np.array(range(len(consumption_zero_acum))).reshape(-1, 1),
-                      np.array(consumption_zero_acum).reshape(-1, 1))
+                         np.array(consumption_zero_acum).reshape(-1, 1))
 
             # Prediction
             result = model_lr.predict(np.array(range(len(X) + self.n_preds)).reshape(-1, 1))
