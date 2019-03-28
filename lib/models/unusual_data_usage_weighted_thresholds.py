@@ -15,9 +15,8 @@ class UnusualDataUsageWeightedThresholds(Model):
     def __init__(self, input_shape, **hyperparameters):
         super().__init__(input_shape)
 
-        self.input = self.input_shape
-        self.sigma = hyperparameters.pop("sigma")
-        self.pred_last_day_api_name = hyperparameters.pop("pred_last_day_api_name")
+        self.sigma = hyperparameters.get("sigma", 2.0)
+        self.pred_last_day_api_name = hyperparameters.get("pred_last_day_api_name", 20.3)
 
     def fit(self, X, y, batch_size=32, epochs=1, callbacks=None, val_data=None, verbose=1):
         pass

@@ -17,15 +17,13 @@ class DataUsageHoltWinters(Model):
     def __init__(self, input_shape, **hyperparameters):
         super().__init__(input_shape)
 
-        self.input = self.input_shape
-
-        self.min_historic = hyperparameters.pop("min_historic")
-        self.flag_optimize_hiperparams = hyperparameters.pop("flag_optimize_hiperparams")
-        self.n_preds = hyperparameters.pop("n_preds")
-        self.slen = hyperparameters.pop("slen")
-        self.alpha = hyperparameters.pop("alpha")
-        self.beta = hyperparameters.pop("beta")
-        self.gamma = hyperparameters.pop("gamma")
+        self.min_historic = hyperparameters.get("min_historic", 5)
+        self.flag_optimize_hiperparams = hyperparameters.get("flag_optimize_hiperparams", True)
+        self.n_preds = hyperparameters.get("n_preds", 3)
+        self.slen = hyperparameters.get("slen", 1)
+        self.alpha = hyperparameters.get("alpha", 0.716)
+        self.beta = hyperparameters.get("beta", 0.029)
+        self.gamma = hyperparameters.get("gamma", 0.993)
 
     def fit(self, X, y, batch_size=32, epochs=1, callbacks=None, val_data=None, verbose=1):
         pass
@@ -53,7 +51,7 @@ class DataUsageHoltWinters(Model):
                 self.alpha, self.beta, self.gamma = parameters[0]
                 self.slen = slen
 
-        cycle_days_past = self.input[0]
+        cycle_days_past = self.input_shape[0]
 
         # Holt Winters model
         result = []
