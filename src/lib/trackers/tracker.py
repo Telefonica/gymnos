@@ -152,3 +152,6 @@ class TrackerList:
     def end(self):
         for tracker in self.trackers:
             tracker.end()
+
+    def __len__(self):
+        return len(self.trackers)

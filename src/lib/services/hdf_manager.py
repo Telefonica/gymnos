@@ -8,6 +8,8 @@ import os
 import h5py
 import pandas as pd
 
+from ..logger import get_logger
+
 from tqdm import trange
 
 
@@ -16,14 +18,19 @@ class HDFManager:
     def __init__(self, file_path):
         self.file_path = file_path
 
+        self.logger = get_logger(prefix=self)
+
     def exists(self):
         return os.path.isfile(self.file_path)
 
     def retrieve(self, key):
         try:
-            return self.retrieve_pandas(key)
+            dataset = self.retrieve_pandas(key)
+            self.logger.info("Retrieving Pandas dataset from HDF5 ({})".format(self.file_path))
         except TypeError:
-            return self.retrieve_numpy(key)
+            dataset = self.retrieve_numpy(key)
+            self.logger.info("Retrieving Numpy dataset from HDF5 ({})".format(self.file_path))
+        return dataset
 
     def retrieve_pandas(self, key):
         return pd.read_hdf(self.file_path, key)
@@ -34,8 +41,10 @@ class HDFManager:
 
     def save(self, key, data):
         if isinstance(data, (pd.Series, pd.DataFrame)):
+            self.logger.info("Saving Pandas dataset to HDF5 ({})".format(self.file_path))
             self.save_pandas(key, data)
         else:
+            self.logger.info("Saving Numpy dataset to HDF5 ({})".format(self.file_path))
             self.save_numpy(key, data)
 
     def save_numpy(self, key, data):

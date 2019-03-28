@@ -6,7 +6,7 @@
 
 from pprint import pprint
 
-from .logger import logger
+from .logger import get_logger
 from .utils.iterator_utils import count
 from .utils.ml_utils import train_val_test_split
 
@@ -21,14 +21,16 @@ class Trainer:
         self.session = session
         self.tracking = tracking
 
-    def run(self, seed=0):
-        logger.info("Running experiment: {} ...".format(self.experiment.id))
+        self.logger = get_logger(prefix=self)
 
-        logger.info("Loading dataset: {} ...".format(self.dataset.id))
+    def run(self, seed=0):
+        self.logger.info("Running experiment: {} ...".format(self.experiment.id))
+
+        self.logger.info("Loading dataset: {} ...".format(self.dataset.id))
         X, y = self.dataset.dataset.load_data()
 
-        logger.info("Splitting dataset for cross-validation ->\tFit: {}\tTest: {}\tVal: {} ...".format(
-                    self.training.samples.fit,  self.training.samples.test, self.training.samples.val))
+        self.logger.info("Splitting dataset -> Fit: {} | Test: {} | Val: {} ...".format(
+                         self.training.samples.fit,  self.training.samples.test, self.training.samples.val))
         (X_train, X_val, X_test), (y_train, y_val, y_test) = train_val_test_split(X, y,
                                                                                   train_size=self.training.samples.fit,
                                                                                   val_size=self.training.samples.val,
@@ -36,7 +38,7 @@ class Trainer:
                                                                                   seed=seed)
         # APPLY PREPROCESSORS
 
-        logger.info("Applying {} preprocessors ...".format(len(self.dataset.preprocessor_stack)))
+        self.logger.info("Applying {} preprocessors ...".format(len(self.dataset.preprocessor_stack)))
 
         X_train = self.dataset.preprocessor_stack.transform(X_train)
         X_test = self.dataset.preprocessor_stack.transform(X_test)
@@ -44,7 +46,7 @@ class Trainer:
 
         # APPLY TRANSFORMERS
 
-        logger.info("Applying {} transformers ...".format(len(self.dataset.transformer_stack)))
+        self.logger.info("Applying {} transformers ...".format(len(self.dataset.transformer_stack)))
 
         self.dataset.transformer_stack.fit(X_train, y_train)
 
@@ -52,7 +54,7 @@ class Trainer:
         X_test = self.dataset.transformer_stack.transform(X_test)
         X_val = self.dataset.transformer_stack.transform(X_val)
 
-        logger.info("Fitting model with {} samples ...".format(count(X_train)))
+        self.logger.info("Fitting model with {} samples ...".format(count(X_train)))
 
         val_data = None
 
@@ -68,10 +70,11 @@ class Trainer:
 
         if self.training.samples.test > 0:
 
-            logger.info("Evaluating model ...")
+            self.logger.info("Evaluating model with {} samples".format(count(X_test)))
 
             test_results = self.model.model.evaluate(X_test, y_test)
 
             pprint(test_results)
 
+            self.logger.info("Logging metrics to {} trackers".format(len(self.tracking.tracker_list)))
             self.tracking.tracker_list.log_metrics(test_results, prefix="test_")

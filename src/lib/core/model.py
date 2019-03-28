@@ -10,6 +10,7 @@ from pydoc import locate
 
 from keras import models, layers
 
+from ..logger import get_logger
 from ..models import KerasModel
 from ..utils.io_utils import read_from_json
 
@@ -56,6 +57,8 @@ class Model:
     def __init__(self, input_shape, description=None, compilation=None, model=None,
                  network=None, hyperparameters=None):
 
+        self.logger = get_logger(prefix=self)
+
         hyperparameters = hyperparameters or {}
 
         if model is not None:
@@ -71,6 +74,7 @@ class Model:
         self.compilation = None
 
         if isinstance(self.model, KerasModel):
+            self.logger.info("Compiling Keras model")
             self.compilation = ModelCompilation(**compilation)
             self.model.compile(loss=self.compilation.loss, optimizer=self.compilation.optimizer,
                                metrics=self.compilation.metrics)
@@ -93,6 +97,7 @@ class Model:
         return locate(application_loc)
 
     def __build_keras_model_from_network(self, input_shape, network):
+        self.logger.info("Building Keras model from network specification")
         input_layer = layers.Input(shape=input_shape)
 
         output_layer = input_layer

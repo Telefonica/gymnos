@@ -8,7 +8,7 @@ import traceback
 
 from uuid import uuid4
 
-from lib.logger import logger
+from lib.logger import get_logger
 from lib.trainer import Trainer
 from lib.core.model import Model
 from lib.core.dataset import Dataset
@@ -23,10 +23,11 @@ LOGGING_CONFIG_PATH = os.path.join("config", "logging.json")
 
 def setup_logging():
     console_handler = logging.StreamHandler()
-    console_handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
+    console_handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(prefix)s - %(message)s"))
 
-    logger.setLevel(logging.DEBUG)
-    logger.addHandler(console_handler)
+    gymnos_logger = logging.getLogger("gymnos")
+    gymnos_logger.setLevel(logging.DEBUG)
+    gymnos_logger.addHandler(console_handler)
 
 
 if __name__ == "__main__":
@@ -46,7 +47,9 @@ if __name__ == "__main__":
 
     setup_logging()
 
-    logger.info("-" * 10 + " GYMNOS ENVIRONMENT STARTED " + "-" * 10)
+    logger = get_logger(prefix="Gymnosd")
+
+    logger.info("Starting gymnos environment ...")
 
     os.makedirs(cache_config["datasets"], exist_ok=True)
 

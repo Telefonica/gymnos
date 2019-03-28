@@ -8,7 +8,7 @@ import os
 
 from pydoc import locate
 
-from ..logger import logger
+from ..logger import get_logger
 from ..utils.io_utils import read_from_json
 
 CALLBACKS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "callbacks.json")
@@ -17,10 +17,11 @@ CALLBACKS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "v
 class TrainingSamples:
 
     def __init__(self, fit, test=0, val=0):
+        self.logger = get_logger(prefix=self)
         if fit + test + val > 1.0:
             raise ValueError("Samples of Fit + test + val must be lower than 1.0")
         if fit + test + val < 1.0:
-            logger.warning("Samples of Fit + test + val is lower than 1.0")
+            self.logger.warning("Samples of Fit + test + val is lower than 1.0")
 
         if fit <= 0.0:
             raise ValueError("Fit samples must be greater than 0")

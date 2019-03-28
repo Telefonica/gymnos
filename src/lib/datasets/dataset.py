@@ -8,7 +8,7 @@ import os
 
 from tempfile import TemporaryDirectory
 
-from ..logger import logger
+from ..logger import get_logger
 from ..services.hdf_manager import HDFManager
 from ..services.dataset_downloader import KaggleDatasetDownloader
 from ..services.dataset_downloader import PublicDatasetDownloader
@@ -21,6 +21,8 @@ class Dataset:
             self.cache = HDFManager(os.path.join(cache_dir, self.__class__.__name__ + ".h5"))
         else:
             self.cache = None
+
+        self.logger = get_logger(prefix=self)
 
     def download(self, download_dir):
         # Implement to give instructions about how to download the dataset.
@@ -37,21 +39,21 @@ class Dataset:
         # Download data, read data, save data to cache if defined, return data (features and labels).
         # If data exists on cache, retrieve data from cache.
         if self.cache is not None and self.cache.exists():
-            logger.info("Dataset already exists on cache. Retrieving ...")
+            self.logger.info("Dataset already exists on cache. Retrieving ...")
             X = self.cache.retrieve("X")
             y = self.cache.retrieve("y")
 
             return X, y
 
         with TemporaryDirectory() as temp_dir:
-            logger.info("Downloading dataset ...")
+            self.logger.info("Downloading dataset ...")
             self.download(temp_dir)
 
-            logger.info("Reading dataset ...")
+            self.logger.info("Reading dataset ...")
             X, y = self.read(temp_dir)
 
         if self.cache is not None:
-            logger.info("Saving dataset to cache ({}) ...".format(self.cache.file_path))
+            self.logger.info("Saving dataset to cache ...")
             self.cache.save("X", X)
             self.cache.save("y", y)
 
@@ -117,4 +119,4 @@ class LibraryDataset(Dataset):
 
     def download(self, download_dir):
         # Download is handled by library
-        logger.info("Dataset found on Library")
+        self.logger.info("Retrieving dataset from library ...")

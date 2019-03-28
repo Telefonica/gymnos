@@ -8,9 +8,11 @@ import os
 import math
 import requests
 
+from ..logger import get_logger
+
 from tqdm import tqdm
 from kaggle import api
-from .decompressor import Decompressor
+from .decompressor import decompress, can_be_decompressed
 
 
 class KaggleDatasetDownloader:
@@ -27,8 +29,11 @@ class KaggleDatasetDownloader:
             msg += "You need to provide KAGGLE_USERNAME and KAGGLE_KEY"
             raise Exception(msg)
 
+        self.logger = get_logger(prefix=self)
+
     def download(self, dataset_or_competition_name, filenames=None, save_dir=None, unzip=True, verbose=True):
         if save_dir is None:
+            self.logger.debug("No saving directory provided. Saving to current directory")
             save_dir = os.getcwd()
 
         if filenames is None:
@@ -42,6 +47,7 @@ class KaggleDatasetDownloader:
         return "/" not in dataset_name
 
     def __download_whole(self, dataset_name, save_dir, unzip=True, verbose=True):
+        self.logger.info("Downloading from {}".format(dataset_name))
         if self.__is_a_competition(dataset_name):
             self.__competition_download(dataset_name, save_dir, unzip=unzip, verbose=verbose)
         else:
@@ -68,6 +74,7 @@ class KaggleDatasetDownloader:
             self.__competition_download_file(competition_name, filename, save_dir, unzip, verbose)
 
     def __download_file(self, dataset_name, filename, save_dir, unzip=True, verbose=False):
+        self.logger.info("Downloading {} from {}".format(filename, dataset_name))
         if self.__is_a_competition(dataset_name):
             self.__competition_download_file(dataset_name, filename, save_dir, unzip=True, verbose=False)
         else:
@@ -85,7 +92,8 @@ class KaggleDatasetDownloader:
         file_exists = os.path.isfile(file_path)
 
         if file_exists:
-            Decompressor.extract(file_path, delete_compressed=True)
+            self.logger.info("Decompressing and deleting {}".format(file_path))
+            decompress(file_path, delete_compressed=True)
 
 
 class PublicDatasetDownloader:
@@ -93,8 +101,12 @@ class PublicDatasetDownloader:
     Download Datasets from public URLs
     """
 
+    def __init__(self):
+        self.logger = get_logger(prefix=self)
+
     def download(self,  urls, save_dir=None, unzip=True, verbose=True):
         if save_dir is None:
+            self.logger.debug("No saving directory provided. Saving to current directory")
             save_dir = os.getcwd()
 
         if isinstance(urls, (list, tuple)):
@@ -103,6 +115,7 @@ class PublicDatasetDownloader:
             self.__download_file(urls, save_dir, unzip=unzip, verbose=verbose)
 
     def __download_file(self, url, save_dir, unzip=True, verbose=False):
+        self.logger.info("Downloading file from url: {}".format(url))
         filename = os.path.basename(url)
         file_path = os.path.join(save_dir, filename)
         with requests.get(url, stream=True) as r, open(file_path, "wb") as f:
@@ -118,8 +131,9 @@ class PublicDatasetDownloader:
             for data in iterator:
                 f.write(data)
 
-        if Decompressor.is_compressed(filename):
-            Decompressor.extract(file_path)
+        if can_be_decompressed(filename):
+            self.logger.info("Decompressing {}".format(file_path))
+            decompress(file_path)
 
 
     def __download_files(self, urls, save_dir, unzip=True, verbose=False):
