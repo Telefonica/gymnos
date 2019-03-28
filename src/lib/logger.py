@@ -8,7 +8,7 @@ import logging
 
 
 def get_logger(prefix=None):
-    logger = logging.getLogger("gymnosd")
+    logger = logging.getLogger("gymnos")
 
     if prefix is None:
         prefix = ""  # default prefix
