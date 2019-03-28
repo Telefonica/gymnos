@@ -54,15 +54,15 @@ class ModelCompilation:
 
 class Model:
 
-    def __init__(self, input_shape, description=None, compilation=None, model=None,
+    def __init__(self, input_shape, description=None, compilation=None, name=None,
                  network=None, hyperparameters=None):
 
         self.logger = get_logger(prefix=self)
 
         hyperparameters = hyperparameters or {}
 
-        if model is not None:
-            ModelClass = self.__retrieve_model_from_id(model)
+        if name is not None:
+            ModelClass = self.__retrieve_model_from_id(name)
             self.model = ModelClass(input_shape, **hyperparameters)
         elif network is not None:
             self.model = self.__build_keras_model_from_network(input_shape, network)

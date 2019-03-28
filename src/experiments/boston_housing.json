@@ -16,7 +16,7 @@
         }
     },
     "dataset": {
-        "id": "boston_housing",
+        "name": "boston_housing",
         "transformers": [
             {
                 "type": "standard_scaler"

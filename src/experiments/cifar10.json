@@ -19,7 +19,7 @@
         }
     },
     "dataset": {
-        "id": "cifar10"
+        "name": "cifar10"
     },
     "training": {
         "samples": {

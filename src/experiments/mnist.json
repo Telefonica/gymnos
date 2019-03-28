@@ -20,7 +20,7 @@
         ]
     },
     "dataset": {
-        "id": "mnist",
+        "name": "mnist",
         "preprocessors": [
             {
                 "type": "grayscale_to_color"

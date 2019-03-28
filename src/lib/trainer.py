@@ -24,9 +24,9 @@ class Trainer:
         self.logger = get_logger(prefix=self)
 
     def run(self, seed=0):
-        self.logger.info("Running experiment: {} ...".format(self.experiment.id))
+        self.logger.info("Running experiment: {} ...".format(self.experiment.creation_date))
 
-        self.logger.info("Loading dataset: {} ...".format(self.dataset.id))
+        self.logger.info("Loading dataset: {} ...".format(self.dataset.name))
         X, y = self.dataset.dataset.load_data()
 
         self.logger.info("Splitting dataset -> Fit: {} | Test: {} | Val: {} ...".format(

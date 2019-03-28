@@ -4,10 +4,13 @@
 #
 #
 
+from datetime import datetime
+
 
 class Experiment:
 
-    def __init__(self, id, name=None, tags=None):
-        self.id = id
+    def __init__(self, name=None, tags=None):
         self.name = name
         self.tags = tags
+
+        self.creation_date = datetime.now()

@@ -22,7 +22,7 @@
         }
     },
     "dataset": {
-        "id": "tiny_imagenet",
+        "name": "tiny_imagenet",
         "preprocessors": [
             {
                 "type": "divide",

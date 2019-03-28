@@ -19,14 +19,14 @@ PREPROCESSORS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), ".."
 
 class Dataset:
 
-    def __init__(self, id, preprocessors=None, transformers=None, cache_dir=None):
+    def __init__(self, name, preprocessors=None, transformers=None, cache_dir=None):
         preprocessors = preprocessors or []
         transformers = transformers or []
 
-        DatasetClass = self.__retrieve_dataset_from_id(id)
-        self.dataset = DatasetClass(cache_dir=cache_dir)
+        self.name = name
 
-        self.id = id
+        DatasetClass = self.__retrieve_dataset_from_id(name)
+        self.dataset = DatasetClass(cache_dir=cache_dir)
 
         self.preprocessor_stack = PreprocessorStack()
         for preprocessor_config in preprocessors:

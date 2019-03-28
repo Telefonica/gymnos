@@ -6,10 +6,10 @@
     "model": {
         "description": "Convolutional model for Dogs vs Cats dataset",
         "input_shape": [120, 120, 3],
-        "model": "dogs_vs_cats_cnn"
+        "name": "dogs_vs_cats_cnn"
     },
     "dataset": {
-        "id": "dogs_vs_cats",
+        "name": "dogs_vs_cats",
         "preprocessors": [
             {
                 "type": "image_resize",

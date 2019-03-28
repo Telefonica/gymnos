@@ -6,8 +6,6 @@ import logging
 import argparse
 import traceback
 
-from uuid import uuid4
-
 from lib.logger import get_logger
 from lib.trainer import Trainer
 from lib.core.model import Model
@@ -54,7 +52,7 @@ if __name__ == "__main__":
     os.makedirs(cache_config["datasets"], exist_ok=True)
 
     trainer = Trainer(
-        experiment=Experiment(id=uuid4(), **training_config["experiment"]),
+        experiment=Experiment(**training_config["experiment"]),
         model=Model(**training_config["model"]),
         dataset=Dataset(cache_dir=cache_config["datasets"], **training_config["dataset"]),
         training=Training(**training_config["training"]),
