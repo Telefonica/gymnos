@@ -46,12 +46,10 @@
     "tracking": {
         "trackers": [
             {
-                "type": "tensorboard",
-                "logdir": "tensorboard"
+                "type": "tensorboard"
             },
             {
-                "type": "mlflow",
-                "run_name": "tiny_imagenet"
+                "type": "mlflow"
             }
         ]
     }

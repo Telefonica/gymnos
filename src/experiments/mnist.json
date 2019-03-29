@@ -56,16 +56,10 @@
         },
         "trackers": [
             {
-                "type": "tensorboard",
-                "logdir": "tensorboard"
+                "type": "tensorboard"
             },
             {
-                "type": "mlflow",
-                "run_name": "mnist-vgg16"
-            },
-            {
-                "type": "json",
-                "file_path": "results.json"
+                "type": "mlflow"
             }
         ]
     }

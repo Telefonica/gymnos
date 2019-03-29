@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 
 import os
-import json
+import copy
+import shutil
 import logging
 import argparse
 import traceback
@@ -14,18 +15,10 @@ from lib.core.training import Training
 from lib.core.session import Session
 from lib.core.tracking import Tracking
 from lib.core.experiment import Experiment
+from lib.utils.io_utils import save_to_json, read_from_json
 
 CACHE_CONFIG_PATH = os.path.join("config", "cache.json")
 LOGGING_CONFIG_PATH = os.path.join("config", "logging.json")
-
-
-def setup_logging():
-    console_handler = logging.StreamHandler()
-    console_handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(prefix)s - %(message)s"))
-
-    gymnos_logger = logging.getLogger("gymnos")
-    gymnos_logger.setLevel(logging.DEBUG)
-    gymnos_logger.addHandler(console_handler)
 
 
 if __name__ == "__main__":
@@ -34,16 +27,13 @@ if __name__ == "__main__":
                         action="store", required=True)
     args = parser.parse_args()
 
-    with open(args.training_config) as f:
-        training_config = json.load(f)
+    training_config = read_from_json(args.training_config)
+    training_config_copy = copy.deepcopy(training_config)
 
-    with open(CACHE_CONFIG_PATH) as f:
-        cache_config = json.load(f)
+    cache_config = read_from_json(CACHE_CONFIG_PATH)
+    logging_config = read_from_json(LOGGING_CONFIG_PATH)
 
-    with open(LOGGING_CONFIG_PATH) as f:
-        logging_config = json.load(f)
-
-    setup_logging()
+    logging.config.dictConfig(logging_config)
 
     logger = get_logger(prefix="Gymnosd")
 
@@ -61,7 +51,14 @@ if __name__ == "__main__":
     )
 
     try:
-        trainer.run()
+        execution_path = trainer.run()
+
+        # save original config to execution path
+        save_to_json(os.path.join(execution_path, "config.json"), training_config_copy)
+        # save logs to execution path
+        shutil.move(logging_config["handlers"]["file_handler"]["filename"], os.path.join(execution_path, "logs.log"))
+
+        logger.info("Success! Execution saved ({})".format(execution_path))
     except Exception as e:
         logger.error("Exception ocurred: {}".format(e))
         traceback.print_exc()

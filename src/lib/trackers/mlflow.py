@@ -13,9 +13,8 @@ from .tracker import Tracker
 
 class MLFlow(Tracker):
 
-    def __init__(self, run_name=None, experiment_name=None, source_name=None, logdir=None):
-        if logdir is not None:
-            mlflow.set_tracking_uri(logdir)
+    def __init__(self, logdir, run_name=None, experiment_name=None, source_name=None):
+        mlflow.set_tracking_uri(logdir)
 
         experiment_id = None
         if experiment_name is not None:

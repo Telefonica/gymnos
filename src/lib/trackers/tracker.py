@@ -7,6 +7,7 @@
 import numbers
 
 from keras import callbacks
+from collections.abc import Iterable
 
 
 class Tracker:
@@ -30,11 +31,18 @@ class Tracker:
     def log_metric(self, name, value, step=None):
         pass
 
+    def log_metric_list(self, name, metric_list):
+        for step, val in enumerate(metric_list):
+            self.log_metric(name, val, step)
+
     def log_metrics(self, dic, prefix=None, step=None):
         prefix = prefix if prefix is not None else ""
 
         for (name, value) in dic.items():
-            self.log_metric(prefix + name, value, step)
+            if isinstance(value, Iterable):
+                self.log_metric_list(prefix + name, value)
+            else:
+                self.log_metric(prefix + name, value, step)
 
     def log_param(self, name, value, step=None):
         pass

@@ -8,7 +8,7 @@ import os
 
 from pydoc import locate
 
-from ..trackers import TrackerList
+from ..trackers import TrackerList, Tensorboard, MLFlow
 
 from ..utils.io_utils import read_from_json
 
@@ -24,12 +24,23 @@ class Tracking:
         self.log_model_metrics = log_model_metrics
         self.params = params or {}
 
-        self.tracker_list = TrackerList()
+        self.trackers = TrackerList()
+        self.trackers_config = trackers
 
-        for tracker_config in trackers:
-            TrackerClass = self.__retrieve_tracker_from_type(tracker_config.pop("type"))
+
+    def configure_trackers(self, logdir, run_name):
+        for tracker_config in self.trackers_config:
+            tracker_type = tracker_config.pop("type")
+
+            TrackerClass = self.__retrieve_tracker_from_type(tracker_type)
+            if issubclass(TrackerClass, Tensorboard):
+                tracker_config["logdir"] = os.path.join(logdir, "tensorboard", run_name)
+            elif issubclass(TrackerClass, MLFlow):
+                tracker_config["run_name"] = run_name
+                tracker_config["logdir"] = os.path.join(logdir, "mlruns")
+
             tracker = TrackerClass(**tracker_config)
-            self.tracker_list.add(tracker)
+            self.trackers.add(tracker)
 
 
     def __retrieve_tracker_from_type(self, tracker_type):
@@ -39,6 +50,6 @@ class Tracking:
 
 
     def get_keras_callbacks(self):
-        callbacks = self.tracker_list.get_keras_callbacks(log_params=self.log_model_params,
-                                                          log_metrics=self.log_model_metrics)
+        callbacks = self.trackers.get_keras_callbacks(log_params=self.log_model_params,
+                                                      log_metrics=self.log_model_metrics)
         return callbacks

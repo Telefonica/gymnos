@@ -26,10 +26,10 @@ class HDFManager:
     def retrieve(self, key):
         try:
             dataset = self.retrieve_pandas(key)
-            self.logger.debug("Retrieving Pandas dataset from HDF5 {} key ({})".format(key, self.file_path))
+            self.logger.debug("Retrieved Pandas dataset from HDF5 {} key ({})".format(key, self.file_path))
         except TypeError:
             dataset = self.retrieve_numpy(key)
-            self.logger.debug("Retrieving Numpy dataset from HDF5 {} key ({})".format(key, self.file_path))
+            self.logger.debug("Retrieved Numpy dataset from HDF5 {} key ({})".format(key, self.file_path))
         return dataset
 
     def retrieve_pandas(self, key):

@@ -4,10 +4,15 @@
 #
 #
 
+import os
+
 from pprint import pprint
 
+from . import trackers
 from .logger import get_logger
+from .utils.timing import elapsed_time
 from .utils.iterator_utils import count
+from .utils.io_utils import save_to_json
 from .utils.ml_utils import train_val_test_split
 
 
@@ -23,11 +28,39 @@ class Trainer:
 
         self.logger = get_logger(prefix=self)
 
+
     def run(self, seed=0):
         self.logger.info("Running experiment: {} ...".format(self.experiment.creation_date))
 
+        run_elapsed = {}
+
+        # CREATE DIRECTORIES TO STORE TRAININGS EXECUTIONS
+
+        trainings_dataset_path = os.path.join("trainings", self.dataset.name)
+        trainings_dataset_trackings_path = os.path.join(trainings_dataset_path, "trackings")
+        trainings_dataset_execution_path = os.path.join(trainings_dataset_path, "executions",
+                                                        self.experiment.creation_date.strftime("%H-%M-%S__%m-%d-%Y"))
+        os.makedirs(trainings_dataset_execution_path, exist_ok=True)
+        self.logger.info("Creating directory to save training results ({})".format(trainings_dataset_execution_path))
+
+        # CONFIGURE TRACKERS AND CALLBACKS TO STORE ARTIFACTS TO CURRENT EXECUTION DIRECTORY
+
+        self.tracking.configure_trackers(logdir=trainings_dataset_trackings_path,
+                                         run_name=self.experiment.creation_date.strftime("%H-%M-%S__%m-%d-%Y"))
+        self.training.configure_callbacks(base_dir=os.path.join(trainings_dataset_execution_path, "callbacks"))
+
+        # LOG HYPERPARAMETERS
+        self.tracking.trackers.log_params(self.model.hyperparameters)
+
+        # LOAD DATASET AND SPLIT IT FOR CROSS VALIDATION
+
         self.logger.info("Loading dataset: {} ...".format(self.dataset.name))
-        X, y = self.dataset.dataset.load_data()
+
+        with elapsed_time() as elapsed:
+            X, y = self.dataset.dataset.load_data()
+
+        run_elapsed["load_data"] = elapsed.s
+        self.logger.debug("Loading data took {:.2f}s".format(elapsed.s))
 
         self.logger.info("Splitting dataset -> Fit: {} | Test: {} | Val: {} ...".format(
                          self.training.samples.fit,  self.training.samples.test, self.training.samples.val))
@@ -40,19 +73,38 @@ class Trainer:
 
         self.logger.info("Applying {} preprocessors ...".format(len(self.dataset.preprocessor_stack)))
 
-        X_train = self.dataset.preprocessor_stack.transform(X_train)
-        X_test = self.dataset.preprocessor_stack.transform(X_test)
-        X_val = self.dataset.preprocessor_stack.transform(X_val)
+        with elapsed_time() as elapsed:
+            X_train = self.dataset.preprocessor_stack.transform(X_train)
+            X_test = self.dataset.preprocessor_stack.transform(X_test)
+            X_val = self.dataset.preprocessor_stack.transform(X_val)
+
+        run_elapsed["transform_preprocessors"] = elapsed.s
+        self.logger.debug("Preprocessing took {:.2f}s".format(elapsed.s))
 
         # APPLY TRANSFORMERS
 
         self.logger.info("Applying {} transformers ...".format(len(self.dataset.transformer_stack)))
 
-        self.dataset.transformer_stack.fit(X_train, y_train)
+        with elapsed_time() as elapsed:
+            self.dataset.transformer_stack.fit(X_train, y_train)
 
-        X_train = self.dataset.transformer_stack.transform(X_train)
-        X_test = self.dataset.transformer_stack.transform(X_test)
-        X_val = self.dataset.transformer_stack.transform(X_val)
+        run_elapsed["fit_transformers"] = elapsed.s
+        self.logger.debug("Fitting transformers to train dataset took {:.2f}s".format(elapsed.s))
+
+        with elapsed_time() as elapsed:
+            X_train = self.dataset.transformer_stack.transform(X_train)
+            X_test = self.dataset.transformer_stack.transform(X_test)
+            X_val = self.dataset.transformer_stack.transform(X_val)
+
+        run_elapsed["transform_transformers"] = elapsed.s
+        self.logger.debug("Transforming datasets took {:.2f}s".format(elapsed.s))
+
+        # DEFINE PLACEHOLDER TO KEEP TRAIN, TEST, VAL METRICS
+
+        history_tracker = trackers.History()
+        self.tracking.trackers.add(history_tracker)
+
+        # FIT MODEL
 
         self.logger.info("Fitting model with {} samples ...".format(count(X_train)))
 
@@ -61,20 +113,48 @@ class Trainer:
         if self.training.samples.val > 0:
             val_data = [X_val, y_val]
 
-        train_results = self.model.model.fit(X_train, y_train, batch_size=self.training.batch_size,
-                                             epochs=self.training.epochs, val_data=val_data,
-                                             callbacks=self.training.callbacks + self.tracking.get_keras_callbacks())
-        pprint(train_results)
+        with elapsed_time() as elapsed:
+            train_metrics = self.model.model.fit(X_train, y_train, batch_size=self.training.batch_size,
+                                                 epochs=self.training.epochs, val_data=val_data,
+                                                 callbacks=self.training.callbacks)
 
-        # EVALUATE MODEL IF TEST SAMPLES
+        run_elapsed["fit_model"] = elapsed.s
+        self.logger.debug("Fitting model took {:.2f}s".format(elapsed.s))
+
+        self.logger.info("Logging train metrics".format(len(self.tracking.trackers)))
+        self.tracking.trackers.log_metrics(train_metrics)
+        pprint(train_metrics)
+
+        # EVALUATE MODEL IF TEST SAMPLES EXIST
 
         if self.training.samples.test > 0:
 
             self.logger.info("Evaluating model with {} samples".format(count(X_test)))
 
-            test_results = self.model.model.evaluate(X_test, y_test)
+            with elapsed_time() as elapsed:
+                test_metrics = self.model.model.evaluate(X_test, y_test)
 
-            pprint(test_results)
+            run_elapsed["evaluate_model"] = elapsed.s
+            self.logger.debug("Evaluating model took {:.2f}s".format(elapsed.s))
 
-            self.logger.info("Logging metrics to {} trackers".format(len(self.tracking.tracker_list)))
-            self.tracking.tracker_list.log_metrics(test_results, prefix="test_")
+            pprint(test_metrics)
+
+            self.logger.info("Logging metrics".format(len(self.tracking.trackers)))
+            self.tracking.trackers.log_metrics(test_metrics, prefix="test_")
+
+        # Log additional params
+
+        self.tracking.trackers.log_params(self.tracking.params)
+
+        # SAVE MODEL
+
+        self.logger.info("Saving model")
+        self.model.model.save(trainings_dataset_execution_path, name="model")
+
+        metrics = dict(
+            elapsed=run_elapsed,
+            metrics=history_tracker.metrics,
+        )
+        save_to_json(os.path.join(trainings_dataset_execution_path, "metrics.json"), metrics)
+
+        return trainings_dataset_execution_path

@@ -7,6 +7,7 @@
 import os
 
 from pydoc import locate
+from keras import callbacks
 
 from ..logger import get_logger
 from ..utils.io_utils import read_from_json
@@ -31,19 +32,34 @@ class TrainingSamples:
         self.test = test
 
 
-
 class Training:
 
     def __init__(self, samples, batch_size=32, epochs=10, callbacks=None):
-        callbacks = callbacks or []
-
         self.epochs = epochs
         self.batch_size = batch_size
         self.samples = TrainingSamples(**samples)
 
         self.callbacks = []
-        for callback_config in callbacks:
-            CallbackClass = self.__retrieve_callback_from_type(callback_config.pop("type"))
+        self.callbacks_config = callbacks or []
+
+
+    def configure_callbacks(self, base_dir):
+        for callback_config in self.callbacks_config:
+            callback_type = callback_config.pop("type")
+            CallbackClass = self.__retrieve_callback_from_type(callback_type)
+
+            callback_dir = os.path.join(base_dir, callback_type)
+
+            if issubclass(CallbackClass, callbacks.TensorBoard):
+                os.makedirs(callback_dir, exist_ok=True)
+                callback_config["log_dir"] = os.path.join(callback_dir, callback_config["log_dir"])
+            elif issubclass(CallbackClass, callbacks.ModelCheckpoint):
+                os.makedirs(callback_dir, exist_ok=True)
+                callback_config["filepath"] = os.path.join(callback_dir, callback_config["filepath"])
+            elif issubclass(CallbackClass, callbacks.CSVLogger):
+                os.makedirs(callback_dir, exist_ok=True)
+                callback_config["filename"] = os.path.join(callback_dir, callback_config["filename"])
+
             callback = CallbackClass(**callback_config)
             self.callbacks.append(callback)
 

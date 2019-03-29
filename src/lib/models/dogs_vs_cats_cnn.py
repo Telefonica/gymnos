@@ -4,13 +4,14 @@
 #
 #
 
+import os
 import numpy as np
 import tensorflow as tf
 
 from tqdm import trange
 from pprint import pprint
-from keras.callbacks import History
 
+from .. import trackers
 from .model import Model
 
 
@@ -82,19 +83,11 @@ class DogsVsCatsCNN(Model):
 
 
     def fit(self, X, y, batch_size=32, epochs=1, callbacks=None, val_data=None, verbose=1):
-        callbacks = callbacks or []
-
-        history = History()
-
-        callbacks.append(history)
-
-        [cb.on_train_begin() for cb in callbacks]
+        history = trackers.History()
 
         # Iterate by epoch
         for epoch in range(epochs):
             print("Epoch {}/{}".format(epoch, epochs))
-
-            [cb.on_epoch_begin(epoch) for cb in callbacks]
 
             batch_pbar = trange(0, len(X), batch_size)
             # Iterate by batch
@@ -128,13 +121,11 @@ class DogsVsCatsCNN(Model):
                 y_pred = self.predict(val_data[0])
                 logs["val_acc"] = tf.metrics.accuracy(val_data[1], y_pred)
 
+            history.log_metrics(logs)
+
             pprint(logs)
 
-            [cb.on_epoch_end(epoch, logs=logs) for cb in callbacks]
-
-        [cb.on_train_end() for cb in callbacks]
-
-        return history.history
+        return history.metrics
 
 
     def predict(self, X, batch_size=32, verbose=0):
@@ -153,9 +144,8 @@ class DogsVsCatsCNN(Model):
 
     def restore(self, file_path):
         saver = tf.train.Saver()
-        saver.save(self.sess, file_path)
-
-
-    def save(self, file_path):
-        saver = tf.train.Saver()
         saver.restore(self.sess, file_path)
+
+    def save(self, directory, name="model"):
+        saver = tf.train.Saver()
+        saver.save(self.sess, os.path.join(directory, name))

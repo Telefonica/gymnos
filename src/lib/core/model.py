@@ -59,11 +59,11 @@ class Model:
 
         self.logger = get_logger(prefix=self)
 
-        hyperparameters = hyperparameters or {}
+        self.hyperparameters = hyperparameters or {}
 
         if name is not None:
             ModelClass = self.__retrieve_model_from_id(name)
-            self.model = ModelClass(input_shape, **hyperparameters)
+            self.model = ModelClass(input_shape, **self.hyperparameters)
         elif network is not None:
             self.model = self.__build_keras_model_from_network(input_shape, network)
         else:

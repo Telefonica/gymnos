@@ -4,6 +4,7 @@
 #
 #
 
+import os
 import joblib
 
 from keras import models
@@ -26,7 +27,7 @@ class Model:
     def restore(self, file_path):
         raise NotImplementedError()
 
-    def save(self, file_path):
+    def save(self, directory, name="model"):
         raise NotImplementedError()
 
 
@@ -52,8 +53,8 @@ class KerasModel(Model):
         results = self.model.evaluate(X, y, batch_size=batch_size, verbose=verbose)
         return dict(zip(self.model.metrics_names, results))
 
-    def save(self, file_path):
-        self.model.save(file_path)
+    def save(self, directory, name="model"):
+        self.model.save(os.path.join(directory, name + ".h5"))
 
     def restore(self, file_path):
         self.model = models.load_model(file_path)
@@ -72,8 +73,8 @@ class ScikitLearnModel(Model):
     def predict(self, X, batch_size=32, verbose=0):
         self.model.predict(X)
 
-    def save(self, file_path):
-        joblib.dump(self.model, file_path)
+    def save(self, directory, name="model"):
+        joblib.dump(self.model, os.path.join(directory, name + ".joblib"))
 
     def restore(self, file_path):
         self.model = joblib.load(file_path)

@@ -39,16 +39,10 @@
     "tracking": {
         "trackers": [
             {
-                "type": "tensorboard",
-                "logdir": "tensorboard"
+                "type": "tensorboard"
             },
             {
-                "type": "mlflow",
-                "run_name": "dogs_vs_cats"
-            },
-            {
-                "type": "json",
-                "file_path": "results.json"
+                "type": "mlflow"
             }
         ]
     }
