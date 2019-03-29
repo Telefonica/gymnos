@@ -26,10 +26,10 @@ class HDFManager:
     def retrieve(self, key):
         try:
             dataset = self.retrieve_pandas(key)
-            self.logger.info("Retrieving Pandas dataset from HDF5 ({})".format(self.file_path))
+            self.logger.debug("Retrieving Pandas dataset from HDF5 {} key ({})".format(key, self.file_path))
         except TypeError:
             dataset = self.retrieve_numpy(key)
-            self.logger.info("Retrieving Numpy dataset from HDF5 ({})".format(self.file_path))
+            self.logger.debug("Retrieving Numpy dataset from HDF5 {} key ({})".format(key, self.file_path))
         return dataset
 
     def retrieve_pandas(self, key):
@@ -41,10 +41,10 @@ class HDFManager:
 
     def save(self, key, data):
         if isinstance(data, (pd.Series, pd.DataFrame)):
-            self.logger.info("Saving Pandas dataset to HDF5 ({})".format(self.file_path))
+            self.logger.debug("Saving Pandas dataset to HDF5 {} key ({})".format(key, self.file_path))
             self.save_pandas(key, data)
         else:
-            self.logger.info("Saving Numpy dataset to HDF5 ({})".format(self.file_path))
+            self.logger.debug("Saving Numpy dataset to HDF5 {} key ({})".format(key, self.file_path))
             self.save_numpy(key, data)
 
     def save_numpy(self, key, data):
