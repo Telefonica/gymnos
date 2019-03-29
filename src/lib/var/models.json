@@ -1,6 +1,3 @@
 {
-    "dogs_vs_cats_cnn": "lib.models.dogs_vs_cats_cnn.DogsVsCatsCNN",
-    "nasnet": "lib.models.nasnet.NASNet",
-    "vgg16": "lib.models.vgg16.VGG16",
-    "svc": "lib.models.svc.SVC",
+    "dogs_vs_cats_cnn": "lib.models.dogs_vs_cats_cnn.DogsVsCatsCNN"
 }
