@@ -13,7 +13,7 @@ from tqdm import tqdm
 from datetime import datetime
 from sklearn.preprocessing import MultiLabelBinarizer
 
-from ..logger import logger
+from ..logger import get_logger
 from .dataset import PublicDataset
 from ..utils.io_utils import read_from_json
 
@@ -34,6 +34,11 @@ class MTE(PublicDataset):
 
     public_dataset_files = ("http://ottcache.dof6.com/vod/yomvi.svc/webplayer.hls/ANONIMO/epg?" +
                             "from={}&span=7&network=yomvi").format(datetime.now().strftime("%Y-%m-%dT%H:%M:%S"))
+
+    def __init__(self, cache_dir=None):
+        super().__init__(cache_dir=cache_dir)
+
+        self.logger = get_logger(prefix=self)
 
     def read(self, download_dir):
         epgs_file_paths = [os.path.join(download_dir, epg) for epg in os.listdir(download_dir)]
@@ -73,7 +78,7 @@ class MTE(PublicDataset):
 
         if subscriptions.isna().sum() > 0:
             unknown_genres = genres[subscriptions.isna()].unique().tolist()
-            logger.warning("Unknown subscription for the following genres: {}".format(unknown_genres))
+            self.logger.warning("Unknown subscription for the following genres: {}".format(unknown_genres))
 
         return subscriptions
 
@@ -83,7 +88,7 @@ class MTE(PublicDataset):
             res = requests.get(url, params=params)
             return res.json()
         except (requests.exceptions.RequestException, json.decoder.JSONDecodeError) as err:
-            logger.warning("{}: {}".format(url, err))
+            self.logger.warning("{}: {}".format(url, err))
             return None
 
 
@@ -115,7 +120,7 @@ class MTE(PublicDataset):
                     continue
 
                 if not isinstance(sheet, dict):
-                    logger.warning("Error downloading {}: {}".format(sheet_url, sheet))
+                    self.logger.warning("Error downloading {}: {}".format(sheet_url, sheet))
                     continue
 
                 df.loc[df_idx] = self.__parse_sheet(sheet)
