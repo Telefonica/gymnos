@@ -17,17 +17,13 @@ pool:
 
 steps:
 - script: |
-    echo Generate docker image from Dockerfile.devel
-    docker build -t $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(develImageName)-latest -f Dockerfile.devel .
-    echo Generate docker image from Dockerfile.devel-gpu
-    docker build -t $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(develImageName)-gpu-latest -f Dockerfile.devel-gpu .
-    echo Generate docker image from Dockerfile.prod-gpu
-    docker build -t $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(prodImageName)-gpu-latest -f Dockerfile.prod-gpu .
-    echo Push images to DockerHub
+    echo Generate docker images
+    docker build -t $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName)-latest -f Dockerfile .
+    docker build -t $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName)-gpu-latest -f Dockerfile.gpu .
+    echo Push images to Telefonica artifactory
     docker login -u $(dockerId) -p $(dockerPassword) $(telefonicaDockerHubDomain)
-    docker push $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(develImageName)-latest
-    docker push $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(develImageName)-gpu-latest
-    docker push $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(prodImageName)-gpu-latest
+    docker push $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName)-latest
+    docker push $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName)-gpu-latest
     echo Clean docker images from agent
     docker rmi $(docker images | grep gymnos | tr -s ' ' | cut -d ' ' -f 3)
   displayName: 'Generate docker images and push it to DockerHub'
