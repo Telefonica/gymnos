@@ -71,8 +71,8 @@ class KaggleDataset(Dataset):
     kaggle_dataset_name = None  # required field
     kaggle_dataset_files = None  # optional field | specify only if we want to download specific files
 
-    def __init__(self, cache=None):
-        super().__init__(cache=cache)
+    def __init__(self, cache_dir=None):
+        super().__init__(cache_dir=cache_dir)
 
         if self.kaggle_dataset_name is None:
             raise ValueError("kaggle_dataset_name cannot be None")
@@ -94,8 +94,8 @@ class PublicDataset(Dataset):
 
     public_dataset_files = None  # required field | urls of files to download
 
-    def __init__(self, cache=None):
-        super().__init__(cache=cache)
+    def __init__(self, cache_dir=None):
+        super().__init__(cache_dir=cache_dir)
 
         if self.public_dataset_files is None:
             raise ValueError("public_dataset_files cannot be None")
