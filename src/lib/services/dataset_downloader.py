@@ -11,7 +11,7 @@ import requests
 from ..logger import get_logger
 
 from tqdm import tqdm
-from kaggle import api
+from pydoc import locate
 from .decompressor import decompress, can_be_decompressed
 
 
@@ -26,8 +26,10 @@ class KaggleDatasetDownloader:
 
         if not has_username or not has_api_key:
             msg  = "Environment variables for Kaggle API not found."
-            msg += "You need to provide KAGGLE_USERNAME and KAGGLE_KEY"
+            msg += "You need to provide KAGGLE_USERNAME and KAGGLE_KEY to download a Kaggle dataset"
             raise Exception(msg)
+
+        self.kaggle_api = locate("kaggle.api")
 
         self.logger = get_logger(prefix=self)
 
@@ -54,10 +56,10 @@ class KaggleDatasetDownloader:
             self.__dataset_download(dataset_name, save_dir, unzip=unzip, verbose=verbose)
 
     def __dataset_download(self, dataset_name, save_dir, unzip=True, verbose=True):
-        api.dataset_download_files(dataset_name, path=save_dir, unzip=unzip, quiet=not verbose)
+        self.kaggle_api.dataset_download_files(dataset_name, path=save_dir, unzip=unzip, quiet=not verbose)
 
     def __competition_download(self, competition_name, save_dir, unzip=True, verbose=True):
-        api.competition_download_files(competition_name, path=save_dir, unzip=unzip, quiet=not verbose)
+        self.kaggle_api.competition_download_files(competition_name, path=save_dir, unzip=unzip, quiet=not verbose)
 
     def __download_files(self, dataset_name, filenames, save_dir, unzip=True, verbose=True):
         if self.__is_a_competition(dataset_name):
@@ -81,11 +83,11 @@ class KaggleDatasetDownloader:
             self.dataset_download_file(dataset_name, filename, save_dir, unzip=True, verbose=False)
 
     def __dataset_download_file(self, dataset_name, filename, save_dir, unzip=True, verbose=False):
-        api.dataset_download_file(dataset_name, filename, save_dir, quiet=not verbose)
+        self.kaggle_api.dataset_download_file(dataset_name, filename, save_dir, quiet=not verbose)
         self.__unzip_and_delete_if_needed(os.path.join(save_dir, filename))
 
     def __competition_download_file(self, competition_name, filename, save_dir, unzip=True, verbose=False):
-        api.competition_download_file(competition_name, filename, save_dir, quiet=not verbose)
+        self.kaggle_api.competition_download_file(competition_name, filename, save_dir, quiet=not verbose)
         self.__unzip_and_delete_if_needed(os.path.join(save_dir, filename))
 
     def __unzip_and_delete_if_needed(self, file_path):

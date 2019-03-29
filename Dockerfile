@@ -6,10 +6,6 @@ WORKDIR /home/gymnos
 
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
-ENV GIT_PYTHON_REFRESH quiet
-ENV KAGGLE_USERNAME ""
-ENV KAGGLE_KEY ""
-ENV TF_CPP_MIN_LOG_LEVEL 2  # supress tensorflow info output, only logs errors
 
 # Install OpenCV libraries
 RUN \
@@ -38,5 +34,8 @@ VOLUME ["/home/gymnos/cache"]
 COPY src ./
 
 RUN mkdir logs
+
+ENV GIT_PYTHON_REFRESH quiet
+ENV TF_CPP_MIN_LOG_LEVEL 2  # supress tensorflow info output, only logs errors
 
 ENTRYPOINT ["python3", "-m", "bin.scripts.gymnosd"]

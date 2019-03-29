@@ -6,6 +6,7 @@
 
 import os
 
+from pydoc import locate
 from tempfile import TemporaryDirectory
 
 from ..logger import get_logger
@@ -77,11 +78,19 @@ class KaggleDataset(Dataset):
         if self.kaggle_dataset_name is None:
             raise ValueError("kaggle_dataset_name cannot be None")
 
+        self.logger = get_logger(prefix=self)
+
         self.downloader = KaggleDatasetDownloader()
 
     def download(self, download_dir):
-        self.downloader.download(self.kaggle_dataset_name, self.kaggle_dataset_files,
-                                 download_dir, verbose=True)
+        kaggle_api_exception = locate("kaggle.rest.ApiException")
+
+        try:
+            self.downloader.download(self.kaggle_dataset_name, self.kaggle_dataset_files,
+                                     download_dir, verbose=True)
+        except kaggle_api_exception as exception:
+            self.logger.error("Error downloading Kaggle dataset. Check your credentials.")
+            raise exception
 
 
 class PublicDataset(Dataset):
