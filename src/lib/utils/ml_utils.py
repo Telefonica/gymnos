@@ -12,7 +12,6 @@ def train_val_test_split(X, y, train_size=0.6, val_size=0.2, test_size=0.2, seed
     len_data = len(X)
 
     if len(X.shape)==1:
-        print(str(y))
         return (X, X, X), (y, y, y)
 
     train_num_samples = int(len_data * train_size)
