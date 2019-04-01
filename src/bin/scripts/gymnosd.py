@@ -20,6 +20,9 @@ from lib.utils.io_utils import save_to_json, read_from_json
 CACHE_CONFIG_PATH = os.path.join("config", "cache.json")
 LOGGING_CONFIG_PATH = os.path.join("config", "logging.json")
 
+TRAINING_LOG_FILENAME = "execution.log"
+TRAINING_CONFIG_FILENAME = "training_config.json"
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -35,7 +38,7 @@ if __name__ == "__main__":
 
     logging.config.dictConfig(logging_config)
 
-    logger = get_logger(prefix="Gymnosd")
+    logger = get_logger(prefix="Main")
 
     logger.info("Starting gymnos environment ...")
 
@@ -54,9 +57,10 @@ if __name__ == "__main__":
         execution_path = trainer.run()
 
         # save original config to execution path
-        save_to_json(os.path.join(execution_path, "config.json"), training_config_copy)
+        save_to_json(os.path.join(execution_path, TRAINING_CONFIG_FILENAME), training_config_copy)
         # save logs to execution path
-        shutil.move(logging_config["handlers"]["file_handler"]["filename"], os.path.join(execution_path, "logs.log"))
+        shutil.move(logging_config["handlers"]["file_handler"]["filename"], os.path.join(execution_path,
+                                                                                         TRAINING_LOG_FILENAME))
 
         logger.info("Success! Execution saved ({})".format(execution_path))
     except Exception as e:
