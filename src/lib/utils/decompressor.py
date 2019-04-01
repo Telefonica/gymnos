@@ -15,6 +15,8 @@ logger = get_logger(prefix="Decompressor")
 
 
 def decompress(file_path, delete_compressed=True):
+    logger.info("Decompressing {}".format(file_path))
+
     if file_path.endswith(".zip"):
         decompress_zip(file_path)
     elif file_path.endswith(".gz"):
