@@ -1,0 +1,31 @@
+{
+    "experiment": {
+         "name": "Data Usage Test",
+         "tags": ["temporal-series", "forecasting"]
+    },
+    "model": {
+        "description": "Prediction for one serie of web traffic",
+        "input_shape": [306],
+        "name": "data_usage_linear_regression"
+    },
+    "dataset": {
+        "name": "data_usage_test"
+    },
+    "session": {
+        "device": "cpu"
+    },
+    "training": {
+        "samples": {
+            "fit": 0.20,
+            "val": 0.20,
+            "test": 0.20
+        }
+    },
+    "tracking": {
+        "trackers": [
+            {
+                "type": "mlflow"
+            }
+        ]
+    }
+}

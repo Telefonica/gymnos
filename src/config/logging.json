@@ -1,0 +1,35 @@
+{
+   "version": 1,
+    "disable_existing_loggers": false,
+    "formatters": {
+        "standard": {
+            "format": "%(asctime)s - %(name)s - %(levelname)s - %(prefix)s - %(message)s"
+        }
+    },
+
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "level": "DEBUG",
+            "formatter": "standard",
+            "stream": "ext://sys.stdout"
+        },
+        
+        "file_handler": {
+            "class": "logging.FileHandler",
+            "level": "DEBUG",
+            "formatter": "standard",
+            "filename": "/tmp/gymnos.log",
+            "encoding": "utf8"
+        }
+    },
+
+    "loggers": {
+        "gymnosd": {
+            "level": "DEBUG",
+            "handlers": ["console", "file_handler"],
+            "propagate": "no"
+        }
+    }
+}
+

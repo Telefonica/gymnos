@@ -1,0 +1,49 @@
+{
+    "experiment": {
+        "name": "Dogs vs Cats",
+        "tags": ["deep-learning", "vgg16"]
+    },
+    "model": {
+        "description": "Convolutional model for Dogs vs Cats dataset",
+        "input_shape": [120, 120, 3],
+        "name": "dogs_vs_cats_cnn"
+    },
+    "dataset": {
+        "name": "dogs_vs_cats",
+        "preprocessors": [
+            {
+                "type": "image_resize",
+                "width": 120,
+                "height": 120
+            },
+            {
+                "type": "divide",
+                "factor": 255
+            }
+        ]
+    },
+    "training": {
+        "samples": {
+            "fit": 0.6,
+            "val": 0.2,
+            "test": 0.2
+        },
+        "callbacks": [
+            {
+                "type": "early_stopping"
+            }
+        ],
+        "batch_size": 32,
+        "epochs": 10
+    },
+    "tracking": {
+        "trackers": [
+            {
+                "type": "tensorboard"
+            },
+            {
+                "type": "mlflow"
+            }
+        ]
+    }
+}
