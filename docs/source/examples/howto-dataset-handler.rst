@@ -60,7 +60,7 @@ If you want to implement a Kaggle dataset, you only need to inherit from ``lib.d
 
     from .dataset import KaggleDataset
 
-    class Titanic(KaggleDataset):
+    class MyKaggleDataset(KaggleDataset):
 
         kaggle_dataset_name = "lava18/google-play-store-apps"
         kaggle_dataset_files = ["googleplaystore.csv"]
@@ -78,7 +78,7 @@ If you want to implement a public dataset downloadable through URL, you only nee
 
     from .dataset import PublicDataset
 
-    class Titanic(PublicDataset):
+    class MyPublicDataset(PublicDataset):
 
         public_dataset_files = "https://fred.stlouisfed.org/graph/fredgraph.csv"
 
@@ -100,7 +100,7 @@ If you want to implement a dataset that belongs to a library like ``Keras`` or `
     from sklearn.datasets import load_iris
 
 
-    class Iris(LibraryDataset):
+    class MyLibraryDataset(LibraryDataset):
 
         def read(self, download_dir=None):
             X, y = load_iris(return_X_y=True)
