@@ -10,7 +10,7 @@ from pydoc import locate
 from tempfile import TemporaryDirectory
 
 from ..logger import get_logger
-from ..services.hdf_manager import HDFManager
+from ..utils.hdf_manager import HDFManager
 from ..services.dataset_downloader import KaggleDatasetDownloader
 from ..services.dataset_downloader import PublicDatasetDownloader
 

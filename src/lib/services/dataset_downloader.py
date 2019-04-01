@@ -12,7 +12,7 @@ from ..logger import get_logger
 
 from tqdm import tqdm
 from pydoc import locate
-from .decompressor import decompress, can_be_decompressed
+from ..utils.decompressor import decompress, can_be_decompressed
 
 
 class KaggleDatasetDownloader:
