@@ -4,143 +4,10 @@
 #
 #
 
-from math import sqrt
-
 import numpy as np
-from statsmodels.tsa.stattools import acf, pacf
-
-
-def mad_mean_error(col_real, col_pred):
-    """
-    Calculate for each user, mean absolute deviation/mean ratio
-    Is an alternative to MAPE, avoiding problems with values close to zero
-
-    Args:
-        col_real: (float list) with real consumption
-        col_pred: (float list) with predicted consumption
-
-    Returns:
-        mad_mean_error: (float)
-
-    """
-    mad_mean = 0
-    if col_real and col_pred and len(col_real) > 0 and len(col_pred) > 0:
-
-        length = len(col_real)
-        diff = [abs(col_real[i] - col_pred[i]) for i in range(length)]
-
-        try:
-            mad = sum(diff) / length
-
-        except ZeroDivisionError:
-            mad = 0
-
-        try:
-            mad_mean = mad / (sum(col_real) / length)  # +1 added
-
-        except ZeroDivisionError:
-            mad_mean = 0
-
-    return float(mad_mean)
-
-
-def nrmsd_error_norm(col_real, col_pred):
-    """
-    Calculate for each user,  root mean square deviation.
-    Represents the sample standard deviation of the differences between predicted values
-    and observed values. RMSD is sensitive to outliers. RMSD isn't an average error.
-    Lower values will indicate less residual variance
-
-    Args:
-        col_real: (float list) with real consumption
-        col_pred: (float list) with predicted consumption
-
-    Returns:
-        nrmsd_error_norm: (float)
-
-    """
-    nrmsd = 0
-    if col_real and col_pred and len(col_real) > 0 and len(col_pred) > 0:
-        length = len(col_real)
-        sum_diff = 0
-        sum_real = 0
-
-        for i in range(length):
-            diff = abs(col_real[i] - col_pred[i])
-            diff2 = diff * diff
-            sum_diff = sum_diff + diff2
-            sum_real = col_real[i] + sum_real
-
-        try:
-            nrmsd = (sqrt(sum_diff / length)) / (max(col_real) - min(col_real))  # +1 added
-
-        except ZeroDivisionError:
-            nrmsd = 0
-
-    return float(nrmsd)
-
-
-def rmse_train(col_real, col_pred):
-    """
-    Calculate for each user,  quadratic mean error for execution date.
-
-    Args:
-        col_real: (float) with real consumption
-        col_pred: (float) with predicted consumption
-
-    Returns:
-        rmse_value: (float) RMSE
-
-    """
-    rmse_value = 0
-    if col_real and col_pred and len(col_real) > 0 and len(col_pred) > 0:
-        length = len(col_real)
-        diffs = [(i - j) * (i - j) for i in col_real for j in col_pred]
-        sum_diffs = sum(diffs)
-        rmse_value = sqrt(sum_diffs / length)
-
-    return float(rmse_value)
-
-
-def residual_analysis(col_real, col_pred):
-    """
-    This function checks normality and correlation in residuals.
-    The model will be check:
-        - Ljun-Box test
-            H0: The data are independently distributed (i.e. correlations is close to 0)
-            H1: The data are not independently distributed; they exhibit serial correlation
-        - residuals mean is zero
-
-    Args:
-        col_real: (float list) with real consumption
-        col_pred: (float list) with predicted consumption
-
-    Returns:
-        bool: True if reject H0. The model can improve
-              False if we can't reject H0 and residuals can be independents
-
-    """
-
-    if col_real and col_pred and len(col_real) > 0 and len(col_pred) > 0:
-        length = len(col_real)
-        array_residuals = [col_real[i] - col_pred[i] for i in range(length)]
-
-        array_p_values = acf(array_residuals, qstat=True)[2]
-        len_value_with_corr = len([i for i in list(array_p_values) if i < 0.05])
-
-        if array_residuals == [0] * len(array_residuals):
-            return False
-
-        # If mean error is close to zero and
-        # if there are 5% or minus of p_values < statistical significance
-        elif (int(np.mean(array_residuals)) == 0) & (len_value_with_corr <= 0.05 * len(array_residuals)):
-            # We can reject null hypothesis (independence on residuals)
-            return False
-        else:
-            # We can't reject null hypothesis (independence on residuals. We can't accept dependence.
-            return True
-
-    return True
+from math import sqrt
+from statsmodels.tsa.stattools import acf
+from statsmodels.tsa.stattools import pacf
 
 
 def estimated_window(series, limit_inf_days):
@@ -281,4 +148,138 @@ def rmse_holt_winters(params, *args):
             pass
     rmse = sqrt(sum([(m - n) ** 2 for m, n in zip(Y, y[:-1])]) / len(Y))
     return rmse
+
+
 # Here is the end of code licensed under the MIT License (../LICENSE.txt)
+
+def mad_mean_error(col_real, col_pred):
+    """
+    Calculate for each user, mean absolute deviation/mean ratio
+    Is an alternative to MAPE, avoiding problems with values close to zero
+
+    Args:
+        col_real: (float list) with real consumption
+        col_pred: (float list) with predicted consumption
+
+    Returns:
+        mad_mean_error: (float)
+
+    """
+    mad_mean = 0
+    if col_real and col_pred and len(col_real) > 0 and len(col_pred) > 0:
+
+        length = len(col_real)
+        diff = [abs(col_real[i] - col_pred[i]) for i in range(length)]
+
+        try:
+            mad = sum(diff) / length
+
+        except ZeroDivisionError:
+            mad = 0
+
+        try:
+            mad_mean = mad / (sum(col_real) / length)  # +1 added
+
+        except ZeroDivisionError:
+            mad_mean = 0
+
+    return float(mad_mean)
+
+
+def nrmsd_error_norm(col_real, col_pred):
+    """
+    Calculate for each user,  root mean square deviation.
+    Represents the sample standard deviation of the differences between predicted values
+    and observed values. RMSD is sensitive to outliers. RMSD isn't an average error.
+    Lower values will indicate less residual variance
+
+    Args:
+        col_real: (float list) with real consumption
+        col_pred: (float list) with predicted consumption
+
+    Returns:
+        nrmsd_error_norm: (float)
+
+    """
+    nrmsd = 0
+    if col_real and col_pred and len(col_real) > 0 and len(col_pred) > 0:
+        length = len(col_real)
+        sum_diff = 0
+        sum_real = 0
+
+        for i in range(length):
+            diff = abs(col_real[i] - col_pred[i])
+            diff2 = diff * diff
+            sum_diff = sum_diff + diff2
+            sum_real = col_real[i] + sum_real
+
+        try:
+            nrmsd = (sqrt(sum_diff / length)) / (max(col_real) - min(col_real))  # +1 added
+
+        except ZeroDivisionError:
+            nrmsd = 0
+
+    return float(nrmsd)
+
+
+def residual_analysis(col_real, col_pred):
+    """
+    This function checks normality and correlation in residuals.
+    The model will be check:
+        - Ljun-Box test
+            H0: The data are independently distributed (i.e. correlations is close to 0)
+            H1: The data are not independently distributed; they exhibit serial correlation
+        - residuals mean is zero
+
+    Args:
+        col_real: (float list) with real consumption
+        col_pred: (float list) with predicted consumption
+
+    Returns:
+        bool: True if reject H0. The model can improve
+              False if we can't reject H0 and residuals can be independents
+
+    """
+
+    if col_real and col_pred and len(col_real) > 0 and len(col_pred) > 0:
+        length = len(col_real)
+        array_residuals = [col_real[i] - col_pred[i] for i in range(length)]
+
+        array_p_values = acf(array_residuals, qstat=True)[2]
+        len_value_with_corr = len([i for i in list(array_p_values) if i < 0.05])
+
+        if array_residuals == [0] * len(array_residuals):
+            return 0.0
+
+        # If mean error is close to zero and
+        # if there are 5% or minus of p_values < statistical significance
+        elif (int(np.mean(array_residuals)) == 0) & (len_value_with_corr <= 0.05 * len(array_residuals)):
+            # We can reject null hypothesis (independence on residuals)
+            return 0.0
+        else:
+            # We can't reject null hypothesis (independence on residuals. We can't accept dependence.
+            return 1.0
+
+    return True
+
+
+def rmse_train(col_real, col_pred):
+    """
+    Calculate for each user,  quadratic mean error for execution date.
+
+    Args:
+        col_real: (float) with real consumption
+        col_pred: (float) with predicted consumption
+
+    Returns:
+        rmse_value: (float) RMSE
+
+    """
+    rmse_value = 0
+    if col_real and col_pred and len(col_real) > 0 and len(col_pred) > 0:
+        length = len(col_real)
+        diffs = [(i - j) * (i - j) for i in col_real for j in col_pred]
+        sum_diffs = sum(diffs)
+        rmse_value = sqrt(sum_diffs / length)
+
+    return float(rmse_value)
