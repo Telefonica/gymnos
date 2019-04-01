@@ -18,6 +18,7 @@ spacy = "*"
 comet-ml = "*"
 mlflow = "*"
 joblib = "*"
+statsmodels = "*"
 
 [requires]
 python_version = "3.5"
