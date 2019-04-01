@@ -7,5 +7,7 @@
     "kddcup99": "lib.datasets.kddcup99.KDDCup99",
     "mnist": "lib.datasets.mnist.MNIST",
     "tiny_imagenet": "lib.datasets.tiny_imagenet.TinyImagenet",
-    "mte": "lib.datasets.mte.MTE"
+    "mte": "lib.datasets.mte.MTE",
+    "data_usage_test": "lib.datasets.data_usage_test.DataUsageTest",
+    "unusual_data_usage_test": "lib.datasets.unusual_data_usage_test.UnusualDataUsageTest"
 }

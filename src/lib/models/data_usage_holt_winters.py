@@ -8,8 +8,10 @@ import numpy as np
 from scipy.optimize import fmin_l_bfgs_b
 
 from .model import Model
-from ..utils.temporal_series_utils import mad_mean_error, nrmsd_error_norm, residual_analysis, \
-    rmse_train, estimated_window, initial_trend, initial_seasonal_components, rmse_holt_winters
+from .. import trackers
+from ..utils.temporal_series_utils import estimated_window, initial_trend, initial_seasonal_components, \
+    rmse_holt_winters
+from ..utils.temporal_series_utils import mad_mean_error, nrmsd_error_norm, residual_analysis, rmse_train
 
 
 class DataUsageHoltWinters(Model):
@@ -26,14 +28,16 @@ class DataUsageHoltWinters(Model):
         self.gamma = hyperparameters.get("gamma", 0.993)
 
     def fit(self, X, y, batch_size=32, epochs=1, callbacks=None, val_data=None, verbose=1):
-        pass
+        history = trackers.History()
+        history.log_metrics({})
+        return history.metrics
 
     def predict(self, X, batch_size=32, verbose=0):
         """
         Predict the next values of a series by applying the Triple Exponential Smoothing (a.k.a. Holt-Winters)
 
         """
-        series = X
+        series = list(X)
 
         if self.flag_optimize_hiperparams:
             slen = estimated_window(series, 2)
@@ -99,6 +103,9 @@ class DataUsageHoltWinters(Model):
         """
         y_pred = self.predict(X, batch_size=batch_size, verbose=verbose)
 
+        y = list(y)
+        print("y" + str(y))
+        print("y_pred" + str(y_pred))
         if (y[-self.n_preds:] and y_pred[-self.n_preds:] and len(y[-self.n_preds:]) == len(y_pred[-self.n_preds:])
                 and len(y_pred[-self.n_preds:]) > 0):
             mean_error = mad_mean_error(y[-self.n_preds:], y_pred[-self.n_preds:])
@@ -109,7 +116,7 @@ class DataUsageHoltWinters(Model):
         else:
             mean_error = 0.0
             normal_error = 0.0
-            residual_error = True
+            residual_error = 1.0
             emc_error = 0.0
         return {
             "mean_error": mean_error,
@@ -120,5 +127,5 @@ class DataUsageHoltWinters(Model):
     def restore(self, file_path):
         pass
 
-    def save(self, file_path):
+    def save(self, directory, name="model"):
         pass

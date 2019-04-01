@@ -8,9 +8,10 @@ import numpy as np
 from sklearn.metrics import f1_score, precision_score, recall_score
 
 from .model import Model
+from .. import trackers
 
 
-class UnusualDataUsageWeightedThresholds(Model):
+class UnusualDataUsageWT(Model):
 
     def __init__(self, input_shape, **hyperparameters):
         super().__init__(input_shape)
@@ -19,7 +20,9 @@ class UnusualDataUsageWeightedThresholds(Model):
         self.pred_last_day_api_name = hyperparameters.get("pred_last_day_api_name", 20.3)
 
     def fit(self, X, y, batch_size=32, epochs=1, callbacks=None, val_data=None, verbose=1):
-        pass
+        history = trackers.History()
+        history.log_metrics({})
+        return history.metrics
 
     def predict(self, X, batch_size=32, verbose=0):
         """
@@ -53,6 +56,8 @@ class UnusualDataUsageWeightedThresholds(Model):
             """
 
         # Step 1
+
+        X = list(X)
 
         if len([val for val in X if val > 0]) >= 2:
 
@@ -90,6 +95,8 @@ class UnusualDataUsageWeightedThresholds(Model):
 
         """
         y_pred = self.predict(X, batch_size=batch_size, verbose=verbose)
+        print("y" + str(y))
+        print("y_pred" + str(y_pred))
 
         pred_last_day = y["pred_last_day"]
         real_cum_last_day = y["real_cum_last_day"]
@@ -105,17 +112,24 @@ class UnusualDataUsageWeightedThresholds(Model):
             else:
                 result.append(['1', y_pred])
 
+        stages_f1_score = [key for key, value in
+                           dict(zip(stages, [f1_score([val[0]], [val[1]], average='micro')
+                                             for val in result])).items() if value == 1.0]
+        stages_precision_score = [key for key, value in
+                                  dict(zip(stages, [precision_score([val[0]], [val[1]], average='micro')
+                                                    for val in result])).items() if value == 1.0]
+        stages_recall_score = [key for key, value
+                               in dict(zip(stages, [recall_score([val[0]], [val[1]], average='micro')
+                                                    for val in result])).items() if value == 1.0]
+
         return {
-            "f1_score": dict(
-                zip(stages, [f1_score([val[0]], [val[1]], average='micro') for val in result])),
-            "precision_score": dict(
-                zip(stages, [precision_score([val[0]], [val[1]], average='micro') for val in result])),
-            "recall_score": dict(
-                zip(stages, [recall_score([val[0]], [val[1]], average='micro') for val in result]))
+            "max_sigma_f1_score": max(stages_f1_score) if len(stages_f1_score) > 0 else None,
+            "max_sigma_precision_score": max(stages_precision_score) if len(stages_precision_score) > 0 else None,
+            "max_sigma_recall_score": max(stages_recall_score) if len(stages_recall_score) > 0 else None
         }
 
     def restore(self, file_path):
         pass
 
-    def save(self, file_path):
+    def save(self, directory, name="model"):
         pass

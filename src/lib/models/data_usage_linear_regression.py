@@ -7,30 +7,32 @@
 import numpy as np
 from sklearn.linear_model import LinearRegression
 
-from .model import Model
-from ..utils.temporal_series_utils import mad_mean_error, nrmsd_error_norm, residual_analysis, \
-    rmse_train
+from .model import ScikitLearnModel
+from .. import trackers
+from ..utils.temporal_series_utils import mad_mean_error, nrmsd_error_norm, residual_analysis, rmse_train
 
 
-class DataUsageLinearRegression(Model):
+class DataUsageLinearRegression(ScikitLearnModel):
 
     def __init__(self, input_shape, **hyperparameters):
-        super().__init__(input_shape)
+        super().__init__(input_shape, sklearn_model=LinearRegression())
 
         self.n_preds = hyperparameters.get("n_preds", 3)
 
     def fit(self, X, y, batch_size=32, epochs=1, callbacks=None, val_data=None, verbose=1):
-        pass
+        history = trackers.History()
+        history.log_metrics({})
+        return history.metrics
 
     def predict(self, X, batch_size=32, verbose=0):
         """
         Predict the next values of a series by applying Linear Regression model
 
         """
+        X = list(X)
+
         # Erase zeros on the left
         consumption_zero = [i for i in X if i > 0.0]
-
-        model_lr = LinearRegression()
 
         # LR need at least two days with positive data
         if len(consumption_zero) >= 2:
@@ -40,11 +42,11 @@ class DataUsageLinearRegression(Model):
             consumption_zero_acum = [float(i) for i in consumption_zero_acum]
 
             # Training
-            model_lr.fit(np.array(range(len(consumption_zero_acum))).reshape(-1, 1),
-                         np.array(consumption_zero_acum).reshape(-1, 1))
+            self.model.fit(np.array(range(len(consumption_zero_acum))).reshape(-1, 1),
+                           np.array(consumption_zero_acum).reshape(-1, 1))
 
             # Prediction
-            result = model_lr.predict(np.array(range(len(X) + self.n_preds)).reshape(-1, 1))
+            result = self.model.predict(np.array(range(len(X) + self.n_preds)).reshape(-1, 1))
             future_predictions = [i.tolist()[0] for i in result]
             future_predictions = future_predictions[-self.n_preds:]
         else:
@@ -63,6 +65,10 @@ class DataUsageLinearRegression(Model):
 
         """
         y_pred = self.predict(X, batch_size=batch_size, verbose=verbose)
+
+        y = list(y)
+        print("y" + str(y))
+        print("y_pred" + str(y_pred))
 
         if (y[-self.n_preds:] and y_pred[-self.n_preds:] and len(y[-self.n_preds:]) == len(y_pred[-self.n_preds:])
                 and len(y_pred[-self.n_preds:]) > 0):
@@ -85,5 +91,5 @@ class DataUsageLinearRegression(Model):
     def restore(self, file_path):
         pass
 
-    def save(self, file_path):
+    def save(self, directory, name="model"):
         pass
