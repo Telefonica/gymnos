@@ -11,8 +11,8 @@ from tempfile import TemporaryDirectory
 
 from ..logger import get_logger
 from ..utils.hdf_manager import HDFManager
-from ..services.dataset_downloader import KaggleDatasetDownloader
-from ..services.dataset_downloader import PublicDatasetDownloader
+from ..services.kaggle_dataset_downloader import KaggleDatasetDownloader
+from ..services.file_downloader import FileDownloader
 
 
 class Dataset:
@@ -109,7 +109,7 @@ class PublicDataset(Dataset):
         if self.public_dataset_files is None:
             raise ValueError("public_dataset_files cannot be None")
 
-        self.downloader = PublicDatasetDownloader()
+        self.downloader = FileDownloader()
 
     def download(self, download_dir):
         self.downloader.download(self.public_dataset_files, download_dir, verbose=True)

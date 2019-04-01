@@ -5,14 +5,11 @@
 #
 
 import os
-import math
-import requests
 
 from ..logger import get_logger
 
-from tqdm import tqdm
 from pydoc import locate
-from ..utils.decompressor import decompress, can_be_decompressed
+from ..utils.decompressor import decompress
 
 
 class KaggleDatasetDownloader:
@@ -75,18 +72,18 @@ class KaggleDatasetDownloader:
         for filename in filenames:
             self.__competition_download_file(competition_name, filename, save_dir, unzip, verbose)
 
-    def __download_file(self, dataset_name, filename, save_dir, unzip=True, verbose=False):
+    def __download_file(self, dataset_name, filename, save_dir, unzip=True, verbose=True):
         self.logger.info("Downloading {} from {}".format(filename, dataset_name))
         if self.__is_a_competition(dataset_name):
-            self.__competition_download_file(dataset_name, filename, save_dir, unzip=True, verbose=False)
+            self.__competition_download_file(dataset_name, filename, save_dir, unzip=True, verbose=True)
         else:
-            self.dataset_download_file(dataset_name, filename, save_dir, unzip=True, verbose=False)
+            self.dataset_download_file(dataset_name, filename, save_dir, unzip=True, verbose=True)
 
-    def __dataset_download_file(self, dataset_name, filename, save_dir, unzip=True, verbose=False):
+    def __dataset_download_file(self, dataset_name, filename, save_dir, unzip=True, verbose=True):
         self.kaggle_api.dataset_download_file(dataset_name, filename, save_dir, quiet=not verbose)
         self.__unzip_and_delete_if_needed(os.path.join(save_dir, filename))
 
-    def __competition_download_file(self, competition_name, filename, save_dir, unzip=True, verbose=False):
+    def __competition_download_file(self, competition_name, filename, save_dir, unzip=True, verbose=True):
         self.kaggle_api.competition_download_file(competition_name, filename, save_dir, quiet=not verbose)
         self.__unzip_and_delete_if_needed(os.path.join(save_dir, filename))
 
@@ -94,50 +91,4 @@ class KaggleDatasetDownloader:
         file_exists = os.path.isfile(file_path)
 
         if file_exists:
-            self.logger.info("Decompressing and deleting {}".format(file_path))
             decompress(file_path, delete_compressed=True)
-
-
-class PublicDatasetDownloader:
-    """
-    Download Datasets from public URLs
-    """
-
-    def __init__(self):
-        self.logger = get_logger(prefix=self)
-
-    def download(self,  urls, save_dir=None, unzip=True, verbose=True):
-        if save_dir is None:
-            self.logger.debug("No saving directory provided. Saving to current directory")
-            save_dir = os.getcwd()
-
-        if isinstance(urls, (list, tuple)):
-            self.__download_files(urls, save_dir, unzip=unzip, verbose=verbose)
-        else:
-            self.__download_file(urls, save_dir, unzip=unzip, verbose=verbose)
-
-    def __download_file(self, url, save_dir, unzip=True, verbose=False):
-        self.logger.info("Downloading file from url: {}".format(url))
-        filename = os.path.basename(url)
-        file_path = os.path.join(save_dir, filename)
-        with requests.get(url, stream=True) as r, open(file_path, "wb") as f:
-            block_size = 1024
-            total_size = int(r.headers.get('content-length', 0))
-
-            iterator = r.iter_content(block_size)
-
-            if verbose:
-                num_blocks = math.ceil(total_size // block_size)
-                iterator = tqdm(iterator, total=num_blocks, unit="KB", unit_scale=True)
-
-            for data in iterator:
-                f.write(data)
-
-        if can_be_decompressed(filename):
-            self.logger.info("Decompressing {}".format(file_path))
-            decompress(file_path)
-
-
-    def __download_files(self, urls, save_dir, unzip=True, verbose=False):
-        for url in urls:
-            self.__download_file(url, save_dir, unzip=unzip, verbose=verbose)
