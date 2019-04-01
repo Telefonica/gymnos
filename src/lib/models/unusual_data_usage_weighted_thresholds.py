@@ -8,6 +8,7 @@ import numpy as np
 from sklearn.metrics import f1_score, precision_score, recall_score
 
 from .model import Model
+from .. import trackers
 
 
 class UnusualDataUsageWT(Model):
@@ -17,11 +18,11 @@ class UnusualDataUsageWT(Model):
 
         self.sigma = hyperparameters.get("sigma", 2.0)
         self.pred_last_day_api_name = hyperparameters.get("pred_last_day_api_name", 20.3)
-        self.pred_last_day = hyperparameters.get("pred_last_day", 23)
-        self.real_cum_last_day = hyperparameters.get("real_cum_last_day", 33)
 
     def fit(self, X, y, batch_size=32, epochs=1, callbacks=None, val_data=None, verbose=1):
-        return {}
+        history = trackers.History()
+        history.log_metrics({})
+        return history.metrics
 
     def predict(self, X, batch_size=32, verbose=0):
         """
@@ -56,9 +57,11 @@ class UnusualDataUsageWT(Model):
 
         # Step 1
 
-        if len([val for val in list(X) if val > 0]) >= 2:
+        X = list(X)
 
-            history_moving_avg = np.array(list(X)).astype(float).mean()
+        if len([val for val in X if val > 0]) >= 2:
+
+            history_moving_avg = np.array(X).astype(float).mean()
             monthly_moving_avg = X[-1]
 
             avg = (float(history_moving_avg) + float(monthly_moving_avg)) / 2
@@ -92,6 +95,11 @@ class UnusualDataUsageWT(Model):
 
         """
         y_pred = self.predict(X, batch_size=batch_size, verbose=verbose)
+        print("y" + str(y))
+        print("y_pred" + str(y_pred))
+
+        pred_last_day = y["pred_last_day"]
+        real_cum_last_day = y["real_cum_last_day"]
 
         # Execute to several stages
         stages = [0.05, 0.1, 0.15, 0.2, 0.25, 0.8, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 8, 9, 10]
@@ -99,17 +107,25 @@ class UnusualDataUsageWT(Model):
         result = []
         for i in range(len(stages)):
             scen = stages[i]
-            if (self.pred_last_day > (1 + scen) * self.real_cum_last_day) or (self.pred_last_day < (1 - scen)
-                                                                              * self.real_cum_last_day):
+            if (pred_last_day > (1 + scen) * real_cum_last_day) or (pred_last_day < (1 - scen) * real_cum_last_day):
                 result.append(['0', y_pred])
             else:
                 result.append(['1', y_pred])
 
+        stages_f1_score = [key for key, value in
+                           dict(zip(stages, [f1_score([val[0]], [val[1]], average='micro')
+                                             for val in result])).items() if value == 1.0]
+        stages_precision_score = [key for key, value in
+                                  dict(zip(stages, [precision_score([val[0]], [val[1]], average='micro')
+                                                    for val in result])).items() if value == 1.0]
+        stages_recall_score = [key for key, value
+                               in dict(zip(stages, [recall_score([val[0]], [val[1]], average='micro')
+                                                    for val in result])).items() if value == 1.0]
+
         return {
-            "stages": stages,
-            "stages_f1_score": [f1_score([val[0]], [val[1]], average='micro') for val in result],
-            "stages_precision_score": [precision_score([val[0]], [val[1]], average='micro') for val in result],
-            "stages_recall_score": [recall_score([val[0]], [val[1]], average='micro') for val in result]
+            "max_sigma_f1_score": max(stages_f1_score) if len(stages_f1_score) > 0 else None,
+            "max_sigma_precision_score": max(stages_precision_score) if len(stages_precision_score) > 0 else None,
+            "max_sigma_recall_score": max(stages_recall_score) if len(stages_recall_score) > 0 else None
         }
 
     def restore(self, file_path):

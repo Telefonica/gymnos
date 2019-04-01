@@ -8,17 +8,16 @@ import numpy as np
 import pandas as pd
 
 
-def train_val_test_split(X, y, train_size=0.6, val_size=0.2, test_size=0.2, seed=None):
+def train_val_test_split(X, y, train_size=0.6, val_size=0.2, test_size=0.2, seed=None, shuffle=True):
     len_data = len(X)
-
-    if len(X.shape)==1:
-        return (X, X, X), (y, y, y)
 
     train_num_samples = int(len_data * train_size)
     val_num_samples = int(len_data * val_size)
     test_num_samples = int(len_data * test_size)
 
-    shuffled_indices = np.random.RandomState(seed=seed).permutation(len_data)
+    indices = np.arange(len_data)
+    if shuffle:
+        indices = np.random.RandomState(seed=seed).permutation(len_data)
 
     train_samples_index = train_num_samples
     val_samples_index = train_samples_index + val_num_samples
@@ -29,12 +28,12 @@ def train_val_test_split(X, y, train_size=0.6, val_size=0.2, test_size=0.2, seed
     if isinstance(y, (pd.Series, pd.DataFrame)):
         y = y.iloc
 
-    X_train = X[shuffled_indices[:train_samples_index]]
-    X_val = X[shuffled_indices[train_samples_index:val_samples_index]]
-    X_test = X[shuffled_indices[val_samples_index:test_samples_index]]
+    X_train = X[indices[:train_samples_index]]
+    X_val = X[indices[train_samples_index:val_samples_index]]
+    X_test = X[indices[val_samples_index:test_samples_index]]
 
-    y_train = y[shuffled_indices[:train_samples_index]]
-    y_val = y[shuffled_indices[train_samples_index:val_samples_index]]
-    y_test = y[shuffled_indices[val_samples_index:test_samples_index]]
+    y_train = y[indices[:train_samples_index]]
+    y_val = y[indices[train_samples_index:val_samples_index]]
+    y_test = y[indices[val_samples_index:test_samples_index]]
 
     return (X_train, X_val, X_test), (y_train, y_val, y_test)
