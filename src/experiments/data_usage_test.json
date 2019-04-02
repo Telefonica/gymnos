@@ -6,7 +6,7 @@
     "model": {
         "description": "Prediction for one serie of web traffic",
         "input_shape": [306],
-        "name": "data_usage_linear_regression"
+        "name": "data_usage_holt_winters"
     },
     "dataset": {
         "name": "data_usage_test"

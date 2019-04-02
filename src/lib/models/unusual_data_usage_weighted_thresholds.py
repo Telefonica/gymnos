@@ -95,8 +95,6 @@ class UnusualDataUsageWT(Model):
 
         """
         y_pred = self.predict(X, batch_size=batch_size, verbose=verbose)
-        print("y" + str(y))
-        print("y_pred" + str(y_pred))
 
         pred_last_day = y["pred_last_day"]
         real_cum_last_day = y["real_cum_last_day"]
