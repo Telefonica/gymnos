@@ -23,7 +23,7 @@ steps:
   displayName: 'Generate docker images'
 - script: |
     echo Launching Functional Regression
-    docker run $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName)-latest -c boston_housing.json
+    docker run $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName)-latest -c experiments/boston_housing.json
   displayName: 'Test - Functional Regression'
 - script: |
     echo Push images to Telefonica artifactory
