@@ -1,0 +1,22 @@
+version: "2.4"
+
+services:
+    gymnos:
+        build:
+            context: .
+            args:
+                TENSORFLOW_IMAGE: tensorflow/tensorflow:1.13.1-py3
+        volumes:
+            - "./cache:/usr/src/app/cache"
+            - "./cache/keras:/root/.keras"
+        env_file:
+            - secrets.env
+        entrypoint: python3 -m bin.scripts.gymnosd
+
+    gymnos-gpu:
+        extends: gymnos
+        runtime: nvidia
+        build:
+            context: .
+            args:
+                TENSORFLOW_IMAGE: tensorflow/tensorflow:1.13.1-gpu-py3
