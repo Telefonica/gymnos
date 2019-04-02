@@ -10,3 +10,4 @@ This section intends to provide newcomers with enough guidance to develop single
    examples/howto-model-handler.rst
    examples/howto-preprocessors-handler.rst
    examples/howto-transformers-handler.rst
+   examples/howto-trackers-handler.rst
