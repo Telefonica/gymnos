@@ -8,4 +8,4 @@ This section intends to provide newcomers with enough guidance to develop single
 
    examples/howto-dataset-handler.rst
    examples/howto-model-handler.rst
-
+   examples/howto-transformers-handler.rst
