@@ -33,6 +33,8 @@ steps:
   displayName: 'Push images to Telefonica artifactory'
 - script: |
     echo Clean docker images from agent
+    docker stop $(docker ps -a | grep gymnos | tr -s ' ' | cut -d ' ' -f 1)
+    docker rm $(docker ps -a | grep gymnos | tr -s ' ' | cut -d ' ' -f 1)
     docker rmi $(docker images | grep gymnos | tr -s ' ' | cut -d ' ' -f 3)
   displayName: 'Agent cleaning'
 
