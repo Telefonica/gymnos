@@ -1,3 +1,4 @@
 {
-    "dogs_vs_cats_cnn": "lib.models.dogs_vs_cats_cnn.DogsVsCatsCNN"
+    "dogs_vs_cats_cnn": "lib.models.dogs_vs_cats_cnn.DogsVsCatsCNN",
+    "fashion_mnist_nn": "lib.models.fashion_mnist_nn.FashionMnistNN"
 }
