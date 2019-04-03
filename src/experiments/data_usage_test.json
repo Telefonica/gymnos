@@ -16,10 +16,11 @@
     },
     "training": {
         "samples": {
-            "fit": 0.20,
-            "val": 0.20,
-            "test": 0.20
-        }
+            "fit": 0.30,
+            "val": 0.0,
+            "test": 0.70
+        },
+        "shuffle": false
     },
     "tracking": {
         "trackers": [
