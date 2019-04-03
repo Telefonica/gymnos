@@ -8,6 +8,7 @@ import os
 import joblib
 
 from keras import models
+from ..trackers import History
 
 
 class Model:
@@ -47,7 +48,7 @@ class KerasModel(Model):
         return history.history
 
     def predict(self, X, batch_size=32, verbose=0):
-        self.model.predict(X, batch_size=batch_size, verbose=verbose)
+        return self.model.predict(X, batch_size=batch_size, verbose=verbose)
 
     def evaluate(self, X, y, batch_size=32, verbose=0):
         results = self.model.evaluate(X, y, batch_size=batch_size, verbose=verbose)
@@ -70,8 +71,20 @@ class ScikitLearnModel(Model):
     def fit(self, X, y, batch_size=32, epochs=1, callbacks=None, val_data=None, verbose=1):
         self.model.fit(X, y)
 
+        history = History()
+
+        train_metrics = self.evaluate(X, y)
+
+        history.log_metrics(train_metrics)
+
+        if val_data is not None:
+            val_metrics = self.evaluate(val_data[0], val_data[1])
+            history.log_metrics(val_metrics, prefix="val_")
+
+        return history.metrics
+
     def predict(self, X, batch_size=32, verbose=0):
-        self.model.predict(X)
+        return self.model.predict(X)
 
     def save(self, directory, name="model"):
         joblib.dump(self.model, os.path.join(directory, name + ".joblib"))

@@ -7,6 +7,7 @@
 import statsmodels.api as sm
 
 from .dataset import LibraryDataset
+import numpy as np
 
 
 class UnusualDataUsageTest(LibraryDataset):
@@ -21,6 +22,6 @@ class UnusualDataUsageTest(LibraryDataset):
 
     def read(self, download_dir=None):
         data = sm.datasets.sunspots.load_pandas().data
-        data = data['SUNACTIVITY'][-13:]
-        label_serie = {"pred_last_day": list(data)[-1] * 2, "real_cum_last_day": list(data)[-1]}
-        return data[:-1], label_serie
+        label_serie = data['SUNACTIVITY'].values
+        features_serie = np.arange(len(label_serie))
+        return features_serie, label_serie

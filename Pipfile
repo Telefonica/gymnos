@@ -19,6 +19,7 @@ comet-ml = "*"
 mlflow = "*"
 joblib = "*"
 tensorflow = "*"
+statsmodels = "*"
 
 [requires]
 python_version = "3.5"

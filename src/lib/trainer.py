@@ -5,16 +5,15 @@
 #
 
 import os
-
-from pprint import pprint
 from datetime import datetime
+from pprint import pprint
 
 from . import trackers
 from .logger import get_logger
-from .utils.timing import elapsed_time
-from .utils.iterator_utils import count
 from .utils.io_utils import save_to_json
+from .utils.iterator_utils import count
 from .utils.ml_utils import train_val_test_split
+from .utils.timing import elapsed_time
 
 TRAINING_MODEL_NAME = "model"
 TRAININGS_FOLDERNAME = "trainings"
@@ -52,7 +51,6 @@ class Trainer:
 
         self.logger = get_logger(prefix=self)
 
-
     def run(self, seed=0):
         execution_steps_elapsed = {}
         execution_id = datetime.now().strftime(TRAINING_EXECUTION_ID_STRFTIME)
@@ -88,12 +86,13 @@ class Trainer:
         self.logger.debug("Loading data took {:.2f}s".format(elapsed.s))
 
         self.logger.info("Splitting dataset -> Fit: {} | Test: {} | Val: {} ...".format(
-                         self.training.samples.fit,  self.training.samples.test, self.training.samples.val))
+            self.training.samples.fit, self.training.samples.test, self.training.samples.val))
         (X_train, X_val, X_test), (y_train, y_val, y_test) = train_val_test_split(X, y,
                                                                                   train_size=self.training.samples.fit,
                                                                                   val_size=self.training.samples.val,
                                                                                   test_size=self.training.samples.test,
-                                                                                  seed=seed)
+                                                                                  seed=seed,
+                                                                                  shuffle=self.training.shuffle)
         # APPLY PREPROCESSORS
 
         self.logger.info("Applying {} preprocessors ...".format(len(self.dataset.preprocessor_stack)))
@@ -140,8 +139,8 @@ class Trainer:
 
         with elapsed_time() as elapsed:
             train_metrics = self.model.model.fit(X_train, y_train, batch_size=self.training.batch_size,
-                                                 epochs=self.training.epochs, val_data=val_data,
-                                                 callbacks=self.training.callbacks)
+                                      epochs=self.training.epochs, val_data=val_data,
+                                      callbacks=self.training.callbacks)
         execution_steps_elapsed["fit_model"] = elapsed.s
         self.logger.debug("Fitting model took {:.2f}s".format(elapsed.s))
 
@@ -153,7 +152,6 @@ class Trainer:
         # EVALUATE MODEL IF TEST SAMPLES EXIST
 
         if self.training.samples.test > 0:
-
             self.logger.info("Evaluating model with {} samples".format(count(X_test)))
 
             with elapsed_time() as elapsed:

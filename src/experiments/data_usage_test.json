@@ -6,7 +6,7 @@
     "model": {
         "description": "Prediction for one serie of web traffic",
         "input_shape": [306],
-        "name": "data_usage_linear_regression"
+        "name": "data_usage_holt_winters"
     },
     "dataset": {
         "name": "data_usage_test"
@@ -16,10 +16,11 @@
     },
     "training": {
         "samples": {
-            "fit": 0.20,
-            "val": 0.20,
-            "test": 0.20
-        }
+            "fit": 0.30,
+            "val": 0.0,
+            "test": 0.70
+        },
+        "shuffle": false
     },
     "tracking": {
         "trackers": [
