@@ -4,19 +4,21 @@
 #
 #
 
-import spacy
 
 from .preprocessor import Preprocessor
 from ..utils.iterator_utils import apply
+from ..utils.spacy_utils import get_spacy_nlp
 
 
 class Lemmatization(Preprocessor):
 
-    def __init__(self, language="english"):
-        if language == "spanish":
-            self.nlp = spacy.load("es")
+    def __init__(self, language="en"):
+        if language == "english":
+            self.nlp = get_spacy_nlp("en")
+        elif language == "spanish":
+            self.nlp = get_spacy_nlp("es")
         else:
-            self.nlp = spacy.load("en")
+            raise ValueError("Language not supported")
 
 
     def __transform_sample(self, x):

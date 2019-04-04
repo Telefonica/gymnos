@@ -6,6 +6,8 @@
 
 import spacy
 
+from ..utils.spacy_utils import get_spacy_nlp
+
 from sklearn.base import TransformerMixin
 from sklearn.feature_extraction.text import TfidfVectorizer
 
@@ -37,9 +39,9 @@ class Tfidf(TransformerMixin):
 
     def improve_tokenizer_if_possible(self, language):
         if language == "english":
-            nlp = spacy.load("en")
+            nlp = get_spacy_nlp("en")
         elif language == "spanish":
-            nlp = spacy.load("es")
+            nlp = get_spacy_nlp("es")
         else:
             return None
 
