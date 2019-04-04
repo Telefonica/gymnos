@@ -28,6 +28,18 @@ Install required dependencies:
 
   pipenv install
 
+Install ``tensorflow-gpu`` to run in GPU:
+
+.. code-block:: bash
+
+  pipenv install tensorflow-gpu
+
+Or ``tensorflow`` to run in CPU:
+
+.. code-block:: bash
+
+  pipenv install tensorflow
+
 You're now ready to run gymnos. Gymnos ships with some example experiments that should get you up and running quickly.
 
 To actually get gymnos running, do the following:
