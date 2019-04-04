@@ -7,7 +7,6 @@
 import os
 import pandas as pd
 
-from keras.utils import to_categorical
 from .dataset import PublicDataset
 from ..utils.io_utils import read_from_text
 
@@ -16,8 +15,8 @@ class KDDCup99(PublicDataset):
     """
     Kind: Classification
     Shape:
-        features: []
-        labels: []
+        features: [116]
+        labels: [38]
     Description: >
         The task is to build a network intrusion detector, a predictive model capable of distinguishing
         between "bad" connections,called intrusions or attacks, and "good" normal connections.
@@ -34,7 +33,8 @@ class KDDCup99(PublicDataset):
         columns = self.__read_features_names(feature_names_file_path)
         data = pd.read_csv(data_file_path, names=columns, header=None)
         features, labels = self.__features_labels_split(data)
-        return features, to_categorical(labels, 2)
+        features = pd.get_dummies(features)
+        return features, pd.get_dummies(labels)
 
     def __read_features_names(self, file_path):
         text = read_from_text(file_path)
