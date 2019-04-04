@@ -17,7 +17,6 @@ from ..services.file_downloader import FileDownloader
 
 class Dataset:
 
-
     def __init__(self, cache_dir=None):
         if cache_dir is not None:
             self.cache = HDFManager(os.path.join(cache_dir, self.__class__.__name__ + ".h5"))
