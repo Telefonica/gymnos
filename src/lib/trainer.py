@@ -139,8 +139,8 @@ class Trainer:
 
         with elapsed_time() as elapsed:
             train_metrics = self.model.model.fit(X_train, y_train, batch_size=self.training.batch_size,
-                                      epochs=self.training.epochs, val_data=val_data,
-                                      callbacks=self.training.callbacks)
+                                                 epochs=self.training.epochs, val_data=val_data,
+                                                 callbacks=self.training.callbacks)
         execution_steps_elapsed["fit_model"] = elapsed.s
         self.logger.debug("Fitting model took {:.2f}s".format(elapsed.s))
 
