@@ -109,13 +109,13 @@ Then pull the latest image:
 
 .. code-block:: bash
 
-  docker pull dockerhub.hi.inet/dcip/aura-prototypes/gymnos-latest
+  docker pull dockerhub.hi.inet/dcip/aura-prototypes/gymnos
 
 or for gpu environments:
 
 .. code-block:: bash
 
-  docker pull dockerhub.hi.inet/dcip/aura-prototypes/gymnos-gpu-latest
+  docker pull dockerhub.hi.inet/dcip/aura-prototypes/gymnos:gpu-latest
 
 Now check that Docker images were indeed successfully pulled. You should see something like this
 
@@ -124,10 +124,8 @@ Now check that Docker images were indeed successfully pulled. You should see som
   docker images  
 
   REPOSITORY                                                 TAG                 IMAGE ID            CREATED             SIZE
-  dockerhub.hi.inet/dcip/aura-prototypes/gymnos-gpu-latest   latest              1760add3f734        45 minutes ago      4.54GB
-  dockerhub.hi.inet/dcip/aura-prototypes/gymnos-latest       latest              6a780892cf43        45 minutes ago      2.54GB
-  gymnos-gpu                                                 latest              7c562888f824        5 days ago          4.5GB
-  gymnos                                                     latest              d7d7ebfd1481        5 days ago          2.5GB
+  dockerhub.hi.inet/dcip/aura-prototypes/gymnos              gpu-latest          4a55d3c18419        18 minutes ago      4.54GB
+  dockerhub.hi.inet/dcip/aura-prototypes/gymnos              latest              37d2d2b9cd0a        18 minutes ago      2.54GB
   tensorflow/tensorflow                                      1.12.0-gpu-py3      413b9533f92a        5 months ago        3.35GB
   tensorflow/tensorflow                                      1.12.0-py3          39bcb324db83        5 months ago        1.33GB
 
