@@ -6,12 +6,11 @@ Datasets
 
 This section shows a collection of datasets currently supoorted by Gymnos
 
-***********************
-MNIST
-***********************
 
-The MNIST database of handwritten digits, available from this page, has a training set of 60,000 examples, 
-and a test set of 10,000 examples. Please visit `mnist`_ web site for a complete description.
+MNIST
+---------------------
+
+Classification dataset of 70,000 28x28 grayscale images of 10 handwritten digits. Please visit `mnist`_ web site for a complete description.
 
 .. _mnist: http://yann.lecun.com/exdb/mnist/
 
@@ -19,95 +18,123 @@ Config example:
 
 .. code-block:: json
 
-   {
-       "dataset": {
-           "id": "mnist-digits",
-           "properties": {
-                "type": "images",
-                "image_width": 48,
-                "image_height": 48,
-                "image_depth": 3,
-                "color_mode": "multi",
-                "class_mode": "binary",
-                "batch_size": 512
-           } 
-       }
-   }
-   
-   
-***********************
-Kaggle
-***********************
-Gymnos currently supports different datasets from Kaggle
+    {
+        "dataset": {
+            "name": "mnist"
+        }
+    }
 
-Requirements
+
+Boston Housing
 ---------------------
-Kaggle uses a private cli to allow users to download published datasets.
-A ``username`` and ``key`` are required to interact with Kaggle datasets via Gymnos.
-Please visit `kaggle`_  and complete the registration procedure.
-Then provide Gymnos with the obtained ``username`` and ``key`` in two ways:
+   
+Regression dataset with 13 attributes of houses at different locations around the Boston suburbs in the late 1970s. Targets are the median values of the houses at a location (in k$).
 
-.. _kaggle: https://www.kaggle.com/
-
-Via experiment configuration:
+Config example:
 
 .. code-block:: json
 
-   {
-      "dataset": {
-         "properties": {
-            "service": {
-               "credentials": {
-                  "username": "example_user_id",
-                  "key": "XXXXXXXXXXYYYYYYYYYY"
-               }
-            }
-         }
-      }
-   }
-      
-Via ``kaggle.json`` file:
+    {
+        "dataset": {
+            "name": "boston_housing"
+        }
+    }
+
+
+CIFAR-10
+---------------------
+
+Classification Dataset of 60,000 32x32 color images, labeled over 10 categories.
+
+Config example:
 
 .. code-block:: json
 
-   { "username": "example_user_id", "key": "XXXXXXXXXXYYYYYYYYYY" }
+    {
+        "dataset": {
+            "name": "cifar10"
+        }
+    }
 
-.. note::
-   Make sure it's located in **/root/.kaggle**:
-  
 
 Dogs vs Cats
 ---------------------
-The training archive contains 25,000 images of dogs and cats. 
-Train your algorithm on these files and predict the labels for test1.zip (1 = dog, 0 = cat).
+
+Classification dataset of 150x150 color images of dogs and cats. Train your algorithm to predict whether the image is a dog or a cat (1 = dog, 0 = cat).
 Please visit Kaggle website `dogs-vs-cats`_ for more details.
 
 .. _dogs-vs-cats: https://www.kaggle.com/c/dogs-vs-cats
+
+Config example:
+
+.. code-block:: json
+
+    {
+        "dataset": {
+            "name": "dogs_vs_cats"
+        }
+    }
+
+Fashion MNIST
+---------------------
+
+Classification Dataset of 70,000 28x28 grayscale images of 10 fashion categories. This dataset can be used as a drop-in replacement for MNIST.
 
 
 Config example:
 
 .. code-block:: json
 
-   {
-      "dataset": {
-         "id": "kaggle-dogs-vs-cats",
-         "properties": {
-            "service": {
-               "credentials": {
-                  "username": "example_user_id",
-                  "key": "XXXXXXXXXXYYYYYYYYYY"
-               },
-               "type": "competitions",
-               "id": "dogs-vs-cats"
-            },
-            "type": "images",
-            "image_width": 150,
-            "image_height": 150,
-            "image_depth": 3,
-            "color_mode": "multi",
-            "class_mode": "binary",
-            "batch_size": 512
-         }
-      }
-   }
+    {
+        "dataset": {
+            "name": "fashion_mnist"
+        }
+    }
+
+IMDB
+---------------------
+
+Clasification Dataset of 25,000 movies reviews from IMDB, labeled by sentiment (positive/negative).
+
+
+Config example:
+
+.. code-block:: json
+
+    {
+        "dataset": {
+            "name": "imdb"
+        }
+    }
+
+MTE
+---------------------
+
+Multi-Label clasification Dataset for Media Tagging Engine with descriptions of movies and tv shows from Movistar+. The goal is to predict the category it belongs e.g Sports, Music, etc ...
+
+
+Config example:
+
+.. code-block:: json
+
+    {
+        "dataset": {
+            "name": "mte"
+        }
+    }
+
+Tiny Imagenet
+---------------------
+
+Classification datasetof 64x64 color images of 200 classes.
+
+
+Config example:
+
+.. code-block:: json
+
+    {
+        "dataset": {
+            "name": "tiny_imagenet"
+        }
+    }
