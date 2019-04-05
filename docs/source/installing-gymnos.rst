@@ -55,6 +55,9 @@ Docker
 
 We provide up to date docker builds for different execution environments and working modalities.
 
+.. note::
+  Please make sure `Docker <https://docs.docker.com/v17.12/install/>`_  is install in your computer
+
 Build image
 -----------
 
@@ -87,13 +90,46 @@ If you are lucky enough to have a GPU, you just need to execute the following co
    * CUDA Version:        10.0
 
 
-Pull image
------------
+Pull image from Telefonica Artifactory
+-----------------------------------------
 
 If you just want to get the latest docker build:
 
+First you need to log in to Telefonica Artifactory at dockerhub.hi.inet
+
 .. code-block:: bash
 
+  docker login dockerhub.hi.inet
+
+.. note::
+
+  Please provide your corporate credentials for <USER_ID> and <USER_PASSWORD>
+
+Then pull the latest image:
+
+.. code-block:: bash
+
+  docker pull dockerhub.hi.inet/dcip/aura-prototypes/gymnos-latest
+
+or for gpu environments:
+
+.. code-block:: bash
+
+  docker pull dockerhub.hi.inet/dcip/aura-prototypes/gymnos-gpu-latest
+
+Now check that Docker images were indeed successfully pulled. You should see something like this
+
+.. code-block:: bash
+
+  docker images  
+
+  REPOSITORY                                                 TAG                 IMAGE ID            CREATED             SIZE
+  dockerhub.hi.inet/dcip/aura-prototypes/gymnos-gpu-latest   latest              1760add3f734        45 minutes ago      4.54GB
+  dockerhub.hi.inet/dcip/aura-prototypes/gymnos-latest       latest              6a780892cf43        45 minutes ago      2.54GB
+  gymnos-gpu                                                 latest              7c562888f824        5 days ago          4.5GB
+  gymnos                                                     latest              d7d7ebfd1481        5 days ago          2.5GB
+  tensorflow/tensorflow                                      1.12.0-gpu-py3      413b9533f92a        5 months ago        3.35GB
+  tensorflow/tensorflow                                      1.12.0-py3          39bcb324db83        5 months ago        1.33GB
 
 
 Run image
