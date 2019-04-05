@@ -18,19 +18,19 @@ pool:
 steps:
 - script: |
     echo Generate docker images
-    docker build -t $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName)-latest -f Dockerfile .
-    docker build -t $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName)-gpu-latest -f Dockerfile.gpu .
+    docker build -t $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName) -f Dockerfile .
+    docker build -t $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName)-gpu -f Dockerfile.gpu .
   displayName: 'Generate docker images'
 - script: |
     echo Launching Functional Regression
-    docker run $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName)-latest -c experiments/boston_housing.json
-    docker run $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName)-latest -c experiments/mnist.json
+    docker run $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName) -c experiments/boston_housing.json
+    docker run $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName) -c experiments/mnist.json
   displayName: 'Test - Functional Regression'
 - script: |
     echo Push images to Telefonica artifactory
     docker login -u $(dockerId) -p $(dockerPassword) $(telefonicaDockerHubDomain)
-    docker push $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName)-latest
-    docker push $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName)-gpu-latest
+    docker push $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName)
+    docker push $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName)-gpu
   displayName: 'Push images to Telefonica artifactory'
 - script: |
     echo Clean docker images from agent
