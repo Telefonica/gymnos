@@ -19,7 +19,7 @@ steps:
 - script: |
     echo Generate docker images
     docker build -t $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName) -f Dockerfile .
-    docker build -t $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName)-gpu -f Dockerfile.gpu .
+    docker build -t $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName):gpu-latest -f Dockerfile.gpu .
   displayName: 'Generate docker images'
 - script: |
     echo Launching Functional Regression
@@ -30,7 +30,7 @@ steps:
     echo Push images to Telefonica artifactory
     docker login -u $(dockerId) -p $(dockerPassword) $(telefonicaDockerHubDomain)
     docker push $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName)
-    docker push $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName)-gpu
+    docker push $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName):gpu-latest
   displayName: 'Push images to Telefonica artifactory'
 - script: |
     echo Clean docker images from agent
