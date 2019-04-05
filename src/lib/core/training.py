@@ -34,11 +34,11 @@ class TrainingSamples:
 
 class Training:
 
-    def __init__(self, samples, batch_size=32, epochs=10, callbacks=None):
+    def __init__(self, samples, shuffle=True, batch_size=32, epochs=10, callbacks=None):
         self.epochs = epochs
         self.batch_size = batch_size
         self.samples = TrainingSamples(**samples)
-
+        self.shuffle = shuffle
         self.callbacks = []
         self.callbacks_config = callbacks or []
 
