@@ -180,4 +180,6 @@ class Trainer:
         )
         save_to_json(os.path.join(trainings_dataset_execution_path, TRAINING_METRICS_FILENAME), metrics)
 
+        self.tracking.trackers.end()
+
         return trainings_dataset_execution_path

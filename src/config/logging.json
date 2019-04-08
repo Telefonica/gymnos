@@ -20,7 +20,8 @@
             "level": "DEBUG",
             "formatter": "standard",
             "filename": "/tmp/gymnos.log",
-            "encoding": "utf8"
+            "encoding": "utf8",
+            "mode": "w"
         }
     },
 
