@@ -21,7 +21,7 @@ class DataUsageHoltWinters(Model):
         self.min_historic = hyperparameters.get("min_historic", 5)
         self.flag_optimize_hiperparams = hyperparameters.get("flag_optimize_hiperparams", True)
         self.n_preds = hyperparameters.get("n_preds", 2)
-        self.lag = hyperparameters.get("lag", 2)
+        self.lag = hyperparameters.get("lag", 0)
         self.slen = hyperparameters.get("slen", 1)
         self.alpha = hyperparameters.get("alpha", 0.716)
         self.beta = hyperparameters.get("beta", 0.029)
