@@ -16,11 +16,12 @@ from ..utils.temporal_series_utils import mad_mean_error, nrmsd_error_norm, resi
 class DataUsageHoltWinters(Model):
 
     def __init__(self, input_shape, **hyperparameters):
-        super().__init__(input_shape, features_serie=False)
+        super().__init__(input_shape)
 
         self.min_historic = hyperparameters.get("min_historic", 5)
         self.flag_optimize_hiperparams = hyperparameters.get("flag_optimize_hiperparams", True)
-        self.n_preds = hyperparameters.get("n_preds", 17)
+        self.n_preds = hyperparameters.get("n_preds", 2)
+        self.lag = hyperparameters.get("lag", 2)
         self.slen = hyperparameters.get("slen", 1)
         self.alpha = hyperparameters.get("alpha", 0.716)
         self.beta = hyperparameters.get("beta", 0.029)
@@ -79,7 +80,7 @@ class DataUsageHoltWinters(Model):
                                             (1 - self.gamma) * seasonals[i % self.slen])
                 result.append(smooth + trend + seasonals[i % self.slen])
 
-        future_predictions = result[-self.n_preds:]
+        future_predictions = result[-(self.n_preds + self.lag):]
 
         return future_predictions
 
@@ -93,10 +94,10 @@ class DataUsageHoltWinters(Model):
         emc_error: (float) quadratic mean error for execution date
 
         """
-        y[1:] -= y[:-1].copy()
+
         y = y.flatten().tolist()
 
-        y_pred = self.predict(y[:-self.n_preds], batch_size=batch_size, verbose=verbose)
+        y_pred = self.predict(y[:-(self.lag + self.n_preds)], batch_size=batch_size, verbose=verbose)
 
         return {
             "mean_error": mad_mean_error(y[-self.n_preds:], y_pred[-self.n_preds:]),

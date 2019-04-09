@@ -1,0 +1,37 @@
+{
+    "experiment": {
+        "name": "Data Usage Test Linear Regression",
+        "tags": [
+            "temporal-series",
+            "forecasting"
+        ]
+    },
+    "training": {
+        "shuffle": false,
+        "samples": {
+            "val": 0.0,
+            "fit": 0.983,
+            "test": 0.015
+        }
+    },
+    "dataset": {
+        "name": "data_usage_test"
+    },
+    "tracking": {
+        "trackers": [
+            {
+                "type": "mlflow"
+            }
+        ]
+    },
+    "model": {
+        "description": "Prediction for one time serie using Linear Regression Model",
+        "name": "data_usage_linear_regression",
+        "input_shape": [
+            300
+        ]
+    },
+    "session": {
+        "device": "cpu"
+    }
+}

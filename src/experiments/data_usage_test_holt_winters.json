@@ -1,0 +1,37 @@
+{
+    "training": {
+        "samples": {
+            "val": 0.0,
+            "test": 0.99,
+            "fit": 0.007
+        },
+        "shuffle": false
+    },
+    "model": {
+        "input_shape": [
+            300
+        ],
+        "description": "Prediction for one time serie using Holt-Winters Model",
+        "name": "data_usage_holt_winters"
+    },
+    "dataset": {
+        "name": "data_usage_test"
+    },
+    "session": {
+        "device": "cpu"
+    },
+    "tracking": {
+        "trackers": [
+            {
+                "type": "mlflow"
+            }
+        ]
+    },
+    "experiment": {
+        "tags": [
+            "temporal-series",
+            "forecasting"
+        ],
+        "name": "Data Usage Test Holt Winters"
+    }
+}

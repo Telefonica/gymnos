@@ -25,9 +25,8 @@ class UnusualDataUsageWT(Model):
 
     def predict(self, X, batch_size=32, verbose=0):
         """
-        This function labels consumptions associated as anomalous using an algorithm. Return two new fields:
-        - deviation: variable that in tha main script will be rename as
-                     deviation_qt used to calculate anomaly threshold and scoring the anomaly in case that exists
+        This function labels consumptions associated as anomalous using an algorithm. Return one field:
+
         - anomaly_ind: binary variable that in the main script will be rename as anomaly_ind
                       (1 if it is anomaly or 0 in another case)
 
@@ -48,8 +47,7 @@ class UnusualDataUsageWT(Model):
 
 
         Returns:
-            the two new values that will be rename in the main script:
-                - deviation: deviation resulted of step 3 in cases that has sense.
+            the value that will be rename in the main script:
                 - anomaly_ind: binary field with 1 if it is anomaly or 0 in another case.
 
             """

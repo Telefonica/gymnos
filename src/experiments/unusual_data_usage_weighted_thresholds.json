@@ -1,0 +1,37 @@
+{
+    "tracking": {
+        "trackers": [
+            {
+                "type": "mlflow"
+            }
+        ]
+    },
+    "dataset": {
+        "name": "unusual_data_usage_test"
+    },
+    "experiment": {
+        "name": "Unusual Data Usage Test Weighted Thresholds",
+        "tags": [
+            "temporal-series",
+            "anomaly-detection"
+        ]
+    },
+    "model": {
+        "name": "unusual_data_usage_weighted_thresholds",
+        "input_shape": [
+            13
+        ],
+        "description": "Anomaly detection in a time serie using the a new method called Weighted Threslholds"
+    },
+    "training": {
+        "shuffle": false,
+        "samples": {
+            "fit": 0.2,
+            "test": 0.2,
+            "val": 0.2
+        }
+    },
+    "session": {
+        "device": "cpu"
+    }
+}

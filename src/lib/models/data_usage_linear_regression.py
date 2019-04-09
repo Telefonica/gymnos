@@ -4,7 +4,6 @@
 #
 #
 
-import numpy as np
 from sklearn.linear_model import LinearRegression
 
 from .model import ScikitLearnModel
@@ -16,7 +15,7 @@ class DataUsageLinearRegression(ScikitLearnModel):
     def __init__(self, input_shape, **hyperparameters):
         super().__init__(input_shape, sklearn_model=LinearRegression())
 
-        self.n_preds = hyperparameters.get("n_preds", 3)
+        self.n_preds = hyperparameters.get("n_preds", 2)
 
     def evaluate(self, X, y, batch_size=32, verbose=0):
         """

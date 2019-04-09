@@ -1,0 +1,45 @@
+{
+    "model": {
+        "name": "data_usage_lstm",
+        "compilation": {
+            "metrics": [
+                "acc"
+            ],
+            "loss": "mse",
+            "optimizer": "adam"
+        },
+        "description": "Prediction for one time serie using lstm model",
+        "input_shape": [
+            2,
+            2
+        ]
+    },
+    "tracking": {
+        "trackers": [
+            {
+                "type": "mlflow"
+            }
+        ]
+    },
+    "session": {
+        "device": "cpu"
+    },
+    "training": {
+        "shuffle": false,
+        "samples": {
+            "test": 0.015,
+            "fit": 0.983,
+            "val": 0
+        }
+    },
+    "dataset": {
+        "name": "data_usage_test"
+    },
+    "experiment": {
+        "tags": [
+            "temporal-series",
+            "forecasting"
+        ],
+        "name": "Data Usage Test LSTM"
+    }
+}
