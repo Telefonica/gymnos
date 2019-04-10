@@ -138,3 +138,36 @@ Config example:
             "name": "tiny_imagenet"
         }
     }
+
+Data Usage Test
+---------------------
+
+Dataset  of Yearly (1700-2008) data on sunspots from the National Geophysical Data Center. Used as test of data usage models. It is only a time serie for testing data usage models.
+
+
+Config example:
+
+.. code-block:: json
+
+    {
+        "dataset": {
+            "name": "data_usage_test"
+        }
+    }
+
+Unusual Data Usage Test
+------------------------
+
+Dataset  of Yearly (1700-2008) data on sunspots from the National Geophysical Data Center. Used as test of unusual data usage models. It is only a time serie for testing data usage models.
+
+
+Config example:
+
+.. code-block:: json
+
+    {
+        "dataset": {
+            "name": "unusual_data_usage_test"
+        }
+    }
+
