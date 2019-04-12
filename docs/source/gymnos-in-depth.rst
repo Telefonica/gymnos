@@ -8,3 +8,5 @@ Example of a secondary index tree
    :maxdepth: 2
 
    architecture.rst
+   execution-results.rst
+   tracking.rst
