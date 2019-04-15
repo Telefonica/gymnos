@@ -32,8 +32,8 @@ class MTE(PublicDataset):
         Dataset to predict topics of video contents from M+ based on the title and the description of the content.
     """
 
-    public_dataset_files = ("http://ottcache.dof6.com/vod/yomvi.svc/webplayer.hls/ANONIMO/epg?" +
-                            "from={}&span=7&network=yomvi").format(datetime.now().strftime("%Y-%m-%dT%H:%M:%S"))
+    public_dataset_files = ("http://ottcache.dof6.com/movistarplus/webplayer.hls/OTT/epg?from={}&span=7&channel=" +
+                            "&network=movistarplus").format(datetime.now().strftime("%Y-%m-%dT%H:%M:%S"))
 
     def __init__(self, cache_dir=None):
         super().__init__(cache_dir=cache_dir)
@@ -87,7 +87,7 @@ class MTE(PublicDataset):
         try:
             res = requests.get(url, params=params)
             return res.json()
-        except (requests.exceptions.RequestException, json.decoder.JSONDecodeError) as err:
+        except (requests.exceptions.RequestException, ValueError) as err:
             self.logger.warning("{}: {}".format(url, err))
             return None
 
