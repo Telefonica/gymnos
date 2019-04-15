@@ -40,7 +40,13 @@ Or ``tensorflow`` to run in CPU:
 
   pipenv install tensorflow
 
-You're now ready to run gymnos. Gymnos ships with some example experiments that should get you up and running quickly.
+You're now ready to run gymnos. You can execute some experiment by running:
+
+.. code-block:: bash
+
+  pipenv run python3 -m bin.scripts.gymnosd -c <config_path>
+
+Gymnos ships with some example experiments that should get you up and running quickly.
 
 To actually get gymnos running, do the following:
 
@@ -135,32 +141,19 @@ Run image
 
 .. code-block:: bash
 
-  docker run gymnos -c <gymnos_training_configuration>
+  docker run -it gymnos
 
 
 GPU version.
 
 .. code-block:: bash
 
-  nvidia-docker run gymnos-gpu -c <gymnos_training_configuration>
+  nvidia-docker run -it gymnos-gpu
 
 .. note::
 
-    If you want to add new features or try new experiments, the docker environment is the perfect place to do it.
-    Simply access the container and you will have all the dependencies resolved to execute your new project with:
+    The docker environment has all the dependencies resolved to execute your new project with:
 
     .. code-block:: bash
 
-        python3 -m bin.scripts.gymnosd -c <training_configuration>
-
-    To access your container, run the following command:
-
-    .. code-block:: bash
-
-        docker run -it --entrypoint=/bin/bash gymnos
-
-    Or if you have a GPU:
-
-    .. code-block:: bash
-
-        nvidia-docker run -it --entrypoint=/bin/bash gymnos-gpu
+        python3 -m bin.scripts.gymnosd -c <config_path>
