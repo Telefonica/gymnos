@@ -18,14 +18,6 @@ class KaggleDatasetDownloader:
     """
 
     def __init__(self):
-        has_username = os.getenv("KAGGLE_USERNAME", False)
-        has_api_key = os.getenv("KAGGLE_KEY", False)
-
-        if not has_username or not has_api_key:
-            msg  = "Environment variables for Kaggle API not found."
-            msg += "You need to provide KAGGLE_USERNAME and KAGGLE_KEY to download a Kaggle dataset"
-            raise Exception(msg)
-
         self.kaggle_api = locate("kaggle.api")
 
         self.logger = get_logger(prefix=self)
