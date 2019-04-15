@@ -4,8 +4,6 @@
 #
 #
 
-import tensorflow as tf
-
 
 class SessionOptions:
 
@@ -21,6 +19,3 @@ class Session:
 
         self.device = device
         self.options = SessionOptions(**options)
-
-    def has_gpu(self):
-        return bool(tf.test.gpu_device_name())
