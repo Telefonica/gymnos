@@ -6,6 +6,7 @@
 
 import os
 import platform
+import numpy as np
 import tensorflow as tf
 from datetime import datetime
 from pprint import pprint
@@ -137,7 +138,12 @@ class Trainer:
 
         pprint(train_metrics)
 
-        self.logger.info("Logging train metrics".format(len(self.tracking.trackers)))
+        for metric_name, metric_value in train_metrics.items():
+            self.logger.info("Results for {}: Min: {:.2f} | Max: {:.2f} | Mean: {:.2f}".format(metric_name,
+                                                                                               np.min(metric_value),
+                                                                                               np.max(metric_value),
+                                                                                               np.mean(metric_value)))
+        self.logger.info("Logging train metrics to trackers".format(len(self.tracking.trackers)))
         self.tracking.trackers.log_metrics(train_metrics)
 
         # EVALUATE MODEL IF TEST SAMPLES EXIST
@@ -153,7 +159,7 @@ class Trainer:
 
             pprint(test_metrics)
 
-            self.logger.info("Logging test metrics".format(len(self.tracking.trackers)))
+            self.logger.info("Logging test metrics to trackers".format(len(self.tracking.trackers)))
             self.tracking.trackers.log_metrics(test_metrics, prefix="test_")
 
         # Log additional params
@@ -184,6 +190,9 @@ class Trainer:
             platform=platform_details
         )
         save_to_json(os.path.join(trainings_dataset_execution_path, TRAINING_METRICS_FILENAME), metrics)
+
+        self.logger.info("Metrics, platform information and elapsed times saved to {} file".format(
+                         TRAINING_METRICS_FILENAME))
 
         self.tracking.trackers.end()
 
