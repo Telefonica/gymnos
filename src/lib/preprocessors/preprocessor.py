@@ -55,5 +55,9 @@ class Pipeline:
 
         return X
 
+    def __str__(self):
+        preprocessors_names = [prep.__class__.__name__ for prep in self.preprocessors]
+        return " | ".join(preprocessors_names)
+
     def __len__(self):
         return len(self.preprocessors)

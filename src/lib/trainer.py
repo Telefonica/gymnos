@@ -97,7 +97,8 @@ class Trainer:
                                                                                   shuffle=self.training.shuffle)
         # APPLY PREPROCESSORS
 
-        self.logger.info("Applying {} preprocessors ...".format(len(self.dataset.preprocessor_pipeline)))
+        self.logger.info("Applying {} preprocessors ({})".format(len(self.dataset.preprocessor_pipeline),
+                                                                 str(self.dataset.preprocessor_pipeline)))
 
         with elapsed_time() as elapsed:
             self.dataset.preprocessor_pipeline.fit(X_train, y_train)
