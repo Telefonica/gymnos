@@ -34,6 +34,5 @@ VOLUME ["/home/gymnos/cache"]
 COPY src ./
 
 ENV GIT_PYTHON_REFRESH quiet
-ENV TF_CPP_MIN_LOG_LEVEL 2  # supress tensorflow info output, only logs errors
 
 ENTRYPOINT /bin/bash
