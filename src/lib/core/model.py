@@ -21,6 +21,7 @@ KERAS_OPTIMIZERS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "
 KERAS_APPLICATIONS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "keras",
                                                       "applications.json")
 
+
 class ModelCompilation:
 
     def __init__(self, loss, optimizer, metrics=None):
