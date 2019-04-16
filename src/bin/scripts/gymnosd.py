@@ -45,10 +45,10 @@ if __name__ == "__main__":
     os.makedirs(cache_config["datasets"], exist_ok=True)
 
     trainer = Trainer(
-        experiment=Experiment(**training_config["experiment"]),
         model=Model(**training_config["model"]),
         dataset=Dataset(cache_dir=cache_config["datasets"], **training_config["dataset"]),
         training=Training(**training_config["training"]),
+        experiment=Experiment(**training_config.get("experiment", {})),  # optional field
         tracking=Tracking(**training_config.get("tracking", {})),  # optional field
         session=Session(**training_config.get("session", {}))  # optional field
     )
