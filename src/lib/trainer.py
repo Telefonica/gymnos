@@ -75,6 +75,22 @@ class Trainer:
         self.training.configure_callbacks(base_dir=os.path.join(trainings_dataset_execution_path,
                                                                 TRAINING_CALLBACKS_FOLDERNAME))
 
+        # RETRIEVE PLATFORM DETAILS
+
+        platform_details = {
+            "python_version": platform.python_version(),
+            "python_compiler": platform.python_compiler(),
+            "platform": platform.platform(),
+            "system": platform.system(),
+            "node": platform.node(),
+            "architecture": platform.architecture()[0],
+            "processor": platform.processor(),
+            "is_gpu_available": bool(tf.test.gpu_device_name())
+        }
+
+        for name, key in zip(("Python version", "Platform"), ("python_version", "platform")):
+            self.logger.debug("{}: {}".format(name, platform_details[key]))
+
         # LOG HYPERPARAMETERS
         self.tracking.trackers.log_params(self.model.hyperparameters)
 
@@ -170,19 +186,6 @@ class Trainer:
 
         self.logger.info("Saving model")
         self.model.model.save(trainings_dataset_execution_path, name=TRAINING_MODEL_NAME)
-
-        # RETRIEVE PLATFORM DETAILS
-
-        platform_details = {
-            "python_version": platform.python_version(),
-            "python_compiler": platform.python_compiler(),
-            "platform": platform.platform(),
-            "system": platform.system(),
-            "node": platform.node(),
-            "architecture": platform.architecture()[0],
-            "processor": platform.processor(),
-            "is_gpu_available": bool(tf.test.gpu_device_name())
-        }
 
         metrics = dict(
             elapsed=execution_steps_elapsed,
