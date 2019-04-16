@@ -15,5 +15,5 @@ class Replace(Preprocessor):
         self.from_val = from_val
         self.to_val = to_val
 
-    def transform(self, x):
-        return np.where(x == self.from_val, self.to_val, x)
+    def transform(self, X):
+        return np.where(X == self.from_val, self.to_val, X)

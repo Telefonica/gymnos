@@ -18,7 +18,7 @@ class ImageResize(Preprocessor):
         self.height = height
 
 
-    def transform_sample(self, x):
+    def __transform_sample(self, x):
         resized = imresize(x, (self.width, self.height))
 
         if resized.ndim < 3:
@@ -28,4 +28,4 @@ class ImageResize(Preprocessor):
 
 
     def transform(self, X):
-        return apply(X, self.transform_sample)
+        return apply(X, self.__transform_sample)
