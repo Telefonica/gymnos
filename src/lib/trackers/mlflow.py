@@ -13,15 +13,16 @@ from .tracker import Tracker
 
 class MLFlow(Tracker):
 
-    def __init__(self, logdir, run_name=None, experiment_name=None, source_name=None):
-        mlflow.set_tracking_uri(logdir)
-
-        experiment_id = None
+    def __init__(self, experiment_name=None, source_name=None):
+        self.source_name = source_name
+        self.experiment_id = None
         if experiment_name is not None:
-            experiment_id = mlflow.create_experiment(experiment_name)
+            self.experiment_id = mlflow.create_experiment(experiment_name)
 
-        mlflow.start_run(run_name=run_name, experiment_id=experiment_id, source_name=source_name)
 
+    def start(self, run_name, logdir):
+        mlflow.set_tracking_uri(os.path.join(logdir, "mlruns"))
+        mlflow.start_run(run_name=run_name, experiment_id=self.experiment_id, source_name=self.source_name)
 
     def log_metric(self, name, value, step=None):
         mlflow.log_metric(name, value)
