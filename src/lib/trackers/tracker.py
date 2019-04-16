@@ -12,6 +12,9 @@ from collections.abc import Iterable
 
 class Tracker:
 
+    def start(self, run_name, logdir):
+        pass
+
     def add_tag(self, tag):
         pass
 
@@ -73,8 +76,6 @@ class KerasCallback(callbacks.Callback):
         self.log_params = log_params
         self.log_metrics = log_metrics
 
-        super().__init__()
-
 
     def on_epoch_end(self, epoch, logs=None):
         logs = logs or {}
@@ -105,6 +106,10 @@ class TrackerList:
 
     def reset(self):
         self.trackers = []
+
+    def start(self, run_name, logdir):
+        for tracker in self.trackers:
+            tracker.start(run_name, logdir)
 
     def add_tag(self, tag):
         for tracker in self.trackers:

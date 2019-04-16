@@ -8,7 +8,7 @@ import os
 
 from pydoc import locate
 
-from ..trackers import TrackerList, Tensorboard, MLFlow
+from ..trackers import TrackerList
 
 from ..utils.io_utils import read_from_json
 
@@ -25,20 +25,8 @@ class Tracking:
         self.params = params or {}
 
         self.trackers = TrackerList()
-        self.trackers_config = trackers
-
-
-    def configure_trackers(self, logdir, run_name):
-        for tracker_config in self.trackers_config:
-            tracker_type = tracker_config.pop("type")
-
-            TrackerClass = self.__retrieve_tracker_from_type(tracker_type)
-            if issubclass(TrackerClass, Tensorboard):
-                tracker_config["logdir"] = os.path.join(logdir, "tensorboard", run_name)
-            elif issubclass(TrackerClass, MLFlow):
-                tracker_config["run_name"] = run_name
-                tracker_config["logdir"] = os.path.join(logdir, "mlruns")
-
+        for tracker_config in trackers:
+            TrackerClass = self.__retrieve_tracker_from_type(tracker_config.pop("type"))
             tracker = TrackerClass(**tracker_config)
             self.trackers.add(tracker)
 

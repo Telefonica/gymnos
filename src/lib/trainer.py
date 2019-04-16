@@ -72,7 +72,6 @@ class Trainer:
 
         # CONFIGURE TRACKERS AND CALLBACKS TO STORE ARTIFACTS TO CURRENT EXECUTION DIRECTORY
 
-        self.tracking.configure_trackers(logdir=trainings_dataset_trackings_path, run_name=execution_id)
         self.training.configure_callbacks(base_dir=os.path.join(trainings_dataset_execution_path,
                                                                 TRAINING_CALLBACKS_FOLDERNAME))
 
@@ -107,7 +106,18 @@ class Trainer:
 
         self.logger.debug("Found {} GPUs".format(len(gpus_info)))
 
-        # LOG HYPERPARAMETERS
+        # DEFINE TRACKER TO STORE METRICS AND SAVE THEM TO JSON LATER
+
+        history_tracker = trackers.History()
+        self.tracking.trackers.add(history_tracker)
+
+        # START TRACKING
+
+        self.tracking.trackers.start(run_name=execution_id, logdir=trainings_dataset_trackings_path)
+
+        # LOG TRACKING AND MODEL PARAMETERS
+
+        self.tracking.trackers.log_params(self.tracking.params)
         self.tracking.trackers.log_params(self.model.hyperparameters)
 
         # LOAD DATASET AND SPLIT IT FOR CROSS VALIDATION
@@ -146,11 +156,6 @@ class Trainer:
 
         execution_steps_elapsed["transform_preprocessors"] = elapsed.s
         self.logger.debug("Preprocessing data took {:.2f}s".format(elapsed.s))
-
-        # DEFINE PLACEHOLDER TO KEEP TRAIN, TEST, VAL METRICS
-
-        history_tracker = trackers.History()
-        self.tracking.trackers.add(history_tracker)
 
         # FIT MODEL
 
@@ -193,10 +198,6 @@ class Trainer:
 
             self.logger.info("Logging test metrics to trackers".format(len(self.tracking.trackers)))
             self.tracking.trackers.log_metrics(test_metrics, prefix="test_")
-
-        # Log additional params
-
-        self.tracking.trackers.log_params(self.tracking.params)
 
         # SAVE MODEL
 
