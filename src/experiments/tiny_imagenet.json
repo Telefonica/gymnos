@@ -7,10 +7,10 @@
         "description": "CNN for Tiny Imagenet dataset",
         "input_shape": [48, 48, 3],
         "network": [
-            {"type": "conv2d", "filters": 16, "kernel_size": [2, 2], "strides": 2, "padding": "valid", "activation": "relu"},
-            {"type": "maxpooling2d", "pool_size": 2},
-            {"type": "conv2d", "filters": 32, "kernel_size": 4, "strides": 2, "padding": "valid", "activation": "relu"},
-            {"type": "maxpooling2d", "pool_size": 2},
+            {"type": "conv_2d", "filters": 16, "kernel_size": [2, 2], "strides": 2, "padding": "valid", "activation": "relu"},
+            {"type": "max_pooling_2d", "pool_size": 2},
+            {"type": "conv_2d", "filters": 32, "kernel_size": 4, "strides": 2, "padding": "valid", "activation": "relu"},
+            {"type": "max_pooling_2d", "pool_size": 2},
             {"type": "flatten"},
             {"type": "dense", "units": 512, "activation": "relu"},
             {"type": "dense", "units": 200, "activation": "softmax"}
