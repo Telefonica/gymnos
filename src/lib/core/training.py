@@ -12,7 +12,7 @@ from keras import callbacks
 from ..logger import get_logger
 from ..utils.io_utils import read_from_json
 
-CALLBACKS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "callbacks.json")
+CALLBACKS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "keras", "callbacks.json")
 
 
 class TrainingSamples:

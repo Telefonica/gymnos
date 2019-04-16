@@ -14,12 +14,12 @@ from ..logger import get_logger
 from ..models import KerasModel
 from ..utils.io_utils import read_from_json
 
-LAYERS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "layers.json")
+KERAS_LAYERS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "keras", "layers.json")
 MODELS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "models.json")
-METRICS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "metrics.json")
-OPTIMIZERS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "optimizers.json")
-APPLICATIONS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "applications.json")
-
+KERAS_METRICS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "keras", "metrics.json")
+KERAS_OPTIMIZERS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "keras", "optimizers.json")
+KERAS_APPLICATIONS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "keras",
+                                                      "applications.json")
 
 class ModelCompilation:
 
@@ -39,12 +39,12 @@ class ModelCompilation:
 
 
     def __retrieve_optimizer_from_id(self, optimizer_id):
-        optimizers_ids_to_modules = read_from_json(OPTIMIZERS_IDS_TO_MODULES_PATH)
+        optimizers_ids_to_modules = read_from_json(KERAS_OPTIMIZERS_IDS_TO_MODULES_PATH)
         optimizer_loc = optimizers_ids_to_modules[optimizer_id]
         return locate(optimizer_loc)
 
     def __retrieve_metric_from_id(self, metric_id):
-        metrics_ids_to_modules = read_from_json(METRICS_IDS_TO_MODULES_PATH)
+        metrics_ids_to_modules = read_from_json(KERAS_METRICS_IDS_TO_MODULES_PATH)
         metric_loc = metrics_ids_to_modules.get(metric_id)
         if metric_loc is None:
             return metric_id
@@ -87,12 +87,12 @@ class Model:
 
 
     def __retrieve_layer_from_type(self, layer_type):
-        layers_ids_to_modules = read_from_json(LAYERS_IDS_TO_MODULES_PATH)
+        layers_ids_to_modules = read_from_json(KERAS_LAYERS_IDS_TO_MODULES_PATH)
         layer_loc = layers_ids_to_modules[layer_type]
         return locate(layer_loc)
 
     def __retrieve_application_from_application_id(self, application_id):
-        application_ids_to_modules = read_from_json(APPLICATIONS_IDS_TO_MODULES_PATH)
+        application_ids_to_modules = read_from_json(KERAS_APPLICATIONS_IDS_TO_MODULES_PATH)
         application_loc = application_ids_to_modules[application_id]
         return locate(application_loc)
 
