@@ -6,9 +6,9 @@
 
 import numpy as np
 
-from .preprocessor import Preprocessor
-from ..utils.image_utils import imresize
-from ..utils.iterator_utils import apply
+from ..preprocessor import Preprocessor
+from ...utils.image_utils import imresize
+from ...utils.iterator_utils import apply
 
 
 class ImageResize(Preprocessor):

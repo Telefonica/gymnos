@@ -6,8 +6,8 @@
 
 import cv2 as cv
 
-from ..utils.iterator_utils import apply
-from .preprocessor import Preprocessor
+from ...utils.iterator_utils import apply
+from ..preprocessor import Preprocessor
 
 
 class GrayscaleToColor(Preprocessor):

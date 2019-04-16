@@ -4,9 +4,9 @@
 #
 #
 
-from ..utils.image_utils import imgray
-from ..utils.iterator_utils import apply
-from .preprocessor import Preprocessor
+from ...utils.image_utils import imgray
+from ...utils.iterator_utils import apply
+from ..preprocessor import Preprocessor
 
 
 class Grayscale(Preprocessor):
