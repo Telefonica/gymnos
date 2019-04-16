@@ -5,9 +5,10 @@
 #
 
 import os
+import GPUtil
+import cpuinfo
 import platform
 import numpy as np
-import tensorflow as tf
 from datetime import datetime
 from pprint import pprint
 
@@ -77,6 +78,15 @@ class Trainer:
 
         # RETRIEVE PLATFORM DETAILS
 
+        cpu_info = cpuinfo.get_cpu_info()
+
+        gpus_info = []
+        for gpu in GPUtil.getGPUs():
+            gpus_info.append({
+                "name": gpu.name,
+                "memory": gpu.memoryTotal
+            })
+
         platform_details = {
             "python_version": platform.python_version(),
             "python_compiler": platform.python_compiler(),
@@ -85,11 +95,17 @@ class Trainer:
             "node": platform.node(),
             "architecture": platform.architecture()[0],
             "processor": platform.processor(),
-            "is_gpu_available": bool(tf.test.gpu_device_name())
+            "cpu": {
+                "brand": cpu_info["brand"],
+                "cores": cpu_info["count"]
+            },
+            "gpus": gpus_info
         }
 
         for name, key in zip(("Python version", "Platform"), ("python_version", "platform")):
             self.logger.debug("{}: {}".format(name, platform_details[key]))
+
+        self.logger.debug("Found {} GPUs".format(len(gpus_info)))
 
         # LOG HYPERPARAMETERS
         self.tracking.trackers.log_params(self.model.hyperparameters)

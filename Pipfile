@@ -19,6 +19,8 @@ comet-ml = "*"
 mlflow = "*"
 joblib = "*"
 statsmodels = "*"
+py-cpuinfo = "*"
+gputil = "*"
 
 [requires]
 python_version = "3.5"
