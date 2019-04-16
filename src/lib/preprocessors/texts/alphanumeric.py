@@ -6,8 +6,8 @@
 
 import re
 
-from .preprocessor import Preprocessor
-from ..utils.iterator_utils import apply
+from ..preprocessor import Preprocessor
+from ...utils.iterator_utils import apply
 
 
 class Alphanumeric(Preprocessor):

@@ -6,9 +6,9 @@
 
 import spacy
 
-from ..utils.spacy_utils import get_spacy_nlp
+from ...utils.spacy_utils import get_spacy_nlp
 
-from .preprocessor import Preprocessor
+from ..preprocessor import Preprocessor
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 
