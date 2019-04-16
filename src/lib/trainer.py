@@ -97,33 +97,21 @@ class Trainer:
                                                                                   shuffle=self.training.shuffle)
         # APPLY PREPROCESSORS
 
-        self.logger.info("Applying {} preprocessors ...".format(len(self.dataset.preprocessor_stack)))
+        self.logger.info("Applying {} preprocessors ...".format(len(self.dataset.preprocessor_pipeline)))
 
         with elapsed_time() as elapsed:
-            X_train = self.dataset.preprocessor_stack.transform(X_train)
-            X_test = self.dataset.preprocessor_stack.transform(X_test)
-            X_val = self.dataset.preprocessor_stack.transform(X_val)
+            self.dataset.preprocessor_pipeline.fit(X_train, y_train)
+
+        execution_steps_elapsed["fit_preprocessors"] = elapsed.s
+        self.logger.debug("Fitting preprocessors to train data took {:.2f}s".format(elapsed.s))
+
+        with elapsed_time() as elapsed:
+            X_train = self.dataset.preprocessor_pipeline.transform(X_train, data_desc="X_train")
+            X_test = self.dataset.preprocessor_pipeline.transform(X_test, data_desc="X_test")
+            X_val = self.dataset.preprocessor_pipeline.transform(X_val, data_desc="X_val")
 
         execution_steps_elapsed["transform_preprocessors"] = elapsed.s
-        self.logger.debug("Preprocessing took {:.2f}s".format(elapsed.s))
-
-        # APPLY TRANSFORMERS
-
-        self.logger.info("Applying {} transformers ...".format(len(self.dataset.transformer_stack)))
-
-        with elapsed_time() as elapsed:
-            self.dataset.transformer_stack.fit(X_train, y_train)
-
-        execution_steps_elapsed["fit_transformers"] = elapsed.s
-        self.logger.debug("Fitting transformers to train dataset took {:.2f}s".format(elapsed.s))
-
-        with elapsed_time() as elapsed:
-            X_train = self.dataset.transformer_stack.transform(X_train)
-            X_test = self.dataset.transformer_stack.transform(X_test)
-            X_val = self.dataset.transformer_stack.transform(X_val)
-
-        execution_steps_elapsed["transform_transformers"] = elapsed.s
-        self.logger.debug("Transforming datasets took {:.2f}s".format(elapsed.s))
+        self.logger.debug("Preprocessing data took {:.2f}s".format(elapsed.s))
 
         # DEFINE PLACEHOLDER TO KEEP TRAIN, TEST, VAL METRICS
 

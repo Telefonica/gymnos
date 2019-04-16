@@ -8,9 +8,8 @@ import os
 
 from pydoc import locate
 
-from ..transformers import TransformerStack
 from ..utils.io_utils import read_from_json
-from ..preprocessors import PreprocessorStack
+from ..preprocessors import Pipeline
 
 TRANSFORMERS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "transformers.json")
 DATASETS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "datasets.json")
@@ -19,26 +18,19 @@ PREPROCESSORS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), ".."
 
 class Dataset:
 
-    def __init__(self, name, preprocessors=None, transformers=None, cache_dir=None):
+    def __init__(self, name, preprocessors=None, cache_dir=None):
         preprocessors = preprocessors or []
-        transformers = transformers or []
 
         self.name = name
 
         DatasetClass = self.__retrieve_dataset_from_id(name)
         self.dataset = DatasetClass(cache_dir=cache_dir)
 
-        self.preprocessor_stack = PreprocessorStack()
+        self.preprocessor_pipeline = Pipeline()
         for preprocessor_config in preprocessors:
             PreprocessorClass = self.__retrieve_preprocessor_from_type(preprocessor_config.pop("type"))
             preprocessor = PreprocessorClass(**preprocessor_config)
-            self.preprocessor_stack.add(preprocessor)
-
-        self.transformer_stack = TransformerStack()
-        for transformer_config in transformers:
-            TransformerClass = self.__retrieve_transformer_from_type(transformer_config.pop("type"))
-            transformer = TransformerClass(**transformer_config)
-            self.transformer_stack.add(transformer)
+            self.preprocessor_pipeline.add(preprocessor)
 
 
     def __retrieve_dataset_from_id(self, dataset_id):

@@ -6,5 +6,8 @@
     "replace": "lib.preprocessors.replace.Replace",
     "grayscale_to_color": "lib.preprocessors.grayscale_to_color.GrayscaleToColor",
     "lemmatization": "lib.preprocessors.lemmatization.Lemmatization",
-    "alphanumeric": "lib.preprocessors.alphanumeric.Alphanumeric"
+    "alphanumeric": "lib.preprocessors.alphanumeric.Alphanumeric",
+    "tfidf": "lib.preprocessors.tfidf.Tfidf",
+    "kbest": "lib.preprocessors.kbest.KBest",
+    "standard_scaler": "sklearn.preprocessing.StandardScaler"
 }

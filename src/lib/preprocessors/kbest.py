@@ -4,11 +4,11 @@
 #
 #
 
-from sklearn.base import TransformerMixin
+from .preprocessor import Preprocessor
 from sklearn.feature_selection import SelectKBest, chi2
 
 
-class KBest(TransformerMixin):
+class KBest(Preprocessor):
 
     def __init__(self, scorer, k=1000):
         if scorer == "chi2":
