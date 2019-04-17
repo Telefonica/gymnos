@@ -37,9 +37,6 @@
             }
         ]
     },
-    "session": {
-        "device": "cpu"
-    },
     "training": {
         "callbacks": [
             {

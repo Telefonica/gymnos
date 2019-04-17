@@ -48,12 +48,11 @@ class Trainer:
             └── tracking.trackers[i].name/
     """
 
-    def __init__(self, experiment, model, dataset, training, session, tracking):
+    def __init__(self, experiment, model, dataset, training, tracking):
         self.experiment = experiment
         self.model = model
         self.dataset = dataset
         self.training = training
-        self.session = session
         self.tracking = tracking
 
         self.logger = get_logger(prefix=self)

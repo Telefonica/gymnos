@@ -12,7 +12,6 @@ from lib.trainer import Trainer
 from lib.core.model import Model
 from lib.core.dataset import Dataset
 from lib.core.training import Training
-from lib.core.session import Session
 from lib.core.tracking import Tracking
 from lib.core.experiment import Experiment
 from lib.utils.io_utils import save_to_json, read_from_json
@@ -49,8 +48,7 @@ if __name__ == "__main__":
         dataset=Dataset(cache_dir=cache_config["datasets"], **training_config["dataset"]),
         training=Training(**training_config.get("training", {})),  # optional field
         experiment=Experiment(**training_config.get("experiment", {})),  # optional field
-        tracking=Tracking(**training_config.get("tracking", {})),  # optional field
-        session=Session(**training_config.get("session", {}))  # optional field
+        tracking=Tracking(**training_config.get("tracking", {}))  # optional field
     )
 
     try:
