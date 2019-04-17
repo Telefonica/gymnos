@@ -1,5 +1,5 @@
 ######################
-Gymnos Architecture
+Architecture
 ######################
 
 ***********************
@@ -7,19 +7,27 @@ System Configuration
 ***********************
 Gymnos runs in a single process ``gymnosd.py``. This process is responsible for:
 
-* Setting up logging facilities
+* Setting up logging and caching facilities
 * Handling argument parsing
 * Owning the trainer instance
+* Splitting experiment configurations into relevant pieces and deliver them to the trainer instance
+* Saving relevant information (such as logs and the original configuration) after training executions
 
 Apart from that, there two important files holding the system settings:
 
-* ``system.json`` : system paths, environmental variables, ...
+* ``cache.json`` : paths about where to locate caching facilities 
 * ``logging.json``: settings for logging facility
 
 
 .. image:: images/gymnos-system-config.png
    :width: 600
 
+Configuration parsing is carried out by the ``core`` library. This library takes sections from
+the experiment in json format and provides a specialized object where configuration parameters are
+available as class attributes (a similar approach to an ORM) 
+
+.. image:: images/gymnos-config-parsing.png
+   :width: 600
 
 ***********************
 Training
@@ -27,14 +35,20 @@ Training
 The training phase is fully controlled by ``trainer.py``. 
 The ``Trainer()`` class is responsible for orchestrating any aspect related to the training such as:
 
-* To split experiment configurations into relevant pieces and deliver them to the related entities
 * To prepare the system for the training process:
-   * To collect a suitable dataset for the experiment purpose via ``DatasetManager()`` class
-   * To load an optimized version of the requested model via ``ModelManager()`` class
-   * To accomodate the training session to the underlying execution environment via ``SessionManager()`` class
-* To run and monitor the training phase
-* To inject any dependency via callbacks to produce richer training outcomes ``CallbackProvider()`` class
-* To generate relevant artifacts for tracking and benchmarking via ``TrackerManager()``
+   * To create directories to store training executions
+   * To collect a suitable dataset for the experiment purpose via ``Dataset()`` class
+   * To load an optimized version of the requested model via ``Model()`` class
+   * To accomodate the training session to the underlying execution environment via ``Session()`` class
+* To accomodate the selected dataset to the target model:
+   * To split data for training, validation and test
+   * To apply preprocessors and transformers
+* To run and monitor the training phase via ``Training()`` class:
+   * To fit the model with the right samples
+   * To perform model evaluation once th training is over
+   * To save the model for future predictions
+* To inject any dependency via callbacks to produce richer training outcomes via ``Tracking()`` class
+* To generate relevant artifacts for tracking and benchmarking via ``Tracking()`` class
 
 
 .. image:: images/gymnos-training.png
@@ -51,14 +65,14 @@ Typical tasks such as:
 * dataset collection
 * file storage 
 * data preprocessing
-* data augmentation
 * ...
 
-will be handled by the ``DatasetManager()`` class in first place and the corresponding dataset
-specialization via the ``DataSetFactory()`` class.
+will be handled by the ``Dataset()`` class in first place and the corresponding dataset
+specialization via the ``lib.core.dataset`` library. The following picture shows an example of 
+the inheritance design for datasets from different domains:   
 
 
-.. image:: images/gymnos-dataset-manager.png
+.. image:: images/gymnos-datasets.png
     :width: 600
 
 
@@ -89,33 +103,4 @@ convenient to support different settings for each environment.
 
 
 .. image:: images/gymnos-session-manager.png
-    :width: 600
-
-***********************
-Docker 
-***********************
-At the same time that session support is provided for training, different docker image alternatives
-are available for different exection environments and purposes.
-
-.. note::
-
-   Please see :ref:`installing-gymnos` for further details
-
-
-.. image:: images/gymnos-docker-images.png
-    :width: 600
-
-***********************
-Callbacks
-***********************
-As the training process occurs many calculations are susceptible to be recorded, monitored, modified or 
-even interrupted. The callbacks mechanisms allows developers to add either custom or exisitng 
-callbacks to the current training. Some of them are summarized below:
-
-* Early Stopping
-* Reduce Learning
-* Model Checkpoint
-* Tensorboard
-
-.. image:: images/gymnos-callbacks.png
     :width: 600
