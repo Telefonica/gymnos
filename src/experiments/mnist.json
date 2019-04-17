@@ -10,7 +10,6 @@
             "loss": "categorical_crossentropy",
             "metrics": ["acc"]
         },
-        "input_shape": [28, 28, 3],
         "network": [
             {"type": "flatten"},
             {"type": "dense", "units": 1024, "activation": "relu"},

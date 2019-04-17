@@ -3,9 +3,8 @@
         "name": "Boston Housing"
     },
     "model": {
-        "input_shape": [13],
         "network": [
-            {"type": "dense", "units": 512, "activation": "relu"},
+            {"type": "dense", "units": 512, "activation": "relu", "input_shape": [13]},
             {"type": "dense", "units": 128, "activation": "relu"},
             {"type": "dense", "units": 1, "activation": "linear"}
         ],

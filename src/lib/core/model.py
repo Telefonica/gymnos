@@ -55,18 +55,18 @@ class ModelCompilation:
 
 class Model:
 
-    def __init__(self, input_shape, description=None, compilation=None, name=None,
-                 network=None, hyperparameters=None):
+    def __init__(self, description=None, compilation=None, name=None,
+                 network=None, parameters=None):
 
         self.logger = get_logger(prefix=self)
 
-        self.hyperparameters = hyperparameters or {}
+        self.parameters = parameters or {}
 
         if name is not None:
             ModelClass = self.__retrieve_model_from_id(name)
-            self.model = ModelClass(input_shape, **self.hyperparameters)
+            self.model = ModelClass(**self.parameters)
         elif network is not None:
-            self.model = self.__build_keras_model_from_network(input_shape, network)
+            self.model = self.__build_keras_model_from_network(network)
         else:
             raise ValueError("You need to provide either a model, or a network")
 
@@ -97,22 +97,19 @@ class Model:
         application_loc = application_ids_to_modules[application_id]
         return locate(application_loc)
 
-    def __build_keras_model_from_network(self, input_shape, network):
+    def __build_keras_model_from_network(self, network):
         self.logger.info("Building Keras model from network specification")
-        input_layer = layers.Input(shape=input_shape)
 
-        output_layer = input_layer
+        sequential = models.Sequential()
         for layer_config in network:
             layer_type = layer_config.pop("type")
             if layer_type == "application":
                 LayerClass = self.__retrieve_application_from_application_id(layer_config.pop("application"))
-                keras_layer = LayerClass(input_shape=tuple(input_shape), **layer_config)
+                keras_layer = LayerClass(**layer_config)
             else:
                 LayerClass = self.__retrieve_layer_from_type(layer_type)
                 keras_layer = LayerClass(**layer_config)
 
-            output_layer = keras_layer(output_layer)
+            sequential.add(keras_layer)
 
-        keras_model = models.Model(inputs=input_layer, outputs=output_layer)
-
-        return KerasModel(input_shape, keras_model)
+        return KerasModel(sequential)

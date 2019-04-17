@@ -4,7 +4,6 @@
 #
 #
 
-import numpy as np
 from sklearn.linear_model import LinearRegression
 
 from .model import ScikitLearnModel
@@ -13,8 +12,8 @@ from ..utils.temporal_series_utils import mad_mean_error, nrmsd_error_norm, resi
 
 class DataUsageLinearRegression(ScikitLearnModel):
 
-    def __init__(self, input_shape, **hyperparameters):
-        super().__init__(input_shape, sklearn_model=LinearRegression())
+    def __init__(self, **hyperparameters):
+        super().__init__(sklearn_model=LinearRegression())
 
         self.n_preds = hyperparameters.get("n_preds", 3)
 
