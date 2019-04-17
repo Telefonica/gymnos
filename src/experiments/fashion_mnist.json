@@ -3,8 +3,10 @@
         "name": "Fashion MNIST"
     },
     "model": {
-        "input_shape": [28, 28],
         "name": "fashion_mnist_nn",
+        "parameters": {
+            "input_shape": [28, 28]
+        },
         "compilation": {
             "optimizer": "adam",
             "loss": "categorical_crossentropy",

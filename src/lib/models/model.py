@@ -13,8 +13,8 @@ from ..trackers import History
 
 class Model:
 
-    def __init__(self, input_shape, **hyperparameters):
-        self.input_shape = input_shape
+    def __init__(self, **parameters):
+        pass
 
     def fit(self, X, y, batch_size=32, epochs=1, callbacks=None, val_data=None, verbose=1):
         raise NotImplementedError()
@@ -34,9 +34,7 @@ class Model:
 
 class KerasModel(Model):
 
-    def __init__(self, input_shape, sequential_or_functional_model, **hyperparameters):
-        super().__init__(input_shape)
-
+    def __init__(self, sequential_or_functional_model, **parameters):
         self.model = sequential_or_functional_model
 
     def compile(self, loss, optimizer, metrics=None):
@@ -63,9 +61,7 @@ class KerasModel(Model):
 
 class ScikitLearnModel(Model):
 
-    def __init__(self, input_shape, sklearn_model, **hyperparameters):
-        super().__init__(input_shape)
-
+    def __init__(self, sklearn_model, **parameters):
         self.model = sklearn_model
 
     def fit(self, X, y, batch_size=32, epochs=1, callbacks=None, val_data=None, verbose=1):

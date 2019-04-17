@@ -11,7 +11,7 @@ from keras import models, layers
 
 class FashionMnistNN(KerasModel):
 
-    def __init__(self, input_shape, **hyperparameters):
+    def __init__(self, input_shape):
         model = models.Sequential([
             layers.Flatten(input_shape=input_shape),
             layers.Dense(512, activation="relu"),
@@ -19,4 +19,4 @@ class FashionMnistNN(KerasModel):
             layers.Dense(10, activation="softmax")
         ])
 
-        super().__init__(input_shape, model, **hyperparameters)
+        super().__init__(model)

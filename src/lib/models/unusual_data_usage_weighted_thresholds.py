@@ -12,9 +12,7 @@ from .model import Model
 
 class UnusualDataUsageWT(Model):
 
-    def __init__(self, input_shape, **hyperparameters):
-        super().__init__(input_shape)
-
+    def __init__(self, **hyperparameters):
         self.sigma = hyperparameters.get("sigma", 2.0)
         self.pred_last_day_api_name = hyperparameters.get("pred_last_day_api_name", 20.3)
         self.pred_last_day = hyperparameters.get("pred_last_day", 23)

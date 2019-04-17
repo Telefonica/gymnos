@@ -15,9 +15,7 @@ from ..utils.temporal_series_utils import mad_mean_error, nrmsd_error_norm, resi
 
 class DataUsageHoltWinters(Model):
 
-    def __init__(self, input_shape, **hyperparameters):
-        super().__init__(input_shape, features_serie=False)
-
+    def __init__(self, **hyperparameters):
         self.min_historic = hyperparameters.get("min_historic", 5)
         self.flag_optimize_hiperparams = hyperparameters.get("flag_optimize_hiperparams", True)
         self.n_preds = hyperparameters.get("n_preds", 17)

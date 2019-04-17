@@ -8,9 +8,6 @@
     },
     "model": {
         "description": "Anomaly detection for one serie of web traffic",
-        "input_shape": [
-            13
-        ],
         "name": "unusual_data_usage_weighted_thresholds"
     },
     "dataset": {

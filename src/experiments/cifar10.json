@@ -5,9 +5,8 @@
     },
     "model": {
         "description": "Transfer Learning using VGG16 for CIFAR-10 dataset",
-        "input_shape": [32, 32, 3],
         "network": [
-            {"type": "application", "application": "vgg16", "include_top": true, "classes": 10, "weights": null}
+            {"type": "application", "application": "vgg16", "include_top": true, "classes": 10, "weights": null, "input_shape": [32, 32, 3]}
         ],
         "compilation": {
             "optimizer": {

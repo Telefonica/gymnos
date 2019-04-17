@@ -18,8 +18,6 @@ from .model import Model
 class DogsVsCatsCNN(Model):
 
     def __init__(self, input_shape):
-        super().__init__(input_shape)
-
         self.input = tf.placeholder(tf.float32, shape=[None] + input_shape)
         self.labels = tf.placeholder(tf.float32, shape=[None, 2])
 

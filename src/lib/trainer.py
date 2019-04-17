@@ -118,7 +118,7 @@ class Trainer:
         # LOG TRACKING AND MODEL PARAMETERS
 
         self.tracking.trackers.log_params(self.tracking.params)
-        self.tracking.trackers.log_params(self.model.hyperparameters)
+        self.tracking.trackers.log_params(self.model.parameters)
 
         # LOAD DATASET AND SPLIT IT FOR CROSS VALIDATION
 
