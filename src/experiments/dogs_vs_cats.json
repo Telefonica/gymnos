@@ -25,18 +25,9 @@
         ]
     },
     "training": {
-        "samples": {
-            "fit": 0.6,
-            "val": 0.2,
-            "test": 0.2
-        },
-        "callbacks": [
-            {
-                "type": "early_stopping"
-            }
-        ],
         "batch_size": 32,
-        "epochs": 10
+        "epochs": 10,
+        "validation_split": 0.25
     },
     "tracking": {
         "trackers": [

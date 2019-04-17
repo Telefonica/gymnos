@@ -47,7 +47,7 @@ if __name__ == "__main__":
     trainer = Trainer(
         model=Model(**training_config["model"]),
         dataset=Dataset(cache_dir=cache_config["datasets"], **training_config["dataset"]),
-        training=Training(**training_config["training"]),
+        training=Training(**training_config.get("training", {})),  # optional field
         experiment=Experiment(**training_config.get("experiment", {})),  # optional field
         tracking=Tracking(**training_config.get("tracking", {})),  # optional field
         session=Session(**training_config.get("session", {}))  # optional field

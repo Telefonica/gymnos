@@ -15,33 +15,34 @@ from ..utils.temporal_series_utils import mad_mean_error, nrmsd_error_norm, resi
 
 class DataUsageHoltWinters(Model):
 
-    def __init__(self, **hyperparameters):
-        self.min_historic = hyperparameters.get("min_historic", 5)
-        self.flag_optimize_hiperparams = hyperparameters.get("flag_optimize_hiperparams", True)
-        self.n_preds = hyperparameters.get("n_preds", 17)
-        self.slen = hyperparameters.get("slen", 1)
-        self.alpha = hyperparameters.get("alpha", 0.716)
-        self.beta = hyperparameters.get("beta", 0.029)
-        self.gamma = hyperparameters.get("gamma", 0.993)
+    def __init__(self, n_preds=17, min_historic=5, flag_optimize_hiperparams=True, slen=1, alpha=0.716,
+                 beta=0.029, gamma=0.993):
+        self.min_historic = min_historic
+        self.flag_optimize_hiperparams = flag_optimize_hiperparams
+        self.n_preds = n_preds
+        self.slen = slen
+        self.alpha = alpha
+        self.beta = beta
+        self.gamma = gamma
 
-    def fit(self, X, y, batch_size=32, epochs=1, callbacks=None, val_data=None, verbose=1):
+    def fit(self, X, y):
         return {}
 
-    def predict(self, series, batch_size=32, verbose=0):
+    def predict(self, X):
         """
         Predict the next values of a series by applying the Triple Exponential Smoothing (a.k.a. Holt-Winters)
 
         """
         if self.flag_optimize_hiperparams:
-            slen = estimated_window(series, 2)
+            slen = estimated_window(X, 2)
 
-            if (slen != -1) and (len(series) > int(self.min_historic)):
+            if (slen != -1) and (len(X) > int(self.min_historic)):
                 initial_values = np.array([0.3, 0.1, 0.1])
                 boundaries = [(0.0, 1.0), (0.0, 1.0), (0.0, 1.0)]
 
                 parameters = fmin_l_bfgs_b(rmse_holt_winters,
                                            x0=initial_values,
-                                           args=(series[:], 'additive', self.slen),
+                                           args=(X[:], 'additive', self.slen),
                                            bounds=boundaries,
                                            approx_grad=True)
 
@@ -50,17 +51,17 @@ class DataUsageHoltWinters(Model):
 
         # Holt Winters model
         result = []
-        smooth = series[0]
-        trend = initial_trend(series, self.slen)
-        seasonals = initial_seasonal_components(series, self.slen)
+        smooth = X[0]
+        trend = initial_trend(X, self.slen)
+        seasonals = initial_seasonal_components(X, self.slen)
 
-        result.append(series[0])
+        result.append(X[0])
 
-        for i in range(len(series) + self.n_preds - 1):
+        for i in range(len(X) + self.n_preds - 1):
 
             # We are forecasting
-            if i >= (len(series) - 1):
-                m = i - len(series) + 1
+            if i >= (len(X) - 1):
+                m = i - len(X) + 1
                 prediction = (smooth + m * trend) + seasonals[i % self.slen]
 
                 if prediction < 0.0:
@@ -71,9 +72,9 @@ class DataUsageHoltWinters(Model):
             # To know how much days user can continue with his normal consumption after his billing_end_date:
             else:
                 last_smooth = smooth
-                smooth = self.alpha * (series[i] - seasonals[i % self.slen]) + (1 - self.alpha) * (smooth + trend)
+                smooth = self.alpha * (X[i] - seasonals[i % self.slen]) + (1 - self.alpha) * (smooth + trend)
                 trend = self.beta * (smooth - last_smooth) + (1 - self.beta) * trend
-                seasonals[i % self.slen] = (self.gamma * (series[i] - smooth) +
+                seasonals[i % self.slen] = (self.gamma * (X[i] - smooth) +
                                             (1 - self.gamma) * seasonals[i % self.slen])
                 result.append(smooth + trend + seasonals[i % self.slen])
 
@@ -81,7 +82,7 @@ class DataUsageHoltWinters(Model):
 
         return future_predictions
 
-    def evaluate(self, X, y, batch_size=32, verbose=0):
+    def evaluate(self, X, y):
         """
         Evaluates with the following metrics.
 
@@ -94,7 +95,7 @@ class DataUsageHoltWinters(Model):
         y[1:] -= y[:-1].copy()
         y = y.flatten().tolist()
 
-        y_pred = self.predict(y[:-self.n_preds], batch_size=batch_size, verbose=verbose)
+        y_pred = self.predict(y[:-self.n_preds])
 
         return {
             "mean_error": mad_mean_error(y[-self.n_preds:], y_pred[-self.n_preds:]),
@@ -103,8 +104,8 @@ class DataUsageHoltWinters(Model):
             "emc_error": rmse_train(y[-self.n_preds:], y_pred[-self.n_preds:])
         }
 
-    def restore(self, file_path):
+    def restore(self, directory):
         pass
 
-    def save(self, directory, name="model"):
+    def save(self, directory):
         pass

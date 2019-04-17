@@ -4,19 +4,19 @@
 #
 #
 
-from .model import KerasModel
+from .model import Model
+from .mixins import KerasMixin
 
 from keras import models, layers
 
 
-class FashionMnistNN(KerasModel):
+class FashionMnistNN(Model, KerasMixin):
 
-    def __init__(self, input_shape):
-        model = models.Sequential([
-            layers.Flatten(input_shape=input_shape),
+    def __init__(self, classes=10):
+        self.model = models.Sequential([
+            layers.Flatten(),
             layers.Dense(512, activation="relu"),
             layers.Dense(256, activation="relu"),
-            layers.Dense(10, activation="softmax")
+            layers.Dense(classes, activation="softmax")
         ])
-
-        super().__init__(model)
+        self.model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["acc"])
