@@ -4,7 +4,6 @@
 #
 #
 
-import os
 import numpy as np
 import tensorflow as tf
 
@@ -13,9 +12,10 @@ from collections import defaultdict
 from sklearn.model_selection import train_test_split
 
 from .model import Model
+from .mixins import TensorFlowMixin
 
 
-class DogsVsCatsCNN(Model):
+class DogsVsCatsCNN(Model, TensorFlowMixin):
 
     def __init__(self, input_shape, classes=2):
         self.input = tf.placeholder(tf.float32, shape=[None] + input_shape)
@@ -133,11 +133,3 @@ class DogsVsCatsCNN(Model):
         return {
             "acc": tf.metrics.accuracy(y, y_pred)
         }
-
-    def restore(self, directory):
-        saver = tf.train.Saver()
-        saver.restore(self.sess, os.path.join(directory, "model"))
-
-    def save(self, directory):
-        saver = tf.train.Saver()
-        saver.save(self.sess, os.path.join(directory, "model"))
