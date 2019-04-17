@@ -26,7 +26,7 @@
     },
     "training": {
         "batch_size": 32,
-        "epochs": 10,
+        "epochs": 1,
         "validation_split": 0.25
     },
     "tracking": {
