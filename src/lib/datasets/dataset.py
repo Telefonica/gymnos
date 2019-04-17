@@ -123,9 +123,6 @@ class LibraryDataset(Dataset):
         - read(download_dir)
     """
 
-    def read(self, download_dir=None):
-        raise NotImplementedError()
-
     def download(self, download_dir):
         # Download is handled by library
         self.logger.info("Retrieving dataset from library ...")

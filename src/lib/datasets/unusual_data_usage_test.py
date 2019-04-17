@@ -17,10 +17,7 @@ class UnusualDataUsageTest(LibraryDataset):
     Used as test  of unusual data usage models.
     """
 
-    def __init__(self, cache_dir=None):
-        super().__init__(cache_dir=None)
-
-    def read(self, download_dir=None):
+    def read(self, download_dir):
         data = sm.datasets.sunspots.load_pandas().data
         label_serie = data['SUNACTIVITY'].values
         features_serie = np.arange(len(label_serie))

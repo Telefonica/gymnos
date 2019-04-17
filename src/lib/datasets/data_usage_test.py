@@ -17,10 +17,7 @@ class DataUsageTest(LibraryDataset):
     Used as test  of data usage models.
     """
 
-    def __init__(self, cache_dir=None):
-        super().__init__(cache_dir=None)
-
-    def read(self, download_dir=None):
+    def read(self, download_dir):
         data = sm.datasets.sunspots.load_pandas().data
         data = data['SUNACTIVITY'].values
         # Erase zeros on the left
