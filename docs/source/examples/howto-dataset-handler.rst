@@ -102,6 +102,6 @@ If you want to implement a dataset that belongs to a library like ``Keras`` or `
 
     class MyLibraryDataset(LibraryDataset):
 
-        def read(self, download_dir=None):
+        def read(self, download_dir):
             X, y = load_iris(return_X_y=True)
             return X, to_categorical(y)

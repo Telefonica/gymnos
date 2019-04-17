@@ -23,7 +23,7 @@ class CIFAR10(LibraryDataset):
         The 10 different classes represent airplanes, cars, birds, cats, deer, dogs, frogs, horses, ships, and trucks.
     """
 
-    def read(self, download_dir=None):
+    def read(self, download_dir):
         (X_train, y_train), (X_test, y_test) = cifar10.load_data()
         X = np.concatenate([X_train, X_test], axis=0)
         y = np.concatenate([y_train, y_test], axis=0)
