@@ -8,7 +8,7 @@ import os
 
 from pydoc import locate
 
-from keras import models, layers
+from keras import models
 
 from ..logger import get_logger
 from ..models import KerasModel

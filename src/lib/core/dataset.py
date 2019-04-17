@@ -43,9 +43,3 @@ class Dataset:
         preprocessors_ids_to_modules = read_from_json(PREPROCESSORS_IDS_TO_MODULES_PATH)
         preprocessor_loc = preprocessors_ids_to_modules[preprocessor_type]
         return locate(preprocessor_loc)
-
-
-    def __retrieve_transformer_from_type(self, transformer_type):
-        transformers_ids_to_modules = read_from_json(TRANSFORMERS_IDS_TO_MODULES_PATH)
-        transformer_loc = transformers_ids_to_modules[transformer_type]
-        return locate(transformer_loc)

@@ -35,9 +35,3 @@ class Tracking:
         trackers_ids_to_modules = read_from_json(TRACKERS_IDS_TO_MODULES_PATH)
         tracker_loc = trackers_ids_to_modules[tracker_type]
         return locate(tracker_loc)
-
-
-    def get_keras_callbacks(self):
-        callbacks = self.trackers.get_keras_callbacks(log_params=self.log_model_params,
-                                                      log_metrics=self.log_model_metrics)
-        return callbacks
