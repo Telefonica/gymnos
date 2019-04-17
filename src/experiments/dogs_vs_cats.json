@@ -7,7 +7,10 @@
         "description": "Convolutional model for Dogs vs Cats dataset",
         "name": "dogs_vs_cats_cnn",
         "parameters": {
-            "input_shape": [120, 120, 3]
+            "input_shape": [120, 120, 3],
+            "session": {
+                "log_device_placement": true
+            }
         }
     },
     "dataset": {

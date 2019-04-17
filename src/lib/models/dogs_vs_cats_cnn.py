@@ -17,7 +17,7 @@ from .mixins import TensorFlowMixin
 
 class DogsVsCatsCNN(Model, TensorFlowMixin):
 
-    def __init__(self, input_shape, classes=2):
+    def __init__(self, input_shape, classes=2, session=None):
         self.input = tf.placeholder(tf.float32, shape=[None] + input_shape)
         self.labels = tf.placeholder(tf.float32, shape=[None, classes])
 
@@ -74,7 +74,8 @@ class DogsVsCatsCNN(Model, TensorFlowMixin):
         optimizer = tf.train.AdamOptimizer(learning_rate=0.01)
         self.train_op = optimizer.minimize(self.loss)
 
-        self.sess = tf.Session()
+        session = session or {}
+        self.sess = tf.Session(config=tf.ConfigProto(**session))
         self.sess.run(tf.global_variables_initializer())
 
 
