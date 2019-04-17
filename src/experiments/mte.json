@@ -5,23 +5,30 @@
     },
     "model": {
         "description": "Media Tagging Engine Subscription Classifier",
-        "network": [
-            {"type": "dense", "units": 512, "activation": "relu", "kernel_initializer": "glorot_uniform", "input_shape": [20000]},
-            {"type": "dropout", "rate": 0.5},
-            {"type": "dense", "units": 256, "activation": "relu", "kernel_initializer": "glorot_uniform"},
-            {"type": "dropout", "rate": 0.5},
-            {"type": "dense", "units": 256, "activation": "relu", "kernel_initializer": "glorot_uniform"},
-            {"type": "dropout", "rate": 0.5},
-            {"type": "dense", "units": 17, "activation": "sigmoid", "kernel_initializer": "glorot_uniform"}
-        ],
-        "compilation": {
-            "optimizer": "adam",
-            "loss": "binary_crossentropy",
-            "metrics": ["accuracy_multilabel", "precision"]
+        "name": "keras",
+        "parameters": {
+            "sequential": [
+                {"type": "dense", "units": 512, "activation": "relu", "kernel_initializer": "glorot_uniform", "input_shape": [20000]},
+                {"type": "dropout", "rate": 0.5},
+                {"type": "dense", "units": 256, "activation": "relu", "kernel_initializer": "glorot_uniform"},
+                {"type": "dropout", "rate": 0.5},
+                {"type": "dense", "units": 256, "activation": "relu", "kernel_initializer": "glorot_uniform"},
+                {"type": "dropout", "rate": 0.5},
+                {"type": "dense", "units": 17, "activation": "sigmoid", "kernel_initializer": "glorot_uniform"}
+            ],
+            "compilation": {
+                "optimizer": "adam",
+                "loss": "binary_crossentropy",
+                "metrics": ["accuracy_multilabel", "precision"]
+            }
         }
     },
     "dataset": {
         "name": "mte",
+        "samples": {
+            "train": 0.8,
+            "test": 0.2
+        },
         "preprocessors": [
             {
                 "type": "alphanumeric"
@@ -46,11 +53,6 @@
         ]
     },
     "training": {
-        "samples": {
-            "fit": 0.6,
-            "test": 0.2,
-            "val": 0.2
-        },
         "batch_size": 32,
         "epochs": 16
     }

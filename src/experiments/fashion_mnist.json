@@ -3,18 +3,14 @@
         "name": "Fashion MNIST"
     },
     "model": {
-        "name": "fashion_mnist_nn",
-        "parameters": {
-            "input_shape": [28, 28]
-        },
-        "compilation": {
-            "optimizer": "adam",
-            "loss": "categorical_crossentropy",
-            "metrics": ["acc"]
-        }
+        "name": "fashion_mnist_nn"
     },
     "dataset": {
         "name": "fashion_mnist",
+        "samples": {
+            "train": 0.8,
+            "test": 0.2
+        },
         "preprocessors": [
             {
                 "type": "divide",
@@ -23,13 +19,9 @@
         ]
     },
     "training": {
-        "samples": {
-            "fit": 0.6,
-            "val": 0.2,
-            "test": 0.2
-        },
         "batch_size": 64,
-        "epochs": 10
+        "epochs": 10,
+        "validation_split": 0.25
     },
     "tracking": {
         "trackers": [

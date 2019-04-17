@@ -6,18 +6,18 @@
 
 from sklearn.linear_model import LinearRegression
 
-from .model import ScikitLearnModel
+from .model import Model
+from .mixins import SklearnMixin
 from ..utils.temporal_series_utils import mad_mean_error, nrmsd_error_norm, residual_analysis, rmse_train
 
 
-class DataUsageLinearRegression(ScikitLearnModel):
+class DataUsageLinearRegression(Model, SklearnMixin):
 
-    def __init__(self, **hyperparameters):
-        super().__init__(sklearn_model=LinearRegression())
+    def __init__(self, n_preds=3):
+        self.model = LinearRegression()
+        self.n_preds = n_preds
 
-        self.n_preds = hyperparameters.get("n_preds", 3)
-
-    def evaluate(self, X, y, batch_size=32, verbose=0):
+    def evaluate(self, X, y):
         """
         Evaluates with the following metrics.
 
@@ -27,7 +27,7 @@ class DataUsageLinearRegression(ScikitLearnModel):
         emc_error: (float) quadratic mean error for execution date
 
         """
-        y_pred = self.predict(X, batch_size=batch_size, verbose=verbose)
+        y_pred = self.predict(X)
 
         y_pred = [i.tolist()[0] for i in y_pred]
         y_pred = y_pred[-self.n_preds:]

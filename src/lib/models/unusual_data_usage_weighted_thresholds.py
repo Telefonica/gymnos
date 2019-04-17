@@ -7,30 +7,28 @@
 import numpy as np
 from sklearn.metrics import f1_score, precision_score, recall_score
 
-from .model import Model
+from sklearn.base import BaseEstimator
 
 
-class UnusualDataUsageWT(Model):
+class UnusualDataUsageWT(BaseEstimator):
 
-    def __init__(self, **hyperparameters):
-        self.sigma = hyperparameters.get("sigma", 2.0)
-        self.pred_last_day_api_name = hyperparameters.get("pred_last_day_api_name", 20.3)
-        self.pred_last_day = hyperparameters.get("pred_last_day", 23)
-        self.real_cum_last_day = hyperparameters.get("real_cum_last_day", 33)
+    def __init__(self, sigma=2.0, pred_last_day_api_name=20.3, pred_last_day=23, real_cum_last_day=33):
+        self.sigma = sigma
+        self.pred_last_day_api_name = pred_last_day_api_name
+        self.pred_last_day = pred_last_day
+        self.real_cum_last_day = real_cum_last_day
 
-    def fit(self, X, y, batch_size=32, epochs=1, callbacks=None, val_data=None, verbose=1):
+    def fit(self, X, y):
         return {}
 
-    def predict(self, X, batch_size=32, verbose=0):
+    def predict(self, X):
         """
         This function labels consumptions associated as anomalous using an algorithm. Return two new fields:
         - deviation: variable that in tha main script will be rename as
                      deviation_qt used to calculate anomaly threshold and scoring the anomaly in case that exists
         - anomaly_ind: binary variable that in the main script will be rename as anomaly_ind
                       (1 if it is anomaly or 0 in another case)
-
         The anomaly detection algorithm consist of the next steps in the function:
-
         1. If there are at least 2 months of historic we continue if another case we return standard values
           (anomaly_id=0, deviation_qt None) in the two new fields of the output.
            If continue in the process, we average the most recent consumption and the rest of the consumptions
@@ -43,13 +41,10 @@ class UnusualDataUsageWT(Model):
            4.1 The prediction at the end of cycle is upper than sum of mean of step 2 and standard deviation
                of step 3.
            4.2 The prediction value is upper than the most recent consumption.
-
-
         Returns:
             the two new values that will be rename in the main script:
                 - deviation: deviation resulted of step 3 in cases that has sense.
                 - anomaly_ind: binary field with 1 if it is anomaly or 0 in another case.
-
             """
 
         # Step 1
@@ -80,16 +75,14 @@ class UnusualDataUsageWT(Model):
 
             return str(0)
 
-    def evaluate(self, X, y, batch_size=32, verbose=0):
+    def evaluate(self, X, y):
         """
         Evaluates in several anomaly stages using the following metrics:
-
         f1_score
         precision_score
         recall_score
-
         """
-        y_pred = self.predict(X, batch_size=batch_size, verbose=verbose)
+        y_pred = self.predict(X)
 
         # Execute to several stages
         stages = [0.05, 0.1, 0.15, 0.2, 0.25, 0.8, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 8, 9, 10]
@@ -97,8 +90,8 @@ class UnusualDataUsageWT(Model):
         result = []
         for i in range(len(stages)):
             scen = stages[i]
-            if (self.pred_last_day > (1 + scen) * self.real_cum_last_day) or (self.pred_last_day < (1 - scen)
-                                                                              * self.real_cum_last_day):
+            if (self.pred_last_day > (1 + scen) * self.real_cum_last_day) or (self.pred_last_day < (1 - scen) *
+                                                                              self.real_cum_last_day):
                 result.append(['0', y_pred])
             else:
                 result.append(['1', y_pred])
@@ -110,8 +103,8 @@ class UnusualDataUsageWT(Model):
             "stages_recall_score": [recall_score([val[0]], [val[1]], average='micro') for val in result]
         }
 
-    def restore(self, file_path):
+    def restore(self, directory):
         pass
 
-    def save(self, directory, name="model"):
+    def save(self, directory):
         pass
