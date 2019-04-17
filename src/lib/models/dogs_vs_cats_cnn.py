@@ -74,8 +74,6 @@ class DogsVsCatsCNN(Model, TensorFlowMixin):
         optimizer = tf.train.AdamOptimizer(learning_rate=0.01)
         self.train_op = optimizer.minimize(self.loss)
 
-        self.metrics = [tf.metrics.accuracy]
-
         self.sess = tf.Session()
         self.sess.run(tf.global_variables_initializer())
 
