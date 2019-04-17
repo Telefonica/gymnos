@@ -12,7 +12,6 @@ from ..utils.io_utils import read_from_json
 from ..preprocessors import Pipeline
 from ..logger import get_logger
 
-TRANSFORMERS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "transformers.json")
 DATASETS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "datasets.json")
 PREPROCESSORS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "preprocessors.json")
 
