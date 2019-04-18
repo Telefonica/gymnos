@@ -41,3 +41,4 @@ steps:
 - script: |
     echo Generate documentation
     sphinx-build -b html docs/source docs/build
+  displayName: 'Documentation'
