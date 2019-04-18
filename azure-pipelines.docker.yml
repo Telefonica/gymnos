@@ -19,6 +19,7 @@ steps:
 - script: |
     echo Generate documentation
     sphinx-build -b html docs/source docs/build
+    pwd
     http-server docs/build
   displayName: 'Documentation'
 - script: |
