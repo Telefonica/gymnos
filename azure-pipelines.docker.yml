@@ -17,6 +17,10 @@ pool:
 
 steps:
 - script: |
+    echo Generate documentation
+    sphinx-build -b html docs/source docs/build
+  displayName: 'Documentation'
+- script: |
     echo Generate docker images
     docker build -t $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName) -f Dockerfile .
     docker build -t $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName):gpu-latest -f Dockerfile.gpu .
@@ -38,7 +42,3 @@ steps:
     docker rm $(docker ps -a | grep gymnos | tr -s ' ' | cut -d ' ' -f 1)
     docker rmi $(docker images | grep gymnos | tr -s ' ' | cut -d ' ' -f 3)
   displayName: 'Agent cleaning'
-- script: |
-    echo Generate documentation
-    sphinx-build -b html docs/source docs/build
-  displayName: 'Documentation'
