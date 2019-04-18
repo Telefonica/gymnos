@@ -19,8 +19,8 @@ steps:
 - script: |
     echo Generate documentation
     sphinx-build -b html docs/source docs/build
-    pwd
-    http-server docs/build
+    pkill -f docs/build
+    http-server docs/build/ -p 8081 &
   displayName: 'Documentation'
 - script: |
     echo Generate docker images
