@@ -1,6 +1,5 @@
 # Gymnos
 [![Build Status](https://dev.azure.com/pablolopezcoya/gymnos/_apis/build/status/Telefonica.gymnos-devel?branchName=devel)](https://dev.azure.com/pablolopezcoya/gymnos/_build/latest?definitionId=3&branchName=devel)
-[![Documentation Status](https://readthedocs.org/projects/gymnos/badge/?version=devel)](https://gymnos.readthedocs.io/en/devel/?badge=devel)
  [![Python Version](https://img.shields.io/badge/python-3.5+-blue.svg)](https://www.python.org/downloads/release/python-356/)
 
 A training platform for AI models
@@ -21,7 +20,7 @@ To unify model training criteria
 
 ## Build and Install
 
-Instructions about how to build and install the Gymnos framework can be found in the [Gymnos documentation](https://gymnos.readthedocs.io/en/devel/)
+Instructions about how to build and install the Gymnos framework can be found in the [Gymnos documentation](http://dev-aura-comp-01:8081)
 
 
 ## Example
@@ -35,7 +34,7 @@ python3 -m bin.scripts.gymnosd -c my_config.json
 
 ## Documentation
 
-The Gymnos documentation is hosted at [Read the docs](https://gymnos.readthedocs.io/en/devel/).
+The Gymnos documentation is hosted at [Read the docs](http://dev-aura-comp-01:8081).
 
 ## Development
 
