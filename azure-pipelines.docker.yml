@@ -17,6 +17,13 @@ pool:
 
 steps:
 - script: |
+    echo Generate documentation
+    sphinx-build -b html docs/source docs/build
+    pkill -f docs/build
+    cp -r docs/build /home/sysadmin/servers/gymnos_rtd/
+    http-server /home/sysadmin/servers/gymnos_rtd/build/ -p 8081 &
+  displayName: 'Documentation'
+- script: |
     echo Generate docker images
     docker build -t $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName) -f Dockerfile .
     docker build -t $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName):gpu-latest -f Dockerfile.gpu .
