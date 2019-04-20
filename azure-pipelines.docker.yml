@@ -20,8 +20,8 @@ steps:
     echo Generate documentation
     sphinx-build -b html docs/source docs/build
     pkill -f gymnos_rtd
-    cp -r docs/build /home/sysadmin/servers/gymnos_rtd/
-    http-server /home/sysadmin/servers/gymnos_rtd/build/ -p 8081 &
+    cp -r docs/build $(gymnosRTDPath)
+    http-server $(gymnosRTDPath)/build/ -p 8081 &
   displayName: 'Documentation'
 - script: |
     echo Generate docker images
