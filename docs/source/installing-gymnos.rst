@@ -8,9 +8,7 @@ Installing Gymnos
 
 Installing Gymnos is pretty simple. Here is a step by step plan on how to do it.
 
-First, obtain `Python <https://www.python.org/downloads/>`_ and 
-`Pipenv <https://github.com/pypa/pipenv>`_ if you do not already have them. Using Pipenv will make the installation and execution 
-easier as it creates and manages a virtualenv for your projects, as well as install required dependencies. You will also need `Git <https://git-scm.com/downloads>`_ in order to clone the repository.
+First, obtain `Python 3 <https://www.python.org/downloads/>`_ and `Pipenv <https://github.com/pypa/pipenv>`_ (``pip install pipenv``) if you do not already have them. Using Pipenv will make the installation and execution easier as it creates and manages a virtualenv for your projects, as well as install required dependencies. You will also need `Git <https://git-scm.com/downloads>`_ in order to clone the repository.
 
 Once you have these, clone the repository:
 
@@ -22,29 +20,40 @@ Once you have these, clone the repository:
 .. note::
    If you want to help developing Gymnos, start working at ``devel`` branch
 
-Install required dependencies:
+Python
+==========
+
+To set up an isolated environment and install dependencies just run:
 
 .. code-block:: bash
 
-  pipenv install
+  pipenv sync
 
-Install ``tensorflow-gpu`` to run in GPU:
-
-.. code-block:: bash
-
-  pipenv install tensorflow-gpu
-
-Or ``tensorflow`` to run in CPU:
+However, note that TensorFlow must be installed manually. Either:
 
 .. code-block:: bash
 
-  pipenv install tensorflow
+  pipenv run pip install tensorflow
+
+Or
+
+.. code-block:: bash
+
+  pipenv run pip install tensorflow-gpu
+
+depending on whether you have a GPU. (If you run into problems, try TensorFlow 1.12)
+
+Finally, before running any of the scripts, enter the environment with:
+
+.. code-block:: bash
+
+  pipenv shell
 
 You're now ready to run gymnos. You can execute some experiment by running:
 
 .. code-block:: bash
 
-  pipenv run python3 -m bin.scripts.gymnosd -c <config_path>
+  python3 -m bin.scripts.gymnosd -c <config_path>
 
 Gymnos ships with some example experiments that should get you up and running quickly.
 
@@ -52,7 +61,7 @@ To actually get gymnos running, do the following:
 
 .. code-block:: bash
 
-  pipenv run python3 -m bin.scripts.gymnosd -c experiments/boston_housing.json
+  python3 -m bin.scripts.gymnosd -c experiments/boston_housing.json
 
 This will run an experiment for Boston Housting dataset.
 
