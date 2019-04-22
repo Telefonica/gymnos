@@ -15,7 +15,7 @@ Once you have these, clone the repository:
 .. code-block:: bash
 
    git clone https://github.com/Telefonica/gymnos.git
-   cd gymnos/src
+   cd gymnos
 
 .. note::
    If you want to help developing Gymnos, start working at ``devel`` branch
@@ -48,6 +48,12 @@ Finally, before running any of the scripts, enter the environment with:
 .. code-block:: bash
 
   pipenv shell
+
+The execution directory is located at ``src``:
+
+.. code-block:: bash
+
+  cd src
 
 You're now ready to run gymnos. You can execute some experiment by running:
 
