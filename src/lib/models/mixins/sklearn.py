@@ -20,7 +20,7 @@ class SklearnMixin:
     def metric_name(self):
         if isinstance(self.model, sklearn.base.ClassifierMixin):
             return "accuracy"
-        elif isinstance(self.model, sklearn.base.RegressionMixin):
+        elif isinstance(self.model, sklearn.base.RegressorMixin):
             return "mse"
         else:
             return ""
