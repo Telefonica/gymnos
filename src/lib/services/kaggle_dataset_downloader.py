@@ -80,7 +80,10 @@ class KaggleDatasetDownloader:
         self.__unzip_and_delete_if_needed(os.path.join(save_dir, filename))
 
     def __unzip_and_delete_if_needed(self, file_path):
-        file_exists = os.path.isfile(file_path)
+        zip_file = file_path + ".zip"
+        gz_file = file_path + ".gz"
 
-        if file_exists:
-            decompress(file_path, delete_compressed=True)
+        if os.path.isfile(zip_file):
+            decompress(zip_file, delete_compressed=True)
+        elif os.path.isfile(gz_file):
+            decompress(gz_file, delete_compressed=True)
