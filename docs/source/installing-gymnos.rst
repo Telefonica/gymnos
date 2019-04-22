@@ -41,7 +41,7 @@ Or
 
   pipenv run pip install tensorflow-gpu
 
-depending on whether you have a GPU. (If you run into problems, try TensorFlow 1.12)
+depending on whether you have a GPU. (If you run into problems, try TensorFlow 1.13.1)
 
 Finally, before running any of the scripts, enter the environment with:
 
