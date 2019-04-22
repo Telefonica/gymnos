@@ -12,7 +12,7 @@ from ...utils.spacy_utils import get_spacy_nlp
 
 class Lemmatization(Preprocessor):
 
-    def __init__(self, language="en"):
+    def __init__(self, language="english"):
         if language == "english":
             self.nlp = get_spacy_nlp("en")
         elif language == "spanish":
