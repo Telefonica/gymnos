@@ -21,7 +21,7 @@ class DatasetSamples:
     def __init__(self, train=None, test=None):
         if train is None and test is None:
             test = 0.25
-            test = 1 - test
+            train = 1 - test
         elif train is None:
             train = 1 - test
         elif test is None:
