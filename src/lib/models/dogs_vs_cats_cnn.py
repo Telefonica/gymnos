@@ -9,6 +9,7 @@ import tensorflow as tf
 
 from tqdm import trange
 from collections import defaultdict
+from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
 from .model import Model
@@ -91,34 +92,25 @@ class DogsVsCatsCNN(Model, TensorFlowMixin):
         for epoch in range(epochs):
             print("Epoch {}/{}".format(epoch, epochs))
 
+            losses = []
             batch_pbar = trange(0, len(X), batch_size)
             # Iterate by batch
             for i in batch_pbar:
                 loss, _ = self.sess.run([self.loss, self.train_op], feed_dict={self.input: X[i:i + batch_size],
                                                                                self.labels: y[i:i + batch_size]})
-                batch_pbar.set_description("Loss: {:.2f}".format(np.mean(loss)))
-
-            losses = []
-            val_losses = []
-            for i in trange(0, len(X), batch_size):
-                loss = self.sess.run(self.loss, feed_dict={self.input: X[i: i + batch_size],
-                                                           self.labels: y[i: i + batch_size]})
-                losses.append(loss)
-
-                if val_data:
-                    val_loss = self.sess.run(self.loss, feed_dict={self.input: X_val[i: i + batch_size],
-                                                                   self.labels: y_val[i: i + batch_size]})
-                    val_losses.append(val_loss)
+                losses.append(np.mean(loss))
+                batch_pbar.set_description("Loss: {:.2f}".format(losses[-1]))
 
             metrics["loss"].append(np.mean(losses))
+            for metric_name, value in self.evaluate(X, y).items():
+                metrics[metric_name].append(value)
 
             if val_data:
-                metrics["val_loss"].append(np.mean(val_losses))
-                y_pred = self.predict(X_val)
-                metrics["val_acc"].append(tf.metrics.accuracy(y_val, y_pred))
-
-            y_pred = self.predict(X)
-            metrics["acc"].append(tf.metrics.accuracy(y, y_pred))
+                val_loss = self.sess.run(self.loss, feed_dict={self.input: val_data[0],
+                                                               self.labels: val_data[1]})
+                metrics["val_loss"].append(np.mean(val_loss))
+                for metric_name, value in self.evaluate(*val_data).items():
+                    metrics["val_" + metric_name].append(value)
 
         return metrics
 
@@ -130,5 +122,5 @@ class DogsVsCatsCNN(Model, TensorFlowMixin):
     def evaluate(self, X, y):
         y_pred = self.predict(X)
         return {
-            "acc": tf.metrics.accuracy(y, y_pred)
+            "acc": accuracy_score(np.argmax(y, axis=1), np.argmax(y_pred, axis=1))
         }
