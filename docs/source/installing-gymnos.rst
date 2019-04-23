@@ -6,23 +6,25 @@
 Installing Gymnos
 ################################
 
-Installing Gymnos is pretty simple. Here is a step by step plan on how to do it.
-
-First, obtain `Python 3 <https://www.python.org/downloads/>`_ and `Pipenv <https://github.com/pypa/pipenv>`_ (``pip install pipenv``) if you do not already have them. Using Pipenv will make the installation and execution easier as it creates and manages a virtualenv for your projects, as well as install required dependencies. You will also need `Git <https://git-scm.com/downloads>`_ in order to clone the repository.
-
-Once you have these, clone the repository:
+Installing Gymnos is pretty simple. You will need `Git <https://git-scm.com/downloads>`_ in order to clone the repository:
 
 .. code-block:: bash
 
    git clone https://github.com/Telefonica/gymnos.git
-   cd gymnos
 
 .. note::
    If you want to help developing Gymnos, start working at ``devel`` branch
 
+And change into the local directory:
+
+.. code-block:: bash
+
+   cd gymnos
+
 Python
 ==========
 
+First, obtain `Python 3 <https://www.python.org/downloads/>`_ and `Pipenv <https://github.com/pypa/pipenv>`_ (``pip install pipenv``) if you do not already have them. Using Pipenv will make the installation and execution easier as it creates and manages a virtualenv for your projects, as well as install required dependencies.
 To set up an isolated environment and install dependencies just run:
 
 .. code-block:: bash
@@ -55,15 +57,13 @@ The execution directory is located at ``src``:
 
   cd src
 
-You're now ready to run gymnos. You can execute some experiment by running:
+You're now ready to run gymnos. You can execute an experiment by running:
 
 .. code-block:: bash
 
   python3 -m bin.scripts.gymnosd -c <config_path>
 
-Gymnos ships with some example experiments that should get you up and running quickly.
-
-To actually get gymnos running, do the following:
+Gymnos ships with some example experiments that should get you up and running quickly. To actually get gymnos running, do the following:
 
 .. code-block:: bash
 
