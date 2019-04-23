@@ -18,12 +18,17 @@ PREPROCESSORS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), ".."
 
 class DatasetSamples:
 
-    def __init__(self, train=None, test=0.25):
+    def __init__(self, train=None, test=None):
+        if train is None and test is None:
+            test = 0.25
+            test = 1 - test
+        elif train is None:
+            train = 1 - test
+        elif test is None:
+            test = 1 - train
+
+        self.train = train
         self.test = test
-        if train is None:
-            self.train = 1 - test
-        else:
-            self.train = train
 
         if (self.test + self.train < 1.0):
             get_logger(prefix=self).warning("Using only {}% of total data".format(self.train + self.test))
