@@ -9,7 +9,7 @@ import os
 from ..logger import get_logger
 
 from pydoc import locate
-from ..utils.decompressor import decompress
+from ..utils.decompressor import decompress, can_be_decompressed
 
 
 class KaggleDatasetDownloader:
@@ -33,6 +33,12 @@ class KaggleDatasetDownloader:
             self.__download_files(dataset_or_competition_name, filenames, save_dir, unzip=unzip, verbose=verbose)
         else:
             self.__download_file(dataset_or_competition_name, filenames, save_dir, unzip=unzip, verbose=verbose)
+
+        if unzip:
+            for filename in os.listdir(save_dir):
+                file_path = os.path.join(save_dir, filename)
+                if can_be_decompressed(file_path):
+                    decompress(file_path, delete_compressed=True)
 
     def __is_a_competition(self, dataset_name):
         return "/" not in dataset_name
@@ -73,17 +79,6 @@ class KaggleDatasetDownloader:
 
     def __dataset_download_file(self, dataset_name, filename, save_dir, unzip=True, verbose=True):
         self.kaggle_api.dataset_download_file(dataset_name, filename, save_dir, quiet=not verbose)
-        self.__unzip_and_delete_if_needed(os.path.join(save_dir, filename))
 
     def __competition_download_file(self, competition_name, filename, save_dir, unzip=True, verbose=True):
         self.kaggle_api.competition_download_file(competition_name, filename, save_dir, quiet=not verbose)
-        self.__unzip_and_delete_if_needed(os.path.join(save_dir, filename))
-
-    def __unzip_and_delete_if_needed(self, file_path):
-        zip_file = file_path + ".zip"
-        gz_file = file_path + ".gz"
-
-        if os.path.isfile(zip_file):
-            decompress(zip_file, delete_compressed=True)
-        elif os.path.isfile(gz_file):
-            decompress(gz_file, delete_compressed=True)
