@@ -31,7 +31,7 @@ class DatasetSamples:
         self.test = test
 
         if (self.test + self.train < 1.0):
-            get_logger(prefix=self).warning("Using only {}% of total data".format(self.train + self.test))
+            get_logger(prefix=self).warning("Using only {:.2f}% of total data".format(self.train + self.test))
 
 
 class Dataset:
