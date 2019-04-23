@@ -176,19 +176,18 @@ class Trainer:
 
         # EVALUATE MODEL IF TEST SAMPLES EXIST
 
-        if self.dataset.samples.test > 0.0:
-            self.logger.info("Evaluating model with {} samples".format(count(X_test)))
+        self.logger.info("Evaluating model with {} samples".format(count(X_test)))
 
-            with elapsed_time() as elapsed:
-                test_metrics = self.model.model.evaluate(X_test, y_test)
+        with elapsed_time() as elapsed:
+            test_metrics = self.model.model.evaluate(X_test, y_test)
 
-            execution_steps_elapsed["evaluate_model"] = elapsed.s
-            self.logger.debug("Evaluating model took {:.2f}s".format(elapsed.s))
+        execution_steps_elapsed["evaluate_model"] = elapsed.s
+        self.logger.debug("Evaluating model took {:.2f}s".format(elapsed.s))
 
-            pprint(test_metrics)
+        pprint(test_metrics)
 
-            self.logger.info("Logging test metrics to trackers".format(len(self.tracking.trackers)))
-            self.tracking.trackers.log_metrics(test_metrics, prefix="test_")
+        self.logger.info("Logging test metrics to trackers".format(len(self.tracking.trackers)))
+        self.tracking.trackers.log_metrics(test_metrics, prefix="test_")
 
         # SAVE MODEL
         model_dir = os.path.join(trainings_dataset_execution_path, TRAINING_MODEL_DIRECTORY)
