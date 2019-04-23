@@ -10,7 +10,6 @@ import cpuinfo
 import platform
 import numpy as np
 
-from pprint import pprint
 from datetime import datetime
 from sklearn.model_selection import train_test_split
 
@@ -164,8 +163,6 @@ class Trainer:
         execution_steps_elapsed["fit_model"] = elapsed.s
         self.logger.debug("Fitting model took {:.2f}s".format(elapsed.s))
 
-        pprint(train_metrics)
-
         for metric_name, metric_value in train_metrics.items():
             self.logger.info("Results for {}: Min: {:.2f} | Max: {:.2f} | Mean: {:.2f}".format(metric_name,
                                                                                                np.min(metric_value),
@@ -181,10 +178,13 @@ class Trainer:
         with elapsed_time() as elapsed:
             test_metrics = self.model.model.evaluate(X_test, y_test)
 
+        for metric_name, metric_value in test_metrics.items():
+            self.logger.info("Results for {}: Min: {:.2f} | Max: {:.2f} | Mean: {:.2f}".format(metric_name,
+                                                                                               np.min(metric_value),
+                                                                                               np.max(metric_value),
+                                                                                               np.mean(metric_value)))
         execution_steps_elapsed["evaluate_model"] = elapsed.s
         self.logger.debug("Evaluating model took {:.2f}s".format(elapsed.s))
-
-        pprint(test_metrics)
 
         self.logger.info("Logging test metrics to trackers".format(len(self.tracking.trackers)))
         self.tracking.trackers.log_metrics(test_metrics, prefix="test_")
