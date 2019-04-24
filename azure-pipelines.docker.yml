@@ -19,9 +19,9 @@ steps:
 - script: |
     echo Generate documentation
     sphinx-build -b html docs/source docs/build
-    pkill -f gymnos_rtd
+    sudo systemctl stop gymnos_rtd
     cp -r docs/build $(gymnosRTDPath)
-    http-server $(gymnosRTDPath)/build/ -p 8081 &
+    sudo systemctl start gymnos_rtd
   displayName: 'Documentation'
 - script: |
     echo Generate docker images
