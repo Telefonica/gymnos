@@ -64,4 +64,5 @@ class Tfidf(Preprocessor):
         return self
 
     def transform(self, X):
-        return self.tfidf.transform(X)
+        X_t = self.tfidf.transform(X)
+        return X_t.toarray()  # convert sparse to dense
