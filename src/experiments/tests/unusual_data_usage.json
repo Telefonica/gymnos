@@ -1,0 +1,13 @@
+{
+    "model": {
+        "name": "unusual_data_usage_weighted_thresholds"
+    },
+    "dataset": {
+        "name": "unusual_data_usage_test",
+        "samples": {
+            "train": 0.1,
+            "test": 0.01
+        },
+        "shuffle": false
+    }
+}

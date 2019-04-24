@@ -1,0 +1,44 @@
+{
+    "model": {
+       "name": "keras",
+       "parameters": {
+            "sequential": [
+                {"type": "dense", "units": 1, "activation": "linear"}
+            ],
+            "compilation": {
+                "optimizer": "sgd",
+                "loss": "mse",
+                "metrics": ["mae"]
+            }
+       } 
+    },
+    "dataset": {
+        "name": "boston_housing",
+        "preprocessors": [
+            {
+                "type": "divide",
+                "factor": 100
+            }
+        ]
+    },
+    "training": {
+        "batch_size": 32,
+        "epochs": 1,
+        "callbacks": [
+            {
+                "type": "early_stopping"
+            }
+        ],
+        "validation_split": 0.2
+    },
+    "tracking": {
+        "trackers": [
+            {
+                "type": "tensorboard"
+            },
+            {
+                "type": "mlflow"
+            }
+        ]
+    }
+}

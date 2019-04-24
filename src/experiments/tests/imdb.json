@@ -1,0 +1,39 @@
+{
+    "dataset": {
+        "name": "imdb",
+        "samples": {
+            "train": 0.01,
+            "test": 0.01
+        },
+        "preprocessors": [
+            {
+                "type": "alphanumeric"
+            },
+            {
+                "type": "lemmatization"
+            },
+            {
+                "type": "tfidf",
+                "min_df": 0.5
+            },
+            {
+                "type": "kbest",
+                "k": 6,
+                "scorer": "chi2"
+            }
+        ]
+    },
+    "model": {
+        "name": "keras",
+        "parameters": {
+            "sequential": [
+                {"type": "dense", "units": 2, "input_shape": [6]}
+            ],
+            "compilation": {
+                "loss": "categorical_crossentropy",
+                "optimizer": "adam",
+                "metrics": ["acc"]
+            }
+        }
+    }
+}

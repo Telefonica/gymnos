@@ -1,0 +1,12 @@
+{
+    "dataset": {
+        "name": "data_usage_test",
+        "samples": {
+            "train": 0.1,
+            "test": 0.1
+        }
+    },
+    "model": {
+        "name": "data_usage_holt_winters"
+    }
+}

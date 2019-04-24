@@ -1,0 +1,29 @@
+{
+    "model": {
+        "name": "keras",
+        "parameters": {
+            "sequential": [
+                {"type": "dense", "units": 38, "activation": "softmax", "input_shape": [117]}
+            ],
+            "compilation": {
+                "loss": "categorical_crossentropy",
+                "optimizer": "sgd",
+                "metrics": ["acc"]
+            }
+        }
+    },
+    "dataset": {
+        "name": "kddcup99",
+        "samples": {
+            "train": 0.01,
+            "test": 0.01
+        },
+        "preprocessors": [
+            {
+                "type": "replace",
+                "from_val": 0.0,
+                "to_val": 0.1
+            }
+        ]
+    }
+}
