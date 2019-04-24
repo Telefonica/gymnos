@@ -2,70 +2,117 @@
 How to create a Model Handler
 ###################################
 
-To create a model you need to inherit from ``Model`` or its subclasses and implement some methods.
+All models must follow a protocol with some methods to implement.
+First, you need to inherit from ``Model`` defined in ``lib.models.model``. Then, you need to implement the following methods:
+
+.. code-block:: python
+
+   def fit(self, X, y, **kwargs):
+      """
+      Method to fit the model to training data.
+      Arguments:
+         - X: Data features, type: NumPy array or Pandas DataFrame/Series
+         - y: Data labels, type: NumPy array or Pandas DataFrame/Series
+      Returns:
+         - metrics: Training metrics, type: dictionnary
+      """
+
+   def predict(self, X):
+      """
+      Method to return predictions for data X
+      Arguments:
+         - X: Data features, type: NumPy array or Pandas DataFrame/Series
+      Returns:
+         - predictions: Predictions from features, type: NumPy array with predictions
+      """
+
+   def evaluate(self, X, y):
+      """
+      Method to evaluate performance of the model
+      Arguments:
+         - X: Data features, type: NumPy array or Pandas DataFrame/Series
+         - y: Data labels, type: NumPy array or Pandas DataFrame/Series
+      Returns:
+         - metrics: Testing metrics, type: dictionnary
+      """
+
+   def restore(self, directory):
+      """
+      Method to restore model saved by save method
+      Arguments:
+         - directory: directory with artifacts saved by model, type: string
+      """
+
+   def save(self, directory):
+      """
+      Method to save artifacts needed to restore model later.
+      Arguments:
+         - directory: directory with artifacts saved by model, type: string
+      """
+
 If you want to use the model in an experiment you must add the model location with an id in ``lib.var.models.json``, e.g ``mymodel: lib.models.mymodel.MyModel``.
 
-Base model
-===============
+Mixins
+########
 
-This is the parent model that all classes must inherit.
-The ``Model`` class is defined in ``lib.models.model`` and you must implement the following methods:
+We provide `mixins <https://www.ianlewis.org/en/mixins-and-python>`_ with default functionality for model methods. The currently available mixins are defined in ``lib.models.mixins`` directory.
 
-.. code-block:: python
+Keras mixin
+===========
 
-   def fit(self, X, y, batch_size=32, epochs=1, callbacks=None, val_data=None, verbose=1):
-      # fit model to train data, it must return a dictionnary with the metrics.
+Mixin for sequential and functional keras models. It provides implementation for ``fit``, ``predict``, ``evaluate``, ``restore`` and ``save`` methods. You need to define the variable ``self.model`` with your compiled keras model.
 
-   def predict(self, X, batch_size=32, verbose=0):
-      # predict data, it must return a dictionnary with the metrics
-
-   def evaluate(self, X, y, batch_size=32, verbose=0):
-      # evaluate model with the input data, it must return a dictionnary with the metrics
-
-   def restore(self, file_path):
-      # restore model from checkpoint
-
-   def save(self, directory, name="model"):
-      # save model to directory with a name
-
-
-Keras model
-===============
-
-If you want to implement a Keras model, you only need to inherit from ``lib.models.model.KerasModel`` and call constructor with your model.
-All methods will be already implemented.
+For example:
 
 .. code-block:: python
+   :emphasize-lines: 1, 4
+   
+   class MyKerasModel(Model, KerasMixin):
 
-   from .model import KerasModel
+      def __init__(self):
+         self.model = keras.models.Sequential([
+            ...
+         ])
+         self.model.compile(...)
 
-   class MyKerasModel(KerasModel):
 
-      def __init__(self, input_shape, **hyperparameters):
-         input = layers.Input(shape=input_shape)
+Sklearn mixin
+=============
+
+Mixin for sklearn models. It provides implementation for ``fit``, ``predict``, ``evaluate``, ``restore`` and ``save`` methods. You need to define the variable ``self.model`` with your Sklearn model.
+
+For example:
+
+.. code-block:: python
+   :emphasize-lines: 1, 4
+
+   class MySklearnModel(Model, SklearnMixin):
+
+      def __init__(self):
+         self.model = sklearn.linear_model.LinearRegression(...)
+
+
+TensorFlow mixin
+================
+
+Mixin for TensorFlow models. It provides implementation for ``save`` and ``restore`` methods. You need to define the variable ``self.sess`` with your TensorFlow session.
+
+For example:
+
+.. code-block:: python
+   :emphasize-lines: 1, 5
+
+   class MyTensorFlowModel(Model, TensorFlowMixin):
+
+      def __init__(self):
          ...
-         output = layers.Dense(10, activation="linear")(input)
-         mymodel = Model(inputs=[input], outputs=[output])
+         self.sess = tf.Session(...)
 
-         super().__init__(input_shape, mymodel)
+      def fit(self, X, y):
+         ...
 
+      def predict(self, X):
+         ...
 
-
-Scikit-Learn model
-====================
-
-If you want to implement a Scikit-Learn model, you only need to inherit from ``lib.models.model.ScikitLearnModel`` and call constructor with your model.
-All methods will be already implemented.
-
-.. code-block:: python
-
-   from .keras import ScikitLearnModel
-
-   class MyScikitLearnModel(ScikitLearnModel):
-
-      def __init__(self, input_shape, **hyperparameters):
-         lin_reg = LinearRegression(fit_intercept=False)
-
-         super().__init__(input_shape, lin_reg)
-
-
+      def evaluate(self, X, y):
+         ...
