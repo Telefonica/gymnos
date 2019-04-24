@@ -18,3 +18,6 @@ class TensorFlowMixin:
     def save(self, directory):
         saver = tf.train.Saver()
         saver.save(self.sess, os.path.join(directory, "session.ckpt"))
+
+    def __del__(self):
+        self.sess.close()
