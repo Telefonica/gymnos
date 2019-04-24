@@ -5,22 +5,9 @@
     },
     "model": {
         "description": "Media Tagging Engine Subscription Classifier",
-        "name": "keras",
+        "name": "mte",
         "parameters": {
-            "sequential": [
-                {"type": "dense", "units": 512, "activation": "relu", "kernel_initializer": "glorot_uniform", "input_shape": [20000]},
-                {"type": "dropout", "rate": 0.5},
-                {"type": "dense", "units": 256, "activation": "relu", "kernel_initializer": "glorot_uniform"},
-                {"type": "dropout", "rate": 0.5},
-                {"type": "dense", "units": 256, "activation": "relu", "kernel_initializer": "glorot_uniform"},
-                {"type": "dropout", "rate": 0.5},
-                {"type": "dense", "units": 17, "activation": "sigmoid", "kernel_initializer": "glorot_uniform"}
-            ],
-            "compilation": {
-                "optimizer": "adam",
-                "loss": "binary_crossentropy",
-                "metrics": ["accuracy_multilabel", "precision"]
-            }
+            "input_shape": [20000]
         }
     },
     "dataset": {

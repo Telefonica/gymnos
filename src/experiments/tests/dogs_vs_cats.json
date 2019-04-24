@@ -1,0 +1,31 @@
+{
+    "model": {
+        "name": "dogs_vs_cats_cnn",
+        "parameters": {
+            "input_shape": [32, 32, 3]
+        }
+    },
+    "dataset": {
+        "name": "dogs_vs_cats",
+        "preprocessors": [
+            {
+                "type": "image_resize",
+                "width": 32,
+                "height": 32
+            },
+            {
+                "type": "divide",
+                "factor": 255
+            }
+        ],
+        "samples": {
+            "train": 0.01,
+            "test": 0.01
+        }
+    },
+    "training": {
+        "batch_size": 32,
+        "epochs": 1,
+        "validation_split": 0.25
+    }
+}

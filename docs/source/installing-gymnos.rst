@@ -67,7 +67,7 @@ Gymnos ships with some example experiments that should get you up and running qu
 
 .. code-block:: bash
 
-  python3 -m bin.scripts.gymnosd -c experiments/boston_housing.json
+  python3 -m bin.scripts.gymnosd -c experiments/examples/boston_housing.json
 
 This will run an experiment for Boston Housting dataset.
 
