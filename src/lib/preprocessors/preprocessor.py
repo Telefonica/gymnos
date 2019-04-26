@@ -5,10 +5,10 @@
 #
 
 from tqdm import tqdm
-from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.base import TransformerMixin
 
 
-class Preprocessor(BaseEstimator, TransformerMixin):
+class Preprocessor(TransformerMixin):
 
     def fit(self, X, y=None):
         return self
