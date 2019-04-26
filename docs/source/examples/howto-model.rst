@@ -1,5 +1,5 @@
 ###################################
-How to create a Model Handler
+How to create a Model
 ###################################
 
 All models must follow a protocol with some methods to implement.

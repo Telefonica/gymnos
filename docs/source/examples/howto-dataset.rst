@@ -1,5 +1,5 @@
 #####################################
-How to create a Dataset Handler
+How to create a Dataset
 #####################################
 
 To create a dataset you need to inherit from ``Dataset`` or its subclasses and implement some methods.
