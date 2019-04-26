@@ -12,6 +12,16 @@ from .tracker import Tracker
 
 
 class MLFlow(Tracker):
+    """
+    Tracker for `MLflow <https://www.mlflow.org>`_.
+
+    Parameters
+    ----------
+    experiment_name: str
+        Experiment name, must be unique.
+    source_name: str, optional
+        Name of the source file or URI of the project to be associated with the run.
+    """
 
     def __init__(self, experiment_name=None, source_name=None):
         self.source_name = source_name

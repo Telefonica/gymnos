@@ -18,6 +18,9 @@ from ..utils.image_utils import imread_rgb
 
 
 class Tensorboard(Tracker):
+    """
+    Tracker for `TensorBoard <https://github.com/tensorflow/tensorboard>`_.
+    """
 
     def start(self, run_name, logdir):
         self.writer = tf.summary.FileWriter(os.path.join(logdir, "tensorboard", run_name))

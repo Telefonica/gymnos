@@ -9,6 +9,19 @@ from .tracker import Tracker
 
 
 class CometML(Tracker):
+    """
+    Tracker for `Comet.ml <https://www.comet.ml>`_.
+
+    Parameters
+    ----------
+    api_key: str
+        Your API key obtained from comet.ml
+    project_name: str, optional
+        Send your experiment to a specific project. Otherwise will be sent to *Uncategorized Experiments*.
+        If project name does not already exists Comet.ml will create a new project.
+    workspace: str, optional
+        Attach an experiment to a project that belongs to this workspace.
+    """
 
     def __init__(self, api_key, project_name=None, workspace=None):
         self.api_key = api_key
