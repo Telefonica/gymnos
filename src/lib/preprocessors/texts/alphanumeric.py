@@ -11,6 +11,9 @@ from ...utils.iterator_utils import apply
 
 
 class Alphanumeric(Preprocessor):
+    """
+    Keep only alphanumeric characters.
+    """
 
     def __transform_sample(self, x):
         return re.sub(r'([^\s\w]|_)+', ' ', x)  # only alphanumeric

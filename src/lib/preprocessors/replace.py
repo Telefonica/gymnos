@@ -10,6 +10,17 @@ from .preprocessor import Preprocessor
 
 
 class Replace(Preprocessor):
+    """
+    Replace value.
+
+    Parameters
+    ----------
+
+    from_val: any
+        Original value
+    to_val: any
+        New value
+    """
 
     def __init__(self, from_val, to_val):
         self.from_val = from_val

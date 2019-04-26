@@ -11,6 +11,17 @@ from ...utils.spacy_utils import get_spacy_nlp
 
 
 class Lemmatization(Preprocessor):
+    """
+    Lemmatize words.
+
+    Parameters
+    ----------
+    language: str, optional
+        Text language. The current available languages are the following:
+
+            - ``"english"``
+            - ``"spanish"```
+    """
 
     def __init__(self, language="english"):
         if language == "english":

@@ -10,6 +10,9 @@ from ..preprocessor import Preprocessor
 
 
 class Grayscale(Preprocessor):
+    """
+    Convert color images to grayscale.
+    """
 
     def __transform_sample(self, x):
         return imgray(x)

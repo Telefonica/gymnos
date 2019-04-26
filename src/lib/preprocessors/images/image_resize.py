@@ -12,6 +12,17 @@ from ...utils.iterator_utils import apply
 
 
 class ImageResize(Preprocessor):
+    """
+    Resize image
+
+    Parameters
+    ----------
+
+    width: int or float, optional
+        Width of the new image
+    height: int or float, optional
+        Height of the new image
+    """
 
     def __init__(self, width, height):
         self.width = width
