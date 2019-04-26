@@ -37,16 +37,16 @@ def run_experiment(config_path):
 
     os.makedirs(cache_config["datasets"], exist_ok=True)
 
-    trainer = Trainer(
-        model=Model(**training_config["model"]),
-        dataset=Dataset(cache_dir=cache_config["datasets"], **training_config["dataset"]),
-        training=Training(**training_config.get("training", {})),  # optional field
-        experiment=Experiment(**training_config.get("experiment", {})),  # optional field
-        tracking=Tracking(**training_config.get("tracking", {}))  # optional field
-    )
+    trainer = Trainer()
 
     try:
-        execution_path = trainer.run()
+        execution_path = trainer.run(
+            model=Model(**training_config["model"]),
+            dataset=Dataset(cache_dir=cache_config["datasets"], **training_config["dataset"]),
+            training=Training(**training_config.get("training", {})),  # optional field
+            experiment=Experiment(**training_config.get("experiment", {})),  # optional field
+            tracking=Tracking(**training_config.get("tracking", {}))  # optional field)
+        )
 
         # save original config to execution path
         save_to_json(os.path.join(execution_path, TRAINING_CONFIG_FILENAME), training_config_copy)
@@ -63,7 +63,7 @@ def run_experiment(config_path):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument("-c", "--training_config", help="sets training training configuration file path",
+    group.add_argument("-c", "--training_config", help="sets training training configuration file",
                        action="store")
     group.add_argument("-t", "--regression_test", help="execute regression test", action="store_true")
     args = parser.parse_args()

@@ -18,10 +18,12 @@ class Model:
     def __init__(self, name, parameters=None, description=None):
         parameters = parameters or {}
 
-        ModelClass = self.__retrieve_model_from_name(name)
-        self.model = ModelClass(**parameters)
+        self.name = name
         self.parameters = parameters
         self.description = description
+
+        ModelClass = self.__retrieve_model_from_name(name)
+        self.model = ModelClass(**parameters)
 
 
     def __retrieve_model_from_name(self, name):
