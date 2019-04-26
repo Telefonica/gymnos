@@ -12,7 +12,18 @@ from .mixins import KerasMixin
 from ..utils.keras_metrics import accuracy_multilabel, precision
 
 
-class MTE(Model, KerasMixin):
+class MTENN(Model, KerasMixin):
+    """
+    Neural network developed to solve MTE subscription classification task.
+
+    Parameters
+    ----------
+    input_shape: list, optional
+        Shape of features.
+    classes: int, 17
+        Number of classes to classify images into. This is useful if
+        you want to train this model with another dataset.
+    """
 
     def __init__(self, input_shape, classes=17):
         self.model = models.Sequential([

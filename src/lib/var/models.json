@@ -5,5 +5,5 @@
     "unusual_data_usage_weighted_thresholds": "lib.models.unusual_data_usage_weighted_thresholds.UnusualDataUsageWT",
     "fashion_mnist_nn": "lib.models.fashion_mnist_nn.FashionMnistNN",
     "keras": "lib.models.keras.Keras",
-    "mte": "lib.models.mte.MTE"
+    "mte_nn": "lib.models.mte_nn.MTENN"
 }

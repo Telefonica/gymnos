@@ -5,7 +5,7 @@
     },
     "model": {
         "description": "Media Tagging Engine Subscription Classifier",
-        "name": "mte",
+        "name": "mte_nn",
         "parameters": {
             "input_shape": [7]
         }
