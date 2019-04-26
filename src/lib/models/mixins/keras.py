@@ -23,6 +23,44 @@ class KerasMixin:
 
     def fit(self, X, y, batch_size=None, epochs=1, verbose=1, callbacks=None, validation_split=0.0, shuffle=True,
             class_weight=None, sample_weight=None, initial_epoch=0, steps_per_epoch=None, validation_steps=None):
+        """
+        Parameters for Keras fit method, more info in `keras <https://keras.io/models/sequential/#fit>`_
+
+        Parameters
+        ----------
+        X: array_like
+            Features
+        y: array_like
+            Targets.
+        epochs: int, optional
+            Number of epochs to train.
+        batch_size: int, optional
+            Number of samples that will be propagated.
+        verbose: int, optional
+            Verbosity mode. 0 = silent, 1 = progress bar, 2 = one line per epoch.
+        callbacks: list of dict, optional
+            TODO
+        validation_split: float, optional
+            Fraction of the training data to be used as validation data.
+        shuffle: bool, optional
+            Whether to shuffle the training data before each epoch
+        class_weight: dict, optional
+            Dictionnary mapping class indices (integers) to a weight (float) value,
+            used for weighting the loss function (during training only).
+        sample_weight: array_like, optional
+            Array of weights for the training samples, used for weighting the loss function.
+        initial_epoch: int, optional
+            Epoch at which start training (useful for resuming previous training run).
+        steps_per_epoch: int, optional
+            Total number of steps (batches of samples) before declaring one epoch finished and starting
+            the next epoch.
+        validation_steps: int, optional
+            Total number of steps (batches of samples) to validate before stopping.
+        Returns
+        -------
+        dict
+            Training metrics
+        """
 
         if callbacks is not None:
             callbacks = self.__instantiate_callbacks(callbacks)

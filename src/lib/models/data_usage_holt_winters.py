@@ -14,6 +14,26 @@ from ..utils.temporal_series_utils import mad_mean_error, nrmsd_error_norm, resi
 
 
 class DataUsageHoltWinters(Model):
+    """
+    Holt Winters algorithm developed to solve Data Usage time series regression task.
+
+    Parameters
+    ----------
+    n_preds: int, optional
+        Number of days to predict
+    min_historic: int, optional
+        TODO
+    flag_optimize_hiperparams: bool, optional
+        TODO
+    slen: int, optional
+        TODO
+    alpha: float, optional
+        TODO
+    beta: float, optional
+        TODO
+    gamma: float, optional
+        TODO
+    """
 
     def __init__(self, n_preds=17, min_historic=5, flag_optimize_hiperparams=True, slen=1, alpha=0.716,
                  beta=0.029, gamma=0.993):
@@ -26,13 +46,12 @@ class DataUsageHoltWinters(Model):
         self.gamma = gamma
 
     def fit(self, X, y):
+        """
+        Holt Winters doesn't need to fit model to training data.
+        """
         return {}
 
     def predict(self, X):
-        """
-        Predict the next values of a series by applying the Triple Exponential Smoothing (a.k.a. Holt-Winters)
-
-        """
         if self.flag_optimize_hiperparams:
             slen = estimated_window(X, 2)
 
@@ -83,15 +102,6 @@ class DataUsageHoltWinters(Model):
         return future_predictions
 
     def evaluate(self, X, y):
-        """
-        Evaluates with the following metrics.
-
-        mean_error: (float) mean Absolute Deviation/Mean ratio
-        normal_error: (float) root mean square deviation
-        residual_error: (bool) True/False according to independence test result
-        emc_error: (float) quadratic mean error for execution date
-
-        """
         y[1:] -= y[:-1].copy()
         y = y.flatten().tolist()
 

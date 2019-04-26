@@ -17,6 +17,34 @@ from .mixins import TensorFlowMixin
 
 
 class DogsVsCatsCNN(Model, TensorFlowMixin):
+    """
+    Convolutional neuronal network developed to solve Dogs vs Cats image classification task.
+
+    Note
+    ----
+    This model can be useful to see the development of a Tensorflow model on the platform.
+
+    Parameters
+    ----------
+    input_shape: list
+        Data shape expected.
+    classes: int, optional
+        Optional number of classes to classify images into. This is useful if
+        you want to train this model with another dataset.
+    session: dict, optional
+        Configuration for TensorFlow session. To see available properties:
+        `tf.ConfigProto <https://www.tensorflow.org/api_docs/python/tf/ConfigProto>`_
+
+    Examples
+    --------
+     >>> DogsVsCatsCNN(
+            input_shape=[120, 120, 3],
+            classes=2,
+            session={
+                "log_device_placement": True
+            }
+     )
+    """
 
     def __init__(self, input_shape, classes=2, session=None):
         self.input = tf.placeholder(tf.float32, shape=[None] + input_shape)
@@ -81,6 +109,24 @@ class DogsVsCatsCNN(Model, TensorFlowMixin):
 
 
     def fit(self, X, y, epochs=10, batch_size=32, validation_split=0):
+        """
+        Parameters
+        ----------
+        X: array_like
+            Features
+        y: array_like
+            Targets.
+        epochs: int, optional
+            Number of epochs to train.
+        batch_size: int, optional
+            Number of samples that will be propagated.
+        validation_split: float, optional
+            Fraction of the training data to be used as validation data. Between 0 and 1.
+        Returns
+        -------
+        dict
+            Training metrics (accuracy and loss)
+        """
         metrics = defaultdict(list)
 
         val_data = []

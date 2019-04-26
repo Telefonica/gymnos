@@ -22,6 +22,16 @@ KERAS_APPLICATIONS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__),
 
 
 class Keras(Model, KerasMixin):
+    """
+    Model to build Keras sequentials from a dictionnary that defines the network architecture.
+
+    Parameters
+    ----------
+    sequential: list of dict
+        TODO
+    compilation: dict
+        TODO
+    """
 
     def __init__(self, sequential, compilation):
         loss, optimizer, metrics = self.__build_compilation_from_config(**compilation)

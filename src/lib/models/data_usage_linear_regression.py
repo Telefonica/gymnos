@@ -12,21 +12,20 @@ from ..utils.temporal_series_utils import mad_mean_error, nrmsd_error_norm, resi
 
 
 class DataUsageLinearRegression(Model, SklearnMixin):
+    """
+    Linear Regression developed to solve Data Usage time series regression task.
+
+    Parameters
+    ----------
+    n_preds: int, optional
+        Number of days to predict.
+    """
 
     def __init__(self, n_preds=3):
         self.model = LinearRegression()
         self.n_preds = n_preds
 
     def evaluate(self, X, y):
-        """
-        Evaluates with the following metrics.
-
-        mean_error: (float) mean Absolute Deviation/Mean ratio
-        normal_error: (float) root mean square deviation
-        residual_error: (bool) True/False according to independence test result
-        emc_error: (float) quadratic mean error for execution date
-
-        """
         y_pred = self.predict(X)
 
         y_pred = [i.tolist()[0] for i in y_pred]
