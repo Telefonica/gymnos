@@ -24,8 +24,8 @@ TRAINING_LOG_FILENAME = "execution.log"
 TRAINING_CONFIG_FILENAME = "training_config.json"
 
 
-def run_experiment(config_path):
-    training_config = read_from_json(config_path)
+def run_experiment(training_config_path):
+    training_config = read_from_json(training_config_path)
     training_config_copy = copy.deepcopy(training_config)
 
     cache_config = read_from_json(CACHE_CONFIG_PATH)
