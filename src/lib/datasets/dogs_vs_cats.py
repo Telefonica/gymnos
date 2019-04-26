@@ -17,17 +17,27 @@ from ..utils.image_utils import imread_rgb, imresize
 
 class DogsVsCats(KaggleDataset):
     """
-    Kind: Classification
-    Shape:
-        features: [150, 150, 3]
-        labels: [2]
-    Description: >
-        Dataset to classify whether images contain a dog or a cat.
+    Dataset to classify whether images contain either a dog or a cat.
+
+    The class labels are:
+
+    +----------+--------------+
+    | Label    | Description  |
+    +==========+==============+
+    | 0        | Dog          |
+    +----------+--------------+
+    | 1        | Cat          |
+    +----------+--------------+
+
+    Characteristics
+        - **Classes**: 2
+        - **Samples total**: xxx
+        - **Dimensionality**: [150, 150, 3]
+        - **Features**: real, between 0 and 255
     """
 
     kaggle_dataset_name = "dogs-vs-cats"
     kaggle_dataset_files = ["train.zip"]
-
 
     def read(self, download_dir):
         images_glob = os.path.join(download_dir, "train", "*.jpg")
@@ -38,7 +48,8 @@ class DogsVsCats(KaggleDataset):
 
         for i, image_path in enumerate(tqdm(images_paths)):
             image = imread_rgb(image_path)
-            image = imresize(image, (150, 150))  # resize image because we can't have images with different dimensions
+            # resize image because we can't have images with different dimensions
+            image = imresize(image, (150, 150))
             images[i] = image
             if "dog" in image_path:
                 classes[i] = 0

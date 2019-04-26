@@ -15,6 +15,11 @@ class UnusualDataUsageTest(LibraryDataset):
     Dataset  of Yearly (1700-2008) data on sunspots from the National Geophysical Data Center.
 
     Used as test  of unusual data usage models.
+
+    Characteristics
+        - **Samples total**: xxx
+        - **Dimensionality**: xxx
+        - **Features**: xxx
     """
 
     def read(self, download_dir):

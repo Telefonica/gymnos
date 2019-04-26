@@ -14,12 +14,13 @@ from .dataset import LibraryDataset
 
 class MNIST(LibraryDataset):
     """
-    Kind: Classification
-    Shape:
-        features: [28, 28, 1]
-        labels: [10]
-    Description: >
-        Dataset to predict handwritten images corresponding to numbers between 0-9.
+    Dataset to predict handwritten images corresponding to numbers between 0-9.
+
+    Characteristics
+        - **Classes**: 10
+        - **Samples total**: 70 000
+        - **Dimensionality**: [28, 28, 1]
+        - **Features**: real, between 0 and 255
     """
 
     def read(self, download_dir):

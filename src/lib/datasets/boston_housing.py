@@ -13,13 +13,13 @@ from keras.datasets import boston_housing
 
 class BostonHousing(LibraryDataset):
     """
-    Kind: Regression
-    Shape:
-        features: [13]
-        labels: [1]
-    Description: >
-        Samples contain 13 attributes of houses at different locations around the Boston suburbs in the late 1970s.
-        Targets are the median values of the houses at a location (in k$).
+    Samples contain 13 attributes of houses at different locations around the Boston suburbs in the late 1970s.
+    Targets are the median values of the houses at a location (in k$).
+
+    Characteristics
+        - **Samples total**: xxx
+        - **Dimensionality**: [13]
+        - **Features**: real
     """
 
     def read(self, download_dir):

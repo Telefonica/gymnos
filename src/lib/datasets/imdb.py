@@ -14,12 +14,22 @@ from .dataset import KaggleDataset
 
 class IMDB(KaggleDataset):
     """
-    Kind: Classification
-    Shape:
-        features: [1]
-        labels: [2]
-    Description: >
-        Dataset with movie reviews for binary sentiment classification.
+    Dataset with movie reviews for binary sentiment classification.
+
+    The class labels are:
+
+    +----------+--------------+
+    | Label    | Description  |
+    +==========+==============+
+    | 0        | Negative     |
+    +----------+--------------+
+    | 1        | Positive     |
+    +----------+--------------+
+
+    Characteristics
+        - **Classes**: 2
+        - **Samples total**: 25 000
+        - **Features**: texts
     """
 
     kaggle_dataset_name = "oumaimahourrane/imdb-reviews"

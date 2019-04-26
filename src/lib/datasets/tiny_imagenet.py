@@ -18,12 +18,13 @@ from ..utils.image_utils import imread_rgb
 
 class TinyImagenet(KaggleDataset):
     """
-    Kind: Classification Multilabel
-    Shape:
-        features: [64, 64, 3]
-        labels: [200]
-    Description: >
-        Dataset to classify images. Small version of Imagenet dataset.
+    Dataset to classify images. Small version of Imagenet dataset.
+
+    Characteristics
+        - **Classes**: 200
+        - **Samples total**: xxxx
+        - **Dimensionality**: [64, 64, 3]
+        - **Features**: real, between 0 and 255
     """
 
     dataset_name = "tiny_imagenet"

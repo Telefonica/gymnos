@@ -7,6 +7,7 @@
 import os
 
 from pydoc import locate
+from keras.utils import to_categorical
 from tempfile import TemporaryDirectory
 
 from ..logger import get_logger
@@ -26,23 +27,50 @@ class Dataset:
         self.logger = get_logger(prefix=self)
 
     def download(self, download_dir):
-        # Implement to give instructions about how to download the dataset.
-        # The dataset will be stored in a temporary directory.
+        """
+        Download data.
+
+        Parameters
+        ----------
+        download_dir: str
+            Directory where to download data.
+        """
         raise NotImplementedError()
 
     def read(self, download_dir):
-        # Implement to give instructions about how to read the dataset from the download directory.
-        # It must return X (features) and y (labels).
-        # Labels must be one-hot encoded.
+        """
+        Read data from download directory.
+
+        Parameters
+        ----------
+        download_dir: str
+            Directory where to read data.
+
+        Returns
+        -------
+            X: array_like
+                Features.
+            y: array_like
+                Labels.
+        """
         raise NotImplementedError()
 
-    def load_data(self):
-        # Download data, read data, save data to cache if defined, return data (features and labels).
-        # If data exists on cache, retrieve data from cache.
+    def load_data(self, one_hot=False):
+        """
+        Check if data exists on cache and download, read and save to cache if not.
+
+        Parameters
+        ----------
+        one_hot: bool
+            For classification datasets, whether or not convert labels to one-hot encoding.
+        """
         if self.cache is not None and self.cache.exists():
             self.logger.info("Dataset already exists on cache. Retrieving ...")
             X = self.cache.retrieve("X")
             y = self.cache.retrieve("y")
+
+            if one_hot:
+                return X, to_categorical(y)
 
             return X, y
 
@@ -57,6 +85,9 @@ class Dataset:
             self.logger.info("Saving dataset to cache ...")
             self.cache.save("X", X)
             self.cache.save("y", y)
+
+        if one_hot:
+            return X, to_categorical(y)
 
         return X, y
 

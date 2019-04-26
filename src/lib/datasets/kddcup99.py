@@ -13,13 +13,18 @@ from ..utils.io_utils import read_from_text
 
 class KDDCup99(PublicDataset):
     """
-    Kind: Classification
-    Shape:
-        features: [116]
-        labels: [38]
-    Description: >
-        The task is to build a network intrusion detector, a predictive model capable of distinguishing
-        between "bad" connections,called intrusions or attacks, and "good" normal connections.
+    The task is to build a network intrusion detector, a predictive model capable of distinguishing
+    between "bad" connections,called intrusions or attacks, and "good" normal connections.
+
+    Characteristics
+        - **Classes**: 38
+        - **Samples total**: xxxx
+        - **Dimensionality**: [117]
+        - **Features**: continuous and discrete
+
+    References
+    ----------
+    `Kdd Cup '99 <http://kdd.ics.uci.edu/databases/kddcup99/kddcup99.html>`_
     """
 
     public_dataset_files = [

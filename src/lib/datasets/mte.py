@@ -23,12 +23,52 @@ GENRE_TO_SUBSCRIPTION_MAPPING_PATH = os.path.join(os.path.dirname(__file__), "re
 
 class MTE(PublicDataset):
     """
-    Kind: Classification Multilabel
-    Shape:
-        features: [1]
-        labels: [17]
-    Description: >
-        Dataset to predict topics of video contents from M+ based on the title and the description of the content.
+    Dataset to predict topics of video contents from M+ based on the title and the description of the content.
+
+    The class labels are:
+
+    +----------+----------------------------+
+    | Label    | Description                |
+    +==========+============================+
+    | 0        | Deportes                   |
+    +----------+----------------------------+
+    | 1        | Salud y Belleza            |
+    +----------+----------------------------+
+    | 2        | Humor                      |
+    +----------+----------------------------+
+    | 3        | Hogar                      |
+    +----------+----------------------------+
+    | 4        | Cine                       |
+    +----------+----------------------------+
+    | 5        | Cultural y Educativo       |
+    +----------+----------------------------+
+    | 6        | Infantil                   |
+    +----------+----------------------------+
+    | 7        | Música                     |
+    +----------+----------------------------+
+    | 8        | Entretenimiento            |
+    +----------+----------------------------+
+    | 9        | Información y Actualidad   |
+    +----------+----------------------------+
+    | 10       | Documental                 |
+    +----------+----------------------------+
+    | 11       | Tecnología                 |
+    +----------+----------------------------+
+    | 12       | Moda                       |
+    +----------+----------------------------+
+    | 13       | Viajes                     |
+    +----------+----------------------------+
+    | 14       | Serie                      |
+    +----------+----------------------------+
+    | 15       | Motor                      |
+    +----------+----------------------------+
+    | 16       | Cocina                     |
+    +----------+----------------------------+
+
+    Characteristics
+        - **Classes**: 17 (multilabel)
+        - **Samples total**: variable
+        - **Features**: texts
     """
 
     public_dataset_files = ("http://ottcache.dof6.com/movistarplus/webplayer.hls/OTT/epg?from={}&span=7&channel=" +
