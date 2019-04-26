@@ -1,6 +1,7 @@
 {
     "dataset": {
         "name": "tiny_imagenet",
+        "one_hot": true,
         "samples": {
             "train": 0.1,
             "test": 0.1

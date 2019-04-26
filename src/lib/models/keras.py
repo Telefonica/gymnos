@@ -31,6 +31,10 @@ class Keras(Model, KerasMixin):
         TODO
     compilation: dict
         TODO
+
+    Note
+    ----
+    This model requires one-hot encoded labels.
     """
 
     def __init__(self, sequential, compilation):

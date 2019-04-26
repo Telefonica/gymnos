@@ -91,6 +91,8 @@ class Dataset:
         Seed used to split dataset.
     shuffle: bool, optional
         Whether or not to shuffle the data before splitting.
+    one_hot: bool, optional
+        Whether or not to one-hot encode labels. Required for some models.
 
     Examples
     --------
@@ -116,12 +118,13 @@ class Dataset:
         )
     """
 
-    def __init__(self, name, samples=None, preprocessors=None, seed=None, shuffle=True, cache_dir=None):
+    def __init__(self, name, samples=None, preprocessors=None, seed=None, shuffle=True, one_hot=False, cache_dir=None):
         samples = samples or {}
         preprocessors = preprocessors or []
 
         self.name = name
         self.seed = seed
+        self.one_hot = one_hot
         self.shuffle = shuffle
 
         self.samples = DatasetSamples(**samples)

@@ -9,7 +9,6 @@ import numpy as np
 
 from tqdm import tqdm
 from glob import iglob
-from keras.utils import to_categorical
 
 from .dataset import KaggleDataset
 from ..utils.image_utils import imread_rgb, imresize
@@ -58,4 +57,4 @@ class DogsVsCats(KaggleDataset):
             else:
                 raise ValueError("Class for image {} not recognized".format(image_path))
 
-        return images, to_categorical(classes, 2)
+        return images, classes

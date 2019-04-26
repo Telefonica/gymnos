@@ -39,7 +39,7 @@ class KDDCup99(PublicDataset):
         data = pd.read_csv(data_file_path, names=columns, header=None)
         features, labels = self.__features_labels_split(data)
         features = pd.get_dummies(features)
-        return features, pd.get_dummies(labels)
+        return features, pd.factorize(labels)[0]
 
     def __read_features_names(self, file_path):
         text = read_from_text(file_path)

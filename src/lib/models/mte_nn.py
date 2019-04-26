@@ -23,6 +23,10 @@ class MTENN(Model, KerasMixin):
     classes: int, 17
         Number of classes to classify images into. This is useful if
         you want to train this model with another dataset.
+
+    Note
+    ----
+    This model requires labels with multi-label format.
     """
 
     def __init__(self, input_shape, classes=17):

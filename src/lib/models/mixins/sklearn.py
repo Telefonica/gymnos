@@ -40,13 +40,17 @@ class SklearnMixin:
             Whether or not compute cross validation score. If not provided, cross-validation
             score is not computed. If provided, dictionnary with parameters for
             `cross_val_score <https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_val_score.html>`_.
+
         Examples
         --------
-         >>> fit(X, y, cross_validation={
+        .. code-block:: py
+
+            fit(X, y, cross_validation={
                 "cv": 5,
                 "n_jobs": -1,
                 "verbose": 1
-             })
+            })
+
         Returns
         -------
             metrics: dict

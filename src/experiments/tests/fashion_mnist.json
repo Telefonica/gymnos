@@ -1,6 +1,7 @@
 {
     "dataset": {
         "name": "fashion_mnist",
+        "one_hot": true,
         "samples": {
             "train": 0.1,
             "test": 0.1

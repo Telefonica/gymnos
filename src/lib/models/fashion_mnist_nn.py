@@ -23,6 +23,10 @@ class FashionMnistNN(Model, KerasMixin):
     classes: int, optional
         Number of classes to classify images into. This is useful if
         you want to train this model with another dataset.
+
+    Note
+    ----
+    This model requires one-hot encoded labels.
     """
 
     def __init__(self, classes=10):

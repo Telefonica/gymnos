@@ -147,7 +147,7 @@ class Trainer:
         self.logger.info("Loading dataset: {} ...".format(dataset.name))
 
         with elapsed_time() as elapsed:
-            X, y = dataset.dataset.load_data()
+            X, y = dataset.dataset.load_data(one_hot=dataset.one_hot)
 
         execution_steps_elapsed["load_data"] = elapsed.s
         self.logger.debug("Loading data took {:.2f}s".format(elapsed.s))

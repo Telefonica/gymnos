@@ -15,6 +15,7 @@
     },
     "dataset": {
         "name": "mnist",
+        "one_hot": true,
         "samples": {
             "train": 0.1,
             "test": 0.05

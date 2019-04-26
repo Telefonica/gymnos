@@ -10,7 +10,6 @@ import keras
 from pydoc import locate
 from collections.abc import Iterable
 from keras.models import load_model
-from keras.utils import to_categorical
 
 from ...utils.io_utils import read_from_json
 
@@ -65,8 +64,6 @@ class KerasMixin:
         if callbacks is not None:
             callbacks = self.__instantiate_callbacks(callbacks)
 
-        y = self.__convert_to_categorical_if_needed(y)
-
         history = self.model.fit(X, y, batch_size=batch_size, epochs=epochs, verbose=verbose, callbacks=callbacks,
                                  validation_split=validation_split, shuffle=shuffle, class_weight=class_weight,
                                  sample_weight=sample_weight, initial_epoch=initial_epoch,
@@ -103,17 +100,7 @@ class KerasMixin:
         return callbacks
 
 
-    def __convert_to_categorical_if_needed(self, y):
-        loss_name = self.model.loss
-        if hasattr(loss_name, '__name__'):
-            loss_name = loss_name.__name__
-        if loss_name == 'categorical_crossentropy' and len(y.shape) != 2:
-            y = to_categorical(y)
-
-        return y
-
     def evaluate(self, X, y):
-        y = self.__convert_to_categorical_if_needed(y)
         metrics = self.model.evaluate(X, y)
         if not isinstance(metrics, Iterable):
             metrics = [metrics]

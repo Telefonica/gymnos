@@ -5,6 +5,7 @@
             "train": 0.001,
             "test": 0.0005
         },
+        "one_hot": true,
         "preprocessors": [
             {
                 "type": "image_resize",

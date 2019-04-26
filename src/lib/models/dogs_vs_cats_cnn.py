@@ -35,15 +35,21 @@ class DogsVsCatsCNN(Model, TensorFlowMixin):
         Configuration for TensorFlow session. To see available properties:
         `tf.ConfigProto <https://www.tensorflow.org/api_docs/python/tf/ConfigProto>`_
 
+    Note
+    ----
+    This model requires one-hot encoded labels.
+
     Examples
     --------
-     >>> DogsVsCatsCNN(
+    .. code-block:: py
+
+        DogsVsCatsCNN(
             input_shape=[120, 120, 3],
             classes=2,
             session={
                 "log_device_placement": True
             }
-     )
+        )
     """
 
     def __init__(self, input_shape, classes=2, session=None):
