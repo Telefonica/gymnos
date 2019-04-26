@@ -4,7 +4,7 @@ Datasets
 
 .. _datasets:
 
-This section shows a collection of datasets currently supoorted by Gymnos
+This section shows a collection of datasets currently supported by Gymnos
 
 
 Dogs vs Cats
