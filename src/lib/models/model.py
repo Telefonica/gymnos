@@ -13,10 +13,10 @@ class Model(BaseEstimator):
 
     You need to implement the following methods: ``fit``, ``predict``, ``evaluate``, ``save`` and
     ``restore``.
+    """
 
-    Methods
-    -------
-    fit(X, y, **parameters)
+    def fit(self, X, y, **parameters):
+        """
         Fit model to training data.
 
         Parameters
@@ -32,8 +32,11 @@ class Model(BaseEstimator):
         ------
         metrics: dict
             Training metrics
+        """
+        return super().fit(X, y, **parameters)
 
-    predict(X)
+    def predict(self, X):
+        """
         Predict data.
 
         Parameters
@@ -45,8 +48,11 @@ class Model(BaseEstimator):
         -------
         predictions: array_like
             Predictions from ``X``.
+        """
+        return super().predict(X)
 
-    evaluate(X, y)
+    def evaluate(self, X, y):
+        """
         Evaluate model performance.
 
         Parameters
@@ -60,20 +66,27 @@ class Model(BaseEstimator):
         -------
         metrics: dict
             Dictionnary with metrics.
+        """
+        return super().evaluate(X, y)
 
-    save(save_path)
+    def save(self, save_path):
+        """
         Save model to ``save_path``.
 
         Parameters
         ----------
         save_path: str
             Path to save model.
+        """
+        return super().save(save_path)
 
-    restore(save_path)
+    def restore(self, save_path):
+        """
         Restore model from ``save_path``.
 
         Parameters
         ----------
         save_path: str
             Path where the model is saved.
-    """
+        """
+        return super().restore(save_path)

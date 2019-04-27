@@ -15,6 +15,15 @@ from sklearn.model_selection import cross_val_score, train_test_split
 
 
 class SklearnMixin:
+    """
+    Mixin to write scikit-learn methods. It provides implementation for ``fit``, ``predict``, ``evaluate``, ``save``
+    and ``restore`` methods.
+
+    Attributes
+    ----------
+    model: sklearn.BaseEstimator
+        scikit-learn estimator.
+    """
 
     @property
     def metric_name(self):
@@ -84,13 +93,52 @@ class SklearnMixin:
         return metrics
 
     def predict(self, X):
+        """
+        Predict data using scikit-learn model.
+
+        Parameters
+        ----------
+        X: array_like
+            Features
+
+        Returns
+        -------
+        predictions: array_like
+            Predictions from ``X``
+        """
         return self.model.predict(X)
 
     def evaluate(self, X, y):
+        """
+        Evaluate data using sklearn ``score`` method.
+
+        Parameters
+        ----------
+        X: array_like
+            Features
+        y: array_like
+            True labels
+        """
         return {self.metric_name: self.model.score(X, y)}
 
-    def save(self, directory):
-        joblib.dump(self.model, os.path.join(directory, "model.joblib"))
+    def save(self, save_path):
+        """
+        Save sklearn model using ``joblib``
 
-    def restore(self, directory):
-        self.model = joblib.load(os.path.join(directory, "model.joblib"))
+        Parameters
+        ----------
+        save_path: str
+            Path (Directory) to save model.
+        """
+        joblib.dump(self.model, os.path.join(save_path, "model.joblib"))
+
+    def restore(self, save_path):
+        """
+        Restore sklearn model using ``joblib``
+
+        Parameters
+        ----------
+        save_path: str
+            Path (Directory) to restore model.
+        """
+        self.model = joblib.load(os.path.join(save_path, "model.joblib"))

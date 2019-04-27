@@ -114,8 +114,8 @@ class DataUsageHoltWinters(Model):
             "emc_error": rmse_train(y[-self.n_preds:], y_pred[-self.n_preds:])
         }
 
-    def restore(self, directory):
+    def restore(self, save_path):
         pass
 
-    def save(self, directory):
+    def save(self, save_path):
         pass

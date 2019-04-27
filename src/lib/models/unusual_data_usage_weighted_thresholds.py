@@ -122,8 +122,8 @@ class UnusualDataUsageWT(BaseEstimator):
             "stages_recall_score": [recall_score([val[0]], [val[1]], average='micro') for val in result]
         }
 
-    def restore(self, directory):
+    def restore(self, save_path):
         pass
 
-    def save(self, directory):
+    def save(self, save_path):
         pass

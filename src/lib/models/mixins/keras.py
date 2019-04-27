@@ -19,6 +19,15 @@ KERAS_CALLBACKS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), ".
 
 
 class KerasMixin:
+    """
+    Mixin to write keras methods. It provides implementation for ``fit``, ``predict``, ``evaluate``,
+    ``predict``, ``save`` and ``restore`` methods
+
+    Attributes
+    ----------
+    model: keras.models.Sequential or keras.models.Model
+        Compiled Keras model.
+    """
 
     def fit(self, X, y, batch_size=None, epochs=1, verbose=1, callbacks=None, validation_split=0.0, shuffle=True,
             class_weight=None, sample_weight=None, initial_epoch=0, steps_per_epoch=None, validation_steps=None):
@@ -101,16 +110,50 @@ class KerasMixin:
 
 
     def evaluate(self, X, y):
+        """
+        Evaluate model from compilation metrics.
+
+        Parameters
+        ----------
+        X: array_like
+            Features
+        y: array_like
+            Labels
+        """
         metrics = self.model.evaluate(X, y)
         if not isinstance(metrics, Iterable):
             metrics = [metrics]
         return dict(zip(self.model.metrics_names, metrics))
 
     def predict(self, X):
+        """
+        Predict using Keras model.
+
+        Parameters
+        ----------
+        X: array_like
+            Features
+        """
         return self.model.predict(X)
 
-    def save(self, directory):
-        self.model.save(os.path.join(directory, "model.h5"))
+    def save(self, save_path):
+        """
+        Save keras model to h5.
 
-    def restore(self, directory):
-        self.model = load_model(os.path.join(directory, "model.h5"))
+        Parameters
+        ----------
+        save_path: str
+            Path (Directory) to save model.
+        """
+        self.model.save(os.path.join(save_path, "model.h5"))
+
+    def restore(self, save_path):
+        """
+        Load keras model
+
+        Parameters
+        ----------
+        save_path: str
+            Path (Directory) where the model is saved.
+        """
+        self.model = load_model(os.path.join(save_path, "model.h5"))
