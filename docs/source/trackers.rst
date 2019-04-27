@@ -10,13 +10,16 @@ Comet.ml
 =================
 
 .. autoclass:: lib.trackers.comet_ml.CometML
+    :members:
 
 MLflow
 =================
 
 .. autoclass:: lib.trackers.mlflow.MLFlow
+    :members:
 
 Tensorboard
 =================
 
 .. autoclass:: lib.trackers.tensorboard.Tensorboard
+    :members:
