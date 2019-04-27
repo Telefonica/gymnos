@@ -13,9 +13,31 @@ from collections.abc import Iterable
 class Tracker:
 
     def start(self, run_name, logdir):
+        """
+        Called when the experiment is started.
+
+        Note
+        -----
+        Useful for initialization purposes
+
+        Parameters
+        ----------
+        run_name: str
+            Name identifying the experiment's run.
+        logdir: str
+            Path of logging.
+        """
         pass
 
     def add_tag(self, tag):
+        """
+        Add tag to experiment.
+
+        Parameters
+        ----------
+        tag: str
+            Tag to add.
+        """
         pass
 
     def add_tags(self, tags):
@@ -23,15 +45,57 @@ class Tracker:
             self.add_tag(tag)
 
     def log_asset(self, name, file_path):
+        """
+        Log asset.
+
+        Parameters
+        ----------
+        name: str
+            Asset's name
+        file_path: str
+            Asset's path.
+        """
         pass
 
     def log_image(self, name, file_path):
+        """
+        Log image
+
+        Parameters
+        ----------
+        name: str
+            Image's name.
+        file_path: str
+            Image's path.
+        """
         pass
 
     def log_figure(self, name, figure):
+        """
+        Log Matplotlib figure
+
+        Parameters
+        ----------
+        name: str
+            Figure's name.
+        figure: matplotlib.Figure
+            Matplotlib figure.
+        """
         pass
 
     def log_metric(self, name, value, step=None):
+        """
+        Log metric
+
+        Parameters
+        ----------
+        name: str
+            Metric's name.
+        value: any
+            Metric's value.
+        step: int
+            Metric's step.
+        """
         pass
 
     def log_metric_list(self, name, metric_list):
@@ -48,6 +112,16 @@ class Tracker:
                 self.log_metric(prefix + name, value, step)
 
     def log_param(self, name, value, step=None):
+        """
+        Log parameter
+
+        Parameters
+        ----------
+        name: str
+            Parameter's name.
+        value: any
+            Parameter's value.
+        """
         pass
 
     def log_params(self, dic, prefix=None, step=None):
@@ -57,15 +131,40 @@ class Tracker:
             self.log_param(prefix + name, value, step)
 
     def log_other(self, name, value):
+        """
+        Log any other value
+
+        Parameters
+        ----------
+        name: str
+            Parameter's name.
+        value: any
+            Parameter's value.
+        """
         pass
 
     def log_model_graph(self, graph):
+        """
+        Log TensorFlow model graph.
+
+        Parameters
+        ----------
+        graph: tf.Graph
+            TensorFlow Graph
+        """
         pass
 
     def get_keras_callback(self, log_params=True, log_metrics=True):
         return KerasCallback(self)  # default callback
 
     def end(self):
+        """
+        Called when the experiment is finished.
+
+        Note
+        -----
+        Useful to release/write artifacts.
+        """
         pass
 
 
