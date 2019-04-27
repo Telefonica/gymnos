@@ -18,29 +18,6 @@ class Dataset:
     Base class for all Gymnos datasets.
 
     You need to implement the following methods: ``download`` and ``read``.
-
-    Methods
-    -------
-    download(download_path)
-        Download raw data.
-
-        Parameters
-        ----------
-        download_path: str
-            Path where to download data
-
-    read(self, download_path)
-        Read data from download path
-        Parameters
-        ----------
-            download_path: str
-                Path where to read data
-        Returns
-        -------
-            X: array_like
-                Features
-            y: array_like
-                Labels
     """
 
     def __init__(self, cache_dir=None):
@@ -51,6 +28,35 @@ class Dataset:
 
         self.logger = get_logger(prefix=self)
 
+
+    def download(self, download_path):
+        """
+        Download raw data.
+
+        Parameters
+        ----------
+        download_path: str
+            Path where to download data
+        """
+        return super().download(download_path)
+
+
+    def read(self, download_path):
+        """
+        Read data from download path
+
+        Parameters
+        ----------
+            download_path: str
+                Path where to read data
+        Returns
+        -------
+            X: array_like
+                Features
+            y: array_like
+                Labels
+        """
+        return super().read(download_path)
 
     def load_data(self):
         """
@@ -81,17 +87,22 @@ class Dataset:
 class RegressionDataset(Dataset):
     """
     Dataset for regression tasks.
+
+    You need to implement the following methods: ``download`` and ``read``.
     """
 
 
 class ClassificationDataset(Dataset):
     """
     Dataset for classification tasks.
+
+    You need to implement the following methods: ``download`` and ``read``.
     """
 
     def load_data(self, one_hot=False):
         """
         Check if data exists on cache and download, read and save to cache if not.
+
         Parameters
         ----------
         one_hot: bool, optional

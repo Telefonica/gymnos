@@ -2,106 +2,45 @@
 How to create a Dataset
 #####################################
 
-To create a dataset you need to inherit from ``Dataset`` or its subclasses and implement some methods.
-If you want to use the dataset in an experiment you must add the dataset location with and id in ``lib.var.datasets.json``, e.g ``mydataset: lib.datasets.mydataset.MyDataset``.
+Implementing a dataset in Gymnos is really simple, just inherit from ``ClassificationDataset`` or ``RegressionDataset`` and overwrite some methods.
 
-Base dataset
-===============
-
-This is the parent dataset that all classes must inherit.
-The ``Dataset`` class is defined in ``lib.datasets.dataset`` and you must implement the following methods:
-
-.. code-block:: python
-
-   def download(self, download_dir):
-      # download files needed to read dataset to download_dir
-      ...
-
-   def read(self, download_dir):
-      # read files downloaded and return features and labels (must be one-hot encoded)
-      ...
-      return X, y
+.. note::
+    The training configuration (:class:`lib.core.dataset.Dataset`) will read ``lib.var.datasets.json`` to find the dataset given the dataset name. If you want to add a dataset, give it a name and add the location of the dataset.
 
 
-An example of dataset is the following:
+Dataset
+------------------
+.. autoclass:: lib.datasets.dataset.Dataset
+    :members:
+    :inherited-members:
 
-.. code-block:: python
+Regression dataset
+==================
+.. autoclass:: lib.datasets.dataset.RegressionDataset
+    :members:
+    :inherited-members:
 
-    import os
-    import requests
-    import pandas as pd
-
-    from .dataset import Dataset
-
-    from keras.utils import to_categorical
-
-
-    class MyDataset(Dataset):
-
-        def download(self, download_dir):
-            res = requests.get("http://example-dataset.com")
-            with open("dataset.csv", "wb") as outfile:
-                outfile.write(res.content)
-
-        def read(self, download_dir):
-            df = pd.read_csv(os.path.join(download_dir, "example.csv"))
-            X = df.drop(columns="label")
-            y = df.label
-
-            return X, to_categorical(y)
+Classification dataset
+======================
+.. autoclass:: lib.datasets.dataset.ClassificationDataset
+    :members:
+    :inherited-members:
 
 
-Kaggle dataset
-===============
+Mixins
+------
 
-If you want to implement a Kaggle dataset, you only need to inherit from ``lib.datasets.dataset.KaggleDataset``, fill the ``kaggle_dataset_name`` class variable with the id of the Kaggle dataset and implement the ``read`` method. Optionally, if you want to download only some files of the Kaggle dataset, fill the ``kaggle_dataset_files`` with the filenames you want to download.
+We provide `mixins <https://www.ianlewis.org/en/mixins-and-python>`_ with default functionality for dataset methods.
 
-.. code-block:: python
+Kaggle
+======
 
-    from .dataset import KaggleDataset
+.. autoclass:: lib.datasets.mixins.kaggle.KaggleMixin
+    :members: download
 
-    class MyKaggleDataset(KaggleDataset):
-
-        kaggle_dataset_name = "lava18/google-play-store-apps"
-        kaggle_dataset_files = ["googleplaystore.csv"]
-
-        def read(self, download_dir):
-            ...
-            return X, y
-
-Public dataset
-===============
-
-If you want to implement a public dataset downloadable through URL, you only need to inherit from ``lib.datasets.dataset.PublicDataset``, fill the ``public_dataset_files`` class variable with the URLs you want to download and implement the ``read`` method.
-
-.. code-block:: python
-
-    from .dataset import PublicDataset
-
-    class MyPublicDataset(PublicDataset):
-
-        public_dataset_files = "https://fred.stlouisfed.org/graph/fredgraph.csv"
-
-        def read(self, download_dir):
-            ...
-            return X, y
+Public URL
+==========
 
 
-Library dataset
-===============
-
-If you want to implement a dataset that belongs to a library like ``Keras`` or ``Scikit-Learn``, you only need to inherit from ``lib.datasets.dataset.LibraryDataset`` and implement the ``read`` method.
-
-.. code-block:: python
-
-    from .dataset import LibraryDataset
-
-    from keras.utils import to_categorical
-    from sklearn.datasets import load_iris
-
-
-    class MyLibraryDataset(LibraryDataset):
-
-        def read(self, download_dir):
-            X, y = load_iris(return_X_y=True)
-            return X, to_categorical(y)
+.. autoclass:: lib.datasets.mixins.public_url.PublicURLMixin
+    :members: download
