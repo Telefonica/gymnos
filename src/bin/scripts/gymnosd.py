@@ -6,6 +6,8 @@ import shutil
 import logging
 import argparse
 
+from tempfile import TemporaryDirectory
+
 from lib.logger import get_logger
 from lib.trainer import Trainer
 from lib.core.model import Model
@@ -24,7 +26,7 @@ TRAINING_LOG_FILENAME = "execution.log"
 TRAINING_CONFIG_FILENAME = "training_config.json"
 
 
-def run_experiment(training_config_path):
+def run_experiment(training_config_path, output_path="trainings"):
     training_config = read_from_json(training_config_path)
     training_config_copy = copy.deepcopy(training_config)
 
@@ -37,7 +39,7 @@ def run_experiment(training_config_path):
 
     os.makedirs(cache_config["datasets"], exist_ok=True)
 
-    trainer = Trainer()
+    trainer = Trainer(trainings_path=output_path)
 
     try:
         execution_path = trainer.run(
@@ -70,7 +72,10 @@ if __name__ == "__main__":
 
     if args.regression_test:
         test_config_filenames = os.listdir(REGRESSION_TESTS_DIR)
-        for test_config_filename in test_config_filenames:
-            run_experiment(os.path.join(REGRESSION_TESTS_DIR, test_config_filename))
+        for i, test_config_filename in enumerate(test_config_filenames):
+            print("{}{} / {} - Current regression test: {}{}".format("\033[91m", i, len(test_config_filenames),
+                                                                     test_config_filename, "\033[0m"))
+            with TemporaryDirectory() as temp_dir:
+                run_experiment(os.path.join(REGRESSION_TESTS_DIR, test_config_filename), temp_dir)
     else:
         run_experiment(args.training_config)
