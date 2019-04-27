@@ -73,7 +73,7 @@ if __name__ == "__main__":
     if args.regression_test:
         test_config_filenames = os.listdir(REGRESSION_TESTS_DIR)
         for i, test_config_filename in enumerate(test_config_filenames):
-            print("{}{} / {} - Current regression test: {}{}".format("\033[91m", i, len(test_config_filenames),
+            print("{}{} / {} - Current regression test: {}{}".format("\033[91m", i + 1, len(test_config_filenames),
                                                                      test_config_filename, "\033[0m"))
             with TemporaryDirectory() as temp_dir:
                 run_experiment(os.path.join(REGRESSION_TESTS_DIR, test_config_filename), temp_dir)
