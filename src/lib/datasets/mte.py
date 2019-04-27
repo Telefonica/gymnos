@@ -13,7 +13,8 @@ from datetime import datetime
 from sklearn.preprocessing import MultiLabelBinarizer
 
 from ..logger import get_logger
-from .dataset import PublicDataset
+from .dataset import ClassificationDataset
+from .mixins import PublicURLMixin
 from ..utils.io_utils import read_from_json
 
 
@@ -21,7 +22,7 @@ GENRE_TO_SUBSCRIPTION_MAPPING_PATH = os.path.join(os.path.dirname(__file__), "re
                                                   "genre_to_subscription.json")
 
 
-class MTE(PublicDataset):
+class MTE(ClassificationDataset, PublicURLMixin):
     """
     Dataset to predict topics of video contents from M+ based on the title and the description of the content.
 
@@ -71,8 +72,8 @@ class MTE(PublicDataset):
         - **Features**: texts
     """
 
-    public_dataset_files = ("http://ottcache.dof6.com/movistarplus/webplayer.hls/OTT/epg?from={}&span=7&channel=" +
-                            "&network=movistarplus").format(datetime.now().strftime("%Y-%m-%dT%H:%M:%S"))
+    public_urls = ("http://ottcache.dof6.com/movistarplus/webplayer.hls/OTT/epg?from={}&span=7&channel=" +
+                   "&network=movistarplus").format(datetime.now().strftime("%Y-%m-%dT%H:%M:%S"))
 
     def __init__(self, cache_dir=None):
         super().__init__(cache_dir=cache_dir)

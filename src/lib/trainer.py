@@ -19,6 +19,7 @@ from .utils.path import chdir
 from .utils.io_utils import save_to_json
 from .utils.iterator_utils import count
 from .utils.timing import elapsed_time
+from .datasets import ClassificationDataset
 
 
 class Trainer:
@@ -147,7 +148,10 @@ class Trainer:
         self.logger.info("Loading dataset: {} ...".format(dataset.name))
 
         with elapsed_time() as elapsed:
-            X, y = dataset.dataset.load_data(one_hot=dataset.one_hot)
+            if isinstance(dataset.dataset, ClassificationDataset):
+                X, y = dataset.dataset.load_data(one_hot=dataset.one_hot)
+            else:
+                X, y = dataset.dataset.load_data()
 
         execution_steps_elapsed["load_data"] = elapsed.s
         self.logger.debug("Loading data took {:.2f}s".format(elapsed.s))

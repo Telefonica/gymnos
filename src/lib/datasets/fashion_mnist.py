@@ -6,12 +6,12 @@
 
 import numpy as np
 
-from .dataset import LibraryDataset
+from .dataset import ClassificationDataset
 
 from keras.datasets import fashion_mnist
 
 
-class FashionMNIST(LibraryDataset):
+class FashionMNIST(ClassificationDataset):
     """
     Dataset to classify 10 fashion categories of clothes..
 
@@ -48,7 +48,10 @@ class FashionMNIST(LibraryDataset):
         - **Features**: real, between 0 and 255
     """
 
-    def read(self, download_dir):
+    def download(self, download_path):
+        pass
+
+    def read(self, download_path):
         (X_train, y_train), (X_test, y_test) = fashion_mnist.load_data()
         X = np.concatenate([X_train, X_test], axis=0)
         y = np.concatenate([y_train, y_test], axis=0)

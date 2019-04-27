@@ -7,11 +7,12 @@
 import os
 import pandas as pd
 
-from .dataset import PublicDataset
+from .dataset import ClassificationDataset
+from .mixins import PublicURLMixin
 from ..utils.io_utils import read_from_text
 
 
-class KDDCup99(PublicDataset):
+class KDDCup99(ClassificationDataset, PublicURLMixin):
     """
     The task is to build a network intrusion detector, a predictive model capable of distinguishing
     between "bad" connections,called intrusions or attacks, and "good" normal connections.
@@ -27,14 +28,14 @@ class KDDCup99(PublicDataset):
     `Kdd Cup '99 <http://kdd.ics.uci.edu/databases/kddcup99/kddcup99.html>`_
     """
 
-    public_dataset_files = [
+    public_urls = [
         "http://kdd.ics.uci.edu/databases/kddcup99/corrected.gz",
         "http://archive.ics.uci.edu/ml/machine-learning-databases/kddcup99-mld/kddcup.names"
     ]
 
-    def read(self, download_dir):
-        data_file_path = os.path.join(download_dir, "corrected")
-        feature_names_file_path = os.path.join(download_dir, "kddcup.names")
+    def read(self, download_path):
+        data_file_path = os.path.join(download_path, "corrected")
+        feature_names_file_path = os.path.join(download_path, "kddcup.names")
         columns = self.__read_features_names(feature_names_file_path)
         data = pd.read_csv(data_file_path, names=columns, header=None)
         features, labels = self.__features_labels_split(data)

@@ -8,10 +8,10 @@ import numpy as np
 
 from keras.datasets import cifar10
 
-from .dataset import LibraryDataset
+from .dataset import ClassificationDataset
 
 
-class CIFAR10(LibraryDataset):
+class CIFAR10(ClassificationDataset):
     """
     Dataset to train computer vision algorithms. It contains color images in 10 different classes.
 
@@ -48,7 +48,10 @@ class CIFAR10(LibraryDataset):
         - **Features**: real, between 0 and 255
     """
 
-    def read(self, download_dir):
+    def download(self, download_path):
+        pass
+
+    def read(self, download_path):
         (X_train, y_train), (X_test, y_test) = cifar10.load_data()
         X = np.concatenate([X_train, X_test], axis=0)
         y = np.concatenate([y_train, y_test], axis=0)

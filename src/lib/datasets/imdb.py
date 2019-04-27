@@ -7,10 +7,11 @@
 import os
 import pandas as pd
 
-from .dataset import KaggleDataset
+from .dataset import ClassificationDataset
+from .mixins import KaggleMixin
 
 
-class IMDB(KaggleDataset):
+class IMDB(ClassificationDataset, KaggleMixin):
     """
     Dataset with movie reviews for binary sentiment classification.
 
@@ -33,8 +34,8 @@ class IMDB(KaggleDataset):
     kaggle_dataset_name = "oumaimahourrane/imdb-reviews"
     kaggle_dataset_files = ["dataset.csv"]
 
-    def read(self, download_dir):
-        file_path = os.path.join(download_dir, self.kaggle_dataset_files[0])
+    def read(self, download_path):
+        file_path = os.path.join(download_path, self.kaggle_dataset_files[0])
         data = pd.read_csv(file_path, encoding="latin-1")
         features, labels = self.__features_labels_split(data)
         return features, labels

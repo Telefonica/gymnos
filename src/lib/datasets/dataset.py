@@ -6,17 +6,42 @@
 
 import os
 
-from pydoc import locate
 from keras.utils import to_categorical
 from tempfile import TemporaryDirectory
 
 from ..logger import get_logger
 from ..utils.hdf_manager import HDFManager
-from ..services.kaggle_dataset_downloader import KaggleDatasetDownloader
-from ..services.file_downloader import FileDownloader
 
 
 class Dataset:
+    """
+    Base class for all Gymnos datasets.
+
+    You need to implement the following methods: ``download`` and ``read``.
+
+    Methods
+    -------
+    download(download_path)
+        Download raw data.
+
+        Parameters
+        ----------
+        download_path: str
+            Path where to download data
+
+    read(self, download_path)
+        Read data from download path
+        Parameters
+        ----------
+            download_path: str
+                Path where to read data
+        Returns
+        -------
+            X: array_like
+                Features
+            y: array_like
+                Labels
+    """
 
     def __init__(self, cache_dir=None):
         if cache_dir is not None:
@@ -26,51 +51,15 @@ class Dataset:
 
         self.logger = get_logger(prefix=self)
 
-    def download(self, download_dir):
-        """
-        Download data.
 
-        Parameters
-        ----------
-        download_dir: str
-            Directory where to download data.
-        """
-        raise NotImplementedError()
-
-    def read(self, download_dir):
-        """
-        Read data from download directory.
-
-        Parameters
-        ----------
-        download_dir: str
-            Directory where to read data.
-
-        Returns
-        -------
-            X: array_like
-                Features.
-            y: array_like
-                Labels.
-        """
-        raise NotImplementedError()
-
-    def load_data(self, one_hot=False):
+    def load_data(self):
         """
         Check if data exists on cache and download, read and save to cache if not.
-
-        Parameters
-        ----------
-        one_hot: bool
-            For classification datasets, whether or not convert labels to one-hot encoding.
         """
         if self.cache is not None and self.cache.exists():
             self.logger.info("Dataset already exists on cache. Retrieving ...")
             X = self.cache.retrieve("X")
             y = self.cache.retrieve("y")
-
-            if one_hot:
-                return X, to_categorical(y)
 
             return X, y
 
@@ -86,74 +75,37 @@ class Dataset:
             self.cache.save("X", X)
             self.cache.save("y", y)
 
-        if one_hot:
-            return X, to_categorical(y)
-
         return X, y
 
 
-class KaggleDataset(Dataset):
-
+class RegressionDataset(Dataset):
     """
-    Parent class for all Kaggle datasets.
-    Must implement:
-        - read(download_dir)
+    Dataset for regression tasks.
     """
 
-    kaggle_dataset_name = None  # required field
-    kaggle_dataset_files = None  # optional field | specify only if we want to download specific files
 
-    def __init__(self, cache_dir=None):
-        super().__init__(cache_dir=cache_dir)
-
-        if self.kaggle_dataset_name is None:
-            raise ValueError("kaggle_dataset_name cannot be None")
-
-        self.logger = get_logger(prefix=self)
-
-        self.downloader = KaggleDatasetDownloader()
-
-    def download(self, download_dir):
-        kaggle_api_exception = locate("kaggle.rest.ApiException")
-
-        try:
-            self.downloader.download(self.kaggle_dataset_name, self.kaggle_dataset_files,
-                                     download_dir, verbose=True)
-        except kaggle_api_exception as exception:
-            self.logger.error("Error downloading Kaggle dataset. Check your credentials.")
-            raise exception
-
-
-class PublicDataset(Dataset):
-
+class ClassificationDataset(Dataset):
     """
-    Parent class for all public datasets available with a URL.
-    Must implement:
-        - read(download_dir)
+    Dataset for classification tasks.
     """
 
-    public_dataset_files = None  # required field | urls of files to download
+    def load_data(self, one_hot=False):
+        """
+        Check if data exists on cache and download, read and save to cache if not.
+        Parameters
+        ----------
+        one_hot: bool, optional
+            Whether or note one-hot encode labels.
+        Returns
+        -------
+        X: array_like
+            Features.
+        y: array_like of int
+            Labels.
+        """
+        X, y = super().load_data()
 
-    def __init__(self, cache_dir=None):
-        super().__init__(cache_dir=cache_dir)
+        if one_hot:
+            y = to_categorical(y)
 
-        if self.public_dataset_files is None:
-            raise ValueError("public_dataset_files cannot be None")
-
-        self.downloader = FileDownloader()
-
-    def download(self, download_dir):
-        self.downloader.download(self.public_dataset_files, download_dir, verbose=True)
-
-
-class LibraryDataset(Dataset):
-
-    """
-    Parent class for all datasets available with a library e.g Keras, Scikit-Learn, NLTK, etc ...
-    Must implement:
-        - read(download_dir)
-    """
-
-    def download(self, download_dir):
-        # Download is handled by library
-        self.logger.info("Retrieving dataset from library ...")
+        return X, y

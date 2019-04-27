@@ -7,10 +7,10 @@
 import numpy as np
 import statsmodels.api as sm
 
-from .dataset import LibraryDataset
+from .dataset import RegressionDataset
 
 
-class DataUsageTest(LibraryDataset):
+class DataUsageTest(RegressionDataset):
     """
     Dataset  of Yearly (1700-2008) data on sunspots from the National Geophysical Data Center.
 
@@ -22,7 +22,10 @@ class DataUsageTest(LibraryDataset):
         - **Features**: xxx
     """
 
-    def read(self, download_dir):
+    def download(self, download_path):
+        pass
+
+    def read(self, download_path):
         data = sm.datasets.sunspots.load_pandas().data
         data = data['SUNACTIVITY'].values
         # Erase zeros on the left

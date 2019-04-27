@@ -10,11 +10,12 @@ import numpy as np
 from tqdm import tqdm
 from glob import iglob
 
-from .dataset import KaggleDataset
+from .dataset import ClassificationDataset
+from .mixins import KaggleMixin
 from ..utils.image_utils import imread_rgb, imresize
 
 
-class DogsVsCats(KaggleDataset):
+class DogsVsCats(ClassificationDataset, KaggleMixin):
     """
     Dataset to classify whether images contain either a dog or a cat.
 
@@ -38,8 +39,8 @@ class DogsVsCats(KaggleDataset):
     kaggle_dataset_name = "dogs-vs-cats"
     kaggle_dataset_files = ["train.zip"]
 
-    def read(self, download_dir):
-        images_glob = os.path.join(download_dir, "train", "*.jpg")
+    def read(self, download_path):
+        images_glob = os.path.join(download_path, "train", "*.jpg")
         images_paths = [f for f in iglob(images_glob) if os.path.isfile(f)]
 
         images = np.empty([len(images_paths), 150, 150, 3], dtype=np.float)
