@@ -9,16 +9,71 @@ from sklearn.base import BaseEstimator
 
 class Model(BaseEstimator):
     """
-    Base model for all gymnos models, you must implement the following methods:
-        - fit(**parameters) -> dict
-        - predict(X) -> array
-        - evaluate(X, y) -> dict
-        - save(directory)
-        - restore(directory)
+    Base class for all Gymnos models.
 
-    We use duck-typing but this class is defined with 2 purposes:
-        - Improve readability of models
-        - In case we implement some method for all models in the future
-    To make it compatible with Sklearn helpers (Pipeline, GridSearchCV, etc ...) we inherit from
-    sklearn.base.BaseEstimator.
+    You need to implement the following methods: ``fit``, ``predict``, ``evaluate``, ``save`` and
+    ``restore``.
+
+    Methods
+    -------
+    fit(X, y, **parameters)
+        Fit model to training data.
+
+        Parameters
+        ----------
+        X: array_like
+            Features.
+        y: array_like
+            Labels
+        **parameters: any, optional
+            Any parameter needed train the model.
+
+        Return
+        ------
+        metrics: dict
+            Training metrics
+
+    predict(X)
+        Predict data.
+
+        Parameters
+        ----------
+        X: array_like
+            Features.
+
+        Returns
+        -------
+        predictions: array_like
+            Predictions from ``X``.
+
+    evaluate(X, y)
+        Evaluate model performance.
+
+        Parameters
+        ----------
+        X: array_like
+            Features.
+        y: array_like
+            True labels.
+
+        Returns
+        -------
+        metrics: dict
+            Dictionnary with metrics.
+
+    save(save_path)
+        Save model to ``save_path``.
+
+        Parameters
+        ----------
+        save_path: str
+            Path to save model.
+
+    restore(save_path)
+        Restore model from ``save_path``.
+
+        Parameters
+        ----------
+        save_path: str
+            Path where the model is saved.
     """
