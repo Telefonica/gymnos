@@ -9,11 +9,44 @@ from sklearn.base import TransformerMixin
 
 
 class Preprocessor(TransformerMixin):
+    """
+    Base class for all Gymnos preprocessors.
+
+    You need to implement the following methods: ``fit`` and optionally ``transform``.
+    """
 
     def fit(self, X, y=None):
+        """
+        Fit preprocessor to training data.
+
+        Parameters
+        ----------
+        X: array_like
+            Features
+        y: array_like, optional
+            Labels
+
+        Returns
+        --------
+        self: Preprocessor
+            Own instance for chain purposes.
+        """
         return self
 
     def transform(self, X):
+        """
+        Transform data.
+
+        Parameters
+        ----------
+        X: array_like
+            Features
+
+        Returns
+        -------
+        X_t: array_like
+            Transformed features
+        """
         raise NotImplementedError()
 
 
