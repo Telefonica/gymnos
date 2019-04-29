@@ -4,7 +4,7 @@
 #
 #
 
-import joblib
+import dill
 
 from tqdm import tqdm
 from sklearn.base import TransformerMixin
@@ -91,10 +91,12 @@ class Pipeline:
         return X
 
     def save(self, save_path):
-        joblib.dump(self.preprocessors, save_path)
+        with open(save_path, "wb") as pickle_file:
+            dill.dump(self.preprocessors, pickle_file)
 
     def restore(self, save_path):
-        self.preprocessors = joblib.load(save_path)
+        with open(save_path, "rb") as pickle_file:
+            self.preprocessors = dill.load(pickle_file)
 
     def __str__(self):
         preprocessors_names = [prep.__class__.__name__ for prep in self.preprocessors]

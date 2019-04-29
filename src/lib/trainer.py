@@ -233,7 +233,7 @@ class Trainer:
         # SAVE PIPELINE
 
         self.logger.info("Saving pipeline")
-        dataset.preprocessor_pipeline.save(os.path.join(trainings_dataset_execution_artifacts_path, "pipeline.joblib"))
+        dataset.preprocessor_pipeline.save(os.path.join(trainings_dataset_execution_artifacts_path, "pipeline.pkl"))
 
         # SAVE METRICS
 
