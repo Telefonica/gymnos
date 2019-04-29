@@ -38,26 +38,30 @@ class Trainer:
             └── {{tracking.trackers[i].name}}/
     Parameters
     ----------
-    trainings_path: str
+    trainings_path: str, optional
         Path with the directory where the experiments are run.
-    executions_dirname: str
+    executions_dirname: str, optional
         Directory name where an execution for a dataset is saved.
-    trackings_dirname: str
+    trackings_dirname: str, optional
         Directory name where an execution for a dataset is tracked.
-    execution_format: str
+    execution_format: str, optional
         Formatting for executions, it can contain named formatting options, which will be filled with
         the values of datetime, model_name, dataset_name and experiment_name.
-    artifacts_dirname: str
+    artifacts_dirname: str, optional
         Directory name where artifacts are saved (saved model, saved preprocessors, etc ...)
+    cache_datasets_path: str, optional
+        Directory to read and save HDF5 optimized datasets.
     """
 
-    def __init__(self, trainings_path="trainings", executions_dirname="executions", trackings_dirname="trackings",
-                 execution_format="{datetime:%H-%M-%S--%d-%m-%Y}__{model_name}", artifacts_dirname="artifacts"):
+    def __init__(self, trainings_path="trainings", executions_dirname="executions",
+                 trackings_dirname="trackings", execution_format="{datetime:%H-%M-%S--%d-%m-%Y}__{model_name}",
+                 artifacts_dirname="artifacts", cache_datasets_path=None):
         self.trainings_path = trainings_path
         self.executions_dirname = executions_dirname
         self.trackings_dirname = trackings_dirname
         self.execution_format = execution_format
         self.artifacts_dirname = artifacts_dirname
+        self.cache_datasets_path = cache_datasets_path
 
         self.logger = get_logger(prefix=self)
 
@@ -153,10 +157,13 @@ class Trainer:
         self.logger.info("Loading dataset: {} ...".format(dataset.name))
 
         with elapsed_time() as elapsed:
+            load_data_arguments = {}
+            if self.cache_datasets_path is not None:
+                load_data_arguments["hdf5_cache_path"] = os.path.join(self.cache_datasets_path, dataset.name + ".h5")
             if isinstance(dataset.dataset, ClassificationDataset):
-                X, y = dataset.dataset.load_data(one_hot=dataset.one_hot)
-            else:
-                X, y = dataset.dataset.load_data()
+                load_data_arguments["one_hot"] = dataset.one_hot
+
+            X, y = dataset.dataset.load_data(**load_data_arguments)
 
         execution_steps_elapsed["load_data"] = elapsed.s
         self.logger.debug("Loading data took {:.2f}s".format(elapsed.s))

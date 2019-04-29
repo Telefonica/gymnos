@@ -5,9 +5,10 @@
 #
 
 import os
+import shutil
+import tempfile
 
 from keras.utils import to_categorical
-from tempfile import TemporaryDirectory
 
 from ..logger import get_logger
 from ..utils.hdf_manager import HDFManager
@@ -20,12 +21,7 @@ class Dataset:
     You need to implement the following methods: ``download`` and ``read``.
     """
 
-    def __init__(self, cache_dir=None):
-        if cache_dir is not None:
-            self.cache = HDFManager(os.path.join(cache_dir, self.__class__.__name__ + ".h5"))
-        else:
-            self.cache = None
-
+    def __init__(self):
         self.logger = get_logger(prefix=self)
 
 
@@ -58,7 +54,7 @@ class Dataset:
         """
         return super().read(download_path)
 
-    def load_data(self):
+    def load_data(self, hdf5_cache_path=None):
         """
         Check if data exists on cache and download, read and save to cache if not.
 
@@ -69,24 +65,38 @@ class Dataset:
         y: array_like
             Labels
         """
-        if self.cache is not None and self.cache.exists():
-            self.logger.info("Dataset already exists on cache. Retrieving ...")
-            X = self.cache.retrieve("X")
-            y = self.cache.retrieve("y")
 
-            return X, y
+        if hdf5_cache_path is not None:
+            cache = HDFManager(hdf5_cache_path)
+        else:
+            cache = None
 
-        with TemporaryDirectory() as temp_dir:
-            self.logger.info("Downloading dataset ...")
-            self.download(temp_dir)
+        if cache is not None and cache.exists():
+            return cache.retrieve("X"), cache.retrieve("y")
 
-            self.logger.info("Reading dataset ...")
-            X, y = self.read(temp_dir)
+        gymnos_dataset_temp_path = os.path.join(tempfile.gettempdir(), "gymnos", self.__class__.__name__)
 
-        if self.cache is not None:
-            self.logger.info("Saving dataset to cache ...")
-            self.cache.save("X", X)
-            self.cache.save("y", y)
+        self.logger.info("Checking if download exists in temporary directory ({})".format(gymnos_dataset_temp_path))
+
+        if not os.path.isdir(gymnos_dataset_temp_path):
+            self.logger.info("Download not found. Creating download directory.")
+            os.makedirs(gymnos_dataset_temp_path)
+            try:
+                self.logger.info("Downloading")
+                self.download(gymnos_dataset_temp_path)
+            except Exception as ex:
+                self.logger.error("Error downloading dataset. Removing download directory")
+                shutil.rmtree(gymnos_dataset_temp_path)
+                raise
+        else:
+            self.logger.info("Data exists in temporary directory")
+
+        self.logger.info("Reading from {}".format(gymnos_dataset_temp_path))
+        X, y = self.read(gymnos_dataset_temp_path)
+
+        if cache is not None:
+            cache.save("X", X)
+            cache.save("y", y)
 
         return X, y
 
@@ -106,7 +116,7 @@ class ClassificationDataset(Dataset):
     You need to implement the following methods: ``download`` and ``read``.
     """
 
-    def load_data(self, one_hot=False):
+    def load_data(self, one_hot=False, hdf5_cache_path=None):
         """
         Check if data exists on cache and download, read and save to cache if not.
 
@@ -121,7 +131,7 @@ class ClassificationDataset(Dataset):
         y: array_like of int
             Labels.
         """
-        X, y = super().load_data()
+        X, y = super().load_data(hdf5_cache_path=hdf5_cache_path)
 
         if one_hot:
             y = to_categorical(y)

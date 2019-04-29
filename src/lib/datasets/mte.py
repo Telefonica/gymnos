@@ -75,9 +75,7 @@ class MTE(ClassificationDataset, PublicURLMixin):
     public_urls = ("http://ottcache.dof6.com/movistarplus/webplayer.hls/OTT/epg?from={}&span=7&channel=" +
                    "&network=movistarplus").format(datetime.now().strftime("%Y-%m-%dT%H:%M:%S"))
 
-    def __init__(self, cache_dir=None):
-        super().__init__(cache_dir=cache_dir)
-
+    def __init__(self):
         self.logger = get_logger(prefix=self)
 
     def read(self, download_dir):

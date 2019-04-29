@@ -118,7 +118,7 @@ class Dataset:
         )
     """
 
-    def __init__(self, name, samples=None, preprocessors=None, seed=None, shuffle=True, one_hot=False, cache_dir=None):
+    def __init__(self, name, samples=None, preprocessors=None, seed=None, shuffle=True, one_hot=False):
         samples = samples or {}
         preprocessors = preprocessors or []
 
@@ -130,7 +130,7 @@ class Dataset:
         self.samples = DatasetSamples(**samples)
 
         DatasetClass = self.__retrieve_dataset_from_id(name)
-        self.dataset = DatasetClass(cache_dir=cache_dir)
+        self.dataset = DatasetClass()
 
         self.preprocessor_pipeline = Pipeline()
         for preprocessor_config in preprocessors:

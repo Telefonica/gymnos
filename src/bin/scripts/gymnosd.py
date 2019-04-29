@@ -39,12 +39,12 @@ def run_experiment(training_config_path, output_path="trainings"):
 
     os.makedirs(cache_config["datasets"], exist_ok=True)
 
-    trainer = Trainer(trainings_path=output_path)
+    trainer = Trainer(trainings_path=output_path, cache_datasets_path=cache_config["datasets"])
 
     try:
         execution_path = trainer.run(
             model=Model(**training_config["model"]),
-            dataset=Dataset(cache_dir=cache_config["datasets"], **training_config["dataset"]),
+            dataset=Dataset(**training_config["dataset"]),
             training=Training(**training_config.get("training", {})),  # optional field
             experiment=Experiment(**training_config.get("experiment", {})),  # optional field
             tracking=Tracking(**training_config.get("tracking", {}))  # optional field)
