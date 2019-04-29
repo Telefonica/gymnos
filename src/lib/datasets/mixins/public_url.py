@@ -28,6 +28,9 @@ class PublicURLMixin:
         ----------
         download_path: str
             Path to download urls.
+        Note
+        -----
+        It automatically decompress ``.zip`` and ``.gz`` files.
         """
 
         if self.public_urls is None:

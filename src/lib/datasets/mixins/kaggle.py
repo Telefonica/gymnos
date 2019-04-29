@@ -63,6 +63,10 @@ class KaggleMixin:
 
         In addition, you can export any other configuration value that normally would be in the
         ``$HOME/.kaggle/kaggle.json`` in the format ``KAGGLE_`` (note uppercase).
+
+        Note
+        -----
+        It automatically decompress ``.zip`` and ``.gz`` files.
         """
 
         if self.kaggle_dataset_name is None:
