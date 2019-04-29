@@ -48,15 +48,19 @@ class Trainer:
         the values of datetime, model_name, dataset_name and experiment_name.
     metrics_filename: str
         Filename for metrics inside date execution
+    preprocessor_filename: str
+        Filename to save preprocessor's pipeline.
     """
 
     def __init__(self, trainings_path="trainings", executions_dirname="executions", trackings_dirname="trackings",
-                 execution_format="{datetime:%H-%M-%S--%d-%m-%Y}__{model_name}", metrics_filename="metrics.json"):
+                 execution_format="{datetime:%H-%M-%S--%d-%m-%Y}__{model_name}", metrics_filename="metrics.json",
+                 preprocessors_filename="preprocessors.joblib"):
         self.trainings_path = trainings_path
         self.executions_dirname = executions_dirname
         self.trackings_dirname = trackings_dirname
         self.execution_format = execution_format
         self.metrics_filename = metrics_filename
+        self.preprocessors_filename = preprocessors_filename
 
         self.logger = get_logger(prefix=self)
 
@@ -224,8 +228,14 @@ class Trainer:
         tracking.trackers.log_metrics(test_metrics, prefix="test_")
 
         # SAVE MODEL
+
         self.logger.info("Saving model")
         model.model.save(trainings_dataset_execution_model_path)
+
+        # SAVE PIPELINE
+
+        self.logger.info("Saving pipeline")
+        dataset.preprocessor_pipeline.save(os.path.join(trainings_dataset_execution_path, self.preprocessors_filename))
 
         # SAVE METRICS
 

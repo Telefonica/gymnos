@@ -4,6 +4,8 @@
 #
 #
 
+import joblib
+
 from tqdm import tqdm
 from sklearn.base import TransformerMixin
 
@@ -87,6 +89,12 @@ class Pipeline:
             X = preprocessor.transform(X)
 
         return X
+
+    def save(self, save_path):
+        joblib.dump(self.preprocessors, save_path)
+
+    def restore(self, save_path):
+        self.preprocessors = joblib.load(save_path)
 
     def __str__(self):
         preprocessors_names = [prep.__class__.__name__ for prep in self.preprocessors]
