@@ -25,13 +25,13 @@ Replace
     :members:
 
 Alphanumeric (Text)
-=================
+====================
 
 .. autoclass:: lib.preprocessors.texts.alphanumeric.Alphanumeric
     :members:
 
 Lemmatization (Text)
-=================
+======================
 
 .. autoclass:: lib.preprocessors.texts.lemmatization.Lemmatization
     :members:
@@ -43,13 +43,13 @@ Tfidf (Text)
     :members:
 
 Grayscale (Images)
-=================
+=======================
 
 .. autoclass:: lib.preprocessors.images.grayscale.Grayscale
     :members:
 
 Grayscale to Color (Images)
-==========================
+===============================
 
 .. autoclass:: lib.preprocessors.images.grayscale_to_color.GrayscaleToColor
     :members:
