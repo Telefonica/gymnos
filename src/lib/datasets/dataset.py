@@ -61,6 +61,13 @@ class Dataset:
     def load_data(self):
         """
         Check if data exists on cache and download, read and save to cache if not.
+
+        Returns
+        -------
+        X: array_like
+            Features
+        y: array_like
+            Labels
         """
         if self.cache is not None and self.cache.exists():
             self.logger.info("Dataset already exists on cache. Retrieving ...")
