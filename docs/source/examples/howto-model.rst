@@ -5,7 +5,7 @@ How to create a Model
 Implementing a model in Gymnos is really simple, just inherit from ``Model`` and overwrite some methods.
 
 .. note::
-    The training configuration (:class:`lib.core.model.Model`) will read ``lib.var.models.json`` to find the model given the model name. If you want to add a model, give it a name and add the location of the model.
+    The training configuration (:class:`lib.core.model.Model`) will read ``lib.var.models.json`` to find the model given the model's name. If you want to add a model, give it a name and add the model's location.
 
 Model
 -----

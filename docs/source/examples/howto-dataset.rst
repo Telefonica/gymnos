@@ -5,7 +5,7 @@ How to create a Dataset
 Implementing a dataset in Gymnos is really simple, just inherit from ``ClassificationDataset`` or ``RegressionDataset`` and overwrite some methods.
 
 .. note::
-    The training configuration (:class:`lib.core.dataset.Dataset`) will read ``lib.var.datasets.json`` to find the dataset given the dataset name. If you want to add a dataset, give it a name and add the location of the dataset.
+    The training configuration (:class:`lib.core.dataset.Dataset`) will read ``lib.var.datasets.json`` to find the dataset given the dataset's name. If you want to add a dataset, give it a name and add the dataset's location.
 
 
 Dataset
