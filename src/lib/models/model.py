@@ -76,7 +76,7 @@ class Model(BaseEstimator):
         Parameters
         ----------
         save_path: str
-            Path to save model.
+            Path (Directory) to save model.
         """
         return super().save(save_path)
 
@@ -87,6 +87,6 @@ class Model(BaseEstimator):
         Parameters
         ----------
         save_path: str
-            Path where the model is saved.
+            Path (Directory) where the model is saved.
         """
         return super().restore(save_path)
