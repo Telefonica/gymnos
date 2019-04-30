@@ -18,7 +18,8 @@ from .mixins import TensorFlowMixin
 
 class DogsVsCatsCNN(Model, TensorFlowMixin):
     """
-    Convolutional neuronal network developed to solve Dogs vs Cats image classification task.
+    Convolutional neuronal network developed to solve Dogs vs Cats image classification
+    task (:class:`lib.datasets.dogs_vs_cats.DogsVsCats`).
 
     Note
     ----

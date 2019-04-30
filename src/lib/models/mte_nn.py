@@ -14,7 +14,7 @@ from ..utils.keras_metrics import accuracy_multilabel, precision
 
 class MTENN(Model, KerasMixin):
     """
-    Neural network developed to solve MTE subscription classification task.
+    Neural network developed to solve MTE subscription classification task (:class:`lib.datasets.mte.MTE`).
 
     Parameters
     ----------

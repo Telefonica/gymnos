@@ -13,7 +13,8 @@ from ..utils.temporal_series_utils import mad_mean_error, nrmsd_error_norm, resi
 
 class DataUsageLinearRegression(Model, SklearnMixin):
     """
-    Linear Regression developed to solve Data Usage time series regression task.
+    Linear Regression developed to solve Data Usage time series regression
+    task (:class:`lib.datasets.data_usage_test.DataUsageTest`).
 
     Parameters
     ----------

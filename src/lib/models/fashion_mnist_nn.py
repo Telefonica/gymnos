@@ -12,7 +12,8 @@ from keras import models, layers
 
 class FashionMnistNN(Model, KerasMixin):
     """
-    Neural network developed to solve Fashion MNIST image classification task.
+    Neural network developed to solve Fashion MNIST image classification
+    task (:class:`lib.datasets.fashion_mnist.FashionMNIST`).
 
     Note
     ----
