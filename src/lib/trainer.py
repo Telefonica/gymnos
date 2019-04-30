@@ -222,10 +222,8 @@ class Trainer:
             test_metrics = model.model.evaluate(X_test, y_test)
 
         for metric_name, metric_value in test_metrics.items():
-            self.logger.info("Results for {}: Min: {:.2f} | Max: {:.2f} | Mean: {:.2f}".format(metric_name,
-                                                                                               np.min(metric_value),
-                                                                                               np.max(metric_value),
-                                                                                               np.mean(metric_value)))
+            self.logger.info("Test results for {}: {:.2f}".format(metric_name, metric_value))
+
         execution_steps_elapsed["evaluate_model"] = elapsed.s
         self.logger.debug("Evaluating model took {:.2f}s".format(elapsed.s))
 
