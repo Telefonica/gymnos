@@ -42,7 +42,7 @@ def run_experiment(training_config_path, output_path="trainings"):
     trainer = Trainer(trainings_path=output_path, cache_datasets_path=cache_config["datasets"])
 
     try:
-        execution_path = trainer.run(
+        execution_path = trainer.train(
             model=Model(**training_config["model"]),
             dataset=Dataset(**training_config["dataset"]),
             training=Training(**training_config.get("training", {})),  # optional field

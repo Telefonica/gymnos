@@ -66,7 +66,7 @@ class Trainer:
         self.logger = get_logger(prefix=self)
 
 
-    def run(self, experiment, model, dataset, training, tracking):
+    def train(self, experiment, model, dataset, training, tracking):
         """
         Run experiment generating outputs.
 
