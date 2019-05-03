@@ -40,10 +40,6 @@ class CometML(Tracker):
         self.experiment.add_tag(tag)
 
 
-    def add_tags(self, tags):
-        self.experiment.add_tags(tags)
-
-
     def log_asset(self, name, file_path):
         self.experiment.log_asset(file_path, file_name=name)
 
