@@ -8,7 +8,6 @@ import os
 import sklearn
 import joblib
 
-from ...utils.iterator_utils import count
 from ...logger import get_logger
 
 from sklearn.model_selection import cross_val_score, train_test_split
@@ -78,7 +77,7 @@ class SklearnMixin:
         if validation_split and 0.0 < validation_split < 1.0:
             X, X_val, y, y_val = train_test_split(X, y, test_size=validation_split)
             val_data = [X_val, y_val]
-            logger.info("Using {} samples for train and {} samples for validation".format(count(X), count(X_val)))
+            logger.info("Using {} samples for train and {} samples for validation".format(len(X), len(X_val)))
 
         logger.info("Fitting model with train data")
         self.model.fit(X, y)
