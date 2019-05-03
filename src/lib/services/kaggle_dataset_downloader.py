@@ -23,6 +23,22 @@ class KaggleDatasetDownloader:
         self.logger = get_logger(prefix=self)
 
     def download(self, dataset_or_competition_name, filenames=None, save_dir=None, unzip=True, verbose=True):
+        """
+        Download dataset or competition from Kaggle platform.
+
+        Parameters
+        ----------
+        dataset_or_competition: str
+            Dataset name (``user/dataset-id``) or competition name (``competition-id``)
+        filenames: list or str, optional
+            Filenames to download
+        save_dir: str, optional
+            Directory to save data. If unspecified, current working directory.
+        unzip: bool, optional
+            Whether or not decompress files.
+        verbose: bool, optional
+            Whether or not show progress bar.
+        """
         if save_dir is None:
             self.logger.debug("No saving directory provided. Saving to current directory")
             save_dir = os.getcwd()

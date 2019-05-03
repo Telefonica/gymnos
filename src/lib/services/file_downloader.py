@@ -22,7 +22,21 @@ class FileDownloader:
     def __init__(self):
         self.logger = get_logger(prefix=self)
 
-    def download(self,  urls, save_dir=None, unzip=True, verbose=True):
+    def download(self, urls, save_dir=None, unzip=True, verbose=True):
+        """
+        Download file from URLs.
+
+        Parameters
+        ----------
+        urls: list or str
+            Urls to download.
+        save_dir: str, optional
+            Directory to save file. If unspecified, current working directory
+        unzip: bool, optional
+            Whether or not unzip downloaded files.
+        verbose: bool, optional
+            Whether or not show progress bar
+        """
         if save_dir is None:
             self.logger.debug("No saving directory provided. Saving to current directory")
             save_dir = os.getcwd()
