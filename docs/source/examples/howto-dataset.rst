@@ -10,21 +10,20 @@ Implementing a dataset in Gymnos is really simple, just inherit from ``Classific
 
 Dataset
 ------------------
-.. autoclass:: lib.datasets.dataset.Dataset
-    :members:
-    :inherited-members:
 
 Regression dataset
 ==================
 .. autoclass:: lib.datasets.dataset.RegressionDataset
-    :members:
-    :inherited-members:
+    :members: read, download
+    :inherited-members: read, download
+    :exclude-members: load_data
 
 Classification dataset
 ======================
 .. autoclass:: lib.datasets.dataset.ClassificationDataset
     :members:
     :inherited-members:
+    :exclude-members: load_data
 
 
 Mixins

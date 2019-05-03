@@ -13,6 +13,7 @@ Dogs vs Cats
     :members:
     :inherited-members:
     :show-inheritance:
+    :exclude-members: read, download
 
 Boston Housing
 =================
@@ -20,6 +21,7 @@ Boston Housing
     :members:
     :inherited-members:
     :show-inheritance:
+    :exclude-members: read, download
 
 CIFAR-10
 =================
@@ -27,6 +29,7 @@ CIFAR-10
     :members:
     :inherited-members:
     :show-inheritance:
+    :exclude-members: read, download
 
 Fashion MNIST
 =================
@@ -34,6 +37,7 @@ Fashion MNIST
     :members:
     :inherited-members:
     :show-inheritance:
+    :exclude-members: read, download
 
 IMDB
 =================
@@ -41,6 +45,7 @@ IMDB
     :members:
     :inherited-members:
     :show-inheritance:
+    :exclude-members: read, download
 
 
 KDD Cup '99
@@ -49,6 +54,7 @@ KDD Cup '99
     :members:
     :inherited-members:
     :show-inheritance:
+    :exclude-members: read, download
 
 MNIST
 =================
@@ -56,6 +62,7 @@ MNIST
     :members:
     :inherited-members:
     :show-inheritance:
+    :exclude-members: read, download
 
 Tiny Imagenet
 =================
@@ -63,6 +70,7 @@ Tiny Imagenet
     :members:
     :inherited-members:
     :show-inheritance:
+    :exclude-members: read, download
 
 MTE
 =================
@@ -70,6 +78,7 @@ MTE
     :members:
     :inherited-members:
     :show-inheritance:
+    :exclude-members: read, download
 
 Data Usage Test
 ===============
@@ -77,6 +86,7 @@ Data Usage Test
     :members:
     :inherited-members:
     :show-inheritance:
+    :exclude-members: read, download
 
 Unusual Data Usage Test
 =======================
@@ -84,3 +94,4 @@ Unusual Data Usage Test
     :members:
     :inherited-members:
     :show-inheritance:
+    :exclude-members: read, download
