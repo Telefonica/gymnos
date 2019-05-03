@@ -21,10 +21,6 @@ RUN pip3 install --upgrade pip  && \
     pip3 install pipenv && \
     pipenv install --system
 
-# Download Spacy NLP models
-RUN python3 -m spacy download en
-RUN python3 -m spacy download es
-
 # Save keras cache into gymnos cache
 RUN mkdir /root/.keras/ /home/gymnos/cache
 RUN ln -s /root/.keras/ /home/gymnos/cache/keras
