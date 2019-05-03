@@ -72,6 +72,8 @@ class Dataset:
             cache = None
 
         if cache is not None and cache.exists():
+            self.logger.info("Dataset exists on cache ({})".format(hdf5_cache_path))
+            self.logger.info("Retrieving dataset from cache")
             return cache.retrieve("X"), cache.retrieve("y")
 
         gymnos_dataset_temp_path = os.path.join(tempfile.gettempdir(), "gymnos", self.__class__.__name__)
