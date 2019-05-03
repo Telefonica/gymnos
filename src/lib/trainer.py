@@ -78,10 +78,10 @@ class Trainer:
         training: core.training.Training
         tracking: core.tracking.Tracking
 
-        Returns
-        -------
-        trainings_dataset_execution_path: str
-            Path of execution.
+        Attributes
+        ----------
+        last_execution_path_: str
+            Execution path for the last train
         """
 
         execution_steps_elapsed = {}
@@ -94,16 +94,18 @@ class Trainer:
 
         trainings_dataset_path = os.path.join(self.trainings_path, dataset.name)
         trainings_dataset_trackings_path = os.path.join(trainings_dataset_path, self.trackings_dirname)
-        trainings_dataset_execution_path = os.path.join(trainings_dataset_path, self.executions_dirname, execution_id)
-        trainings_dataset_execution_artifacts_path = os.path.join(trainings_dataset_execution_path,
+
+        self.last_execution_path_ = os.path.join(trainings_dataset_path, self.executions_dirname, execution_id)
+
+        trainings_dataset_execution_artifacts_path = os.path.join(self.last_execution_path_,
                                                                   self.artifacts_dirname)
 
-        os.makedirs(trainings_dataset_execution_path)
+        os.makedirs(self.last_execution_path_)
         os.makedirs(trainings_dataset_execution_artifacts_path)
         os.makedirs(trainings_dataset_trackings_path, exist_ok=True)
 
         self.logger.info("The execution will be saved in the following directory: {}".format(
-                         trainings_dataset_execution_path))
+                         self.last_execution_path_))
         self.logger.info("Tracking information will be saved in the following directory: {}".format(
                          trainings_dataset_trackings_path))
 
@@ -214,7 +216,7 @@ class Trainer:
         self.logger.info("Logging train metrics to trackers".format(len(tracking.trackers)))
         tracking.trackers.log_metrics(train_metrics)
 
-        # EVALUATE MODEL IF TEST SAMPLES EXIST
+        # EVALUATE MODEL
 
         self.logger.info("Evaluating model with {} samples".format(len(X_test)))
 
@@ -248,11 +250,9 @@ class Trainer:
             metrics=history_tracker.metrics,
             platform=platform_details
         )
-        metrics_path = os.path.join(trainings_dataset_execution_path, "metrics.json")
+        metrics_path = os.path.join(self.last_execution_path_, "metrics.json")
         save_to_json(metrics_path, metrics)
 
         self.logger.info("Metrics, platform information and elapsed times saved to {} file".format(metrics_path))
 
         tracking.trackers.end()
-
-        return trainings_dataset_execution_path

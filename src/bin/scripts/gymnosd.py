@@ -42,7 +42,7 @@ def run_experiment(training_config_path, output_path="trainings"):
     trainer = Trainer(trainings_path=output_path, cache_datasets_path=cache_config["datasets"])
 
     try:
-        execution_path = trainer.train(
+        trainer.train(
             model=Model(**training_config["model"]),
             dataset=Dataset(**training_config["dataset"]),
             training=Training(**training_config.get("training", {})),  # optional field
@@ -50,16 +50,16 @@ def run_experiment(training_config_path, output_path="trainings"):
             tracking=Tracking(**training_config.get("tracking", {}))  # optional field)
         )
 
-        # save original config to execution path
-        save_to_json(os.path.join(execution_path, TRAINING_CONFIG_FILENAME), training_config_copy)
-        # save logs to execution path
-        shutil.move(logging_config["handlers"]["file_handler"]["filename"], os.path.join(execution_path,
-                                                                                         TRAINING_LOG_FILENAME))
-
-        logger.info("Success! Execution saved ({})".format(execution_path))
+        logger.info("Success! Execution saved ({})".format(trainer.last_execution_path_))
     except Exception as e:
         logger.exception("Exception ocurred: {}".format(e))
         raise
+    finally:
+        # save original config to execution path
+        save_to_json(os.path.join(trainer.last_execution_path_, TRAINING_CONFIG_FILENAME), training_config_copy)
+        # save logs to execution path
+        shutil.move(logging_config["handlers"]["file_handler"]["filename"], os.path.join(trainer.last_execution_path_,
+                                                                                         TRAINING_LOG_FILENAME))
 
 
 if __name__ == "__main__":
