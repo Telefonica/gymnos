@@ -33,63 +33,6 @@ In particular, the following artifacts are provided:
               └── training_config.json
 
 ***********************
-Callbacks
-***********************
-Gymnos currently supports the following callbacks:
-
-=======================
-Keras callbacks
-=======================
-`Keras callbacks <https://keras.io/callbacks/>`_ are essentially a set of functions to be applied at given stages of the training procedure. 
-You can use callbacks to get a view on internal states and statistics of the model during training. 
-You can pass a list of callbacks (as the keyword argument callbacks) to the .fit() method of the Model class.
-The relevant methods of the callbacks will then be called at each stage of the training.
-
-| **BaseLogger**
-| Callback that accumulates epoch averages of metrics. This callback is automatically applied to every Keras model.
-
-| **TerminateOnNaN**
-| Callback that terminates training when a NaN loss is encountered.
-
-| **ProgbarLogger**
-| Callback that prints metrics to stdout.
-
-| **History**
-| Callback that records events into a History object.
-| This callback is automatically applied to every Keras model. 
-| The History object gets returned by the fit method of models.
-
-| **ModelCheckpoint**
-| Save the model after every epoch.``filepath`` can contain named formatting options, which will be filled with the values of epoch and keys in logs (passed in on_epoch_end).
-| For example: if filepath is weights.{epoch:02d}-{val_loss:.2f}.hdf5, then the model checkpoints will be saved with the epoch number and the validation loss in the filename.
-
-| **EarlyStopping**
-| Stop training when a monitored quantity has stopped improving.
-
-| **RemoteMonitor**
-| Callback used to stream events to a server.
-| Requires the requests library. Events are sent to root + '/publish/epoch/end/' by default. Calls are HTTP POST, with a data argument which is a JSON-encoded dictionary of event data. If send_as_json is set to True, the content type of the request will be application/json. Otherwise the serialized JSON will be send within a form
-
-| **LearningRateScheduler**
-| Learning rate scheduler.
-
-| **TensorBoard**
-| TensorBoard basic visualizations. TensorBoard is a visualization tool provided with TensorFlow.
-| This callback writes a log for TensorBoard, which allows you to visualize dynamic graphs of your training and test metrics, as well as activation histograms for the different layers in your model.
-
-| **ReduceLROnPlateau**
-| Reduce learning rate when a metric has stopped improving.
-| Models often benefit from reducing the learning rate by a factor of 2-10 once learning stagnates. This callback monitors a quantity and if no improvement is seen for a 'patience' number of epochs, the learning rate is reduced.
-
-| **CSVLogger**
-| Callback that streams epoch results to a csv file.
-| Supports all values that can be represented as a string, including 1D iterables such as np.ndarray.
-
-| **LambdaCallback**
-| Callback for creating simple, custom callbacks on-the-fly.
-
-
-***********************
 Execution log
 ***********************
 Execution logs show relevant information about training. Different levels of detail are provided.
@@ -98,32 +41,41 @@ The following block shows an example extracted from the BostonHousing training e
 
 .. code-block:: bash
 
-    2019-04-08 06:16:29,724 - gymnosd - INFO - Main - Starting gymnos environment ...
-    2019-04-08 06:16:29,725 - gymnosd - INFO - Model - Building Keras model from network specification
-    2019-04-08 06:16:29,910 - gymnosd - INFO - Model - Compiling Keras model
-    2019-04-08 06:16:31,749 - gymnosd - INFO - Trainer - Running experiment: 06-16-31__08-04-2019 ...
-    2019-04-08 06:16:31,758 - gymnosd - INFO - Trainer - Creating directory to save training results (trainings/boston_housing/executions/06-16-31__08-04-2019)
-    2019-04-08 06:16:33,376 - gymnosd - INFO - Trainer - Loading dataset: boston_housing ...
-    2019-04-08 06:16:33,378 - gymnosd - INFO - BostonHousing - Downloading dataset ...
-    2019-04-08 06:16:33,378 - gymnosd - INFO - BostonHousing - Retrieving dataset from library ...
-    2019-04-08 06:16:33,379 - gymnosd - INFO - BostonHousing - Reading dataset ...
-    2019-04-08 06:16:34,069 - gymnosd - INFO - BostonHousing - Saving dataset to cache ...
-    2019-04-08 06:16:34,069 - gymnosd - DEBUG - HDFManager - Saving Numpy dataset to HDF5 X key (cache/datasets/BostonHousing.h5)
-    2019-04-08 06:16:34,146 - gymnosd - DEBUG - HDFManager - Saving Numpy dataset to HDF5 y key (cache/datasets/BostonHousing.h5)
-    2019-04-08 06:16:34,153 - gymnosd - DEBUG - Trainer - Loading data took 0.78s
-    2019-04-08 06:16:34,154 - gymnosd - INFO - Trainer - Splitting dataset -> Fit: 0.6 | Test: 0.2 | Val: 0.2 ...
-    2019-04-08 06:16:34,155 - gymnosd - INFO - Trainer - Applying 0 preprocessors ...
-    2019-04-08 06:16:34,159 - gymnosd - DEBUG - Trainer - Preprocessing took 0.00s
-    2019-04-08 06:16:34,159 - gymnosd - INFO - Trainer - Applying 1 transformers ...
-    2019-04-08 06:16:34,165 - gymnosd - DEBUG - Trainer - Fitting transformers to train dataset took 0.01s
-    2019-04-08 06:16:34,166 - gymnosd - DEBUG - Trainer - Transforming datasets took 0.00s
-    2019-04-08 06:16:34,167 - gymnosd - INFO - Trainer - Fitting model with 303 samples ...
-    2019-04-08 06:16:36,506 - gymnosd - DEBUG - Trainer - Fitting model took 2.34s
-    2019-04-08 06:16:36,508 - gymnosd - INFO - Trainer - Logging train metrics
-    2019-04-08 06:16:46,887 - gymnosd - INFO - Trainer - Evaluating model with 101 samples
-    2019-04-08 06:16:46,892 - gymnosd - DEBUG - Trainer - Evaluating model took 0.00s
-    2019-04-08 06:16:46,892 - gymnosd - INFO - Trainer - Logging test metrics
-    2019-04-08 06:16:47,376 - gymnosd - INFO - Trainer - Saving model
+    2019-05-03 17:58:47,442 - gymnosd - INFO - Main - Starting gymnos environment ...
+    2019-05-03 17:58:47,529 - gymnosd - INFO - Trainer - Running experiment: 17-58-47--03-05-2019__keras ...
+    2019-05-03 17:58:47,529 - gymnosd - INFO - Trainer - The execution will be saved in the following directory: trainings/boston_housing/executions/17-58-47--03-05-2019__keras
+    2019-05-03 17:58:47,529 - gymnosd - INFO - Trainer - Tracking information will be saved in the following directory: trainings/boston_housing/trackings
+    2019-05-03 17:58:48,725 - gymnosd - DEBUG - Trainer - Python version: 3.5.6
+    2019-05-03 17:58:48,725 - gymnosd - DEBUG - Trainer - Platform: Darwin-18.5.0-x86_64-i386-64bit
+    2019-05-03 17:58:48,726 - gymnosd - DEBUG - Trainer - Found 0 GPUs
+    2019-05-03 17:58:48,877 - gymnosd - INFO - Trainer - Loading dataset: boston_housing ...
+    2019-05-03 17:58:48,877 - gymnosd - INFO - BostonHousing - Dataset exists on cache (cache/datasets/boston_housing.h5)
+    2019-05-03 17:58:48,877 - gymnosd - INFO - BostonHousing - Retrieving dataset from cache
+    2019-05-03 17:58:48,929 - gymnosd - DEBUG - HDFManager - Retrieved Numpy dataset from HDF5 X key (cache/datasets/boston_housing.h5)
+    2019-05-03 17:58:48,931 - gymnosd - DEBUG - HDFManager - Retrieved Numpy dataset from HDF5 y key (cache/datasets/boston_housing.h5)
+    2019-05-03 17:58:48,932 - gymnosd - DEBUG - Trainer - Loading data took 0.05s
+    2019-05-03 17:58:48,932 - gymnosd - INFO - Trainer - Splitting dataset -> Train: 0.80 | Test: 0.20
+    2019-05-03 17:58:48,932 - gymnosd - INFO - Trainer - Applying 1 preprocessors (StandardScaler)
+    2019-05-03 17:58:48,934 - gymnosd - DEBUG - Trainer - Fitting preprocessors to train data took 0.00s
+    2019-05-03 17:58:48,935 - gymnosd - DEBUG - Trainer - Preprocessing data took 0.00s
+    2019-05-03 17:58:48,935 - gymnosd - INFO - Trainer - Fitting model with 404 samples ...
+    2019-05-03 17:58:49,423 - gymnosd - DEBUG - Trainer - Fitting model took 0.49s
+    2019-05-03 17:58:49,423 - gymnosd - INFO - Trainer - Results for mean_absolute_error: Min: 3.65 | Max: 21.24 | Mean: 10.60
+    2019-05-03 17:58:49,423 - gymnosd - INFO - Trainer - Results for loss: Min: 24.76 | Max: 540.83 | Mean: 201.22
+    2019-05-03 17:58:49,423 - gymnosd - INFO - Trainer - Results for val_mean_absolute_error: Min: 3.83 | Max: 20.19 | Mean: 9.29
+    2019-05-03 17:58:49,423 - gymnosd - INFO - Trainer - Results for val_loss: Min: 37.78 | Max: 485.67 | Mean: 163.50
+    2019-05-03 17:58:49,423 - gymnosd - INFO - Trainer - Logging train metrics to trackers
+    2019-05-03 17:58:49,711 - gymnosd - INFO - Trainer - Evaluating model with 102 samples
+    2019-05-03 17:58:49,713 - gymnosd - INFO - Trainer - Test results for mean_absolute_error: 3.56
+    2019-05-03 17:58:49,713 - gymnosd - INFO - Trainer - Test results for loss: 20.34
+    2019-05-03 17:58:49,713 - gymnosd - DEBUG - Trainer - Evaluating model took 0.00s
+    2019-05-03 17:58:49,713 - gymnosd - INFO - Trainer - Logging test metrics to trackers
+    2019-05-03 17:58:49,735 - gymnosd - INFO - Trainer - Saving model
+    2019-05-03 17:58:49,750 - gymnosd - INFO - Trainer - Saving pipeline
+    2019-05-03 17:58:49,751 - gymnosd - INFO - Trainer - Saving metrics to JSON file
+    2019-05-03 17:58:49,752 - gymnosd - INFO - Trainer - Metrics, platform information and elapsed times saved to trainings/boston_housing/executions/17-58-47--03-05-2019__keras/metrics.json file
+    2019-05-03 17:58:49,764 - gymnosd - INFO - Main - Success! Execution saved (trainings/boston_housing/executions/17-58-47--03-05-2019__keras)
+
 
 ***********************
 Metrics
@@ -138,45 +90,70 @@ Gymnos currently provides a json file with different types of metrics such us:
 .. code-block:: json
 
     {
-        "elapsed": {
-            "transform_preprocessors": 0.003850698471069336,
-            "fit_model": 2.338494300842285,
-            "transform_transformers": 0.0006225109100341797,
-            "evaluate_model": 0.0040361881256103516,
-            "fit_transformers": 0.0055310726165771484,
-            "load_data": 0.7762744426727295
-        },
         "metrics": {
-            "val_loss": [
-                466.7846987884824,
-                270.62497643196934,
-                15.611931527015006,
-                15.748360737715617
+            "mean_absolute_error": [
+                21.236964084134243,
+                17.964938217263803,
+                13.134718602246577,
+                7.886666022511599,
+                5.903721864467407,
+                4.434306234416395,
+                3.6490739879041616
             ],
             "val_mean_absolute_error": [
-                19.182923175320767,
-                13.976237391481305,
-                2.6988475724021987,
-                2.6569605841495023
+                20.190430933886237,
+                15.91676406104966,
+                9.766545711177411,
+                6.184523365285137,
+                5.162875888371231,
+                4.001074493521511,
+                3.8324677117980355
             ],
             "test_loss": [
-                22.415260909807564
-            ],
-            "loss": [
-                516.9505325166306,
-                351.41469722533776,
-                9.36743452210631,
-                9.180129478473475
-            ],
-            "mean_absolute_error": [
-                20.776301922184405,
-                16.260077253033227,
-                2.2440381042241264,
-                2.2286516313899076
+                20.33574592365938
             ],
             "test_mean_absolute_error": [
-                2.991008189645144
+                3.562303206499885
+            ],
+            "loss": [
+                540.8273107950444,
+                406.92359395546487,
+                241.13668793026764,
+                100.29069398181274,
+                59.68981130367065,
+                34.91461652497647,
+                24.762916974108606
+            ],
+            "val_loss": [
+                485.67176108785196,
+                320.8614704396465,
+                141.8022104395498,
+                69.81834188782342,
+                50.69452912736647,
+                37.77724575760341,
+                37.85807494361802
             ]
+        },
+        "platform": {
+            "gpu": [],
+            "python_compiler": "GCC 4.2.1 Compatible Apple LLVM 10.0.0 (clang-1000.10.44.4)",
+            "node": "iMac-Pro.local",
+            "cpu": {
+                "cores": 16,
+                "brand": "Intel(R) Xeon(R) W-2140B CPU @ 3.20GHz"
+            },
+            "processor": "i386",
+            "architecture": "64bit",
+            "python_version": "3.5.6",
+            "system": "Darwin",
+            "platform": "Darwin-18.5.0-x86_64-i386-64bit"
+        },
+        "elapsed": {
+            "fit_preprocessors": 0.0017540454864501953,
+            "evaluate_model": 0.0020329952239990234,
+            "load_data": 0.05479598045349121,
+            "transform_preprocessors": 0.0009219646453857422,
+            "fit_model": 0.48743200302124023
         }
     }
 
@@ -199,32 +176,34 @@ In order to keep track of the experiment a copy of the original configuration is
             "name": "Boston Housing"
         },
         "model": {
-            "input_shape": [13],
-            "network": [
-                {"type": "dense", "units": 512, "activation": "relu"},
-                {"type": "dense", "units": 128, "activation": "relu"},
-                {"type": "dense", "units": 1, "activation": "linear"}
-            ],
-            "compilation": {
-                "optimizer": "adam",
-                "loss": "mse",
-                "metrics": ["mae"]
+            "name": "keras",
+            "parameters": {
+                "sequential": [
+                    {"type": "dense", "units": 512, "activation": "relu", "input_shape": [13]},
+                    {"type": "dense", "units": 128, "activation": "relu"},
+                    {"type": "dense", "units": 1, "activation": "linear"}
+                ],
+                "compilation": {
+                    "optimizer": "adam",
+                    "loss": "mse",
+                    "metrics": ["mae"]
+                }
             }
         },
         "dataset": {
             "name": "boston_housing",
-            "transformers": [
+            "samples": {
+                "train": 0.8,
+                "test": 0.2
+            },
+            "preprocessors": [
                 {
                     "type": "standard_scaler"
                 }
-            ]
+            ],
+            "seed": 0
         },
         "training": {
-            "samples": {
-                "fit": 0.6,
-                "val": 0.2,
-                "test": 0.2
-            },
             "batch_size": 32,
             "epochs": 25,
             "callbacks": [
@@ -236,7 +215,8 @@ In order to keep track of the experiment a copy of the original configuration is
                     "filepath": "weights.{epoch:02d}-{val_loss:.2f}.h5",
                     "period": 5
                 }
-            ]
+            ],
+            "validation_split": 0.25
         },
         "tracking": {
             "params": {
@@ -252,4 +232,5 @@ In order to keep track of the experiment a copy of the original configuration is
             ]
         }
     }
+
 

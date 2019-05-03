@@ -35,20 +35,21 @@ Training
 The training phase is fully controlled by ``trainer.py``. 
 The ``Trainer()`` class is responsible for orchestrating any aspect related to the training such as:
 
-* To prepare the system for the training process:
+- To prepare the system for the training process:
+
    * To create directories to store training executions
    * To collect a suitable dataset for the experiment purpose via ``Dataset()`` class
    * To load an optimized version of the requested model via ``Model()`` class
-   * To accomodate the training session to the underlying execution environment via ``Session()`` class
-* To accomodate the selected dataset to the target model:
-   * To split data for training, validation and test
-   * To apply preprocessors and transformers
-* To run and monitor the training phase via ``Training()`` class:
+- To accomodate the selected dataset to the target model:
+
+   * To split data for training and test
+   * To apply preprocessors
+- To run and monitor the training phase via ``train`` method:
+
    * To fit the model with the right samples
    * To perform model evaluation once th training is over
    * To save the model for future predictions
-* To inject any dependency via callbacks to produce richer training outcomes via ``Tracking()`` class
-* To generate relevant artifacts for tracking and benchmarking via ``Tracking()`` class
+- To generate relevant artifacts for tracking and benchmarking via ``Tracking()`` class
 
 
 .. image:: images/gymnos-training.png
@@ -68,39 +69,9 @@ Typical tasks such as:
 * ...
 
 will be handled by the ``Dataset()`` class in first place and the corresponding dataset
-specialization via the ``lib.core.dataset`` library. The following picture shows an example of 
-the inheritance design for datasets from different domains:   
+specialization via the ``lib.core.dataset`` library.  
 
 
-.. image:: images/gymnos-datasets.png
-    :width: 600
-
-
-***********************
-Models
-***********************
-AI models follow a similar approach. The objective here is also visualizing models as configurable objects.
-At this point, the architecture implements the same pattern previously shown, thus, a ``DataSetFactory()`` 
-class for model specialization controlled by the ``ModelManager()`` class.
-
-.. warning::
-
-   Note from the picture below that common methods needs to be publicly exposed so the ``Trainer()`` class
-   is able to executed them as part of the training process.
-
-
-.. image:: images/gymnos-model-manager.png
-    :width: 600
-
-
-***********************
-Sessions
-***********************
-The session concept is a must when it comes to deliver the platform over different execution environmnet. 
-Different hardware offers different results in performance. So to scale up models with large 
-volume datasets while keeping the ability to play around with experiments at initial stage seems to be 
-convenient to support different settings for each environment. 
-
-
-.. image:: images/gymnos-session-manager.png
-    :width: 600
+.. image:: images/flow-diagram-dataset.png
+    :width: 55%
+    :align: center
