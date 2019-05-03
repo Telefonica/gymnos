@@ -54,7 +54,7 @@ class KaggleDatasetDownloader:
             for filename in os.listdir(save_dir):
                 file_path = os.path.join(save_dir, filename)
                 if can_be_decompressed(file_path):
-                    decompress(file_path, delete_compressed=True)
+                    decompress(file_path, delete_compressed=False)
 
     def __is_a_competition(self, dataset_name):
         return "/" not in dataset_name

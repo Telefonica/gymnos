@@ -5,7 +5,6 @@
 #
 
 import os
-import shutil
 import tempfile
 
 from keras.utils import to_categorical
@@ -78,20 +77,8 @@ class Dataset:
 
         gymnos_dataset_temp_path = os.path.join(tempfile.gettempdir(), "gymnos", self.__class__.__name__)
 
-        self.logger.info("Checking if download exists in temporary directory ({})".format(gymnos_dataset_temp_path))
-
-        if not os.path.isdir(gymnos_dataset_temp_path):
-            self.logger.info("Download not found. Creating download directory.")
-            os.makedirs(gymnos_dataset_temp_path)
-            try:
-                self.logger.info("Downloading")
-                self.download(gymnos_dataset_temp_path)
-            except Exception as ex:
-                self.logger.error("Error downloading dataset. Removing download directory")
-                shutil.rmtree(gymnos_dataset_temp_path)
-                raise
-        else:
-            self.logger.info("Data exists in temporary directory")
+        self.logger.info("Downloading")
+        self.download(gymnos_dataset_temp_path)
 
         self.logger.info("Reading from {}".format(gymnos_dataset_temp_path))
         X, y = self.read(gymnos_dataset_temp_path)
