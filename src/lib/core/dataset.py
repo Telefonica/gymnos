@@ -70,6 +70,7 @@ class Dataset:
             include in the test split.
             If int, represents the absolute number of test samples.
             If None, the value is set to the complement of the train size.
+            If None and ``train_size`` is unspecified, by default the value is set to 0.25.
     preprocessors: list of dict, optional
         List of preprocessors to apply to dataset. This property requires a list with dictionnaries with at least
         a ``type`` field specifying the type of preprocessor.  The other properties are the properties for that
