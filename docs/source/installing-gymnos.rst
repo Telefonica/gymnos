@@ -6,20 +6,7 @@
 Installing Gymnos
 ################################
 
-Installing Gymnos is pretty simple. You will need `Git <https://git-scm.com/downloads>`_ in order to clone the repository:
-
-.. code-block:: bash
-
-   git clone https://github.com/Telefonica/gymnos.git
-
-.. note::
-   If you want to help developing Gymnos, start working at ``devel`` branch
-
-And change into the local directory:
-
-.. code-block:: bash
-
-   cd gymnos
+We offer two different ways to install Gymnos (Python and Docker).
 
 Python
 ==========
