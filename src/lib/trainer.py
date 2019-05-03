@@ -170,8 +170,8 @@ class Trainer:
 
         # SPLIT DATASET INTO TRAIN AND TEST
 
-        self.logger.info("Splitting dataset -> Train: {} | Test: {}".format(dataset.samples.train,
-                                                                            dataset.samples.test))
+        self.logger.info("Splitting dataset -> Train: {:.2f} | Test: {:.2f}".format(dataset.samples.train,
+                                                                                    dataset.samples.test))
         X_train, X_test, y_train, y_test = train_test_split(X, y,
                                                             train_size=dataset.samples.train,
                                                             test_size=dataset.samples.test,
