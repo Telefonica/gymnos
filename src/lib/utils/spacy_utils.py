@@ -8,6 +8,19 @@ import spacy
 
 
 def get_spacy_nlp(language="es"):
+    """
+    Get Spacy model for specified language. Download Spacy model if not found.
+
+    Parameters
+    ----------
+    language: str
+        Language to load or download
+
+    Returns
+    -------
+    nlp: spacy.NLP
+        Spacy model.
+    """
     try:
         return spacy.load(language)
     except OSError:

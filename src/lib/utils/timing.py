@@ -8,6 +8,14 @@ import time
 
 
 class elapsed_time:
+    """
+    Context manager to measure elapsed time.
+
+    Attributes
+    ----------
+    s: float
+        Elapsed time
+    """
 
     def __enter__(self):
         self.s = time.time()
