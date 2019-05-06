@@ -6,7 +6,7 @@ This section intends to provide newcomers with enough guidance to develop single
 .. toctree::
    :maxdepth: 2
 
-   examples/howto-dataset.rst
-   examples/howto-model.rst
-   examples/howto-preprocessors.rst
-   examples/howto-trackers.rst
+   gymnos-by-example/howto-dataset.rst
+   gymnos-by-example/howto-model.rst
+   gymnos-by-example/howto-preprocessor.rst
+   gymnos-by-example/howto-tracker.rst

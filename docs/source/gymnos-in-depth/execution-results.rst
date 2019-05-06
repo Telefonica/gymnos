@@ -6,7 +6,7 @@ Gymnos currently generates a common folder structure for each training execution
 In particular, the following artifacts are provided:
 
 .. code-block:: bash
-   :emphasize-lines: 4,14
+   :emphasize-lines: 4,16
 
     trainings
     └── boston_housing

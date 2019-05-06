@@ -63,7 +63,7 @@ pointing to your ``<experiment>/tracking/mlruns`` directory:
 
 The following image shows an example extracted from the ``Boston Housing`` experiment:
 
-.. image:: images/gymnos-tracking-mlflow.png
+.. image:: ../images/gymnos-tracking-mlflow.png
    :width: 600
 
 
@@ -84,7 +84,7 @@ pointing to your ``<experiment>/tracking/tensorboard`` directory:
 
 The following image shows an example extracted from the ``Boston Housing`` experiment:
 
-.. image:: images/gymnos-tracking-tensorboard.png
+.. image:: ../images/gymnos-tracking-tensorboard.png
    :width: 600
 
 
@@ -101,5 +101,5 @@ It’s fast, simple, and free for open source projects.
 
 The following image shows an example extracted from the ``MTE`` experiment:
 
-.. image:: images/gymnos-tracking-cometml.png
+.. image:: ../images/gymnos-tracking-cometml.png
    :width: 600

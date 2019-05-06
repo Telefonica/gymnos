@@ -19,14 +19,14 @@ Apart from that, there two important files holding the system settings:
 * ``logging.json``: settings for logging facility
 
 
-.. image:: images/gymnos-system-config.png
+.. image:: ../images/gymnos-system-config.png
    :width: 600
 
 Configuration parsing is carried out by the ``core`` library. This library takes sections from
 the experiment in json format and provides a specialized object where configuration parameters are
 available as class attributes (a similar approach to an ORM) 
 
-.. image:: images/gymnos-config-parsing.png
+.. image:: ../images/gymnos-config-parsing.png
    :width: 600
 
 ***********************
@@ -52,7 +52,7 @@ The ``Trainer()`` class is responsible for orchestrating any aspect related to t
 - To generate relevant artifacts for tracking and benchmarking via ``Tracking()`` class
 
 
-.. image:: images/gymnos-training.png
+.. image:: ../images/gymnos-training.png
     :width: 600
 
 
@@ -72,6 +72,6 @@ will be handled by the ``Dataset()`` class in first place and the corresponding 
 specialization via the ``lib.core.dataset`` library.  
 
 
-.. image:: images/flow-diagram-dataset.png
+.. image:: ../images/flow-diagram-dataset.png
     :width: 55%
     :align: center
