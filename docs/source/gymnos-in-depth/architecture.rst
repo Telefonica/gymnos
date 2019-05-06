@@ -71,6 +71,9 @@ Typical tasks such as:
 will be handled by the ``Dataset()`` class in first place and the corresponding dataset
 specialization via the ``lib.core.dataset`` library.  
 
+.. image:: ../images/gymnos-datasets.png
+    :width: 100%
+    :align: center
 
 .. image:: ../images/flow-diagram-dataset.png
     :width: 55%
