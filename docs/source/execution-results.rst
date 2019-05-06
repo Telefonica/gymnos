@@ -156,12 +156,16 @@ Gymnos currently provides a json file with different types of metrics such us:
         }
     }
 
-**************************
-Model pre-trained weights
-**************************
-As part of the execution outcomes, the trained model is saved in an ``.h5`` file. 
-The idea behind this is to reuse pre-trained weights for future predictions.
- 
+
+*************************
+Trained model
+*************************
+In order to reuse the model for future predictions, a copy of the model with trained parameters is saved.
+
+******************************
+Trained pipeline
+******************************
+In order to reuse the preprocessors pipeline for future preprocessing, a copy of the pipeline with trained parameters is saved.
 
 ***********************
 Training configuration
