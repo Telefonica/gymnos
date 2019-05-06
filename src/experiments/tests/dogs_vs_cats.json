@@ -2,7 +2,10 @@
     "model": {
         "name": "dogs_vs_cats_cnn",
         "parameters": {
-            "input_shape": [32, 32, 3]
+            "input_shape": [32, 32, 3],
+            "session": {
+                "log_device_placement": true
+            }
         }
     },
     "dataset": {

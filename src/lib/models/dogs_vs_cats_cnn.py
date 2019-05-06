@@ -14,6 +14,7 @@ from sklearn.model_selection import train_test_split
 
 from .model import Model
 from .mixins import TensorFlowMixin
+from ..utils.tensorflow_session import build_tf_session_from_config
 
 
 class DogsVsCatsCNN(Model, TensorFlowMixin):
@@ -111,7 +112,7 @@ class DogsVsCatsCNN(Model, TensorFlowMixin):
         self.train_op = optimizer.minimize(self.loss)
 
         session = session or {}
-        self.sess = tf.Session(config=tf.ConfigProto(**session))
+        self.sess = build_tf_session_from_config(**session)
         self.sess.run(tf.global_variables_initializer())
 
 
