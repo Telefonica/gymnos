@@ -66,6 +66,7 @@ We provide up to date docker builds for different execution environments and wor
 .. note::
   Please make sure `Docker <https://docs.docker.com/v17.12/install/>`_  is install in your computer.
   Refer to the following links for instructions about downloading and installing Docker on different platforms:
+
     - `Docker on Windows 10 <https://runnable.com/docker/install-docker-on-windows-10>`_
     - `Docker on Linux <https://runnable.com/docker/install-docker-on-linux>`_
     - `Docker on macOS <https://runnable.com/docker/install-docker-on-macos>`_
