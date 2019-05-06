@@ -152,14 +152,17 @@ Run image
 
 GPU version.
 
+.. note::
+  Please make sure `nvidia-docker <https://github.com/NVIDIA/nvidia-docker>`_  is install in your computer.
+  Refer to the following link for instructions about downloading and installing `nvidia-docker on Ubuntu 18.04 <https://cnvrg.io/how-to-setup-docker-and-nvidia-docker-2-0-on-ubuntu-18-04/>`_
+
 .. code-block:: bash
 
   nvidia-docker run -it gymnos-gpu
 
-.. note::
 
-    The docker environment has all the dependencies resolved to execute your new project with:
+The docker environment has all the dependencies resolved to execute your new project with:
 
-    .. code-block:: bash
+.. code-block:: bash
 
-        python3 -m bin.scripts.gymnosd -c <config_path>
+    python3 -m bin.scripts.gymnosd -c <config_path>
