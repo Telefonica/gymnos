@@ -1,0 +1,34 @@
+{
+    "dataset": {
+        "name": "tiny_imagenet",
+        "one_hot": true,
+        "samples": {
+            "train": 0.1,
+            "test": 0.1
+        },
+        "preprocessors": [
+            {
+                "type": "grayscale"
+            },
+            {
+                "type": "image_resize",
+                "width": 25,
+                "height": 25
+            }
+        ]
+    },
+    "model": {
+        "name": "keras",
+        "parameters": {
+            "sequential": [
+                {"type": "flatten"},
+                {"type": "dense", "units": 200, "activation": "softmax"}
+            ],
+            "compilation": {
+                "loss": "categorical_crossentropy",
+                "optimizer": "sgd",
+                "metrics": ["acc"]
+            }
+        }
+    }
+}

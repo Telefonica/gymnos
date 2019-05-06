@@ -6,6 +6,6 @@ from .kddcup99 import KDDCup99
 from .mnist import MNIST
 from .tiny_imagenet import TinyImagenet
 from .dogs_vs_cats import DogsVsCats
-from .dataset import Dataset, PublicDataset, KaggleDataset, LibraryDataset
 from .data_usage_test import DataUsageTest
 from .unusual_data_usage_test import UnusualDataUsageTest
+from .dataset import Dataset, ClassificationDataset, RegressionDataset

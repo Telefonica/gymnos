@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:1.12.0-py3
+FROM tensorflow/tensorflow:1.13.1-py3
 
 MAINTAINER pablo.lopezcoya@telefonica.com
 
@@ -21,10 +21,6 @@ RUN pip3 install --upgrade pip  && \
     pip3 install pipenv && \
     pipenv install --system
 
-# Download Spacy NLP models
-RUN python3 -m spacy download en
-RUN python3 -m spacy download es
-
 # Save keras cache into gymnos cache
 RUN mkdir /root/.keras/ /home/gymnos/cache
 RUN ln -s /root/.keras/ /home/gymnos/cache/keras
@@ -34,6 +30,5 @@ VOLUME ["/home/gymnos/cache"]
 COPY src ./
 
 ENV GIT_PYTHON_REFRESH quiet
-ENV TF_CPP_MIN_LOG_LEVEL 2  # supress tensorflow info output, only logs errors
 
-ENTRYPOINT ["python3", "-m", "bin.scripts.gymnosd"]
+ENTRYPOINT /bin/bash

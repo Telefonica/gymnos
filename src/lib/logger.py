@@ -8,6 +8,19 @@ import logging
 
 
 def get_logger(prefix=None):
+    """
+    Get prefixed logger.
+
+    Parameters
+    ----------
+    prefix: str, optional
+        Prefix to add to logging line
+
+    Returns
+    -------
+    logger: logging.Logger
+        Prefixed logger
+    """
     logger = logging.getLogger("gymnosd")
 
     if prefix is None:

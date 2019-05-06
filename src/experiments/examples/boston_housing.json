@@ -1,0 +1,61 @@
+{
+    "experiment": {
+        "name": "Boston Housing"
+    },
+    "model": {
+        "name": "keras",
+        "parameters": {
+            "sequential": [
+                {"type": "dense", "units": 512, "activation": "relu", "input_shape": [13]},
+                {"type": "dense", "units": 128, "activation": "relu"},
+                {"type": "dense", "units": 1, "activation": "linear"}
+            ],
+            "compilation": {
+                "optimizer": "adam",
+                "loss": "mse",
+                "metrics": ["mae"]
+            }
+        }
+    },
+    "dataset": {
+        "name": "boston_housing",
+        "samples": {
+            "train": 0.8,
+            "test": 0.2
+        },
+        "preprocessors": [
+            {
+                "type": "standard_scaler"
+            }
+        ],
+        "seed": 0
+    },
+    "training": {
+        "batch_size": 32,
+        "epochs": 25,
+        "callbacks": [
+            {
+                "type": "early_stopping"
+            },
+            {
+                "type": "model_checkpoint",
+                "filepath": "weights.{epoch:02d}-{val_loss:.2f}.h5",
+                "period": 5
+            }
+        ],
+        "validation_split": 0.25
+    },
+    "tracking": {
+        "params": {
+            "device": "cpu"
+        },
+        "trackers": [
+            {
+                "type": "tensorboard"
+            },
+            {
+                "type": "mlflow"
+            }
+        ]
+    }
+}

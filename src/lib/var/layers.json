@@ -1,7 +1,0 @@
-{
-    "dense": "keras.layers.Dense",
-    "conv2d": "keras.layers.Conv2D",
-    "flatten": "keras.layers.Flatten",
-    "dropout": "keras.layers.Dropout",
-    "maxpooling2d": "keras.layers.MaxPooling2D"
-}

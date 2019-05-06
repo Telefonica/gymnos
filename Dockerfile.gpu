@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:1.12.0-gpu-py3
+FROM tensorflow/tensorflow:1.13.1-gpu-py3
 
 MAINTAINER pablo.lopezcoya@telefonica.com
 
@@ -34,6 +34,5 @@ VOLUME ["/home/gymnos/cache"]
 COPY src ./
 
 ENV GIT_PYTHON_REFRESH quiet
-ENV TF_CPP_MIN_LOG_LEVEL 2  # supress tensorflow info output, only logs errors
 
-ENTRYPOINT ["python3", "-m", "bin.scripts.gymnosd"]
+ENTRYPOINT /bin/bash

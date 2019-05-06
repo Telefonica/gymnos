@@ -14,8 +14,11 @@ Gymnos
    installing-gymnos.rst
    gymnos-by-example.rst
    gymnos-in-depth.rst
+   training-configuration.rst
    models.rst
    datasets.rst
+   preprocessors.rst
+   trackers.rst
 
 
 Indices and tables

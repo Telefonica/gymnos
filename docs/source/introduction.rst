@@ -47,4 +47,5 @@ To clone the source code, execute the following command:
     git clone --recursive https://github.com/Telefonica/gymnos.git
     cd gymnos
 
-If you want to help developing Gymnos, please contribute at ``devel`` branch
+.. note::
+    If you want to help developing Gymnos, please contribute at ``devel`` branch

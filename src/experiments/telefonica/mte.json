@@ -1,0 +1,46 @@
+{
+    "experiment": {
+        "name": "Media Tagging Engine",
+        "tags": ["mte", "network"]
+    },
+    "model": {
+        "description": "Media Tagging Engine Subscription Classifier",
+        "name": "mte_nn",
+        "parameters": {
+            "input_shape": [20000]
+        }
+    },
+    "dataset": {
+        "name": "mte",
+        "samples": {
+            "train": 0.8,
+            "test": 0.2
+        },
+        "preprocessors": [
+            {
+                "type": "alphanumeric"
+            },
+            {
+                "type": "lemmatization",
+                "language": "spanish"
+            },
+            {
+                "type": "tfidf",
+                "lowercase": true,
+                "language": "spanish",
+                "sublinear_tf": true,
+                "ngram_range": [1, 2],
+                "min_df": 5
+            },
+            {
+                "type": "kbest",
+                "scorer": "chi2",
+                "k": 20000
+            }
+        ]
+    },
+    "training": {
+        "batch_size": 32,
+        "epochs": 16
+    }
+}

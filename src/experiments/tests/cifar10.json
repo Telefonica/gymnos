@@ -1,0 +1,33 @@
+{
+    "dataset": {
+        "name": "cifar10",
+        "samples": {
+            "train": 0.001,
+            "test": 0.0005
+        },
+        "one_hot": true,
+        "preprocessors": [
+            {
+                "type": "image_resize",
+                "width": 32, 
+                "height": 32
+            }
+        ]
+    },
+    "model": {
+        "name": "keras",
+        "parameters": {
+            "sequential": [
+                {"type": "application", "application": "vgg16", "include_top": true, "classes": 10, "weights": null, "input_shape": [32, 32, 3]}
+            ],
+            "compilation": {
+                "loss": "categorical_crossentropy",
+                "optimizer": "adam",
+                "metrics": ["acc"]
+            }
+        }
+    },
+    "training": {
+        "epochs": 1
+    }
+}

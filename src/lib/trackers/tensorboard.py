@@ -5,6 +5,7 @@
 #
 #
 
+import os
 import cv2 as cv
 import numpy as np
 import tensorflow as tf
@@ -17,9 +18,12 @@ from ..utils.image_utils import imread_rgb
 
 
 class Tensorboard(Tracker):
+    """
+    Tracker for `TensorBoard <https://github.com/tensorflow/tensorboard>`_.
+    """
 
-    def __init__(self, logdir, tf_graph=None):
-        self.writer = tf.summary.FileWriter(logdir, tf_graph)
+    def start(self, run_name, logdir):
+        self.writer = tf.summary.FileWriter(os.path.join(logdir, "tensorboard", run_name))
 
 
     def log_metric(self, name, value, step=None):

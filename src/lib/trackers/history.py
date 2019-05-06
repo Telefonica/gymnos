@@ -10,7 +10,7 @@ from collections import defaultdict
 
 class History(Tracker):
 
-    def __init__(self):
+    def start(self, run_name=None, logdir=None):
         self.metrics = defaultdict(list)
         self.params = {}
 

@@ -1,0 +1,66 @@
+{
+    "experiment": {
+        "name": "MNIST",
+        "tags": ["deep-learning", "conv"]
+    },
+    "model": {
+        "description": "Simple NN to solve MNIST dataset",
+        "name": "keras",
+        "parameters": {
+            "sequential": [
+                {"type": "flatten"},
+                {"type": "dense", "units": 1024, "activation": "relu"},
+                {"type": "dense", "units": 512, "activation": "relu"},
+                {"type": "dense", "units": 64, "activation": "relu"},
+                {"type": "dense", "units": 10, "activation": "softmax"}
+            ],
+            "compilation": {
+                "optimizer": "adam",
+                "loss": "categorical_crossentropy",
+                "metrics": ["acc"]
+            }
+        }
+    },
+    "dataset": {
+        "name": "mnist",
+        "one_hot": true,
+        "samples": {
+            "train": 0.8,
+            "test": 0.2
+        },
+        "preprocessors": [
+            {
+                "type": "grayscale_to_color"
+            },
+            {
+                "type": "divide",
+                "factor": 255
+            }
+        ]
+    },
+    "training": {
+        "callbacks": [
+            {
+                "type": "early_stopping"
+            }
+        ],
+        "batch_size": 32,
+        "epochs": 10,
+        "validation_split": 0.25
+    },
+    "tracking": {
+        "log_model_params": true,
+        "log_model_metrics": true,
+        "params": {
+            "GPU": "GTX 1080-TI"
+        },
+        "trackers": [
+            {
+                "type": "tensorboard"
+            },
+            {
+                "type": "mlflow"
+            }
+        ]
+    }
+}

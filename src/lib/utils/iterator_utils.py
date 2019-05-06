@@ -4,21 +4,30 @@
 #
 #
 
-import scipy
 import numpy as np
 import pandas as pd
 
 from tqdm import tqdm
 
 
-def count(data):
-    if scipy.sparse.issparse(data):
-        return data.shape[0]
-    else:
-        return len(data)
-
-
 def apply(data, func, verbose=True):
+    """
+    Apply function to data, optionally showing a progress bar. Function is applied to rows.
+
+    Parameters
+    ----------
+    data: array_like
+        Data to apply function
+    func: function
+        Function to apply to data.
+    verbose: bool, optional
+        Whether or not show a progress bar
+
+    Returns
+    -------
+    new_data: array_like
+        Data with applied function.
+    """
     if isinstance(data, (pd.Series, pd.DataFrame)):
         if verbose:
             tqdm.pandas()

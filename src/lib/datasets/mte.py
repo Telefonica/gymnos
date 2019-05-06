@@ -5,7 +5,6 @@
 #
 
 import os
-import json
 import requests
 import pandas as pd
 
@@ -14,7 +13,8 @@ from datetime import datetime
 from sklearn.preprocessing import MultiLabelBinarizer
 
 from ..logger import get_logger
-from .dataset import PublicDataset
+from .dataset import ClassificationDataset
+from .mixins import PublicURLMixin
 from ..utils.io_utils import read_from_json
 
 
@@ -22,22 +22,60 @@ GENRE_TO_SUBSCRIPTION_MAPPING_PATH = os.path.join(os.path.dirname(__file__), "re
                                                   "genre_to_subscription.json")
 
 
-class MTE(PublicDataset):
+class MTE(ClassificationDataset, PublicURLMixin):
     """
-    Kind: Classification Multilabel
-    Shape:
-        features: [1]
-        labels: [17]
-    Description: >
-        Dataset to predict topics of video contents from M+ based on the title and the description of the content.
+    Dataset to predict topics of video contents from M+ based on the title and the description of the content.
+
+    The class labels are:
+
+    +----------+----------------------------+
+    | Label    | Description                |
+    +==========+============================+
+    | 0        | Deportes                   |
+    +----------+----------------------------+
+    | 1        | Salud y Belleza            |
+    +----------+----------------------------+
+    | 2        | Humor                      |
+    +----------+----------------------------+
+    | 3        | Hogar                      |
+    +----------+----------------------------+
+    | 4        | Cine                       |
+    +----------+----------------------------+
+    | 5        | Cultural y Educativo       |
+    +----------+----------------------------+
+    | 6        | Infantil                   |
+    +----------+----------------------------+
+    | 7        | Música                     |
+    +----------+----------------------------+
+    | 8        | Entretenimiento            |
+    +----------+----------------------------+
+    | 9        | Información y Actualidad   |
+    +----------+----------------------------+
+    | 10       | Documental                 |
+    +----------+----------------------------+
+    | 11       | Tecnología                 |
+    +----------+----------------------------+
+    | 12       | Moda                       |
+    +----------+----------------------------+
+    | 13       | Viajes                     |
+    +----------+----------------------------+
+    | 14       | Serie                      |
+    +----------+----------------------------+
+    | 15       | Motor                      |
+    +----------+----------------------------+
+    | 16       | Cocina                     |
+    +----------+----------------------------+
+
+    Characteristics
+        - **Classes**: 17 (multilabel)
+        - **Samples total**: variable
+        - **Features**: texts
     """
 
-    public_dataset_files = ("http://ottcache.dof6.com/vod/yomvi.svc/webplayer.hls/ANONIMO/epg?" +
-                            "from={}&span=7&network=yomvi").format(datetime.now().strftime("%Y-%m-%dT%H:%M:%S"))
+    public_urls = ("http://ottcache.dof6.com/movistarplus/webplayer.hls/OTT/epg?from={}&span=7&channel=" +
+                   "&network=movistarplus").format(datetime.now().strftime("%Y-%m-%dT%H:%M:%S"))
 
-    def __init__(self, cache_dir=None):
-        super().__init__(cache_dir=cache_dir)
-
+    def __init__(self):
         self.logger = get_logger(prefix=self)
 
     def read(self, download_dir):
@@ -87,7 +125,7 @@ class MTE(PublicDataset):
         try:
             res = requests.get(url, params=params)
             return res.json()
-        except (requests.exceptions.RequestException, json.decoder.JSONDecodeError) as err:
+        except (requests.exceptions.RequestException, ValueError) as err:
             self.logger.warning("{}: {}".format(url, err))
             return None
 

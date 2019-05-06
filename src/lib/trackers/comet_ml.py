@@ -9,20 +9,35 @@ from .tracker import Tracker
 
 
 class CometML(Tracker):
+    """
+    Tracker for `Comet.ml <https://www.comet.ml>`_.
+
+    Parameters
+    ----------
+    api_key: str
+        Your API key obtained from comet.ml
+    project_name: str, optional
+        Send your experiment to a specific project. Otherwise will be sent to *Uncategorized Experiments*.
+        If project name does not already exists Comet.ml will create a new project.
+    workspace: str, optional
+        Attach an experiment to a project that belongs to this workspace.
+    """
 
     def __init__(self, api_key, project_name=None, workspace=None):
-        self.experiment = Experiment(api_key=api_key, project_name=project_name, workspace=workspace,
+        self.api_key = api_key
+        self.project_name = project_name
+        self.workspace = workspace
+
+
+    def start(self, run_name, logdir):
+        self.experiment = Experiment(api_key=self.api_key, project_name=self.project_name, workspace=self.workspace,
                                      log_code=False, log_graph=False, auto_param_logging=False,
                                      auto_metric_logging=False, parse_args=False, log_env_details=True,
                                      log_git_metadata=False, log_git_patch=False)
-
+        self.experiment.set_name(run_name)
 
     def add_tag(self, tag):
         self.experiment.add_tag(tag)
-
-
-    def add_tags(self, tags):
-        self.experiment.add_tags(tags)
 
 
     def log_asset(self, name, file_path):
@@ -41,16 +56,8 @@ class CometML(Tracker):
         self.experiment.log_metric(name, value, step)
 
 
-    def log_metrics(self, dic, prefix=None, step=None):
-        self.experiment.log_metrics(dic, prefix, step)
-
-
     def log_param(self, name, value, step=None):
         self.experiment.log_parameter(name, value, step=step)
-
-
-    def log_params(self, dic, prefix=None, step=None):
-        self.experiment.log_parameters(dic, prefix, step)
 
 
     def log_other(self, name, value):

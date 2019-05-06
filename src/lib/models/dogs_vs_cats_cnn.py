@@ -4,24 +4,59 @@
 #
 #
 
-import os
 import numpy as np
 import tensorflow as tf
 
 from tqdm import trange
-from pprint import pprint
+from collections import defaultdict
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
 
-from .. import trackers
 from .model import Model
+from .mixins import TensorFlowMixin
+from ..utils.tensorflow_session import build_tf_session_from_config
 
 
-class DogsVsCatsCNN(Model):
+class DogsVsCatsCNN(Model, TensorFlowMixin):
+    """
+    Convolutional neuronal network developed to solve Dogs vs Cats image classification
+    task (:class:`lib.datasets.dogs_vs_cats.DogsVsCats`).
 
-    def __init__(self, input_shape):
-        super().__init__(input_shape)
+    Note
+    ----
+    This model can be useful to see the development of a Tensorflow model on the platform.
 
+    Parameters
+    ----------
+    input_shape: list
+        Data shape expected.
+    classes: int, optional
+        Optional number of classes to classify images into. This is useful if
+        you want to train this model with another dataset.
+    session: dict, optional
+        Configuration for TensorFlow session. To see available properties:
+        `tf.ConfigProto <https://www.tensorflow.org/api_docs/python/tf/ConfigProto>`_
+
+    Note
+    ----
+    This model requires one-hot encoded labels.
+
+    Examples
+    --------
+    .. code-block:: py
+
+        DogsVsCatsCNN(
+            input_shape=[120, 120, 3],
+            classes=2,
+            session={
+                "log_device_placement": True
+            }
+        )
+    """
+
+    def __init__(self, input_shape, classes=2, session=None):
         self.input = tf.placeholder(tf.float32, shape=[None] + input_shape)
-        self.labels = tf.placeholder(tf.float32, shape=[None, 2])
+        self.labels = tf.placeholder(tf.float32, shape=[None, classes])
 
         conv_1 = tf.layers.conv2d(
             self.input,
@@ -66,7 +101,7 @@ class DogsVsCatsCNN(Model):
 
         self.output = tf.layers.dense(
             dropout,
-            2
+            classes
         )
 
         self.output_softmax = tf.nn.softmax(self.output)
@@ -76,76 +111,70 @@ class DogsVsCatsCNN(Model):
         optimizer = tf.train.AdamOptimizer(learning_rate=0.01)
         self.train_op = optimizer.minimize(self.loss)
 
-        self.metrics = [tf.metrics.accuracy]
-
-        self.sess = tf.Session()
+        session = session or {}
+        self.sess = build_tf_session_from_config(**session)
         self.sess.run(tf.global_variables_initializer())
 
 
-    def fit(self, X, y, batch_size=32, epochs=1, callbacks=None, val_data=None, verbose=1):
-        history = trackers.History()
+    def fit(self, X, y, epochs=10, batch_size=32, validation_split=0):
+        """
+        Parameters
+        ----------
+        X: array_like
+            Features
+        y: array_like
+            Targets.
+        epochs: int, optional
+            Number of epochs to train.
+        batch_size: int, optional
+            Number of samples that will be propagated.
+        validation_split: float, optional
+            Fraction of the training data to be used as validation data. Between 0 and 1.
+        Returns
+        -------
+        dict
+            Training metrics (accuracy and loss)
+        """
+        metrics = defaultdict(list)
+
+        val_data = []
+        if validation_split and 0.0 < validation_split < 1.0:
+            X, X_val, y, y_val = train_test_split(X, y, test_size=validation_split)
+            val_data = [X_val, y_val]
 
         # Iterate by epoch
         for epoch in range(epochs):
             print("Epoch {}/{}".format(epoch, epochs))
 
+            losses = []
             batch_pbar = trange(0, len(X), batch_size)
             # Iterate by batch
             for i in batch_pbar:
                 loss, _ = self.sess.run([self.loss, self.train_op], feed_dict={self.input: X[i:i + batch_size],
                                                                                self.labels: y[i:i + batch_size]})
-                batch_pbar.set_description("Loss: {:.2f}".format(np.mean(loss)))
+                losses.append(np.mean(loss))
+                batch_pbar.set_description("Loss: {:.2f}".format(losses[-1]))
 
-            logs = {}
+            metrics["loss"].append(np.mean(losses))
+            for metric_name, value in self.evaluate(X, y).items():
+                metrics[metric_name].append(value)
 
-            losses = []
-            val_losses = []
-            for i in trange(0, len(X), batch_size):
-                loss = self.sess.run(self.loss, feed_dict={self.input: X[i: i + batch_size],
-                                                           self.labels: y[i: i + batch_size]})
-                losses.append(loss)
+            if val_data:
+                val_loss = self.sess.run(self.loss, feed_dict={self.input: val_data[0],
+                                                               self.labels: val_data[1]})
+                metrics["val_loss"].append(np.mean(val_loss))
+                for metric_name, value in self.evaluate(*val_data).items():
+                    metrics["val_" + metric_name].append(value)
 
-                if val_data is not None:
-                    val_loss = self.sess.run(self.loss, feed_dict={self.input: val_data[0][i: i + batch_size],
-                                                                   self.labels: val_data[1][i: i + batch_size]})
-                    val_losses.append(val_loss)
-
-            logs["loss"] = np.mean(losses)
-            if val_data is not None:
-                logs["val_loss"] = np.mean(val_losses)
-
-            y_pred = self.predict(X)
-            logs["acc"] = tf.metrics.accuracy(y, y_pred)
-
-            if val_data is not None:
-                y_pred = self.predict(val_data[0])
-                logs["val_acc"] = tf.metrics.accuracy(val_data[1], y_pred)
-
-            history.log_metrics(logs)
-
-            pprint(logs)
-
-        return history.metrics
+        return metrics
 
 
-    def predict(self, X, batch_size=32, verbose=0):
-        predictions = np.empty(len(X))
-        for i in trange(0, len(X), batch_size):
-            predictions[i: i + batch_size] = self.sess.run(self.output_softmax,
-                                                           feed_dict={self.input: X[i:i + batch_size]})
-
+    def predict(self, X):
+        predictions = self.sess.run(self.output_softmax, feed_dict={self.input: X})
         return predictions
 
-    def evaluate(self, X, y, batch_size=32, verbose=0):
-        y_pred = self.predict(X, batch_size=batch_size, verbose=verbose)
+    def evaluate(self, X, y):
+        y_pred = self.predict(X)
         return {
-            "acc": tf.metrics.accuracy(y, y_pred)
+            "acc": accuracy_score(np.argmax(y, axis=1), np.argmax(y_pred, axis=1))
         }
-
-    def restore(self, file_path):
-        saver = tf.train.Saver()
-        saver.restore(self.sess, file_path)
-
-    def save(self, directory, name="model"):
-        saver = tf.train.Saver()
-        saver.save(self.sess, os.path.join(directory, name))

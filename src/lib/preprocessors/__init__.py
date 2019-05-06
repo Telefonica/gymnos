@@ -1,8 +1,10 @@
+from .kbest import KBest
 from .divide import Divide
-from .alphanumeric import Alphanumeric
-from .lemmatization import Lemmatization
 from .replace import Replace
-from .grayscale import Grayscale
-from .image_resize import ImageResize
-from .grayscale_to_color import GrayscaleToColor
-from .preprocessor import Preprocessor, PreprocessorStack
+from .texts.tfidf import Tfidf
+from .texts.alphanumeric import Alphanumeric
+from .texts.lemmatization import Lemmatization
+from .images.grayscale import Grayscale
+from .images.image_resize import ImageResize
+from .images.grayscale_to_color import GrayscaleToColor
+from .preprocessor import Preprocessor, Pipeline

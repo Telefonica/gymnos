@@ -6,23 +6,25 @@
 
 import numpy as np
 
-from .dataset import LibraryDataset
-
+from .dataset import RegressionDataset
 from keras.datasets import boston_housing
 
 
-class BostonHousing(LibraryDataset):
+class BostonHousing(RegressionDataset):
     """
-    Kind: Regression
-    Shape:
-        features: [13]
-        labels: [1]
-    Description: >
-        Samples contain 13 attributes of houses at different locations around the Boston suburbs in the late 1970s.
-        Targets are the median values of the houses at a location (in k$).
+    Samples contain 13 attributes of houses at different locations around the Boston suburbs in the late 1970s.
+    Targets are the median values of the houses at a location (in k$).
+
+    Characteristics
+        - **Samples total**: xxx
+        - **Dimensionality**: [13]
+        - **Features**: real
     """
 
-    def read(self, download_dir=None):
+    def download(self, download_path):
+        pass
+
+    def read(self, download_path):
         (X_train, y_train), (X_test, y_test) = boston_housing.load_data()
         X = np.concatenate([X_train, X_test], axis=0)
         y = np.concatenate([y_train, y_test], axis=0)

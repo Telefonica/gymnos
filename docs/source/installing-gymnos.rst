@@ -6,47 +6,55 @@
 Installing Gymnos
 ################################
 
-Installing Gymnos is pretty simple. Here is a step by step plan on how to do it.
+We offer two different ways to install Gymnos (Python and Docker).
 
-First, obtain `Python <https://www.python.org/downloads/>`_ and 
-`Pipenv <https://github.com/pypa/pipenv>`_ if you do not already have them. Using Pipenv will make the installation and execution 
-easier as it creates and manages a virtualenv for your projects, as well as install required dependencies. You will also need `Git <https://git-scm.com/downloads>`_ in order to clone the repository.
+Python
+==========
 
-Once you have these, clone the repository:
-
-.. code-block:: bash
-
-   git clone https://github.com/Telefonica/gymnos.git
-   cd gymnos/src
-
-.. note::
-   If you want to help developing Gymnos, start working at ``devel`` branch
-
-Install required dependencies:
+First, obtain `Python 3 <https://www.python.org/downloads/>`_ and `Pipenv <https://github.com/pypa/pipenv>`_ (``pip install pipenv``) if you do not already have them. Using Pipenv will make the installation and execution easier as it creates and manages a virtualenv for your projects, as well as install required dependencies.
+To set up an isolated environment and install dependencies just run:
 
 .. code-block:: bash
 
-  pipenv install
+  pipenv sync
 
-Install ``tensorflow-gpu`` to run in GPU:
-
-.. code-block:: bash
-
-  pipenv install tensorflow-gpu
-
-Or ``tensorflow`` to run in CPU:
+However, note that TensorFlow must be installed manually. Either:
 
 .. code-block:: bash
 
-  pipenv install tensorflow
+  pipenv run pip install tensorflow
 
-You're now ready to run gymnos. Gymnos ships with some example experiments that should get you up and running quickly.
-
-To actually get gymnos running, do the following:
+Or
 
 .. code-block:: bash
 
-  pipenv run python3 -m bin.scripts.gymnosd -c experiments/boston_housing.json
+  pipenv run pip install tensorflow-gpu
+
+depending on whether you have a GPU. (If you run into problems, try TensorFlow 1.13.1)
+
+Finally, before running any of the scripts, enter the environment with:
+
+.. code-block:: bash
+
+  pipenv shell
+
+The execution directory is located at ``src``:
+
+.. code-block:: bash
+
+  cd src
+
+You're now ready to run gymnos. You can execute an experiment by running:
+
+.. code-block:: bash
+
+  python3 -m bin.scripts.gymnosd -c <config_path>
+
+Gymnos ships with some example experiments that should get you up and running quickly. To actually get gymnos running, do the following:
+
+.. code-block:: bash
+
+  python3 -m bin.scripts.gymnosd -c experiments/examples/boston_housing.json
 
 This will run an experiment for Boston Housting dataset.
 
@@ -56,7 +64,12 @@ Docker
 We provide up to date docker builds for different execution environments and working modalities.
 
 .. note::
-  Please make sure `Docker <https://docs.docker.com/v17.12/install/>`_  is install in your computer
+  Please make sure `Docker <https://docs.docker.com/v17.12/install/>`_  is install in your computer.
+  Refer to the following links for instructions about downloading and installing Docker on different platforms:
+
+    - `Docker on Windows 10 <https://runnable.com/docker/install-docker-on-windows-10>`_
+    - `Docker on Linux <https://runnable.com/docker/install-docker-on-linux>`_
+    - `Docker on macOS <https://runnable.com/docker/install-docker-on-macos>`_
 
 Build image
 -----------
@@ -135,32 +148,22 @@ Run image
 
 .. code-block:: bash
 
-  docker run gymnos -c <gymnos_training_configuration>
+  docker run -it gymnos
 
 
 GPU version.
 
+.. note::
+  Please make sure `nvidia-docker <https://github.com/NVIDIA/nvidia-docker>`_  is install in your computer.
+  Refer to the following link for instructions about downloading and installing `nvidia-docker on Ubuntu 18.04 <https://cnvrg.io/how-to-setup-docker-and-nvidia-docker-2-0-on-ubuntu-18-04/>`_
+
 .. code-block:: bash
 
-  nvidia-docker run gymnos-gpu -c <gymnos_training_configuration>
+  nvidia-docker run -it gymnos-gpu
 
-.. note::
 
-    If you want to add new features or try new experiments, the docker environment is the perfect place to do it.
-    Simply access the container and you will have all the dependencies resolved to execute your new project with:
+The docker environment has all the dependencies resolved to execute your new project with:
 
-    .. code-block:: bash
+.. code-block:: bash
 
-        python3 -m bin.scripts.gymnosd -c <training_configuration>
-
-    To access your container, run the following command:
-
-    .. code-block:: bash
-
-        docker run -it --entrypoint=/bin/bash gymnos
-
-    Or if you have a GPU:
-
-    .. code-block:: bash
-
-        nvidia-docker run -it --entrypoint=/bin/bash gymnos-gpu
+    python3 -m bin.scripts.gymnosd -c <config_path>

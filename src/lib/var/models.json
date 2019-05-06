@@ -3,5 +3,7 @@
     "data_usage_linear_regression": "lib.models.data_usage_linear_regression.DataUsageLinearRegression",
     "data_usage_holt_winters": "lib.models.data_usage_holt_winters.DataUsageHoltWinters",
     "unusual_data_usage_weighted_thresholds": "lib.models.unusual_data_usage_weighted_thresholds.UnusualDataUsageWT",
-    "fashion_mnist_nn": "lib.models.fashion_mnist_nn.FashionMnistNN"
+    "fashion_mnist_nn": "lib.models.fashion_mnist_nn.FashionMnistNN",
+    "keras": "lib.models.keras.Keras",
+    "mte_nn": "lib.models.mte_nn.MTENN"
 }

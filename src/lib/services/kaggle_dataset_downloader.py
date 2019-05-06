@@ -9,7 +9,7 @@ import os
 from ..logger import get_logger
 
 from pydoc import locate
-from ..utils.decompressor import decompress
+from ..utils.decompressor import decompress, can_be_decompressed
 
 
 class KaggleDatasetDownloader:
@@ -18,19 +18,27 @@ class KaggleDatasetDownloader:
     """
 
     def __init__(self):
-        has_username = os.getenv("KAGGLE_USERNAME", False)
-        has_api_key = os.getenv("KAGGLE_KEY", False)
-
-        if not has_username or not has_api_key:
-            msg  = "Environment variables for Kaggle API not found."
-            msg += "You need to provide KAGGLE_USERNAME and KAGGLE_KEY to download a Kaggle dataset"
-            raise Exception(msg)
-
         self.kaggle_api = locate("kaggle.api")
 
         self.logger = get_logger(prefix=self)
 
     def download(self, dataset_or_competition_name, filenames=None, save_dir=None, unzip=True, verbose=True):
+        """
+        Download dataset or competition from Kaggle platform.
+
+        Parameters
+        ----------
+        dataset_or_competition: str
+            Dataset name (``user/dataset-id``) or competition name (``competition-id``)
+        filenames: list or str, optional
+            Filenames to download
+        save_dir: str, optional
+            Directory to save data. If unspecified, current working directory.
+        unzip: bool, optional
+            Whether or not decompress files.
+        verbose: bool, optional
+            Whether or not show progress bar.
+        """
         if save_dir is None:
             self.logger.debug("No saving directory provided. Saving to current directory")
             save_dir = os.getcwd()
@@ -41,6 +49,12 @@ class KaggleDatasetDownloader:
             self.__download_files(dataset_or_competition_name, filenames, save_dir, unzip=unzip, verbose=verbose)
         else:
             self.__download_file(dataset_or_competition_name, filenames, save_dir, unzip=unzip, verbose=verbose)
+
+        if unzip:
+            for filename in os.listdir(save_dir):
+                file_path = os.path.join(save_dir, filename)
+                if can_be_decompressed(file_path):
+                    decompress(file_path, delete_compressed=False)
 
     def __is_a_competition(self, dataset_name):
         return "/" not in dataset_name
@@ -81,14 +95,6 @@ class KaggleDatasetDownloader:
 
     def __dataset_download_file(self, dataset_name, filename, save_dir, unzip=True, verbose=True):
         self.kaggle_api.dataset_download_file(dataset_name, filename, save_dir, quiet=not verbose)
-        self.__unzip_and_delete_if_needed(os.path.join(save_dir, filename))
 
     def __competition_download_file(self, competition_name, filename, save_dir, unzip=True, verbose=True):
         self.kaggle_api.competition_download_file(competition_name, filename, save_dir, quiet=not verbose)
-        self.__unzip_and_delete_if_needed(os.path.join(save_dir, filename))
-
-    def __unzip_and_delete_if_needed(self, file_path):
-        file_exists = os.path.isfile(file_path)
-
-        if file_exists:
-            decompress(file_path, delete_compressed=True)

@@ -15,12 +15,23 @@ logger = get_logger(prefix="Decompressor")
 
 
 def decompress(file_path, delete_compressed=True):
+    """
+    Decompress file (currently supported: ``.zip`` and ``.gz`` files)
+
+    Parameters
+    ----------
+    file_path: str
+        Compressed file path.
+    delete_compressed: bool, optional
+        Whether or not delete compressed file after decompression.
+
+    """
     logger.info("Decompressing {}".format(file_path))
 
     if file_path.endswith(".zip"):
-        decompress_zip(file_path)
+        _decompress_zip(file_path)
     elif file_path.endswith(".gz"):
-        decompress_gz(file_path)
+        _decompress_gz(file_path)
 
     if not delete_compressed:
         return
@@ -33,7 +44,7 @@ def decompress(file_path, delete_compressed=True):
         logger.warning("Could not delete compressed file, got %s" % e)
 
 
-def decompress_zip(file_path):
+def _decompress_zip(file_path):
     dir_path = os.path.dirname(file_path)
 
     try:
@@ -43,7 +54,7 @@ def decompress_zip(file_path):
         raise ValueError("Bad compressed file")
 
 
-def decompress_gz(file_path):
+def _decompress_gz(file_path):
     real_file_path = os.path.splitext(file_path)[0]
 
     with gzip.open(file_path, "r") as f_in, open(real_file_path, "wb") as f_out:
@@ -51,4 +62,16 @@ def decompress_gz(file_path):
 
 
 def can_be_decompressed(filename):
+    """
+    Whether or not the file is a ``.zip`` file or a ``.gz`` file.
+
+    Parameters
+    ----------
+    filename: str
+        Filename or path with extension.
+
+    Returns
+    -------
+    result: bool
+    """
     return (filename.endswith(".zip") or filename.endswith(".gz"))
