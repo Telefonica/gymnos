@@ -12,24 +12,23 @@ In particular, the following artifacts are provided:
     └── boston_housing
        └── executions
           ├── 06-16-31__08-04-2019
-          │   ├── callbacks
-          │   │   └── model_checkpoint
-          │   │       ├── weights.05-27.07.h5
-          │   │       ├── weights.10-17.55.h5
-          │   │       └── weights.15-16.03.h5
+          │   ├── artifacts 
+          │   │   ├── callbacks
+          │   │   │    └── model_checkpoint
+          │   │   │        ├── weights.05-27.07.h5
+          │   │   │        ├── weights.10-17.55.h5
+          │   │   │        └── weights.15-16.03.h5
+          │   │   ├── model.h5
+          │   │   └── pipeline.joblib         
           │   ├── execution.log
           │   ├── metrics.json
-          │   ├── model.h5
           │   └── training_config.json
           └── 06-39-51__10-04-2019
-              ├── callbacks
-              │   └── model_checkpoint
-              │       ├── weights.05-28.64.h5
-              │       ├── weights.10-18.30.h5
-              │       └── weights.15-16.12.h5
+              ├── artifacts 
+              │   ├── model.joblib
+              │   └── pipeline.joblib         
               ├── execution.log
               ├── metrics.json
-              ├── model.h5
               └── training_config.json
 
 ***********************
