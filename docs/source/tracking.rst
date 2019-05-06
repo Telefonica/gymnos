@@ -94,7 +94,10 @@ CometML
 `CometML <https://www.comet.ml/>`_ lets you track code, experiments, and results on ML projects. 
 It’s fast, simple, and free for open source projects. 
 
-.. code-block:: bash
+.. note::
+    
+    The project will be visible at https://www.comet.ml/<user_name>/<project_name
+
 
 The following image shows an example extracted from the ``MTE`` experiment:
 
