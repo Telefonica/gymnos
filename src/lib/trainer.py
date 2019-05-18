@@ -175,12 +175,25 @@ class Trainer:
         if optimized_dataset.exists():
             self.logger.info("Dataset {} found in optimized HDF5 cache".format(dataset.name))
             self.logger.info("Loading dataset into memory")
-            X, y = optimized_dataset.retrieve("X"), optimized_dataset.retrieve("y")
+
+            with elapsed_time() as elapsed:
+                X, y = optimized_dataset.retrieve("X"), optimized_dataset.retrieve("y")
+
+            execution_steps_elapsed["load_data"] = elapsed.s
         else:
             self.logger.info("Downloading dataset {}".format(dataset.name))
-            dataset.dataset.download_and_prepare(self.dl_manager)
+
+            with elapsed_time() as elapsed:
+                dataset.dataset.download_and_prepare(self.dl_manager)
+
+            execution_steps_elapsed["download_data"] = elapsed.s
+
             self.logger.info("Loading dataset into memory")
-            X, y = dataset.dataset.load()
+
+            with elapsed_time() as elapsed:
+                X, y = dataset.dataset.load()
+
+            execution_steps_elapsed["load_data"] = elapsed.s
 
         # CONVERT LABELS TO ONE-HOT ENCODING IF REQUIRED
 
