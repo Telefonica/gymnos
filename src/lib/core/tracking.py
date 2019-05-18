@@ -6,11 +6,9 @@
 
 import os
 
-from pydoc import locate
-
 from ..trackers import TrackerList
 
-from ..utils.io_utils import read_from_json
+from ..utils.io_utils import import_from_json
 
 TRACKERS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "trackers.json")
 
@@ -73,12 +71,6 @@ class Tracking:
 
         self.trackers = TrackerList()
         for tracker_config in trackers:
-            TrackerClass = self.__retrieve_tracker_from_type(tracker_config.pop("type"))
+            TrackerClass = import_from_json(TRACKERS_IDS_TO_MODULES_PATH, tracker_config.pop("type"))
             tracker = TrackerClass(**tracker_config)
             self.trackers.add(tracker)
-
-
-    def __retrieve_tracker_from_type(self, tracker_type):
-        trackers_ids_to_modules = read_from_json(TRACKERS_IDS_TO_MODULES_PATH)
-        tracker_loc = trackers_ids_to_modules[tracker_type]
-        return locate(tracker_loc)

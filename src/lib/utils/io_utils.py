@@ -7,6 +7,8 @@
 import json
 import numpy as np
 
+from pydoc import locate
+
 
 def read_from_text(file_path):
     """
@@ -68,3 +70,9 @@ def save_to_json(path, obj, indent=4):
     """
     with open(path, "w") as outfile:
         json.dump(obj, outfile, indent=indent, default=_json_default)
+
+
+def import_from_json(json_path, key):
+    objects_ids_to_modules  = read_from_json(json_path)
+    object_loc = objects_ids_to_modules[key]
+    return locate(object_loc)
