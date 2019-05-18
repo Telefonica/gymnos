@@ -51,20 +51,20 @@ class Trainer:
         the values of datetime, model_name, dataset_name and experiment_name.
     artifacts_dirname: str, optional
         Directory name where artifacts are saved (saved model, saved preprocessors, etc ...)
-    cache_datasets_path: str, optional
+    optimized_datasets_dir: str, optional
         Directory to read and save HDF5 optimized datasets.
     """
 
     def __init__(self, trainings_path="trainings", executions_dirname="executions",
                  trackings_dirname="trackings", execution_format="{datetime:%H-%M-%S--%d-%m-%Y}__{model_name}",
-                 artifacts_dirname="artifacts", cache_datasets_path=None, download_dir="downloads",
+                 artifacts_dirname="artifacts", optimized_datasets_dir=None, download_dir="downloads",
                  extract_dir=None, force_download=False, force_extraction=False):
         self.trainings_path = trainings_path
         self.executions_dirname = executions_dirname
         self.trackings_dirname = trackings_dirname
         self.execution_format = execution_format
         self.artifacts_dirname = artifacts_dirname
-        self.cache_datasets_path = cache_datasets_path
+        self.optimized_datasets_dir = optimized_datasets_dir
 
         self.dl_manager = DownloadManager(download_dir, extract_dir=extract_dir,
                                           force_download=force_download,
@@ -170,7 +170,7 @@ class Trainer:
 
         # CHECK IF DATASET IS IN HDF5 OPTIMIZED CACHE
 
-        optimized_dataset = HDFManager(os.path.join(self.cache_datasets_path, dataset.name + ".h5"))
+        optimized_dataset = HDFManager(os.path.join(self.optimized_datasets_dir, dataset.name + ".h5"))
 
         if optimized_dataset.exists():
             self.logger.info("Dataset {} found in optimized HDF5 cache".format(dataset.name))

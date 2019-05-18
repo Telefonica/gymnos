@@ -39,7 +39,7 @@ def run_experiment(training_config_path, output_path="trainings"):
 
     os.makedirs(cache_config["datasets"], exist_ok=True)
 
-    trainer = Trainer(trainings_path=output_path, cache_datasets_path=cache_config["datasets"])
+    trainer = Trainer(trainings_path=output_path, optimized_datasets_dir=cache_config["datasets"])
 
     try:
         trainer.train(
