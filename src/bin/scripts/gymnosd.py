@@ -26,11 +26,10 @@ TRAINING_LOG_FILENAME = "execution.log"
 TRAINING_CONFIG_FILENAME = "training_config.json"
 
 
-def run_experiment(training_config_path, output_path="trainings"):
+def run_experiment(trainer, training_config_path):
     training_config = read_from_json(training_config_path)
     training_config_copy = copy.deepcopy(training_config)
 
-    cache_config = read_from_json(CACHE_CONFIG_PATH)
     logging_config = read_from_json(LOGGING_CONFIG_PATH)
     logging.config.dictConfig(logging_config)
     logger = get_logger(prefix="Main")
@@ -38,8 +37,6 @@ def run_experiment(training_config_path, output_path="trainings"):
     logger.info("Starting gymnos environment ...")
 
     os.makedirs(cache_config["datasets"], exist_ok=True)
-
-    trainer = Trainer(trainings_path=output_path, optimized_datasets_dir=cache_config["datasets"])
 
     try:
         trainer.train(
@@ -70,12 +67,16 @@ if __name__ == "__main__":
     group.add_argument("-t", "--regression_test", help="execute regression test", action="store_true")
     args = parser.parse_args()
 
+    cache_config = read_from_json(CACHE_CONFIG_PATH)
+
     if args.regression_test:
         test_config_filenames = os.listdir(REGRESSION_TESTS_DIR)
-        for i, test_config_filename in enumerate(test_config_filenames):
-            print("{}{} / {} - Current regression test: {}{}".format("\033[91m", i + 1, len(test_config_filenames),
-                                                                     test_config_filename, "\033[0m"))
-            with TemporaryDirectory() as temp_dir:
-                run_experiment(os.path.join(REGRESSION_TESTS_DIR, test_config_filename), temp_dir)
+        with TemporaryDirectory() as temp_dir:
+            trainer = Trainer(trainings_path=temp_dir, optimized_datasets_dir=cache_config["datasets"])
+            for i, test_config_filename in enumerate(test_config_filenames):
+                print("{}{} / {} - Current regression test: {}{}".format("\033[91m", i + 1, len(test_config_filenames),
+                                                                         test_config_filename, "\033[0m"))
+                run_experiment(trainer, os.path.join(REGRESSION_TESTS_DIR, test_config_filename))
     else:
-        run_experiment(args.training_config)
+        trainer = Trainer(optimized_datasets_dir=cache_config["datasets"])
+        run_experiment(trainer, args.training_config)
