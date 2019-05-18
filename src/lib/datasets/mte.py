@@ -4,18 +4,14 @@
 #
 #
 
-import os
-import requests
 import pandas as pd
 
 from tqdm import tqdm
 from datetime import datetime
 from sklearn.preprocessing import MultiLabelBinarizer
 
-from ..logger import get_logger
-from .dataset import ClassificationDataset
-from .mixins import PublicURLMixin
 from ..utils.io_utils import read_from_json
+from .dataset import Dataset, DatasetInfo, ClassLabel
 
 
 GENRE_TO_SUBSCRIPTION = {
@@ -147,7 +143,10 @@ GENRE_TO_SUBSCRIPTION = {
 }
 
 
-class MTE(ClassificationDataset, PublicURLMixin):
+EPG_URL = "http://ottcache.dof6.com/movistarplus/webplayer.hls/OTT/epg?from={now}&span=1&channel=&network=movistarplus"
+
+
+class MTE(Dataset):
     """
     Dataset to predict topics of video contents from M+ based on the title and the description of the content.
 
@@ -197,100 +196,61 @@ class MTE(ClassificationDataset, PublicURLMixin):
         - **Features**: texts
     """
 
-    public_urls = ("http://ottcache.dof6.com/movistarplus/webplayer.hls/OTT/epg?from={}&span=7&channel=" +
-                   "&network=movistarplus").format(datetime.now().strftime("%Y-%m-%dT%H:%M:%S"))
+    def _info(self):
+        return DatasetInfo(
+            features=str,
+            labels=ClassLabel(names=["deportes", "salud y belleza", "humor", "hogar", "cine", "cultural y educativo",
+                                     "infantil", "música", "entretenimiento", "información y actualidad", "documental",
+                                     "tecnología", "moda", "viajes", "serie", "motor", "cocina"])
+        )
 
-    def __init__(self):
-        self.logger = get_logger(prefix=self)
+    def _download_and_prepare(self, dl_manager):
+        epg_path = dl_manager.download(EPG_URL.format(now=datetime.now().strftime("%Y-%m-%dT%H:%M:%S")))
 
-    def read(self, download_dir):
-        epgs_file_paths = [os.path.join(download_dir, epg) for epg in os.listdir(download_dir)]
-        epg_df = self.__parse_epgs(epgs_file_paths)
-        epg_df = self.__clean_epg(epg_df)
-        epg_df["subscriptions"] = self.__map_genre_to_subscriptions(epg_df.genre)
+        epg_json = read_from_json(epg_path)
 
-        epg_df = epg_df[epg_df.subscriptions.notna()]
-
-        X = epg_df.title + " " + epg_df.description
-
-        y = epg_df.subscriptions
-        y = self.__convert_to_multilabel(y)
-
-        return X, y
-
-    def __convert_to_multilabel(self, subscriptions):
-        mlb = MultiLabelBinarizer()
-
-        return mlb.fit_transform(subscriptions)
-
-
-    def __clean_epg(self, df):
-        df = df.drop_duplicates()
-        df = df.fillna({"title": ""})
-        df = df[df != ""]
-        df = df[df.genre != "SIN CLASIFICAR"]
-        df = df.dropna(subset=["genre"])
-        df = df.dropna(subset=["description"])
-
-        return df
-
-
-    def __map_genre_to_subscriptions(self, genres):
-        subscriptions = genres.map(GENRE_TO_SUBSCRIPTION)
-
-        if subscriptions.isna().sum() > 0:
-            unknown_genres = genres[subscriptions.isna()].unique().tolist()
-            self.logger.warning("Unknown subscription for the following genres: {}".format(unknown_genres))
-
-        return subscriptions
-
-
-    def __safe_download_json(self, url, params=None):
-        try:
-            res = requests.get(url, params=params)
-            return res.json()
-        except (requests.exceptions.RequestException, ValueError) as err:
-            self.logger.warning("{}: {}".format(url, err))
-            return None
-
-
-    def __parse_epgs(self, epgs_file_paths):
-        df = pd.DataFrame()
-
-        for epg_file_path in tqdm(epgs_file_paths, leave=False, desc="EPGs"):
-            epg_df = self.__parse_epg(epg_file_path)
-            df = pd.concat([df, epg_df], ignore_index=True)
-
-        return df
-
-
-    def __parse_epg(self, file_path):
-        epg_json = read_from_json(file_path)
-
-        df = pd.DataFrame(columns=["title", "description", "genre", "channel_id"])
-
-        df_idx = 0
+        self.sheets_paths_ = []
 
         for channel in tqdm(epg_json, leave=False, desc="Channels"):
             for program in tqdm(channel, desc="Programs"):
                 sheet_url = program.get("Ficha")
                 if sheet_url is None:
+                    print("Sheet url not found. Skipping")
                     continue
 
-                sheet = self.__safe_download_json(sheet_url)
-                if sheet is None:
+                try:
+                    sheet_path = dl_manager.download(sheet_url, verbose=False)
+                except Exception as exception:
+                    print("Error downloading sheet with url {}".format(sheet_url))
                     continue
 
-                if not isinstance(sheet, dict):
-                    self.logger.warning("Error downloading {}: {}".format(sheet_url, sheet))
-                    continue
+                self.sheets_paths_.append(sheet_path)
 
-                df.loc[df_idx] = self.__parse_sheet(sheet)
 
-                df_idx += 1
+    def _load(self):
+        df = pd.DataFrame(columns=["title", "description", "genre", "channel_id"])
+        for idx, sheet_path in enumerate(tqdm(self.sheets_paths_)):
+            sheet = read_from_json(sheet_path)
+            df.loc[idx] = self.__parse_sheet(sheet)
 
-        return df
+        df.drop_duplicates(inplace=True)
+        df.fillna({"title": ""}, inplace=True)
+        df = df[df != ""]
+        df = df[df.genre != "SIN CLASIFICAR"]
+        df.dropna(subset=["genre", "description"], inplace=True)
 
+        df["subscriptions"] = df.genre.map(GENRE_TO_SUBSCRIPTION)
+
+        if df.subscriptions.isna().sum() > 0:
+            unknown_genres = df.genre[df.subscriptions.isna()].unique().tolist()
+            self.logger.warning("Unknown subscription for the following genres: {}".format(unknown_genres))
+
+        df.dropna(subset=["subscriptions"], inplace=True)
+
+        X = df.title + " " + df.description
+        y = MultiLabelBinarizer().fit_transform(df.subscriptions)
+
+        return X, y
 
     def __parse_sheet(self, sheet):
         title = sheet.get("Titulo")

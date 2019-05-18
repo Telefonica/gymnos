@@ -4,125 +4,119 @@
 #
 #
 
-import os
-import tempfile
-
-from keras.utils import to_categorical
-
+import numpy as np
 from ..logger import get_logger
-from ..utils.hdf_manager import HDFManager
+
+
+def requires_download(func):
+    def wrapped(self, *args, **kwargs):
+        if not self._downloaded:
+            raise RuntimeError("You must download your model before using it.")
+        return func(self, *args, **kwargs)
+
+    return wrapped
 
 
 class Dataset:
     """
     Base class for all Gymnos datasets.
 
-    You need to implement the following methods: ``download`` and ``read``.
+    You need to implement the following methods: ``download_and_prepare``, ``info`` and ``_load``.
     """
 
     def __init__(self):
         self.logger = get_logger(prefix=self)
+        self._downloaded = False
+
+    def _info(self):
+        raise NotImplementedError()
+
+    def info(self):
+        return self._info()
+
+    def _download_and_prepare(self, dl_manager):
+        raise NotImplementedError()
+
+    def download_and_prepare(self, dl_manager):
+        self._downloaded = True
+        return self._download_and_prepare(dl_manager)
+
+    def _load(self):
+        raise NotImplementedError()
+
+    @requires_download
+    def load(self):
+        return self._load()
+
+    def _select(self, start=0, stop=None):
+        raise NotImplementedError()
+
+    @requires_download
+    def select(self, start=0, stop=None):
+        return self.select(start=start, stop=stop)
+
+    def _nsamples(self):
+        raise NotImplementedError()
+
+    @requires_download
+    def nsamples(self):
+        return self._nsamples()
 
 
-    def download(self, download_path):
-        """
-        Download raw data.
+class DatasetInfo:
 
-        Parameters
-        ----------
-        download_path: str
-            Path where to download data
-        """
-        return super().download(download_path)
+    def __init__(self, features, labels):
+        if not isinstance(features, Tensor):
+            features = Tensor(shape=[], dtype=features)
+
+        if not isinstance(labels, (Tensor)):
+            labels = Tensor(shape=[], dtype=labels)
+
+        self.features = features
+        self.labels = labels
 
 
-    def read(self, download_path):
-        """
-        Read data from download path
+class Tensor:
 
-        Parameters
-        ----------
-            download_path: str
-                Path where to read data
-        Returns
-        -------
-            X: array_like
-                Features
-            y: array_like
-                Labels
-        """
-        return super().read(download_path)
+    def __init__(self, shape, dtype=None):
+        self.shape = shape
+        self.dtype = dtype
 
-    def load_data(self, hdf5_cache_path=None):
-        """
-        Check if data exists on cache and download, read and save to cache if not.
+    def __str__(self):
+        return "Tensor <shape={}, dtype={}>".format(self.shape, self.dtype)
 
-        Returns
-        -------
-        X: array_like
-            Features
-        y: array_like
-            Labels
-        """
 
-        if hdf5_cache_path is not None:
-            cache = HDFManager(hdf5_cache_path)
+class ClassLabel(Tensor):
+
+    def __init__(self, num_classes=None, names=None, names_file=None):
+        super().__init__(shape=[], dtype=np.int32)
+
+        if sum(bool(a) for a in (num_classes, names, names_file)) != 1:
+            raise ValueError("Only a single argument of ClassLabel() should be provided.")
+
+        if names is not None:
+            self.names = names
+            self.num_classes = len(self.names)
+        elif names_file is not None:
+            self.names = self.__load_names_from_file(names_file)
+            self.num_classes = len(self.names)
+        elif num_classes is not None:
+            self.num_classes = num_classes
+            self.names = None
         else:
-            cache = None
+            raise ValueError("A single argument of ClassLabel() should be provided")
 
-        if cache is not None and cache.exists():
-            self.logger.info("Dataset exists on cache ({})".format(hdf5_cache_path))
-            self.logger.info("Retrieving dataset from cache")
-            return cache.retrieve("X"), cache.retrieve("y")
+    def __load_names_from_file(self, names_file):
+        with open(names_file) as archive:
+            names = [line.rstrip('\n') for line in archive]
 
-        gymnos_dataset_temp_path = os.path.join(tempfile.gettempdir(), "gymnos", self.__class__.__name__)
+        return names
 
-        self.logger.info("Downloading")
-        self.download(gymnos_dataset_temp_path)
+    def str2int(self, str_value):
+        return self.names.index(str_value)
 
-        self.logger.info("Reading from {}".format(gymnos_dataset_temp_path))
-        X, y = self.read(gymnos_dataset_temp_path)
+    def int2str(self, int_value):
+        return self.names[int_value]
 
-        if cache is not None:
-            cache.save("X", X)
-            cache.save("y", y)
-
-        return X, y
-
-
-class RegressionDataset(Dataset):
-    """
-    Dataset for regression tasks.
-
-    You need to implement the following methods: ``download`` and ``read``.
-    """
-
-
-class ClassificationDataset(Dataset):
-    """
-    Dataset for classification tasks.
-
-    You need to implement the following methods: ``download`` and ``read``.
-    """
-
-    def load_data(self, one_hot=False, hdf5_cache_path=None):
-        """
-        Check if data exists on cache and download, read and save to cache if not.
-
-        Parameters
-        ----------
-        one_hot: bool, optional
-            Whether or note one-hot encode labels.
-        Returns
-        -------
-        X: array_like
-            Features.
-        y: array_like of int
-            Labels.
-        """
-        X, y = super().load_data(hdf5_cache_path=hdf5_cache_path)
-
-        if one_hot:
-            y = to_categorical(y)
-
-        return X, y
+    def __str__(self):
+        return "Tensor <shape={}, dtype={} classes={}>".format(self.shape, self.dtype, self.num_classes)

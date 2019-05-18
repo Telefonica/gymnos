@@ -4,13 +4,13 @@
 #
 #
 
+import numpy as np
 import statsmodels.api as sm
 
-from .dataset import ClassificationDataset
-import numpy as np
+from .dataset import Dataset, DatasetInfo
 
 
-class UnusualDataUsageTest(ClassificationDataset):
+class UnusualDataUsageTest(Dataset):
     """
     Dataset  of Yearly (1700-2008) data on sunspots from the National Geophysical Data Center.
 
@@ -22,10 +22,16 @@ class UnusualDataUsageTest(ClassificationDataset):
         - **Features**: xxx
     """
 
-    def download(self, download_path):
-        pass
+    def _info(self):
+        return DatasetInfo(
+            features=np.int32,
+            labels=np.float32
+        )
 
-    def read(self, download_path):
+    def _download_and_prepare(self, dl_manager):
+        print("Download not required. Using dataset from statsmodels library.")
+
+    def _load(self):
         data = sm.datasets.sunspots.load_pandas().data
         label_serie = data['SUNACTIVITY'].values
         features_serie = np.arange(len(label_serie))

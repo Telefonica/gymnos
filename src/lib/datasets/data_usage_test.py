@@ -7,10 +7,10 @@
 import numpy as np
 import statsmodels.api as sm
 
-from .dataset import RegressionDataset
+from .dataset import Dataset, DatasetInfo, Tensor
 
 
-class DataUsageTest(RegressionDataset):
+class DataUsageTest(Dataset):
     """
     Dataset  of Yearly (1700-2008) data on sunspots from the National Geophysical Data Center.
 
@@ -22,10 +22,16 @@ class DataUsageTest(RegressionDataset):
         - **Features**: xxx
     """
 
-    def download(self, download_path):
-        pass
+    def _info(self):
+        return DatasetInfo(
+            features=Tensor(shape=[], dtype=np.float32),
+            labels=np.float32
+        )
 
-    def read(self, download_path):
+    def _download_and_prepare(self, dl_manager):
+        print("Download not required. Using dataset from statsmodels library.")
+
+    def _load(self):
         data = sm.datasets.sunspots.load_pandas().data
         data = data['SUNACTIVITY'].values
         # Erase zeros on the left

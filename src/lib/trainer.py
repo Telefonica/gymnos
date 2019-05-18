@@ -11,6 +11,7 @@ import platform
 import numpy as np
 
 from datetime import datetime
+from keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
 
 from . import trackers
@@ -18,7 +19,8 @@ from .logger import get_logger
 from .utils.path import chdir
 from .utils.io_utils import save_to_json
 from .utils.timing import elapsed_time
-from .datasets import ClassificationDataset
+from .services import DownloadManager
+from .utils.hdf_manager import HDFManager
 
 
 class Trainer:
@@ -55,13 +57,18 @@ class Trainer:
 
     def __init__(self, trainings_path="trainings", executions_dirname="executions",
                  trackings_dirname="trackings", execution_format="{datetime:%H-%M-%S--%d-%m-%Y}__{model_name}",
-                 artifacts_dirname="artifacts", cache_datasets_path=None):
+                 artifacts_dirname="artifacts", cache_datasets_path=None, download_dir="downloads",
+                 extract_dir=None, force_download=False, force_extraction=False):
         self.trainings_path = trainings_path
         self.executions_dirname = executions_dirname
         self.trackings_dirname = trackings_dirname
         self.execution_format = execution_format
         self.artifacts_dirname = artifacts_dirname
         self.cache_datasets_path = cache_datasets_path
+
+        self.dl_manager = DownloadManager(download_dir, extract_dir=extract_dir,
+                                          force_download=force_download,
+                                          force_extraction=force_extraction)
 
         self.logger = get_logger(prefix=self)
 
@@ -154,21 +161,31 @@ class Trainer:
         tracking.trackers.log_params(tracking.params)
         tracking.trackers.log_params(model.parameters)
 
-        # LOAD DATASET
+        # LOG DATASET PROPERTIES
 
-        self.logger.info("Loading dataset: {} ...".format(dataset.name))
+        dataset_info = dataset.dataset.info()
 
-        with elapsed_time() as elapsed:
-            load_data_arguments = {}
-            if self.cache_datasets_path is not None:
-                load_data_arguments["hdf5_cache_path"] = os.path.join(self.cache_datasets_path, dataset.name + ".h5")
-            if isinstance(dataset.dataset, ClassificationDataset):
-                load_data_arguments["one_hot"] = dataset.one_hot
+        self.logger.info("Dataset Features: {}".format(dataset_info.features))
+        self.logger.info("Dataset Labels: {}".format(dataset_info.labels))
 
-            X, y = dataset.dataset.load_data(**load_data_arguments)
+        # CHECK IF DATASET IS IN HDF5 OPTIMIZED CACHE
 
-        execution_steps_elapsed["load_data"] = elapsed.s
-        self.logger.debug("Loading data took {:.2f}s".format(elapsed.s))
+        optimized_dataset = HDFManager(os.path.join(self.cache_datasets_path, dataset.name + ".h5"))
+
+        if optimized_dataset.exists():
+            self.logger.info("Dataset {} found in optimized HDF5 cache".format(dataset.name))
+            self.logger.info("Loading dataset into memory")
+            X, y = optimized_dataset.retrieve("X"), optimized_dataset.retrieve("y")
+        else:
+            self.logger.info("Downloading dataset {}".format(dataset.name))
+            dataset.dataset.download_and_prepare(self.dl_manager)
+            self.logger.info("Loading dataset into memory")
+            X, y = dataset.dataset.load()
+
+        # CONVERT LABELS TO ONE-HOT ENCODING IF REQUIRED
+
+        if dataset.one_hot:
+            y = to_categorical(y, dataset_info.labels.num_classes)
 
         # SPLIT DATASET INTO TRAIN AND TEST
 

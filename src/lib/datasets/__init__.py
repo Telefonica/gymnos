@@ -5,7 +5,8 @@ from .imdb import IMDB
 from .kddcup99 import KDDCup99
 from .mnist import MNIST
 from .tiny_imagenet import TinyImagenet
+from .mte import MTE
 from .dogs_vs_cats import DogsVsCats
 from .data_usage_test import DataUsageTest
 from .unusual_data_usage_test import UnusualDataUsageTest
-from .dataset import Dataset, ClassificationDataset, RegressionDataset
+from .dataset import Dataset

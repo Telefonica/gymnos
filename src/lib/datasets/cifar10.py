@@ -8,10 +8,10 @@ import numpy as np
 
 from keras.datasets import cifar10
 
-from .dataset import ClassificationDataset
+from .dataset import Dataset, DatasetInfo, ClassLabel, Tensor
 
 
-class CIFAR10(ClassificationDataset):
+class CIFAR10(Dataset):
     """
     Dataset to train computer vision algorithms. It contains color images in 10 different classes.
 
@@ -48,10 +48,17 @@ class CIFAR10(ClassificationDataset):
         - **Features**: real, between 0 and 255
     """
 
-    def download(self, download_path):
-        pass
+    def _info(self):
+        return DatasetInfo(
+            features=Tensor(shape=[32, 32, 3], dtype=np.uint8),
+            labels=ClassLabel(names=["airplane", "car", "bird", "cat", "deer", "frog", "horse", "cat", "ship",
+                                     "truck"])
+        )
 
-    def read(self, download_path):
+    def _download_and_prepare(self, dl_manager):
+        self.logger.debug("Download not required. Using dataset from keras library.")
+
+    def _load(self):
         (X_train, y_train), (X_test, y_test) = cifar10.load_data()
         X = np.concatenate([X_train, X_test], axis=0)
         y = np.concatenate([y_train, y_test], axis=0)

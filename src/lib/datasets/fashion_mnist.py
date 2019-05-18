@@ -6,12 +6,12 @@
 
 import numpy as np
 
-from .dataset import ClassificationDataset
+from .dataset import Dataset, DatasetInfo, ClassLabel, Tensor
 
 from keras.datasets import fashion_mnist
 
 
-class FashionMNIST(ClassificationDataset):
+class FashionMNIST(Dataset):
     """
     Dataset to classify 10 fashion categories of clothes..
 
@@ -48,10 +48,17 @@ class FashionMNIST(ClassificationDataset):
         - **Features**: real, between 0 and 255
     """
 
-    def download(self, download_path):
-        pass
+    def _info(self):
+        return DatasetInfo(
+            features=Tensor(shape=[28, 28, 1], dtype=np.uint8),
+            labels=ClassLabel(names=["t-shirt/top", "trouser", "pullover", "dress", "coat", "sandal",
+                                     "shirt", "sneaker", "bag", "ankle boot"])
+        )
 
-    def read(self, download_path):
+    def _download_and_prepare(self, dl_manager):
+        print("Download not required. Using dataset from keras library.")
+
+    def _load(self):
         (X_train, y_train), (X_test, y_test) = fashion_mnist.load_data()
         X = np.concatenate([X_train, X_test], axis=0)
         y = np.concatenate([y_train, y_test], axis=0)
