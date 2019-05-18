@@ -3,7 +3,7 @@
         "name": "keras",
         "parameters": {
             "sequential": [
-                {"type": "dense", "units": 38, "activation": "softmax", "input_shape": [117]}
+                {"type": "dense", "units": 38, "activation": "softmax", "input_shape": [122]}
             ],
             "compilation": {
                 "loss": "categorical_crossentropy",

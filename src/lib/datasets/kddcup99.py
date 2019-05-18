@@ -18,7 +18,7 @@ class KDDCup99(Dataset):
     Characteristics
         - **Classes**: 38
         - **Samples total**: xxxx
-        - **Dimensionality**: [117]
+        - **Dimensionality**: [122]
         - **Features**: continuous and discrete
 
     References
@@ -28,13 +28,13 @@ class KDDCup99(Dataset):
 
     def _info(self):
         return DatasetInfo(
-            features=Tensor(shape=[117]),
+            features=Tensor(shape=[122]),
             labels=ClassLabel(num_classes=38)
         )
 
     def _download_and_prepare(self, dl_manager):
         paths = dl_manager.download_and_extract({
-            "csv_data": "http://kdd.ics.uci.edu/databases/kddcup99/corrected.gz",
+            "csv_data": "http://kdd.ics.uci.edu/databases/kddcup99/kddcup.data.gz",
             "feature_names": "http://archive.ics.uci.edu/ml/machine-learning-databases/kddcup99-mld/kddcup.names"
         })
 
