@@ -181,18 +181,18 @@ class Trainer:
                                                             random_state=dataset.seed)
         # APPLY PREPROCESSORS
 
-        self.logger.info("Applying {} preprocessors ({})".format(len(dataset.preprocessor_pipeline),
-                                                                 str(dataset.preprocessor_pipeline)))
+        self.logger.info("Applying {} preprocessors ({})".format(len(dataset.pipeline),
+                                                                 str(dataset.pipeline)))
 
         with elapsed_time() as elapsed:
-            dataset.preprocessor_pipeline.fit(X_train, y_train)
+            dataset.pipeline.fit(X_train, y_train)
 
         execution_steps_elapsed["fit_preprocessors"] = elapsed.s
         self.logger.debug("Fitting preprocessors to train data took {:.2f}s".format(elapsed.s))
 
         with elapsed_time() as elapsed:
-            X_train = dataset.preprocessor_pipeline.transform(X_train, data_desc="X_train")
-            X_test = dataset.preprocessor_pipeline.transform(X_test, data_desc="X_test")
+            X_train = dataset.pipeline.transform(X_train, data_desc="X_train")
+            X_test = dataset.pipeline.transform(X_test, data_desc="X_test")
 
         execution_steps_elapsed["transform_preprocessors"] = elapsed.s
         self.logger.debug("Preprocessing data took {:.2f}s".format(elapsed.s))
@@ -240,7 +240,7 @@ class Trainer:
         # SAVE PIPELINE
 
         self.logger.info("Saving pipeline")
-        dataset.preprocessor_pipeline.save(os.path.join(trainings_dataset_execution_artifacts_path, "pipeline.pkl"))
+        dataset.pipeline.save(os.path.join(trainings_dataset_execution_artifacts_path, "pipeline.pkl"))
 
         # SAVE METRICS
 

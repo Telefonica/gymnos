@@ -131,8 +131,8 @@ class Dataset:
         DatasetClass = import_from_json(DATASETS_IDS_TO_MODULES_PATH, name)
         self.dataset = DatasetClass()
 
-        self.preprocessor_pipeline = Pipeline()
+        self.pipeline = Pipeline()
         for preprocessor_config in preprocessors:
             PreprocessorClass = import_from_json(PREPROCESSORS_IDS_TO_MODULES_PATH, preprocessor_config.pop("type"))
             preprocessor = PreprocessorClass(**preprocessor_config)
-            self.preprocessor_pipeline.add(preprocessor)
+            self.pipeline.add(preprocessor)
