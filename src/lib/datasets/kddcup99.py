@@ -48,6 +48,7 @@ class KDDCup99(Dataset):
         features, labels = self.__features_labels_split(data)
         features = pd.get_dummies(features)
         return features, pd.factorize(labels)[0]
+        self.csv_data_path_ = os.path.join(paths["csv_data"], "kddcup.data")
 
     def __read_features_names(self, file_path):
         text = read_from_text(file_path)

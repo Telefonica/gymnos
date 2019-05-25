@@ -42,7 +42,7 @@ def extract_gz(file_path, extract_dir=".", force=False):
     with gzip.open(file_path, "r") as f_in, open(extracted_file_path, "wb") as f_out:
         shutil.copyfileobj(f_in, f_out)
 
-    return extracted_file_path
+    return extract_dir
 
 
 def extract_tar(file_path, extract_dir=".", force=False, verbose=True):
