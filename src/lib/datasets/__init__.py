@@ -1,7 +1,6 @@
 from .boston_housing import BostonHousing
 from .imdb import IMDB
 from .kddcup99 import KDDCup99
-from .mnist import MNIST
 from .tiny_imagenet import TinyImagenet
 from .mte import MTE
 from .dogs_vs_cats import DogsVsCats
