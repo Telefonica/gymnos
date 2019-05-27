@@ -63,7 +63,7 @@ def run_experiment(training_config_path, output_path="trainings"):
                                                                                          TRAINING_LOG_FILENAME))
 
 
-def run_prediction(scoring_table_path, trained_model_config_path, output_path="predictions"):
+def run_prediction(scoring_table_path, trained_model_config_path):
     prediction_config = read_from_json(os.path.join(trained_model_config_path, "training_config.json"))
 
     cache_config = read_from_json(CACHE_CONFIG_PATH)
@@ -71,8 +71,9 @@ def run_prediction(scoring_table_path, trained_model_config_path, output_path="p
     logging.config.dictConfig(logging_config)
     logger = get_logger(prefix="Main")
 
-    prediction = Predictor(predictions_path=output_path, trained_model_config_path=trained_model_config_path,
-                           scoring_table_path=scoring_table_path, cache_datasets_path=cache_config["datasets"])
+    prediction = Predictor(scoring_table_path=scoring_table_path,
+                           trained_model_config_path=trained_model_config_path,
+                           cache_datasets_path=cache_config["datasets"])
 
     try:
         prediction.predict(

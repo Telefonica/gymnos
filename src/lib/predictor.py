@@ -18,22 +18,15 @@ from .utils.timing import elapsed_time
 
 class Predictor:
     """
-    Entrypoint to run experiment given an experiment, a model, a dataset, a training.
-    The run method will create a directory with the following structure:
-    predictions_path/
-    └── {{model.scoring_table_path ~  id_trained_model}}/
-        ├── executions_dirname/
-            └── {{datetime ~ execution_format}}/  # datetime when run is called
-                ├── metrics.json  # metrics, HW details and elapsed times
-                └── artifacts
-                   └── ... # model weights/parameters, trainings artifacts (e.g callbacks),
-                              preprocessors pipeline, etc ...
+    Entrypoint to run prediction given a model and a dataset.
 
 
     Parameters
     ----------
-    predictions_path: str, optional
-        Path with the directory where the trained model is saved.
+    trained_model_config_path: str
+         Path with the directory where we load the traned model.
+    scoring_table_path: str, optional
+        Path with the directory and file where the dataset that will be scored.
     executions_dirname: str, optional
         Directory name where an execution for a dataset is saved.
     execution_format: str, optional
@@ -45,14 +38,11 @@ class Predictor:
         Directory to read and save HDF5 optimized datasets.
     """
 
-    def __init__(self, trainings_path="trainings", predictions_path="predictions",
-                 trained_model_config_path="",
+    def __init__(self, trained_model_config_path="",
                  scoring_table_path="scorings", executions_dirname="executions",
                  execution_format="{datetime:%H-%M-%S--%d-%m-%Y}__{model_name}",
                  artifacts_dirname="artifacts", cache_datasets_path=None):
         self.trained_model_config_path = trained_model_config_path
-        self.trainings_path = trainings_path
-        self.predictions_path = predictions_path
         self.scoring_table_path = scoring_table_path
         self.executions_dirname = executions_dirname
         self.execution_format = execution_format
