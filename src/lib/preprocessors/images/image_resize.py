@@ -28,6 +28,11 @@ class ImageResize(Preprocessor):
         self.width = width
         self.height = height
 
+    def fit(self, X, y=None):
+        return self
+
+    def fit_generator(self, generator):
+        return self
 
     def __transform_sample(self, x):
         resized = imresize(x, (self.width, self.height))

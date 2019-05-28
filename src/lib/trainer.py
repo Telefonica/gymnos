@@ -5,6 +5,7 @@
 #
 
 import os
+import math
 import GPUtil
 import cpuinfo
 import platform
@@ -12,15 +13,15 @@ import numpy as np
 
 from datetime import datetime
 from keras.utils import to_categorical
-from sklearn.model_selection import train_test_split
 
 from . import trackers
 from .logger import get_logger
 from .utils.path import chdir
+from .utils.timing import ElapsedTimeCalculator
 from .utils.io_utils import save_to_json
-from .utils.timing import elapsed_time
 from .services import DownloadManager
-from .utils.hdf_manager import HDFManager
+from .utils.data import Subset, DataLoader
+from .utils.text_utils import humanize_bytes
 
 
 class Trainer:
@@ -91,7 +92,7 @@ class Trainer:
             Execution path for the last train
         """
 
-        execution_steps_elapsed = {}
+        elapsed_time_calc = ElapsedTimeCalculator()
         execution_id = self.execution_format.format(datetime=datetime.now(), model_name=model.name,
                                                     dataset_name=dataset.name, experiment_name=experiment.name)
 
@@ -165,118 +166,151 @@ class Trainer:
 
         dataset_info = dataset.dataset.info()
 
-        self.logger.info("Dataset Features: {}".format(dataset_info.features))
-        self.logger.info("Dataset Labels: {}".format(dataset_info.labels))
+        self.logger.info("Downloading data")
 
-        # CHECK IF DATASET IS IN HDF5 OPTIMIZED CACHE
+        with elapsed_time_calc("dataset_download_and_prepare") as elapsed:
+            dataset.dataset.download_and_prepare(self.dl_manager)
 
-        optimized_dataset = HDFManager(os.path.join(self.optimized_datasets_dir, dataset.name + ".h5"))
+        self.logger.debug("Downloading data took {:.2f}".format(elapsed.s))
 
-        if optimized_dataset.exists():
-            self.logger.info("Dataset {} found in optimized HDF5 cache".format(dataset.name))
-            self.logger.info("Loading dataset into memory")
+        self.logger.debug("Dataset Features: {}".format(dataset_info.features))
+        self.logger.debug("Dataset Labels: {}".format(dataset_info.labels))
+        self.logger.debug("Full Dataset Samples: {}".format(len(dataset.dataset)))
+        self.logger.debug("Full Dataset Memory Usage (approx): {}".format(humanize_bytes(dataset.dataset.memory_usage)))
 
-            with elapsed_time() as elapsed:
-                X, y = optimized_dataset.retrieve("X"), optimized_dataset.retrieve("y")
+        train_samples = dataset.samples.train
+        test_samples = dataset.samples.test
 
-            execution_steps_elapsed["load_data"] = elapsed.s
+        if 0.0 < train_samples < 1.0:
+            train_samples = math.floor(train_samples * len(dataset.dataset))
+        if 0.0 < test_samples < 1.0:
+            test_samples = math.floor(test_samples * len(dataset.dataset))
+
+        train_indices = np.arange(train_samples)
+        test_indices  = np.arange(train_samples, train_samples + test_samples)
+
+        indices = np.arange(len(dataset.dataset))
+
+        if dataset.shuffle:
+            indices = np.random.permutation(indices)
+
+        train_indices = indices[:train_samples]
+        test_indices = indices[train_samples:(train_samples + test_samples)]
+
+        train_subset = Subset(dataset.dataset, train_indices)
+        test_subset  = Subset(dataset.dataset, test_indices)
+
+        load_data_by_chunks = dataset.chunk_size is not None
+
+        self.logger.info("Loading data")
+
+        if load_data_by_chunks:
+            train_loader = DataLoader(train_subset, batch_size=dataset.chunk_size, drop_last=False)
+            test_loader  = DataLoader(test_subset, batch_size=dataset.chunk_size, drop_last=False)
         else:
-            self.logger.info("Downloading dataset {}".format(dataset.name))
+            with elapsed_time_calc("load_data_into_memory") as elapsed:
+                train_data = DataLoader(train_subset, batch_size=len(dataset.dataset), drop_last=False, verbose=True)[0]
+                test_data = DataLoader(test_subset, batch_size=len(dataset.dataset), drop_last=False, verbose=True)[0]
 
-            with elapsed_time() as elapsed:
-                dataset.dataset.download_and_prepare(self.dl_manager)
+            self.logger.debug("Loading data into memory took {:.2f}s".format(elapsed.s))
 
-            execution_steps_elapsed["download_data"] = elapsed.s
+        self.logger.info("Fitting preprocessing pipeline using training data ({})".format(dataset.pipeline))
 
-            self.logger.info("Loading dataset into memory")
+        if load_data_by_chunks:
+            dataset.pipeline.fit_generator(train_loader)
+        else:
+            with elapsed_time_calc("fit_pipeline") as elapsed:
+                dataset.pipeline.fit(train_data[0], train_data[1])
 
-            with elapsed_time() as elapsed:
-                X, y = dataset.dataset.load()
+            self.logger.debug("Fit pipeline took {:.2f}s".format(elapsed.s))
 
-            execution_steps_elapsed["load_data"] = elapsed.s
+        def normalizer(data):
+            """
+            Preprocess batch of data (X, y):
+                1. Preprocessing
+                2. Convert to one-hot encoding if needed
+            """
+            data = list(data)  # make sure data is a list and not a tuple (can't modify tuples)
+            data[0] = dataset.pipeline.transform(data[0])
 
-        # CONVERT LABELS TO ONE-HOT ENCODING IF REQUIRED
+            if dataset.one_hot:
+                data[1] = to_categorical(data[1], dataset_info.labels.num_classes)
 
-        if dataset.one_hot:
-            y = to_categorical(y, dataset_info.labels.num_classes)
+            return data
 
-        # SPLIT DATASET INTO TRAIN AND TEST
+        self.logger.info("Preprocessing data ({})".format(dataset.pipeline))
 
-        self.logger.info("Splitting dataset -> Train: {:.2f} | Test: {:.2f}".format(dataset.samples.train,
-                                                                                    dataset.samples.test))
-        X_train, X_test, y_train, y_test = train_test_split(X, y,
-                                                            train_size=dataset.samples.train,
-                                                            test_size=dataset.samples.test,
-                                                            shuffle=dataset.shuffle,
-                                                            random_state=dataset.seed)
-        # APPLY PREPROCESSORS
+        if load_data_by_chunks:
+            train_loader.transform_func = normalizer
+            test_loader.transform_func = normalizer
+        else:
+            with elapsed_time_calc("transform_data") as elapsed:
+                train_data = normalizer(train_data)
+                test_data = normalizer(test_data)
 
-        self.logger.info("Applying {} preprocessors ({})".format(len(dataset.pipeline),
-                                                                 str(dataset.pipeline)))
+            self.logger.debug("Transforming data took {:.2f}s".format(elapsed.s))
 
-        with elapsed_time() as elapsed:
-            dataset.pipeline.fit(X_train, y_train)
+        self.logger.info("Fitting model using training data")
 
-        execution_steps_elapsed["fit_preprocessors"] = elapsed.s
-        self.logger.debug("Fitting preprocessors to train data took {:.2f}s".format(elapsed.s))
+        if load_data_by_chunks:
+            with elapsed_time_calc("fit_model_generator") as elapsed, chdir(trainings_dataset_execution_artifacts_path):
+                train_metrics = model.model.fit_generator(train_loader, **training.parameters)
 
-        with elapsed_time() as elapsed:
-            X_train = dataset.pipeline.transform(X_train, data_desc="X_train")
-            X_test = dataset.pipeline.transform(X_test, data_desc="X_test")
+            self.logger.debug("Fit model generator took {:.2f}s".format(elapsed.s))
+        else:
+            with elapsed_time_calc("fit_model") as elapsed, chdir(trainings_dataset_execution_artifacts_path):
+                train_metrics = model.model.fit(train_data[0], train_data[1], **training.parameters)
 
-        execution_steps_elapsed["transform_preprocessors"] = elapsed.s
-        self.logger.debug("Preprocessing data took {:.2f}s".format(elapsed.s))
-
-        # FIT MODEL
-
-        self.logger.info("Fitting model with {} samples ...".format(len(X_train)))
-
-        # Measure time and temporary change directory in case model wants to save some artifact while fitting
-        with elapsed_time() as elapsed, chdir(trainings_dataset_execution_artifacts_path):
-            train_metrics = model.model.fit(X_train, y_train, **training.parameters)
-
-        execution_steps_elapsed["fit_model"] = elapsed.s
-        self.logger.debug("Fitting model took {:.2f}s".format(elapsed.s))
+            self.logger.debug("Fit model took {:.2f}s".format(elapsed.s))
 
         for metric_name, metric_value in train_metrics.items():
-            self.logger.info("Results for {}: Min: {:.2f} | Max: {:.2f} | Mean: {:.2f}".format(metric_name,
-                                                                                               np.min(metric_value),
-                                                                                               np.max(metric_value),
-                                                                                               np.mean(metric_value)))
-        self.logger.info("Logging train metrics to trackers".format(len(tracking.trackers)))
+            self.logger.info("Results for {} -> mean={:.2f}, min={:.2f}, max={:.2f}".format(metric_name,
+                                                                                            np.mean(metric_value),
+                                                                                            np.min(metric_value),
+                                                                                            np.max(metric_value)))
         tracking.trackers.log_metrics(train_metrics)
 
-        # EVALUATE MODEL
+        self.logger.info("Evaluating model using test data")
 
-        self.logger.info("Evaluating model with {} samples".format(len(X_test)))
+        if load_data_by_chunks:
+            with elapsed_time_calc("evaluate_model_generator") as elapsed:
+                test_metrics = model.model.evaluate_generator(test_loader)
 
-        with elapsed_time() as elapsed:
-            test_metrics = model.model.evaluate(X_test, y_test)
+            self.logger.debug("Evaluating model with generator took {:.2f}".format(elapsed.s))
+        else:
+            with elapsed_time_calc("evaluate_model") as elapsed:
+                test_metrics = model.model.evaluate(test_data[0], test_data[1])
+
+            self.logger.debug("Evaluating model took {:.2f}s".format(elapsed.s))
 
         for metric_name, metric_value in test_metrics.items():
-            self.logger.info("Test results for {}: {:.2f}".format(metric_name, np.mean(metric_value)))
+            self.logger.info("test_{}={}".format(metric_name, metric_value))
 
-        execution_steps_elapsed["evaluate_model"] = elapsed.s
-        self.logger.debug("Evaluating model took {:.2f}s".format(elapsed.s))
-
-        self.logger.info("Logging test metrics to trackers".format(len(tracking.trackers)))
         tracking.trackers.log_metrics(test_metrics, prefix="test_")
 
         # SAVE MODEL
 
         self.logger.info("Saving model")
-        model.model.save(trainings_dataset_execution_artifacts_path)
+
+        with elapsed_time_calc("save_model") as elapsed:
+            model.model.save(trainings_dataset_execution_artifacts_path)
+
+        self.logger.debug("Saving model took {:.2f}s".format(elapsed.s))
 
         # SAVE PIPELINE
 
         self.logger.info("Saving pipeline")
-        dataset.pipeline.save(os.path.join(trainings_dataset_execution_artifacts_path, "pipeline.pkl"))
+
+        with elapsed_time_calc("save_pipeline") as elapsed:
+            dataset.pipeline.save(os.path.join(trainings_dataset_execution_artifacts_path, "pipeline.pkl"))
+
+        self.logger.debug("Saving pipeline took {:.2f}s".format(elapsed.s))
 
         # SAVE METRICS
 
         self.logger.info("Saving metrics to JSON file")
         metrics = dict(
-            elapsed=execution_steps_elapsed,
+            elapsed=elapsed_time_calc.times,
             metrics=history_tracker.metrics,
             platform=platform_details
         )

@@ -31,9 +31,14 @@ class Lemmatization(Preprocessor):
         else:
             raise ValueError("Language not supported")
 
+    def fit(self, X, y=None):
+        return self
+
+    def fit_generator(self, generator):
+        return self
 
     def __transform_sample(self, x):
-        doc = self.nlp(x)
+        doc = self.nlp(str(x))
         return " ".join([token.lemma_ for token in doc])
 
 

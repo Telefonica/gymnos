@@ -14,6 +14,12 @@ class Grayscale(Preprocessor):
     Convert color images to grayscale.
     """
 
+    def fit(self, X, y=None):
+        return self
+
+    def fit_generator(self, generator):
+        return self
+
     def __transform_sample(self, x):
         return imgray(x)
 

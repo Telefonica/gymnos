@@ -15,6 +15,12 @@ class GrayscaleToColor(Preprocessor):
     Convert grayscale to color (1D image to 3D image).
     """
 
+    def fit(self, X, y=None):
+        return self
+
+    def fit_generator(self, generator):
+        return self
+
     def __transform_sample(self, x):
         return cv.cvtColor(x, cv.COLOR_GRAY2RGB)
 

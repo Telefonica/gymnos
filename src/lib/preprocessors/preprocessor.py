@@ -33,7 +33,24 @@ class Preprocessor(TransformerMixin):
         self: Preprocessor
             Own instance for chain purposes.
         """
-        return self
+        raise NotImplementedError()
+
+    def fit_generator(self, generator):
+        """
+        Fit preprocessors to generator.
+
+        Parameters
+        ----------
+        generator: generator
+            Generator iterating X and y
+
+        Returns
+        -------
+        self: Preprocessor
+            Own instance for chain purposes.
+        """
+        raise NotImplementedError()
+
 
     def transform(self, X):
         """
@@ -65,7 +82,7 @@ class Pipeline:
 
     def fit(self, X, y=None):
         if not self.preprocessors:
-            return X
+            return self
 
         pbar = tqdm(self.preprocessors)
         for preprocessor in pbar:
@@ -75,17 +92,30 @@ class Pipeline:
 
         return self
 
-    def transform(self, X, data_desc=None):
+    def fit_generator(self, generator):
+        if not self.preprocessors:
+            return self
+
+        fitted_preprocessors = []
+        pbar = tqdm(self.preprocessors)
+        for preprocessor in pbar:
+            def generator_with_transform():
+                for X, y in generator:
+                    for fitted_preprocessor in fitted_preprocessors:
+                        X = fitted_preprocessor.transform(X)
+                    yield X, y
+
+            pbar.set_description("Fitting generator with {}".format(preprocessor.__class__.__name__))
+            preprocessor.fit_generator(generator_with_transform())
+            fitted_preprocessors.append(preprocessor)
+
+        return self
+
+    def transform(self, X):
         if not self.preprocessors:
             return X
 
-        pbar = tqdm(self.preprocessors)
-        for preprocessor in pbar:
-            desc = "Transforming with {}".format(preprocessor.__class__.__name__)
-            if data_desc is not None:
-                desc += " ({})".format(data_desc)
-            pbar.set_description(desc)
-
+        for preprocessor in self.preprocessors:
             X = preprocessor.transform(X)
 
         return X

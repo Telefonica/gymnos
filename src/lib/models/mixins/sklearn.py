@@ -7,10 +7,12 @@
 import os
 import sklearn
 import joblib
+import numpy as np
 
-from ...logger import get_logger
-
+from collections import defaultdict
 from sklearn.model_selection import cross_val_score, train_test_split
+
+MODEL_SAVE_FILENAME = "model.joblib"
 
 
 class SklearnMixin:
@@ -47,7 +49,7 @@ class SklearnMixin:
         cross_validation: dict, optional
             Whether or not compute cross validation score. If not provided, cross-validation
             score is not computed. If provided, dictionnary with parameters for
-            `cross_val_score <https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_val_score.html>`_.
+            `cross_val_score <https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_val_score.html>`_.  # noqa: E501
 
         Examples
         --------
@@ -64,12 +66,9 @@ class SklearnMixin:
             metrics: dict
                 Training metrics.
         """
-
-        logger = get_logger(prefix=self)
-
         metrics = {}
         if cross_validation is not None:
-            logger.info("Computing cross validation score")
+            print("Computing cross validation score")
             cv_metrics = cross_val_score(self.model, X, y, **cross_validation)
             metrics["cv_" + self.metric_name] = cv_metrics
 
@@ -77,19 +76,29 @@ class SklearnMixin:
         if validation_split and 0.0 < validation_split < 1.0:
             X, X_val, y, y_val = train_test_split(X, y, test_size=validation_split)
             val_data = [X_val, y_val]
-            logger.info("Using {} samples for train and {} samples for validation".format(len(X), len(X_val)))
+            print("Using {} samples for train and {} samples for validation".format(len(X), len(X_val)))
 
-        logger.info("Fitting model with train data")
+        print("Fitting model with train data")
         self.model.fit(X, y)
-        logger.info("Computing metrics for train data")
+        print("Computing metrics for train data")
         metrics[self.metric_name] = self.model.score(X, y)
 
         if val_data:
-            logger.info("Computing metrics for validation data")
+            print("Computing metrics for validation data")
             val_score = self.model.score(*val_data)
             metrics["val_" + self.metric_name] = val_score
 
         return metrics
+
+    def fit_generator(self, generator):
+        if hasattr(self.model, 'partial_fit'):
+            for X, y in generator:
+                self.model.partial_fit(X, y)
+
+            return self.evaluate_generator(generator)
+        else:
+            return self.model.fit_generator(generator)
+
 
     def predict(self, X):
         """
@@ -120,24 +129,36 @@ class SklearnMixin:
         """
         return {self.metric_name: self.model.score(X, y)}
 
-    def save(self, save_path):
+    def evaluate_generator(self, generator):
+        metrics = defaultdict(list)
+        for X, y in generator:
+            batch_metrics = self.evaluate(X, y)
+            for metric_name, metric_value in batch_metrics.items():
+                metrics[metric_name].append(metric_value)
+
+        for metric_name, metric_value in metrics.items():
+            metrics[metric_name] = np.mean(metric_value)
+
+        return metrics
+
+    def save(self, save_dir):
         """
         Save sklearn model using ``joblib``
 
         Parameters
         ----------
-        save_path: str
+        save_dir: str
             Path (Directory) to save model.
         """
-        joblib.dump(self.model, os.path.join(save_path, "model.joblib"))
+        joblib.dump(self.model, os.path.join(save_dir, MODEL_SAVE_FILENAME))
 
-    def restore(self, save_path):
+    def restore(self, save_dir):
         """
         Restore sklearn model using ``joblib``
 
         Parameters
         ----------
-        save_path: str
+        save_dir: str
             Path (Directory) to restore model.
         """
-        self.model = joblib.load(os.path.join(save_path, "model.joblib"))
+        self.model = joblib.load(os.path.join(save_dir, MODEL_SAVE_FILENAME))

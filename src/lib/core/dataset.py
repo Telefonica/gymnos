@@ -117,7 +117,7 @@ class Dataset:
         )
     """
 
-    def __init__(self, name, samples=None, preprocessors=None, seed=None, shuffle=True, one_hot=False):
+    def __init__(self, name, samples=None, preprocessors=None, seed=None, shuffle=True, one_hot=False, chunk_size=None):
         samples = samples or {}
         preprocessors = preprocessors or []
 
@@ -125,6 +125,7 @@ class Dataset:
         self.seed = seed
         self.one_hot = one_hot
         self.shuffle = shuffle
+        self.chunk_size = chunk_size
 
         self.samples = DatasetSamples(**samples)
 

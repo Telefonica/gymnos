@@ -8,10 +8,13 @@ import os
 import numpy as np
 
 from glob import glob
-from tqdm import tqdm
 
 from ..utils.image_utils import imread_rgb, imresize
 from .dataset import Dataset, DatasetInfo, Tensor, ClassLabel
+
+IMAGE_WIDTH = 150
+IMAGE_HEIGHT = 150
+IMAGE_DEPTH = 3
 
 
 class DogsVsCats(Dataset):
@@ -35,14 +38,16 @@ class DogsVsCats(Dataset):
         - **Features**: real, between 0 and 255
     """
 
-    def _info(self):
+    def info(self):
         return DatasetInfo(
-            features=Tensor(shape=[150, 150, 3], dtype=np.uint8),
+            features=Tensor(shape=[IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_DEPTH], dtype=np.uint8),
             labels=ClassLabel(names=["cat", "dog"])
         )
 
-    def _download_and_prepare(self, dl_manager):
-        train_dir = dl_manager.download_kaggle_and_extract(competition_name="dogs-vs-cats", file_or_files="train.zip")
+
+    def download_and_prepare(self, dl_manager):
+        train_files = dl_manager.download_kaggle(competition_name="dogs-vs-cats", file_or_files="train.zip")
+        train_dir = dl_manager.extract(train_files)
         cat_images_paths = glob(os.path.join(train_dir, "train", "cat.*.jpg"))
         dog_images_paths = glob(os.path.join(train_dir, "train", "dog.*.jpg"))
         cat_labels = np.full_like(cat_images_paths, 0, dtype=np.int32)
@@ -57,11 +62,11 @@ class DogsVsCats(Dataset):
         self.labels_ = labels[random_indices]
 
 
-    def _load(self):
-        images = np.array([self.__read_and_resize_image(image_path) for image_path in tqdm(self.images_paths_)],
-                          dtype=np.uint8)
-        return images, self.labels_
+    def __getitem__(self, index):
+        image = imread_rgb(self.images_paths_[index])
+        image = imresize(image, (IMAGE_WIDTH, IMAGE_HEIGHT))
+        return image, self.labels_[index]
 
-    def __read_and_resize_image(self, image_path):
-        image = imread_rgb(image_path)
-        return imresize(image, (150, 150))
+
+    def __len__(self):
+        return len(self.images_paths_)

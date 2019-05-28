@@ -11,139 +11,138 @@ from datetime import datetime
 from sklearn.preprocessing import MultiLabelBinarizer
 
 from ..utils.io_utils import read_from_json
-from .dataset import Dataset, DatasetInfo, ClassLabel
+from .dataset import Dataset, DatasetInfo, ClassLabel, Tensor
 
 
 GENRE_TO_SUBSCRIPTION = {
-    "ATLETISMO": [1],
-    "BALONCESTO": [1],
-    "BALONMANO": [1],
-    "BELLEZA": [2],
-    "BRICOLAJE": [4],
-    "CAZA Y PESCA": [1],
-    "CICLISMO": [1],
-    "CINE": [5],
-    "CINE ADULTO": [5],
-    "CINE CIENCIA FICCIÓN": [5],
-    "CINE COMEDIA": [5, 3],
-    "CINE COMEDIA ROMANT.": [5, 3],
-    "CINE DE ACCIÓN": [5],
-    "CINE DE ANIMACIÓN": [5],
-    "CINE DE AVENTURAS": [5],
-    "CINE DRAMA": [5],
-    "CINE HISTÓRICO": [5, 6],
-    "CINE INFANTIL": [5, 7],
-    "CINE MUSICAL": [5, 8],
-    "CINE OESTE": [5],
-    "CINE POLICIACO": [5],
-    "CINE SUSPENSE": [5],
-    "CINE TERROR": [5],
-    "CINE TV": [5],
-    "COCINA": [17],
-    "CONCIERTO": [8],
-    "CONCURSO": [9],
-    "CORAZÓN / SOCIEDAD": [9],
-    "CORTO": [],
-    "CULTURAL/EDUCATIVO": [6],
-    "DANCE / ELECTRÓNICA": [8],
-    "DANZA / BALLET": [8],
-    "DEBATE": [10],
-    "DECORACIÓN": [4],
-    "DEPORTE": [1],
-    "DEPORTES": [1],
-    "DEPORTE ACUÁTICO": [1],
-    "DEPORTE DE INVIERNO": [1],
-    "DEPORTE TRADICIONAL": [1],
-    "DIBUJOS ANIMADOS": [7],
-    "DOC. ACTUALIDAD": [11],
-    "DOC. ARTE Y CULTURA": [11, 6],
-    "DOC. CAZA Y PESCA": [11, 1],
-    "DOC. CIENCIA Y TEC.": [11, 12],
-    "DOC. NATURALEZA": [11],
-    "DOC. TENDENCIAS": [11, 13],
-    "DOC. VIAJES": [11, 14],
-    "DOCU-SERIE": [11, 15],
-    "DOCUMENTAL": [11],
-    "DOCUMENTAL BIOGRAFÍA": [11],
-    "DOCUMENTAL DE CINE": [11, 5],
-    "DOCUMENTAL HISTORIA": [11, 6],
-    "DOCUMENTAL MÚSICA": [11, 8],
-    "DOCUMENTAL POLÍTICA": [11, 10],
-    "DOCUMENTAL SOCIEDAD": [11],
-    "ECONOMÍA": [10],
-    "ENTRETENIM. DEBATE": [9],
-    "ENTRETENIM. ENTREVISTA": [9],
-    "ENTRETENIMIENTO": [9],
-    "ENTREVISTA": [9, 10],
-    "ESOTERISMO": [],
-    "FORMACIÓN ACADÉMICA": [6],
-    "FÚTBOL": [1],
-    "FÚTBOL AMERICANO": [1],
-    "GOLF": [1],
-    "HOCKEY": [1],
-    "HUMOR": [3],
-    "IDIOMAS": [6],
-    "INF. SOCIEDAD": [],
-    "INFANTIL": [7],
-    "INFANTIL EDUCATIVO": [7],
-    "INFORMACIÓN": [10],
-    "INFORMACIÓN DEPORTE": [10, 1],
-    "INFORMACIÓN POLÍTICA": [10],
-    "INFORMATIVO": [10],
-    "JAZZ / BLUES": [8],
-    "JUEGOS": [9],
-    "LITERATURA": [6],
-    "MAGACÍN": [9],
-    "MAGACÍN INFORMATIVO": [9, 10],
-    "MANUALIDADES": [4],
-    "METEOROLOGÍA": [10],
-    "MINISERIE": [15],
-    "MODA": [13],
-    "MOTOR": [16],
-    "MÚSICA": [8],
-    "MÚSICA CLÁSICA": [8],
-    "OCIO Y AFICIONES": [],
-    "PREESCOLAR": [7],
-    "PROGRAMA CULTURAL": [6],
-    "PROGRAMA DE MÚSICA": [8],
-    "PROGRAMA DEPORTIVO": [1],
-    "PROGRAMA INFANTIL": [7],
-    "RELAC. PERSONALES": [],
-    "RELIGIÓN": [],
-    "REPORTAJES ACTUALIDAD": [10],
-    "RUGBY": [1],
-    "SALUD Y BIENESTAR": [2],
-    "SERIE": [15],
-    "SERIES": [15],
-    "SERIE CIENCIA FICCIÓN": [15],
-    "SERIE COMEDIA": [15],
-    "SERIE DE ACCIÓN": [15],
-    "SERIE DE ANIMACIÓN": [15],
-    "SERIE DE AVENTURAS": [15],
-    "SERIE DE HUMOR": [15, 3],
-    "SERIE DE SUSPENSE": [15],
-    "SERIE DRAMA": [15],
-    "SERIE HISTÓRICA": [15, 6],
-    "SERIE INFANTIL": [15, 7],
-    "SERIE JUVENIL": [15],
-    "SERIE POLICIACA": [15],
-    "TEATRO": [],
-    "TECNOLOGÍAS": [12],
-    "TELE REALIDAD": [9],
-    "TELENOVELA": [9],
-    "TELEVENTA": [],
-    "TENIS": [1],
-    "TERTULIA": [9],
-    "TOROS": [],
-    "TRADICIONES POPULARES": [6],
-    "TURISMO": [14],
-    "VARIEDADES": [9],
-    "VIDEOCLIPS": [8],
-    "ÓPERA": [8]
+    'ATLETISMO': [0],
+    'BALONCESTO': [0],
+    'BALONMANO': [0],
+    'BELLEZA': [1],
+    'BRICOLAJE': [3],
+    'CAZA Y PESCA': [0],
+    'CICLISMO': [0],
+    'CINE': [4],    'CINE ADULTO': [4],
+    'CINE CIENCIA FICCIÓN': [4],
+    'CINE COMEDIA': [4, 2],
+    'CINE COMEDIA ROMANT.': [4, 2],
+    'CINE DE ACCIÓN': [4],
+    'CINE DE ANIMACIÓN': [4],
+    'CINE DE AVENTURAS': [4],
+    'CINE DRAMA': [4],
+    'CINE HISTÓRICO': [4, 5],
+    'CINE INFANTIL': [4, 6],
+    'CINE MUSICAL': [4, 7],
+    'CINE OESTE': [4],
+    'CINE POLICIACO': [4],
+    'CINE SUSPENSE': [4],
+    'CINE TERROR': [4],
+    'CINE TV': [4],
+    'COCINA': [16],
+    'CONCIERTO': [7],
+    'CONCURSO': [8],
+    'CORAZÓN / SOCIEDAD': [8],
+    'CORTO': [],    'CULTURAL/EDUCATIVO': [5],
+    'DANCE / ELECTRÓNICA': [7],
+    'DANZA / BALLET': [7],
+    'DEBATE': [9],
+    'DECORACIÓN': [3],
+    'DEPORTE': [0],
+    'DEPORTES': [0],
+    'DEPORTE ACUÁTICO': [0],
+    'DEPORTE DE INVIERNO': [0],
+    'DEPORTE TRADICIONAL': [0],
+    'DIBUJOS ANIMADOS': [6],
+    'DOC. ACTUALIDAD': [10],
+    'DOC. ARTE Y CULTURA': [10, 5],
+    'DOC. CAZA Y PESCA': [10, 0],
+    'DOC. CIENCIA Y TEC.': [10, 11],
+    'DOC. NATURALEZA': [10],
+    'DOC. TENDENCIAS': [10, 12],
+    'DOC. VIAJES': [10, 13],
+    'DOCU-SERIE': [10, 14],
+    'DOCUMENTAL': [10],
+    'DOCUMENTAL BIOGRAFÍA': [10],
+    'DOCUMENTAL DE CINE': [10, 4],
+    'DOCUMENTAL HISTORIA': [10, 5],
+    'DOCUMENTAL MÚSICA': [10, 7],
+    'DOCUMENTAL POLÍTICA': [10, 9],
+    'DOCUMENTAL SOCIEDAD': [10],
+    'ECONOMÍA': [9],
+    'ENTRETENIM. DEBATE': [8],
+    'ENTRETENIM. ENTREVISTA': [8],
+    'ENTRETENIMIENTO': [8],
+    'ENTREVISTA': [8, 9],
+    'ESOTERISMO': [],
+    'FORMACIÓN ACADÉMICA': [5],
+    'FÚTBOL': [0],
+    'FÚTBOL AMERICANO': [0],
+    'GOLF': [0],    'HOCKEY': [0],
+    'HUMOR': [2],
+    'IDIOMAS': [5],
+    'INF. SOCIEDAD': [],
+    'INFANTIL': [6],
+    'INFANTIL EDUCATIVO': [6],
+    'INFORMACIÓN': [9],
+    'INFORMACIÓN DEPORTE': [9, 0],
+    'INFORMACIÓN POLÍTICA': [9],
+    'INFORMATIVO': [9],
+    'JAZZ / BLUES': [7],
+    'JUEGOS': [8],
+    'LITERATURA': [5],
+    'MAGACÍN': [8],
+    'MAGACÍN INFORMATIVO': [8, 9],
+    'MANUALIDADES': [3],
+    'METEOROLOGÍA': [9],
+    'MINISERIE': [14],
+    'MODA': [12],
+    'MOTOR': [15],
+    'MÚSICA': [7],
+    'MÚSICA CLÁSICA': [7],
+    'OCIO Y AFICIONES': [],
+    'PREESCOLAR': [6],
+    'PROGRAMA CULTURAL': [5],
+    'PROGRAMA DE MÚSICA': [7],
+    'PROGRAMA DEPORTIVO': [0],
+    'PROGRAMA INFANTIL': [6],
+    'RELAC. PERSONALES': [],
+    'RELIGIÓN': [],
+    'REPORTAJES ACTUALIDAD': [9],
+    'RUGBY': [0],
+    'SALUD Y BIENESTAR': [1],
+    'SERIE': [14],
+    'SERIES': [14],
+    'SERIE CIENCIA FICCIÓN': [14],
+    'SERIE COMEDIA': [14],
+    'SERIE DE ACCIÓN': [14],
+    'SERIE DE ANIMACIÓN': [14],
+    'SERIE DE AVENTURAS': [14],
+    'SERIE DE HUMOR': [14, 2],
+    'SERIE DE SUSPENSE': [14],
+    'SERIE DRAMA': [14],
+    'SERIE HISTÓRICA': [14, 5],
+    'SERIE INFANTIL': [14, 6],
+    'SERIE JUVENIL': [14],
+    'SERIE POLICIACA': [14],
+    'TEATRO': [],
+    'TECNOLOGÍAS': [11],
+    'TELE REALIDAD': [8],
+    'TELENOVELA': [8],
+    'TELEVENTA': [],
+    'TENIS': [0],
+    'TERTULIA': [8],
+    'TOROS': [],    'TRADICIONES POPULARES': [5],
+    'TURISMO': [13],
+    'VARIEDADES': [8],
+    'VIDEOCLIPS': [7],
+    'ÓPERA': [7]
 }
 
+EPG_URL = "http://ottcache.dof6.com/movistarplus/webplayer.hls/OTT/epg?from={now}&span=7&channel=&network=movistarplus"
 
-EPG_URL = "http://ottcache.dof6.com/movistarplus/webplayer.hls/OTT/epg?from={now}&span=1&channel=&network=movistarplus"
+CLASS_NAMES = ["Deportes", "Salud y Belleza", "Humor", "Hogar", "Cine", "Cultural y Educativo", "Infantil", "Música",
+               "Entretenimiento", "Información y Actualidad", "Documental", "Tecnología", "Moda", "Viajes", "Serie",
+               "Motor", "Cocina"]
 
 
 class MTE(Dataset):
@@ -196,15 +195,13 @@ class MTE(Dataset):
         - **Features**: texts
     """
 
-    def _info(self):
+    def info(self):
         return DatasetInfo(
-            features=str,
-            labels=ClassLabel(names=["deportes", "salud y belleza", "humor", "hogar", "cine", "cultural y educativo",
-                                     "infantil", "música", "entretenimiento", "información y actualidad", "documental",
-                                     "tecnología", "moda", "viajes", "serie", "motor", "cocina"])
+            features=Tensor(shape=[], dtype=str),
+            labels=ClassLabel(names=CLASS_NAMES, multilabel=True)
         )
 
-    def _download_and_prepare(self, dl_manager):
+    def download_and_prepare(self, dl_manager):
         epg_path = dl_manager.download(EPG_URL.format(now=datetime.now().strftime("%Y-%m-%dT%H:%M:%S")))
 
         epg_json = read_from_json(epg_path)
@@ -226,8 +223,6 @@ class MTE(Dataset):
 
                 self.sheets_paths_.append(sheet_path)
 
-
-    def _load(self):
         df = pd.DataFrame(columns=["title", "description", "genre", "channel_id"])
         for idx, sheet_path in enumerate(tqdm(self.sheets_paths_)):
             sheet = read_from_json(sheet_path)
@@ -235,22 +230,17 @@ class MTE(Dataset):
 
         df.drop_duplicates(inplace=True)
         df.fillna({"title": ""}, inplace=True)
-        df = df[df != ""]
+        df = df[df != ""]  # convert empty strings to NaN
         df = df[df.genre != "SIN CLASIFICAR"]
         df.dropna(subset=["genre", "description"], inplace=True)
 
         df["subscriptions"] = df.genre.map(GENRE_TO_SUBSCRIPTION)
 
-        if df.subscriptions.isna().sum() > 0:
-            unknown_genres = df.genre[df.subscriptions.isna()].unique().tolist()
-            self.logger.warning("Unknown subscription for the following genres: {}".format(unknown_genres))
-
         df.dropna(subset=["subscriptions"], inplace=True)
 
-        X = df.title + " " + df.description
-        y = MultiLabelBinarizer().fit_transform(df.subscriptions)
+        self.features_ = df.title + " " + df.description
+        self.labels_ = MultiLabelBinarizer(classes=range(len(CLASS_NAMES))).fit_transform(df.subscriptions)
 
-        return X, y
 
     def __parse_sheet(self, sheet):
         title = sheet.get("Titulo")
@@ -264,3 +254,9 @@ class MTE(Dataset):
         genre = sheet.get("Genero", {}).get("ComAntena")
 
         return (title, description, genre, channel_id)
+
+    def __getitem__(self, index):
+        return self.features_.iloc[index], self.labels_[index]
+
+    def __len__(self):
+        return len(self.features_)

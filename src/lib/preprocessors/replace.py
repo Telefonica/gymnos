@@ -26,5 +26,11 @@ class Replace(Preprocessor):
         self.from_val = from_val
         self.to_val = to_val
 
+    def fit(self, X, y=None):
+        return self
+
+    def fit_generator(self, generator):
+        return self
+
     def transform(self, X):
         return np.where(X == self.from_val, self.to_val, X)

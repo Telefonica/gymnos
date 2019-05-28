@@ -7,7 +7,6 @@
 import os
 import numpy as np
 
-from tqdm import tqdm
 from glob import glob
 
 from .dataset import Dataset, DatasetInfo, Tensor, ClassLabel
@@ -26,16 +25,17 @@ class TinyImagenet(Dataset):
         - **Features**: real, between 0 and 255
     """
 
-    def _info(self):
+    def info(self):
         return DatasetInfo(
             features=Tensor(shape=[64, 64, 3]),
             labels=ClassLabel(names_file=os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                                       "tiny_imagenet_labels.txt"))
         )
 
-    def _download_and_prepare(self, dl_manager):
-        path = dl_manager.download_kaggle_and_extract(dataset_name="akash2sharma/tiny-imagenet",
-                                                      file_or_files="tiny-imagenet-200.zip")
+    def download_and_prepare(self, dl_manager):
+        path = dl_manager.download_kaggle(dataset_name="akash2sharma/tiny-imagenet",
+                                          file_or_files="tiny-imagenet-200.zip")
+        path = dl_manager.extract(path)
         path = os.path.join(path, "tiny-imagenet-200")
 
         lines = read_from_text(os.path.join(path, "wnids.txt")).splitlines()
@@ -59,6 +59,11 @@ class TinyImagenet(Dataset):
         self.labels_ = labels[random_indices]
         self.images_paths_ = images_paths[random_indices]
 
-    def _load(self):
-        images = np.array([imread_rgb(image_path) for image_path in tqdm(self.images_paths_)], dtype=np.uint8)
-        return images, self.labels_
+
+    def __getitem__(self, index):
+        image = imread_rgb(self.images_paths_[index])
+        return image, self.labels_[index]
+
+
+    def __len__(self):
+        return len(self.images_paths_)

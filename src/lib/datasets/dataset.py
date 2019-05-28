@@ -4,63 +4,34 @@
 #
 #
 
-import numpy as np
-from ..logger import get_logger
-
-
-def requires_download(func):
-    def wrapped(self, *args, **kwargs):
-        if not self._downloaded:
-            raise RuntimeError("You must download your model before using it.")
-        return func(self, *args, **kwargs)
-
-    return wrapped
+from sys import getsizeof
 
 
 class Dataset:
     """
     Base class for all Gymnos datasets.
 
-    You need to implement the following methods: ``download_and_prepare``, ``info`` and ``_load``.
+    You need to implement the following methods: ``download_and_prepare``, ``info``, ``__getitem__`` and ``__len__`.
     """
 
-    def __init__(self):
-        self.logger = get_logger(prefix=self)
-        self._downloaded = False
-
-    def _info(self):
-        raise NotImplementedError()
-
     def info(self):
-        return self._info()
-
-    def _download_and_prepare(self, dl_manager):
         raise NotImplementedError()
 
     def download_and_prepare(self, dl_manager):
-        self._downloaded = True
-        return self._download_and_prepare(dl_manager)
-
-    def _load(self):
         raise NotImplementedError()
 
-    @requires_download
-    def load(self):
-        return self._load()
-
-    def _select(self, start=0, stop=None):
+    def __getitem__(self, index):
         raise NotImplementedError()
 
-    @requires_download
-    def select(self, start=0, stop=None):
-        return self.select(start=start, stop=stop)
-
-    def _nsamples(self):
+    def __len__(self):
         raise NotImplementedError()
 
-    @requires_download
-    def nsamples(self):
-        return self._nsamples()
+    @property
+    def memory_usage(self):
+        sample = self[0]
+        features_nbytes = getsizeof(sample[0])
+        labels_nbytes = getsizeof(sample[1])
+        return (features_nbytes * len(self)) + (labels_nbytes * len(self))
 
 
 class DatasetInfo:
@@ -88,9 +59,7 @@ class Tensor:
 
 class ClassLabel(Tensor):
 
-    def __init__(self, num_classes=None, names=None, names_file=None):
-        super().__init__(shape=[], dtype=np.int32)
-
+    def __init__(self, num_classes=None, names=None, names_file=None, multilabel=False):
         if sum(bool(a) for a in (num_classes, names, names_file)) != 1:
             raise ValueError("Only a single argument of ClassLabel() should be provided.")
 
@@ -106,6 +75,15 @@ class ClassLabel(Tensor):
         else:
             raise ValueError("A single argument of ClassLabel() should be provided")
 
+        if multilabel:
+            shape = [self.num_classes]
+        else:
+            shape = []
+
+        self.multilabel = multilabel
+
+        super().__init__(shape=shape, dtype=int)
+
     def __load_names_from_file(self, names_file):
         with open(names_file) as archive:
             names = [line.rstrip('\n') for line in archive]
@@ -119,4 +97,4 @@ class ClassLabel(Tensor):
         return self.names[int_value]
 
     def __str__(self):
-        return "Tensor <shape={}, dtype={} classes={}>".format(self.shape, self.dtype, self.num_classes)
+        return "Tensor <shape={}, dtype={}, classes={}>".format(self.shape, self.dtype, self.num_classes)

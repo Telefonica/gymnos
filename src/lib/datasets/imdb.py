@@ -6,7 +6,7 @@
 
 import pandas as pd
 
-from .dataset import Dataset, DatasetInfo, ClassLabel
+from .dataset import Dataset, DatasetInfo, ClassLabel, Tensor
 
 
 class IMDB(Dataset):
@@ -29,19 +29,20 @@ class IMDB(Dataset):
         - **Features**: texts
     """
 
-    def _info(self):
+    def info(self):
         return DatasetInfo(
-            features=str,
+            features=Tensor(shape=[], dtype=str),
             labels=ClassLabel(names=["negative", "positive"])
         )
 
-    def _download_and_prepare(self, dl_manager):
-        self.csv_path_ = dl_manager.download_kaggle(dataset_name="oumaimahourrane/imdb-reviews",
-                                                    file_or_files="dataset.csv")
+    def download_and_prepare(self, dl_manager):
+        csv_path = dl_manager.download_kaggle(dataset_name="oumaimahourrane/imdb-reviews",
+                                              file_or_files="dataset.csv")
+        self.data_ = pd.read_csv(csv_path, encoding="latin-1")
 
+    def __getitem__(self, index):
+        row = self.data_.iloc[index]
+        return row["SentimentText"], row["Sentiment"]
 
-    def _load(self):
-        data = pd.read_csv(self.csv_path_, encoding="latin-1")
-        features = data["SentimentText"]
-        labels = data["Sentiment"]
-        return features, labels
+    def __len__(self):
+        return len(self.data_)

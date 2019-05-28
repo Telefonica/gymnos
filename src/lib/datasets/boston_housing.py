@@ -7,7 +7,6 @@
 import numpy as np
 
 from .dataset import Dataset, DatasetInfo, Tensor
-from keras.datasets import boston_housing
 
 
 class BostonHousing(Dataset):
@@ -21,17 +20,21 @@ class BostonHousing(Dataset):
         - **Features**: real
     """
 
-    def _info(self):
+    def info(self):
         return DatasetInfo(
             features=Tensor(shape=[13], dtype=np.float32),
-            labels=np.float32
+            labels=Tensor(shape=[], dtype=np.float32)
         )
 
-    def _download_and_prepare(self, dl_manager):
-        self.logger.debug("Download not required. Using dataset from keras library.")
+    def download_and_prepare(self, dl_manager):
+        data_path = dl_manager.download("https://s3.amazonaws.com/keras-datasets/boston_housing.npz")
+        self.data_ = np.load(data_path)
+        self.size_ = len(self.data_["x"])  # x and y have the same length
 
-    def _load(self):
-        (X_train, y_train), (X_test, y_test) = boston_housing.load_data()
-        X = np.concatenate([X_train, X_test], axis=0)
-        y = np.concatenate([y_train, y_test], axis=0)
+    def __getitem__(self, index):
+        X = self.data_["x"][index]
+        y = self.data_["y"][index]
         return X, y
+
+    def __len__(self):
+        return self.size_

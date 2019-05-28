@@ -7,7 +7,7 @@
 import numpy as np
 import statsmodels.api as sm
 
-from .dataset import Dataset, DatasetInfo
+from .dataset import Dataset, DatasetInfo, Tensor
 
 
 class UnusualDataUsageTest(Dataset):
@@ -22,17 +22,19 @@ class UnusualDataUsageTest(Dataset):
         - **Features**: xxx
     """
 
-    def _info(self):
+    def info(self):
         return DatasetInfo(
-            features=np.int32,
-            labels=np.float32
+            features=Tensor(shape=[]),
+            labels=Tensor(shape=[])
         )
 
-    def _download_and_prepare(self, dl_manager):
-        print("Download not required. Using dataset from statsmodels library.")
-
-    def _load(self):
+    def download_and_prepare(self, dl_manager):
         data = sm.datasets.sunspots.load_pandas().data
-        label_serie = data['SUNACTIVITY'].values
-        features_serie = np.arange(len(label_serie))
-        return features_serie, label_serie
+        self.labels_ = data['SUNACTIVITY'].values
+        self.features_ = np.arange(len(self.labels_))
+
+    def __getitem__(self, index):
+        return self.features_[index], self.labels_[index]
+
+    def __len__(self):
+        return len(self.features_)

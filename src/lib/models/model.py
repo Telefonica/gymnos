@@ -4,6 +4,9 @@
 #
 #
 
+import numpy as np
+
+from collections import defaultdict
 from sklearn.base import BaseEstimator
 
 
@@ -28,12 +31,29 @@ class Model(BaseEstimator):
         **parameters: any, optional
             Any parameter needed train the model.
 
-        Return
+        Returns
         ------
         metrics: dict
             Training metrics
         """
         return super().fit(X, y, **parameters)
+
+    def fit_generator(self, generator, **parameters):
+        """
+        Fit model to training generator
+
+        Parameters
+        ----------
+        generator: generator
+            Generator yielding (X, y) tuples
+        **parameters: any, optional
+            Any parameter needed to train the model
+
+        Returns
+        -------
+        metrics: dict
+            Training metrics
+        """
 
     def predict(self, X):
         """
@@ -69,24 +89,50 @@ class Model(BaseEstimator):
         """
         return super().evaluate(X, y)
 
-    def save(self, save_path):
+    def evaluate_generator(self, generator):
         """
-        Save model to ``save_path``.
+        Evaluate model performance with generator.
+
+        Parameters
+        -----------
+        generator: generator
+            Generator yielding features, labels
+
+        Returns
+        -------
+        metrics: dict
+            Dictionnary with metrics
+        """
+        metrics = defaultdict(list)
+
+        for X, y in generator:
+            batch_metrics = self.evaluate(X, y)
+            for metric_name, metric_value in batch_metrics.items():
+                metrics[metric_name].append(metric_value)
+
+        for metric_name, metric_value in metrics.items():
+            metrics[metric_name] = np.mean(metric_value)
+
+        return metrics
+
+    def save(self, save_dir):
+        """
+        Save model to ``save_dir``.
 
         Parameters
         ----------
-        save_path: str
+        save_dir: str
             Path (Directory) to save model.
         """
-        return super().save(save_path)
+        return super().save(save_dir)
 
-    def restore(self, save_path):
+    def restore(self, save_dir):
         """
-        Restore model from ``save_path``.
+        Restore model from ``save_dir``.
 
         Parameters
         ----------
-        save_path: str
+        save_dir: str
             Path (Directory) where the model is saved.
         """
-        return super().restore(save_path)
+        return super().restore(save_dir)
