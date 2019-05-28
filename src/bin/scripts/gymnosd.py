@@ -32,8 +32,6 @@ def run_experiment(training_config_path, output_path="trainings"):
     training_config_copy = copy.deepcopy(training_config)
 
     cache_config = read_from_json(CACHE_CONFIG_PATH)
-    logging_config = read_from_json(LOGGING_CONFIG_PATH)
-    logging.config.dictConfig(logging_config)
     logger = get_logger(prefix="Main")
 
     logger.info("Starting gymnos environment ...")
@@ -63,11 +61,8 @@ def run_experiment(training_config_path, output_path="trainings"):
                                                                                          TRAINING_LOG_FILENAME))
 
 
-def run_prediction(execution_dir, values, loggging_config_path_prediction):
+def run_prediction(execution_dir, values):
     prediction_config = read_from_json(os.path.join(execution_dir, "training_config.json"))
-
-    logging_config = read_from_json(loggging_config_path_prediction)
-    logging.config.dictConfig(logging_config)
     logger = get_logger(prefix="Main")
 
     model = Model(**prediction_config["model"])
@@ -87,6 +82,9 @@ def run_prediction(execution_dir, values, loggging_config_path_prediction):
         raise
     return prediction
 
+def configure_logging():
+    logging_config = read_from_json(LOGGING_CONFIG_PATH)
+    logging.config.dictConfig(logging_config)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -96,6 +94,8 @@ if __name__ == "__main__":
     group.add_argument("-t", "--regression_test", help="execute regression test", action="store_true")
 
     args = parser.parse_args()
+
+    configure_logging()
 
     if args.regression_test:
         test_config_filenames = os.listdir(REGRESSION_TESTS_DIR)

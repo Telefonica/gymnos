@@ -19,19 +19,16 @@ class Predictor:
         self.dataset = dataset
         self.logger = get_logger(prefix=self)
 
-    def predict(self, values):
+    def predict(self, X):
         """
         Run experiment generating outputs.
 
         Parameters
         ----------
-        values: dataset used for prediction
+        X: dataset used for prediction
 
         """
-
         # RETRIEVE PLATFORM DETAILS
-
-        execution_steps_elapsed = {}
 
         for name, key in zip(("Python version", "Platform"), ("python_version", "platform")):
             self.logger.info("{}: {}".format(name, platform_details(key)))
@@ -43,18 +40,15 @@ class Predictor:
         self.logger.info("Apply preprocessors")
 
         with elapsed_time() as elapsed:
-            values = self.dataset.preprocessor_pipeline.transform(values)
+            X = self.dataset.preprocessor_pipeline.transform(X)
 
-        execution_steps_elapsed["transform_preprocessors"] = elapsed.s
-        self.logger.debug("Preprocessing data took {:.2f}s".format(elapsed.s))
+        self.logger.debug("Applying preprocessors took {:.2f}s".format(elapsed.s))
 
         # PREDICT
 
         self.logger.info("Apply model")
         with elapsed_time() as elapsed:
-            prediction = self.model.model.predict(values)
+            prediction = self.model.model.predict(X)
 
-        execution_steps_elapsed["Apply model"] = elapsed.s
         self.logger.debug("Applying model took {:.2f}s".format(elapsed.s))
-
         return prediction
