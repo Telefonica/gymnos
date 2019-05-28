@@ -18,11 +18,24 @@ from ..utils.downloader import download_file_from_url
 
 
 class DownloadManager:
+    """
+    Download manager to handle all kinds of download, from URLs to kaggle datasets.
 
-    def __init__(self, download_dir, dataset_name=None, extract_dir=None, force_download=False, force_extraction=False):
+    Parameters
+    ----------
+    download_dir: str
+        Directory to download files. By default, current directory.
+    extract_dir: str, optional
+        Directory to extract files. By default, <download_dir>/extracted
+    force_download: bool, optional
+        Whether or not force download if file exists
+    force_extraction: bool, optional
+        Whether or not force extraction if file exists
+    """
+
+    def __init__(self, download_dir=".", extract_dir=None, force_download=False, force_extraction=False):
         self.download_dir = os.path.expanduser(download_dir)
         self.extract_dir = os.path.expanduser(extract_dir or os.path.join(download_dir, "extracted"))
-        self.dataset_name = dataset_name
         self.force_download = force_download
         self.force_extraction = force_extraction
 
@@ -31,6 +44,25 @@ class DownloadManager:
 
 
     def extract(self, path_or_paths, ignore_not_compressed=True):
+        """
+        Extract file/s.
+
+        Parameters
+        ----------
+        path_or_paths: str or list of str or dict(name: filepath)
+            Compressed file paths.
+        ignore_not_compressed: bool, optional
+            Whether or not raise error if the file is not recognized as compressed file.
+
+        Returns
+        --------
+        str, list of str or dict
+            Directory or directories with extracted files.
+            The return type depends on the ``path_or_paths``
+            If ``path_or_paths`` is a string, it returns the directory.
+            If ``path_or_paths`` is a list of str, it returns a list of directories.
+            If ``path_or_paths`` is a dict, it returns a dict(name: directory)
+        """
         zip_extensions = (".zip",)
         tar_extensions = (".tar", ".tar.bz2", ".tbz2", ".tbz", ".tb2", ".tar.gz")
         gz_extensions  = (".gz",)
@@ -71,6 +103,32 @@ class DownloadManager:
 
 
     def download_kaggle(self, dataset_name=None, competition_name=None, file_or_files=None, verbose=True):
+        """
+        Download kaggle dataset/competition.
+
+        Parameters
+        ----------
+        dataset_name: str, optional
+            Kaggle dataset name with the format <user>/<dataset_name>, e.g mlg-ulb/creditcardfraud.
+            Mandatory if ``competition_name`` is None.
+        competition_name: str, optional
+            Kaggle competition name.
+            Mandatory if ``dataset_name`` is None.
+        file_or_files: str or list of str or dict(name: filename), optional
+            Specific file to download. By default, download all files.
+        verbose: bool, optional
+            Whether or not show progress bar
+
+        Returns
+        -------
+        str, list of str or dict
+            File paths with downloaded Kaggle files.
+            The return type depends on the ``file_or_files`` parameter.
+            If ``file_or_files`` is None, it returns the dataset/competition directory.
+            If ``file_or_files`` is a str, it returns the directory.
+            If ``file_or_files`` is a list of str, it returns a list with the file paths.
+            If ``file_or_files`` is a dict, the return type is a dict(name: filepath)
+        """
         if file_or_files is None:
             file_or_files = KaggleService.list_files(dataset_name=dataset_name, competition_name=competition_name)
 
@@ -117,6 +175,25 @@ class DownloadManager:
 
 
     def download(self, url_or_urls, verbose=True):
+        """
+        Download url/s.
+
+        Parameters
+        ----------
+        url_or_urls: str or list of str or dict(name: url)
+            Url or urls to download
+        verbose:
+            Whether or not show progress bar
+
+        Returns
+        -------
+        str, list of str or dict
+            File paths with downloaded Kaggle files.
+            The return type depends on the ``url_or_urls`` parameter.
+            If ``url_or_urls`` is a str, it returns the file path.
+            If ``url_or_urls`` is a list of str, it returns a list with the file paths.
+            If ``url_or_urls`` is a dict, the return type is a dict(name: filepath)
+        """
         if isinstance(url_or_urls, str):
             sha1_url_hash = sha1_text(url_or_urls)
             slug_url = filenamify_url(url_or_urls)
@@ -157,12 +234,3 @@ class DownloadManager:
             return file_paths
         else:
             raise ValueError("url_or_urls must be a str, an iterable or a dict. Got {}".format(type(url_or_urls)))
-
-
-    def download_kaggle_and_extract(self, dataset_name=None, competition_name=None, file_or_files=None, verbose=True):
-        return self.extract(self.download_kaggle(dataset_name=dataset_name, competition_name=competition_name,
-                                                 file_or_files=file_or_files, verbose=verbose))
-
-
-    def download_and_extract(self, url_or_urls, verbose=True):
-        return self.extract(self.download(url_or_urls, verbose=verbose))

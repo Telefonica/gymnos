@@ -28,6 +28,24 @@ def read_from_text(file_path):
         return f.read()
 
 
+def count_lines(file_path):
+    """
+    Count lines from a file
+
+    Parameters
+    ----------
+    file_path: str
+        File path to count lines
+
+    Returns
+    --------
+    int
+        Number of lines
+    """
+    with open(file_path, "r") as f:
+        return sum(1 for line in f)
+
+
 def read_from_json(file_path):
     """
     Read JSON
@@ -73,6 +91,25 @@ def save_to_json(path, obj, indent=4):
 
 
 def import_from_json(json_path, key):
+    """
+    Import module from a JSON file.
+    The JSON structure must be in the following format:
+    {
+        <key>: <module_path (e.g lib.core.model.Model)>
+    }
+
+    Parameters
+    ----------
+    json_path: str
+        JSON file path
+    key: str
+        JSON key to read module path
+
+    Returns
+    -------
+    object
+        Imported object
+    """
     objects_ids_to_modules  = read_from_json(json_path)
     object_loc = objects_ids_to_modules[key]
     return locate(object_loc)
