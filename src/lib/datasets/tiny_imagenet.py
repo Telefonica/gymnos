@@ -27,7 +27,7 @@ class TinyImagenet(Dataset):
 
     def info(self):
         return DatasetInfo(
-            features=Tensor(shape=[64, 64, 3]),
+            features=Tensor(shape=[64, 64, 3], dtype=np.uint8),
             labels=ClassLabel(names_file=os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                                       "tiny_imagenet_labels.txt"))
         )

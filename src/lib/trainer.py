@@ -20,8 +20,8 @@ from .utils.path import chdir
 from .utils.timing import ElapsedTimeCalculator
 from .utils.io_utils import save_to_json
 from .services import DownloadManager
-from .utils.data import Subset, DataLoader
 from .utils.text_utils import humanize_bytes
+from .utils.data import Subset, DataLoader, get_approximate_nbytes
 
 
 class Trainer:
@@ -52,20 +52,19 @@ class Trainer:
         the values of datetime, model_name, dataset_name and experiment_name.
     artifacts_dirname: str, optional
         Directory name where artifacts are saved (saved model, saved preprocessors, etc ...)
-    optimized_datasets_dir: str, optional
+    hdf5_datasets_dir: str, optional
         Directory to read and save HDF5 optimized datasets.
     """
 
     def __init__(self, trainings_path="trainings", executions_dirname="executions",
                  trackings_dirname="trackings", execution_format="{datetime:%H-%M-%S--%d-%m-%Y}__{model_name}",
-                 artifacts_dirname="artifacts", optimized_datasets_dir=None, download_dir="downloads",
+                 artifacts_dirname="artifacts", download_dir="downloads",
                  extract_dir=None, force_download=False, force_extraction=False):
         self.trainings_path = trainings_path
         self.executions_dirname = executions_dirname
         self.trackings_dirname = trackings_dirname
         self.execution_format = execution_format
         self.artifacts_dirname = artifacts_dirname
-        self.optimized_datasets_dir = optimized_datasets_dir
 
         self.dl_manager = DownloadManager(download_dir, extract_dir=extract_dir,
                                           force_download=force_download,
@@ -162,21 +161,27 @@ class Trainer:
         tracking.trackers.log_params(tracking.params)
         tracking.trackers.log_params(model.parameters)
 
+        # DOWNLOAD DATA
+
+        self.logger.info("Downloading and preparing data")
+        with elapsed_time_calc("dataset_download_and_prepare") as elapsed:
+            dataset.dataset.download_and_prepare(self.dl_manager)
+
+        self.logger.debug("Downloading and preparing data took {:.2f}".format(elapsed.s))
+
         # LOG DATASET PROPERTIES
 
         dataset_info = dataset.dataset.info()
 
-        self.logger.info("Downloading data")
-
-        with elapsed_time_calc("dataset_download_and_prepare") as elapsed:
-            dataset.dataset.download_and_prepare(self.dl_manager)
-
-        self.logger.debug("Downloading data took {:.2f}".format(elapsed.s))
-
         self.logger.debug("Dataset Features: {}".format(dataset_info.features))
         self.logger.debug("Dataset Labels: {}".format(dataset_info.labels))
+
+
+        nbytes = get_approximate_nbytes(dataset.dataset)
         self.logger.debug("Full Dataset Samples: {}".format(len(dataset.dataset)))
-        self.logger.debug("Full Dataset Memory Usage (approx): {}".format(humanize_bytes(dataset.dataset.memory_usage)))
+        self.logger.debug("Full Dataset Memory Usage (approx): {}".format(humanize_bytes(nbytes)))
+
+        # SPLIT DATASET INTO TRAIN AND TEST
 
         train_samples = dataset.samples.train
         test_samples = dataset.samples.test
@@ -200,19 +205,23 @@ class Trainer:
         train_subset = Subset(dataset.dataset, train_indices)
         test_subset  = Subset(dataset.dataset, test_indices)
 
-        load_data_by_chunks = dataset.chunk_size is not None
+        # LOAD DATA
 
-        self.logger.info("Loading data")
+        load_data_by_chunks = dataset.chunk_size is not None
 
         if load_data_by_chunks:
             train_loader = DataLoader(train_subset, batch_size=dataset.chunk_size, drop_last=False)
             test_loader  = DataLoader(test_subset, batch_size=dataset.chunk_size, drop_last=False)
         else:
+            self.logger.info("Loading data into memory")
+
             with elapsed_time_calc("load_data_into_memory") as elapsed:
                 train_data = DataLoader(train_subset, batch_size=len(dataset.dataset), drop_last=False, verbose=True)[0]
                 test_data = DataLoader(test_subset, batch_size=len(dataset.dataset), drop_last=False, verbose=True)[0]
 
             self.logger.debug("Loading data into memory took {:.2f}s".format(elapsed.s))
+
+        # PREPROCESS DATA
 
         self.logger.info("Fitting preprocessing pipeline using training data ({})".format(dataset.pipeline))
 
@@ -250,6 +259,8 @@ class Trainer:
 
             self.logger.debug("Transforming data took {:.2f}s".format(elapsed.s))
 
+        # FIT MODEL
+
         self.logger.info("Fitting model using training data")
 
         if load_data_by_chunks:
@@ -269,6 +280,8 @@ class Trainer:
                                                                                             np.min(metric_value),
                                                                                             np.max(metric_value)))
         tracking.trackers.log_metrics(train_metrics)
+
+        # EVALUATE MODEL
 
         self.logger.info("Evaluating model using test data")
 

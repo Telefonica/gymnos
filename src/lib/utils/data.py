@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 
 from tqdm import tqdm
+from sys import getsizeof
 
 
 class Subset:
@@ -33,6 +34,11 @@ class Subset:
 
     def __len__(self):
         return len(self.indices)
+
+
+def get_approximate_nbytes(sequence):
+    sample = sequence[0]
+    return len(sequence) * getsizeof(sample)
 
 
 def default_collate_func(samples):

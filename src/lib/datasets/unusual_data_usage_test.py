@@ -24,8 +24,8 @@ class UnusualDataUsageTest(Dataset):
 
     def info(self):
         return DatasetInfo(
-            features=Tensor(shape=[]),
-            labels=Tensor(shape=[])
+            features=Tensor(shape=[], dtype=np.int64),
+            labels=Tensor(shape=[], dtype=np.float64)
         )
 
     def download_and_prepare(self, dl_manager):

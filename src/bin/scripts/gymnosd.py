@@ -8,6 +8,7 @@ import argparse
 
 from tempfile import TemporaryDirectory
 
+from lib.datasets import HDF5Dataset
 from lib.logger import get_logger
 from lib.trainer import Trainer
 from lib.core.model import Model
@@ -25,6 +26,8 @@ REGRESSION_TESTS_DIR = os.path.join("experiments", "tests")
 TRAINING_LOG_FILENAME = "execution.log"
 TRAINING_CONFIG_FILENAME = "training_config.json"
 
+DOWNLOAD_DIR = "./downloads"
+
 
 def run_experiment(trainer, training_config_path):
     training_config = read_from_json(training_config_path)
@@ -38,13 +41,25 @@ def run_experiment(trainer, training_config_path):
 
     os.makedirs(cache_config["datasets"], exist_ok=True)
 
+    dataset = Dataset(**training_config["dataset"])
+    model = Model(**training_config["model"])
+    training = Training(**training_config.get("training", {}))  # optional field
+    experiment = Experiment(**training_config.get("experiment", {}))  # optional field
+    tracking = Tracking(**training_config.get("tracking", {}))  # optional field)
+
+    # Replace dataset by HDF5 dataset if found
+    hdf5_dataset_path = os.path.join(cache_config["datasets"], dataset.name + ".h5")
+    if os.path.isfile(hdf5_dataset_path):
+        dataset.dataset = HDF5Dataset(hdf5_dataset_path, features_key="features", labels_key="labels", info_key="info")
+        logger.info("HDF5 dataset found!")
+
     try:
         trainer.train(
-            model=Model(**training_config["model"]),
-            dataset=Dataset(**training_config["dataset"]),
-            training=Training(**training_config.get("training", {})),  # optional field
-            experiment=Experiment(**training_config.get("experiment", {})),  # optional field
-            tracking=Tracking(**training_config.get("tracking", {}))  # optional field)
+            model=model,
+            dataset=dataset,
+            training=training,
+            experiment=experiment,
+            tracking=tracking
         )
 
         logger.info("Success! Execution saved ({})".format(trainer.last_execution_path_))
@@ -72,11 +87,11 @@ if __name__ == "__main__":
     if args.regression_test:
         test_config_filenames = os.listdir(REGRESSION_TESTS_DIR)
         with TemporaryDirectory() as temp_dir:
-            trainer = Trainer(trainings_path=temp_dir, optimized_datasets_dir=cache_config["datasets"])
+            trainer = Trainer(trainings_path=temp_dir, download_dir=DOWNLOAD_DIR)
             for i, test_config_filename in enumerate(test_config_filenames):
                 print("{}{} / {} - Current regression test: {}{}".format("\033[91m", i + 1, len(test_config_filenames),
                                                                          test_config_filename, "\033[0m"))
                 run_experiment(trainer, os.path.join(REGRESSION_TESTS_DIR, test_config_filename))
     else:
-        trainer = Trainer(optimized_datasets_dir=cache_config["datasets"])
+        trainer = Trainer(download_dir=DOWNLOAD_DIR)
         run_experiment(trainer, args.training_config)

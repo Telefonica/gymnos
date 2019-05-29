@@ -24,8 +24,8 @@ class DataUsageTest(Dataset):
 
     def info(self):
         return DatasetInfo(
-            features=Tensor(shape=[], dtype=np.float32),
-            labels=Tensor(shape=[], dtype=np.float32)
+            features=Tensor(shape=[1], dtype=np.int64),
+            labels=Tensor(shape=[1], dtype=np.float64)
         )
 
     def download_and_prepare(self, dl_manager):

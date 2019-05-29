@@ -5,4 +5,4 @@ from .mte import MTE
 from .dogs_vs_cats import DogsVsCats
 from .data_usage_test import DataUsageTest
 from .unusual_data_usage_test import UnusualDataUsageTest
-from .dataset import Dataset
+from .dataset import Dataset, HDF5Dataset
