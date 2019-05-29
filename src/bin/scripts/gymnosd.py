@@ -1,20 +1,20 @@
 #!/usr/bin/python3
 
-import os
-import copy
-import shutil
-import logging
 import argparse
-
+import copy
+import logging
+import os
+import shutil
 from tempfile import TemporaryDirectory
 
-from lib.logger import get_logger
-from lib.trainer import Trainer
-from lib.core.model import Model
 from lib.core.dataset import Dataset
-from lib.core.training import Training
-from lib.core.tracking import Tracking
 from lib.core.experiment import Experiment
+from lib.core.model import Model
+from lib.core.tracking import Tracking
+from lib.core.training import Training
+from lib.logger import get_logger
+from lib.predictor import Predictor
+from lib.trainer import Trainer
 from lib.utils.io_utils import save_to_json, read_from_json
 
 CACHE_CONFIG_PATH = os.path.join("config", "cache.json")
@@ -24,6 +24,7 @@ REGRESSION_TESTS_DIR = os.path.join("experiments", "tests")
 
 TRAINING_LOG_FILENAME = "execution.log"
 TRAINING_CONFIG_FILENAME = "training_config.json"
+ARTIFACTS_PATH = "artifacts"
 
 
 def run_experiment(training_config_path, output_path="trainings"):
@@ -31,8 +32,6 @@ def run_experiment(training_config_path, output_path="trainings"):
     training_config_copy = copy.deepcopy(training_config)
 
     cache_config = read_from_json(CACHE_CONFIG_PATH)
-    logging_config = read_from_json(LOGGING_CONFIG_PATH)
-    logging.config.dictConfig(logging_config)
     logger = get_logger(prefix="Main")
 
     logger.info("Starting gymnos environment ...")
@@ -62,13 +61,41 @@ def run_experiment(training_config_path, output_path="trainings"):
                                                                                          TRAINING_LOG_FILENAME))
 
 
+def run_prediction(execution_dir, values):
+    prediction_config = read_from_json(os.path.join(execution_dir, "training_config.json"))
+    logger = get_logger(prefix="Main")
+
+    model = Model(**prediction_config["model"])
+    dataset = Dataset(**prediction_config["dataset"])
+
+    artifacts_path = os.path.join(execution_dir, ARTIFACTS_PATH)
+    model.model.restore(artifacts_path)
+    dataset.preprocessor_pipeline.restore(os.path.join(artifacts_path, "pipeline.pkl"))
+
+    predictor = Predictor(model, dataset)
+
+    try:
+        prediction = predictor.predict(values)
+
+    except Exception as e:
+        logger.exception("Exception ocurred: {}".format(e))
+        raise
+    return prediction
+
+def configure_logging():
+    logging_config = read_from_json(LOGGING_CONFIG_PATH)
+    logging.config.dictConfig(logging_config)
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("-c", "--training_config", help="sets training training configuration file",
                        action="store")
     group.add_argument("-t", "--regression_test", help="execute regression test", action="store_true")
+
     args = parser.parse_args()
+
+    configure_logging()
 
     if args.regression_test:
         test_config_filenames = os.listdir(REGRESSION_TESTS_DIR)
