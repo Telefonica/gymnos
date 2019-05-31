@@ -43,7 +43,7 @@
         "validation_split": 0.25
     },
     "tracking": {
-        "params": {
+        "additional_params": {
             "device": "cpu"
         },
         "trackers": [

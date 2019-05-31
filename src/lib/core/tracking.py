@@ -34,7 +34,7 @@ class Tracking:
             - ``"mlflow"``: :class:`lib.trackers.mlflow.MLFlow`,
             - ``"tensorboard"``: :class:`lib.trackers.tensorboard.Tensorboard`
 
-    params: dict, optional
+    additional_params: dict, optional
         Additional parameters to log
 
     Examples
@@ -54,20 +54,20 @@ class Tracking:
                     "type": "tensorboard"
                 }
             ],
-            params={
+            additional_params={
                 data_scientist="Rubén Salas"
             }
         )
     """
 
     def __init__(self, log_model_params=True, log_model_metrics=True, log_training_params=True, trackers=None,
-                 params=None):
+                 additional_params=None):
         trackers = trackers or []
 
         self.log_model_params = log_model_params
         self.log_model_metrics = log_model_metrics
         self.log_training_params = log_training_params
-        self.params = params or {}
+        self.additional_params = additional_params or {}
 
         self.trackers = TrackerList()
         for tracker_config in trackers:

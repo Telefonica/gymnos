@@ -112,7 +112,7 @@ class Trainer:
         # LOG PARAMETERS
 
         tracking.trackers.log_params(model.parameters)
-        tracking.trackers.log_params(tracking.params)
+        tracking.trackers.log_params(tracking.additional_params)
 
         # DOWNLOAD DATA
 
