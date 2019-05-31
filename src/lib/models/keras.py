@@ -21,7 +21,7 @@ KERAS_APPLICATIONS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__),
                                                       "applications.json")
 
 
-class Keras(Model, KerasMixin):
+class Keras(KerasMixin, Model):
     """
     Model to build Keras sequentials from a dictionnary that defines the network architecture.
 

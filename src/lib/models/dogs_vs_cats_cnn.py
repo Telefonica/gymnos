@@ -17,7 +17,7 @@ from .mixins import TensorFlowMixin
 from ..utils.tensorflow_session import build_tf_session_from_config
 
 
-class DogsVsCatsCNN(Model, TensorFlowMixin):
+class DogsVsCatsCNN(TensorFlowMixin, Model):
     """
     Convolutional neuronal network developed to solve Dogs vs Cats image classification
     task (:class:`lib.datasets.dogs_vs_cats.DogsVsCats`).

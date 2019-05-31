@@ -97,7 +97,7 @@ class SklearnMixin:
 
             return self.evaluate_generator(generator)
         else:
-            return self.model.fit_generator(generator)
+            return self.fit_generator(generator)
 
 
     def predict(self, X):
@@ -128,18 +128,6 @@ class SklearnMixin:
             True labels
         """
         return {self.metric_name: self.model.score(X, y)}
-
-    def evaluate_generator(self, generator):
-        metrics = defaultdict(list)
-        for X, y in generator:
-            batch_metrics = self.evaluate(X, y)
-            for metric_name, metric_value in batch_metrics.items():
-                metrics[metric_name].append(metric_value)
-
-        for metric_name, metric_value in metrics.items():
-            metrics[metric_name] = np.mean(metric_value)
-
-        return metrics
 
     def save(self, save_dir):
         """

@@ -7,16 +7,17 @@
 import dill
 
 from tqdm import tqdm
-from sklearn.base import TransformerMixin
+from abc import ABCMeta, abstractmethod
 
 
-class Preprocessor(TransformerMixin):
+class Preprocessor(metaclass=ABCMeta):
     """
     Base class for all Gymnos preprocessors.
 
     You need to implement the following methods: ``fit`` and optionally ``transform``.
     """
 
+    @abstractmethod
     def fit(self, X, y=None):
         """
         Fit preprocessor to training data.
@@ -33,7 +34,6 @@ class Preprocessor(TransformerMixin):
         self: Preprocessor
             Own instance for chain purposes.
         """
-        raise NotImplementedError()
 
     def fit_generator(self, generator):
         """
@@ -49,9 +49,10 @@ class Preprocessor(TransformerMixin):
         self: Preprocessor
             Own instance for chain purposes.
         """
-        raise NotImplementedError()
+        raise NotImplementedError(("Preprocessor {} don't implement fit_generator " +
+                                   "method").format(self.__class__.__name__))
 
-
+    @abstractmethod
     def transform(self, X):
         """
         Transform data.
@@ -66,7 +67,6 @@ class Preprocessor(TransformerMixin):
         X_t: array_like
             Transformed features
         """
-        raise NotImplementedError()
 
 
 class Pipeline:

@@ -7,10 +7,10 @@
 import numpy as np
 
 from collections import defaultdict
-from sklearn.base import BaseEstimator
+from abc import ABCMeta, abstractmethod
 
 
-class Model(BaseEstimator):
+class Model(metaclass=ABCMeta):
     """
     Base class for all Gymnos models.
 
@@ -18,6 +18,7 @@ class Model(BaseEstimator):
     ``restore``.
     """
 
+    @abstractmethod
     def fit(self, X, y, **parameters):
         """
         Fit model to training data.
@@ -36,7 +37,6 @@ class Model(BaseEstimator):
         metrics: dict
             Training metrics
         """
-        return super().fit(X, y, **parameters)
 
     def fit_generator(self, generator, **parameters):
         """
@@ -54,7 +54,9 @@ class Model(BaseEstimator):
         metrics: dict
             Training metrics
         """
+        raise NotImplementedError("Model {} don't implement fit_generator method".format(self.__class__.__name__))
 
+    @abstractmethod
     def predict(self, X):
         """
         Predict data.
@@ -69,8 +71,8 @@ class Model(BaseEstimator):
         predictions: array_like
             Predictions from ``X``.
         """
-        return super().predict(X)
 
+    @abstractmethod
     def evaluate(self, X, y):
         """
         Evaluate model performance.
@@ -87,7 +89,6 @@ class Model(BaseEstimator):
         metrics: dict
             Dictionnary with metrics.
         """
-        return super().evaluate(X, y)
 
     def evaluate_generator(self, generator):
         """
@@ -115,6 +116,7 @@ class Model(BaseEstimator):
 
         return metrics
 
+    @abstractmethod
     def save(self, save_dir):
         """
         Save model to ``save_dir``.
@@ -124,8 +126,8 @@ class Model(BaseEstimator):
         save_dir: str
             Path (Directory) to save model.
         """
-        return super().save(save_dir)
 
+    @abstractmethod
     def restore(self, save_dir):
         """
         Restore model from ``save_dir``.
@@ -135,4 +137,3 @@ class Model(BaseEstimator):
         save_dir: str
             Path (Directory) where the model is saved.
         """
-        return super().restore(save_dir)

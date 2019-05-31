@@ -60,24 +60,8 @@ class CometML(Tracker):
         self.experiment.log_parameter(name, value, step=step)
 
 
-    def log_other(self, name, value):
-        self.experiment.log_other(name, value)
-
-
-    def log_model_graph(self, graph):
-        self.experiment.set_model_graph(graph)
-
-
     def get_keras_callback(self, log_params=True, log_metrics=True):
-        self.experiment.auto_param_logging = log_params
-        self.experiment.auto_metric_logging = log_metrics
-
-        callback = self.experiment.get_keras_callback()
-
-        self.experiment.auto_param_logging = False
-        self.experiment.auto_metric_logging = False
-
-        return callback
+        return self.experiment.get_keras_callback()
 
 
     def end(self):

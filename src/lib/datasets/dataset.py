@@ -7,25 +7,38 @@
 import h5py
 import pickle
 
+from abc import ABCMeta, abstractmethod
 
-class Dataset:
+
+class Dataset(metaclass=ABCMeta):
     """
     Base class for all Gymnos datasets.
 
     You need to implement the following methods: ``download_and_prepare``, ``info``, ``__getitem__`` and ``__len__`.
     """
-
+    @abstractmethod
     def info(self):
-        raise NotImplementedError()
+        """
+        TODO
+        """
 
+    @abstractmethod
     def download_and_prepare(self, dl_manager):
-        raise NotImplementedError()
+        """
+        TODO
+        """
 
+    @abstractmethod
     def __getitem__(self, index):
-        raise NotImplementedError()
+        """
+        TODO
+        """
 
+    @abstractmethod
     def __len__(self):
-        raise NotImplementedError()
+        """
+        TODO
+        """
 
 
 class HDF5Dataset(Dataset):
