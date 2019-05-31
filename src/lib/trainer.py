@@ -12,13 +12,12 @@ import platform
 import numpy as np
 
 from datetime import datetime
+from collections import OrderedDict
 from keras.utils import to_categorical
 
-from . import trackers
 from .logger import get_logger
-from .utils.path import chdir
+from .datasets import HDF5Dataset
 from .utils.timing import ElapsedTimeCalculator
-from .utils.io_utils import save_to_json
 from .services import DownloadManager
 from .utils.text_utils import humanize_bytes
 from .utils.data import Subset, DataLoader, get_approximate_nbytes
@@ -56,65 +55,21 @@ class Trainer:
         Directory to read and save HDF5 optimized datasets.
     """
 
-    def __init__(self, trainings_path="trainings", executions_dirname="executions",
-                 trackings_dirname="trackings", execution_format="{datetime:%H-%M-%S--%d-%m-%Y}__{model_name}",
-                 artifacts_dirname="artifacts", download_dir="downloads",
-                 extract_dir=None, force_download=False, force_extraction=False):
-        self.trainings_path = trainings_path
-        self.executions_dirname = executions_dirname
-        self.trackings_dirname = trackings_dirname
-        self.execution_format = execution_format
-        self.artifacts_dirname = artifacts_dirname
+    def __init__(self, dl_manager=None, trackings_dir=None):
+        if dl_manager is None:
+            dl_manager = DownloadManager()
+        if trackings_dir is None:
+            trackings_dir = os.getcwd()
 
-        self.dl_manager = DownloadManager(download_dir, extract_dir=extract_dir,
-                                          force_download=force_download,
-                                          force_extraction=force_extraction)
+        self.dl_manager = dl_manager
+        self.trackings_dir = trackings_dir
 
         self.logger = get_logger(prefix=self)
 
-
     def train(self, experiment, model, dataset, training, tracking):
-        """
-        Run experiment generating outputs.
-
-        Parameters
-        ----------
-        experiment: core.experiment.Experiment
-        model: core.model.model
-        dataset: core.dataset.Dataset
-        training: core.training.Training
-        tracking: core.tracking.Tracking
-
-        Attributes
-        ----------
-        last_execution_path_: str
-            Execution path for the last train
-        """
-
         elapsed_time_calc = ElapsedTimeCalculator()
-        execution_id = self.execution_format.format(datetime=datetime.now(), model_name=model.name,
-                                                    dataset_name=dataset.name, experiment_name=experiment.name)
 
-        self.logger.info("Running experiment: {} ...".format(execution_id))
-
-        # CREATE DIRECTORIES TO STORE TRAININGS EXECUTIONS
-
-        trainings_dataset_path = os.path.join(self.trainings_path, dataset.name)
-        trainings_dataset_trackings_path = os.path.join(trainings_dataset_path, self.trackings_dirname)
-
-        self.last_execution_path_ = os.path.join(trainings_dataset_path, self.executions_dirname, execution_id)
-
-        trainings_dataset_execution_artifacts_path = os.path.join(self.last_execution_path_,
-                                                                  self.artifacts_dirname)
-
-        os.makedirs(self.last_execution_path_)
-        os.makedirs(trainings_dataset_execution_artifacts_path)
-        os.makedirs(trainings_dataset_trackings_path, exist_ok=True)
-
-        self.logger.info("The execution will be saved in the following directory: {}".format(
-                         self.last_execution_path_))
-        self.logger.info("Tracking information will be saved in the following directory: {}".format(
-                         trainings_dataset_trackings_path))
+        start_datetime = datetime.now()
 
         # RETRIEVE PLATFORM DETAILS
 
@@ -127,7 +82,7 @@ class Trainer:
                 "memory": gpu.memoryTotal
             })
 
-        platform_details = {
+        system_info = {
             "python_version": platform.python_version(),
             "python_compiler": platform.python_compiler(),
             "platform": platform.platform(),
@@ -143,23 +98,20 @@ class Trainer:
         }
 
         for name, key in zip(("Python version", "Platform"), ("python_version", "platform")):
-            self.logger.debug("{}: {}".format(name, platform_details[key]))
+            self.logger.debug("{}: {}".format(name, system_info[key]))
 
         self.logger.debug("Found {} GPUs".format(len(gpus_info)))
 
-        # DEFINE TRACKER TO STORE METRICS AND SAVE THEM TO JSON LATER
-
-        history_tracker = trackers.History()
-        tracking.trackers.add(history_tracker)
-
         # START TRACKING
 
-        tracking.trackers.start(run_name=execution_id, logdir=trainings_dataset_trackings_path)
+        os.makedirs(self.trackings_dir, exist_ok=True)
 
-        # LOG TRACKING AND MODEL PARAMETERS
+        tracking.trackers.start(run_name=experiment.name, logdir=self.trackings_dir)
 
-        tracking.trackers.log_params(tracking.params)
+        # LOG PARAMETERS
+
         tracking.trackers.log_params(model.parameters)
+        tracking.trackers.log_params(tracking.params)
 
         # DOWNLOAD DATA
 
@@ -176,10 +128,12 @@ class Trainer:
         self.logger.debug("Dataset Features: {}".format(dataset_info.features))
         self.logger.debug("Dataset Labels: {}".format(dataset_info.labels))
 
-
         nbytes = get_approximate_nbytes(dataset.dataset)
         self.logger.debug("Full Dataset Samples: {}".format(len(dataset.dataset)))
         self.logger.debug("Full Dataset Memory Usage (approx): {}".format(humanize_bytes(nbytes)))
+
+        if isinstance(dataset.dataset, HDF5Dataset):
+            self.logger.debug("Using HDF5 dataset")
 
         # SPLIT DATASET INTO TRAIN AND TEST
 
@@ -215,7 +169,7 @@ class Trainer:
         else:
             self.logger.info("Loading data into memory")
 
-            with elapsed_time_calc("load_data_into_memory") as elapsed:
+            with elapsed_time_calc("load_data") as elapsed:
                 train_data = DataLoader(train_subset, batch_size=len(dataset.dataset), drop_last=False, verbose=True)[0]
                 test_data = DataLoader(test_subset, batch_size=len(dataset.dataset), drop_last=False, verbose=True)[0]
 
@@ -225,13 +179,13 @@ class Trainer:
 
         self.logger.info("Fitting preprocessing pipeline using training data ({})".format(dataset.pipeline))
 
-        if load_data_by_chunks:
-            dataset.pipeline.fit_generator(train_loader)
-        else:
-            with elapsed_time_calc("fit_pipeline") as elapsed:
+        with elapsed_time_calc("fit_pipeline") as elapsed:
+            if load_data_by_chunks:
+                dataset.pipeline.fit_generator(train_loader)
+            else:
                 dataset.pipeline.fit(train_data[0], train_data[1])
 
-            self.logger.debug("Fit pipeline took {:.2f}s".format(elapsed.s))
+        self.logger.debug("Fitting preprocessing pipeline took {:.2f}s".format(elapsed.s))
 
         def normalizer(data):
             """
@@ -247,32 +201,29 @@ class Trainer:
 
             return data
 
-        self.logger.info("Preprocessing data ({})".format(dataset.pipeline))
-
         if load_data_by_chunks:
             train_loader.transform_func = normalizer
             test_loader.transform_func = normalizer
         else:
+            self.logger.info("Preprocessing data ({})".format(dataset.pipeline))
+
             with elapsed_time_calc("transform_data") as elapsed:
                 train_data = normalizer(train_data)
                 test_data = normalizer(test_data)
 
-            self.logger.debug("Transforming data took {:.2f}s".format(elapsed.s))
+            self.logger.debug("Preprocessing data took {:.2f}s".format(elapsed.s))
 
         # FIT MODEL
 
         self.logger.info("Fitting model using training data")
 
-        if load_data_by_chunks:
-            with elapsed_time_calc("fit_model_generator") as elapsed, chdir(trainings_dataset_execution_artifacts_path):
+        with elapsed_time_calc("fit_model") as elapsed:
+            if load_data_by_chunks:
                 train_metrics = model.model.fit_generator(train_loader, **training.parameters)
-
-            self.logger.debug("Fit model generator took {:.2f}s".format(elapsed.s))
-        else:
-            with elapsed_time_calc("fit_model") as elapsed, chdir(trainings_dataset_execution_artifacts_path):
+            else:
                 train_metrics = model.model.fit(train_data[0], train_data[1], **training.parameters)
 
-            self.logger.debug("Fit model took {:.2f}s".format(elapsed.s))
+        self.logger.debug("Fitting model took {:.2f}s".format(elapsed.s))
 
         for metric_name, metric_value in train_metrics.items():
             self.logger.info("Results for {} -> mean={:.2f}, min={:.2f}, max={:.2f}".format(metric_name,
@@ -285,51 +236,29 @@ class Trainer:
 
         self.logger.info("Evaluating model using test data")
 
-        if load_data_by_chunks:
-            with elapsed_time_calc("evaluate_model_generator") as elapsed:
+        with elapsed_time_calc("evaluate_model") as elapsed:
+            if load_data_by_chunks:
                 test_metrics = model.model.evaluate_generator(test_loader)
-
-            self.logger.debug("Evaluating model with generator took {:.2f}".format(elapsed.s))
-        else:
-            with elapsed_time_calc("evaluate_model") as elapsed:
+            else:
                 test_metrics = model.model.evaluate(test_data[0], test_data[1])
 
-            self.logger.debug("Evaluating model took {:.2f}s".format(elapsed.s))
+        self.logger.debug("Evaluating model took {:.2f}s".format(elapsed.s))
 
         for metric_name, metric_value in test_metrics.items():
             self.logger.info("test_{}={}".format(metric_name, metric_value))
 
         tracking.trackers.log_metrics(test_metrics, prefix="test_")
 
-        # SAVE MODEL
-
-        self.logger.info("Saving model")
-
-        with elapsed_time_calc("save_model") as elapsed:
-            model.model.save(trainings_dataset_execution_artifacts_path)
-
-        self.logger.debug("Saving model took {:.2f}s".format(elapsed.s))
-
-        # SAVE PIPELINE
-
-        self.logger.info("Saving pipeline")
-
-        with elapsed_time_calc("save_pipeline") as elapsed:
-            dataset.pipeline.save(os.path.join(trainings_dataset_execution_artifacts_path, "pipeline.pkl"))
-
-        self.logger.debug("Saving pipeline took {:.2f}s".format(elapsed.s))
-
-        # SAVE METRICS
-
-        self.logger.info("Saving metrics to JSON file")
-        metrics = dict(
-            elapsed=elapsed_time_calc.times,
-            metrics=history_tracker.metrics,
-            platform=platform_details
-        )
-        metrics_path = os.path.join(self.last_execution_path_, "metrics.json")
-        save_to_json(metrics_path, metrics)
-
-        self.logger.info("Metrics, platform information and elapsed times saved to {} file".format(metrics_path))
-
         tracking.trackers.end()
+
+        return OrderedDict([
+            ["experiment_name", experiment.name],
+            ["start_datetime", start_datetime.timestamp()],
+            ["end_datetime", datetime.now().timestamp()],
+            ["elapsed_times", elapsed_time_calc.times],
+            ["system_info", system_info],
+            ["trackings_dir", self.trackings_dir],
+            ["execution_dir", os.getcwd()],
+            ["download_dir", self.dl_manager.download_dir],
+            ["extract_dir", self.dl_manager.extract_dir]
+        ])

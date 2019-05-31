@@ -4,15 +4,19 @@
 #
 #
 
+import uuid
+
 
 class Experiment:
     """
     Parameters
     ----------
     name: str, optional
-        Name of the experiment
+        Experiment name
+    description: str, optional
+        Experiment description
     tags: list of str, optional
-        Tags of the experiment
+        Experiment tags
 
     Examples
     --------
@@ -20,11 +24,15 @@ class Experiment:
     .. code-block:: py
 
         Experiment(
-            name= "Solving Imagenet with Neural network ",
+            name="nn_beta_2"
+            description= "Solving Imagenet with Neural network ",
             tags=["imagenet", "neural-network", "keras"]
         )
     """
 
-    def __init__(self, name=None, tags=None):
+    def __init__(self, name=None, description=None, tags=None):
+        if name is None:
+            name = uuid.uuid4().hex
         self.name = name
+        self.description = description
         self.tags = tags

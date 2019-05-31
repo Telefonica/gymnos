@@ -5,6 +5,7 @@
 #
 
 import json
+import commentjson
 import numpy as np
 
 from pydoc import locate
@@ -46,7 +47,7 @@ def count_lines(file_path):
         return sum(1 for line in f)
 
 
-def read_from_json(file_path):
+def read_from_json(file_path, with_comments_support=False):
     """
     Read JSON
 
@@ -61,7 +62,10 @@ def read_from_json(file_path):
         JSON data.
     """
     with open(file_path) as f:
-        return json.load(f)
+        if with_comments_support:
+            return commentjson.load(f)
+        else:
+            return json.load(f)
 
 
 def _json_default(o):

@@ -1,7 +1,4 @@
 {
-    "experiment": {
-        "name": "Boston Housing"
-    },
     "model": {
         "name": "keras",
         "parameters": {

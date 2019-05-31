@@ -24,6 +24,8 @@ statsmodels = "*"
 py-cpuinfo = "*"
 gputil = "*"
 dill = "*"
+scipy = "==1.2"
+commentjson = "*"
 
 [requires]
 python_version = "3.5"
