@@ -9,12 +9,11 @@ import gzip
 import shutil
 import tarfile
 import zipfile
+import logging
 
 from tqdm import tqdm
 
-from ..logger import get_logger
-
-logger = get_logger(prefix="decompressor")
+logger = logging.getLogger(__name__)
 
 
 def extract_zip(file_path, extract_dir=".", force=False, verbose=True):

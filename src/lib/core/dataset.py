@@ -5,10 +5,12 @@
 #
 
 import os
+import logging
 
 from ..utils.io_utils import import_from_json
 from ..preprocessors import Pipeline
-from ..logger import get_logger
+
+logger = logging.getLogger(__name__)
 
 DATASETS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "datasets.json")
 PREPROCESSORS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "preprocessors.json")
@@ -29,7 +31,7 @@ class DatasetSamples:
         self.test = test
 
         if (self.test + self.train < 1.0):
-            get_logger(prefix=self).warning("Using only {:.2f}% of total data".format(self.train + self.test))
+            logger.warning("Using only {:.2f}% of total data".format(self.train + self.test))
 
 
 class Dataset:

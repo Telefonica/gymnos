@@ -9,18 +9,21 @@ import math
 import GPUtil
 import cpuinfo
 import platform
+import logging
 import numpy as np
 
 from datetime import datetime
 from collections import OrderedDict
 from keras.utils import to_categorical
 
-from .logger import get_logger
 from .datasets import HDF5Dataset
 from .utils.timing import ElapsedTimeCalculator
 from .services import DownloadManager
 from .utils.text_utils import humanize_bytes
 from .utils.data import Subset, DataLoader, get_approximate_nbytes
+
+
+logger = logging.getLogger(__name__)
 
 
 class Trainer:
@@ -64,8 +67,6 @@ class Trainer:
         self.dl_manager = dl_manager
         self.trackings_dir = trackings_dir
 
-        self.logger = get_logger(prefix=self)
-
     def train(self, experiment, model, dataset, training, tracking):
         elapsed_time_calc = ElapsedTimeCalculator()
 
@@ -98,9 +99,9 @@ class Trainer:
         }
 
         for name, key in zip(("Python version", "Platform"), ("python_version", "platform")):
-            self.logger.debug("{}: {}".format(name, system_info[key]))
+            logger.debug("{}: {}".format(name, system_info[key]))
 
-        self.logger.debug("Found {} GPUs".format(len(gpus_info)))
+        logger.debug("Found {} GPUs".format(len(gpus_info)))
 
         # START TRACKING
 
@@ -115,25 +116,25 @@ class Trainer:
 
         # DOWNLOAD DATA
 
-        self.logger.info("Downloading and preparing data")
+        logger.info("Downloading and preparing data")
         with elapsed_time_calc("dataset_download_and_prepare") as elapsed:
             dataset.dataset.download_and_prepare(self.dl_manager)
 
-        self.logger.debug("Downloading and preparing data took {:.2f}".format(elapsed.s))
+        logger.debug("Downloading and preparing data took {:.2f}".format(elapsed.s))
 
         # LOG DATASET PROPERTIES
 
         dataset_info = dataset.dataset.info()
 
-        self.logger.debug("Dataset Features: {}".format(dataset_info.features))
-        self.logger.debug("Dataset Labels: {}".format(dataset_info.labels))
+        logger.debug("Dataset Features: {}".format(dataset_info.features))
+        logger.debug("Dataset Labels: {}".format(dataset_info.labels))
 
         nbytes = get_approximate_nbytes(dataset.dataset)
-        self.logger.debug("Full Dataset Samples: {}".format(len(dataset.dataset)))
-        self.logger.debug("Full Dataset Memory Usage (approx): {}".format(humanize_bytes(nbytes)))
+        logger.debug("Full Dataset Samples: {}".format(len(dataset.dataset)))
+        logger.debug("Full Dataset Memory Usage (approx): {}".format(humanize_bytes(nbytes)))
 
         if isinstance(dataset.dataset, HDF5Dataset):
-            self.logger.debug("Using HDF5 dataset")
+            logger.debug("Using HDF5 dataset")
 
         # SPLIT DATASET INTO TRAIN AND TEST
 
@@ -167,17 +168,17 @@ class Trainer:
             train_loader = DataLoader(train_subset, batch_size=dataset.chunk_size, drop_last=False)
             test_loader  = DataLoader(test_subset, batch_size=dataset.chunk_size, drop_last=False)
         else:
-            self.logger.info("Loading data into memory")
+            logger.info("Loading data into memory")
 
             with elapsed_time_calc("load_data") as elapsed:
                 train_data = DataLoader(train_subset, batch_size=len(dataset.dataset), drop_last=False, verbose=True)[0]
                 test_data = DataLoader(test_subset, batch_size=len(dataset.dataset), drop_last=False, verbose=True)[0]
 
-            self.logger.debug("Loading data into memory took {:.2f}s".format(elapsed.s))
+            logger.debug("Loading data into memory took {:.2f}s".format(elapsed.s))
 
         # PREPROCESS DATA
 
-        self.logger.info("Fitting preprocessing pipeline using training data ({})".format(dataset.pipeline))
+        logger.info("Fitting preprocessing pipeline using training data ({})".format(dataset.pipeline))
 
         with elapsed_time_calc("fit_pipeline") as elapsed:
             if load_data_by_chunks:
@@ -185,7 +186,7 @@ class Trainer:
             else:
                 dataset.pipeline.fit(train_data[0], train_data[1])
 
-        self.logger.debug("Fitting preprocessing pipeline took {:.2f}s".format(elapsed.s))
+        logger.debug("Fitting preprocessing pipeline took {:.2f}s".format(elapsed.s))
 
         def normalizer(data):
             """
@@ -205,17 +206,17 @@ class Trainer:
             train_loader.transform_func = normalizer
             test_loader.transform_func = normalizer
         else:
-            self.logger.info("Preprocessing data ({})".format(dataset.pipeline))
+            logger.info("Preprocessing data ({})".format(dataset.pipeline))
 
             with elapsed_time_calc("transform_data") as elapsed:
                 train_data = normalizer(train_data)
                 test_data = normalizer(test_data)
 
-            self.logger.debug("Preprocessing data took {:.2f}s".format(elapsed.s))
+            logger.debug("Preprocessing data took {:.2f}s".format(elapsed.s))
 
         # FIT MODEL
 
-        self.logger.info("Fitting model using training data")
+        logger.info("Fitting model using training data")
 
         with elapsed_time_calc("fit_model") as elapsed:
             if load_data_by_chunks:
@@ -223,10 +224,10 @@ class Trainer:
             else:
                 train_metrics = model.model.fit(train_data[0], train_data[1], **training.parameters)
 
-        self.logger.debug("Fitting model took {:.2f}s".format(elapsed.s))
+        logger.debug("Fitting model took {:.2f}s".format(elapsed.s))
 
         for metric_name, metric_value in train_metrics.items():
-            self.logger.info("Results for {} -> mean={:.2f}, min={:.2f}, max={:.2f}".format(metric_name,
+            logger.info("Results for {} -> mean={:.2f}, min={:.2f}, max={:.2f}".format(metric_name,
                                                                                             np.mean(metric_value),
                                                                                             np.min(metric_value),
                                                                                             np.max(metric_value)))
@@ -234,7 +235,7 @@ class Trainer:
 
         # EVALUATE MODEL
 
-        self.logger.info("Evaluating model using test data")
+        logger.info("Evaluating model using test data")
 
         with elapsed_time_calc("evaluate_model") as elapsed:
             if load_data_by_chunks:
@@ -242,10 +243,10 @@ class Trainer:
             else:
                 test_metrics = model.model.evaluate(test_data[0], test_data[1])
 
-        self.logger.debug("Evaluating model took {:.2f}s".format(elapsed.s))
+        logger.debug("Evaluating model took {:.2f}s".format(elapsed.s))
 
         for metric_name, metric_value in test_metrics.items():
-            self.logger.info("test_{}={}".format(metric_name, metric_value))
+            logger.info("test_{}={}".format(metric_name, metric_value))
 
         tracking.trackers.log_metrics(test_metrics, prefix="test_")
 

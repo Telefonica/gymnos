@@ -10,7 +10,6 @@ from datetime import datetime
 from tempfile import TemporaryDirectory
 
 from lib.datasets import HDF5Dataset
-from lib.logger import get_logger
 from lib.trainer import Trainer
 from lib.core.model import Model
 from lib.core.dataset import Dataset
@@ -99,6 +98,8 @@ def run_experiment(training_config_path):
                                                                   logging_config["handlers"]["file"]["filename"])
     logging.config.dictConfig(logging_config)
 
+    logger = logging.getLogger(__name__)
+
     dataset = Dataset(**training_config["dataset"])
     model = Model(**training_config["model"])
     training = Training(**training_config.get("training", {}))  # optional field
@@ -120,8 +121,6 @@ def run_experiment(training_config_path):
     success = False
 
     try:
-        logger = get_logger(prefix="Main")
-
         logger.info("Starting gymnos trainer ...")
 
         results = trainer.train(experiment, model, dataset, training, tracking)
