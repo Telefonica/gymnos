@@ -228,9 +228,9 @@ class Trainer:
 
         for metric_name, metric_value in train_metrics.items():
             logger.info("Results for {} -> mean={:.2f}, min={:.2f}, max={:.2f}".format(metric_name,
-                                                                                            np.mean(metric_value),
-                                                                                            np.min(metric_value),
-                                                                                            np.max(metric_value)))
+                                                                                       np.mean(metric_value),
+                                                                                       np.min(metric_value),
+                                                                                       np.max(metric_value)))
         tracking.trackers.log_metrics(train_metrics)
 
         # EVALUATE MODEL
