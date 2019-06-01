@@ -10,7 +10,7 @@ import numpy as np
 from glob import glob
 
 from ..utils.image_utils import imread_rgb, imresize
-from .dataset import Dataset, DatasetInfo, Tensor, ClassLabel
+from .dataset import Dataset, DatasetInfo, Array, ClassLabel
 
 IMAGE_WIDTH = 150
 IMAGE_HEIGHT = 150
@@ -40,7 +40,7 @@ class DogsVsCats(Dataset):
 
     def info(self):
         return DatasetInfo(
-            features=Tensor(shape=[IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_DEPTH], dtype=np.uint8),
+            features=Array(shape=[IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_DEPTH], dtype=np.uint8),
             labels=ClassLabel(names=["cat", "dog"])
         )
 

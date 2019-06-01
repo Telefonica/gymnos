@@ -6,7 +6,7 @@
 
 import pandas as pd
 
-from .dataset import Dataset, DatasetInfo, ClassLabel, Tensor
+from .dataset import Dataset, DatasetInfo, ClassLabel, Array
 
 
 class IMDB(Dataset):
@@ -31,7 +31,7 @@ class IMDB(Dataset):
 
     def info(self):
         return DatasetInfo(
-            features=Tensor(shape=[], dtype=str),
+            features=Array(shape=[], dtype=str),
             labels=ClassLabel(names=["negative", "positive"])
         )
 

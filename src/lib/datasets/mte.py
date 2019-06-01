@@ -11,7 +11,7 @@ from datetime import datetime
 from sklearn.preprocessing import MultiLabelBinarizer
 
 from ..utils.io_utils import read_from_json
-from .dataset import Dataset, DatasetInfo, ClassLabel, Tensor
+from .dataset import Dataset, DatasetInfo, ClassLabel, Array
 
 
 GENRE_TO_SUBSCRIPTION = {
@@ -197,7 +197,7 @@ class MTE(Dataset):
 
     def info(self):
         return DatasetInfo(
-            features=Tensor(shape=[], dtype=str),
+            features=Array(shape=[], dtype=str),
             labels=ClassLabel(names=CLASS_NAMES, multilabel=True)
         )
 

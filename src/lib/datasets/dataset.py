@@ -75,24 +75,18 @@ class HDF5Dataset(Dataset):
 class DatasetInfo:
 
     def __init__(self, features, labels):
-        if not isinstance(features, Tensor):
-            features = Tensor(shape=[], dtype=features)
-
-        if not isinstance(labels, (Tensor)):
-            labels = Tensor(shape=[], dtype=labels)
-
         self.features = features
         self.labels = labels
 
 
-class Tensor:
+class Array:
 
     def __init__(self, shape, dtype):
         self.shape = shape
         self.dtype = dtype
 
     def __str__(self):
-        return "Tensor <shape={}, dtype={}>".format(self.shape, self.dtype)
+        return "Array <shape={}, dtype={}>".format(self.shape, self.dtype)
 
 
 def _read_lines(file_path):
@@ -102,7 +96,7 @@ def _read_lines(file_path):
     return names
 
 
-class ClassLabel(Tensor):
+class ClassLabel(Array):
 
     def __init__(self, num_classes=None, names=None, names_file=None, multilabel=False, dtype=None):
         if sum(bool(a) for a in (num_classes, names, names_file)) != 1:

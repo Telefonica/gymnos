@@ -7,7 +7,7 @@
 import numpy as np
 import statsmodels.api as sm
 
-from .dataset import Dataset, DatasetInfo, Tensor
+from .dataset import Dataset, DatasetInfo, Array
 
 
 class UnusualDataUsageTest(Dataset):
@@ -24,8 +24,8 @@ class UnusualDataUsageTest(Dataset):
 
     def info(self):
         return DatasetInfo(
-            features=Tensor(shape=[], dtype=np.int64),
-            labels=Tensor(shape=[], dtype=np.float64)
+            features=Array(shape=[], dtype=np.int64),
+            labels=Array(shape=[], dtype=np.float64)
         )
 
     def download_and_prepare(self, dl_manager):

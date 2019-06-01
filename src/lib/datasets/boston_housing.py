@@ -6,7 +6,7 @@
 
 import numpy as np
 
-from .dataset import Dataset, DatasetInfo, Tensor
+from .dataset import Dataset, DatasetInfo, Array
 
 
 class BostonHousing(Dataset):
@@ -22,8 +22,8 @@ class BostonHousing(Dataset):
 
     def info(self):
         return DatasetInfo(
-            features=Tensor(shape=[13], dtype=np.float32),
-            labels=Tensor(shape=[], dtype=np.float32)
+            features=Array(shape=[13], dtype=np.float32),
+            labels=Array(shape=[], dtype=np.float32)
         )
 
     def download_and_prepare(self, dl_manager):

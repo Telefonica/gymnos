@@ -9,7 +9,7 @@ import numpy as np
 
 from glob import glob
 
-from .dataset import Dataset, DatasetInfo, Tensor, ClassLabel
+from .dataset import Dataset, DatasetInfo, Array, ClassLabel
 from ..utils.io_utils import read_from_text
 from ..utils.image_utils import imread_rgb
 
@@ -27,7 +27,7 @@ class TinyImagenet(Dataset):
 
     def info(self):
         return DatasetInfo(
-            features=Tensor(shape=[64, 64, 3], dtype=np.uint8),
+            features=Array(shape=[64, 64, 3], dtype=np.uint8),
             labels=ClassLabel(names_file=os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                                       "tiny_imagenet_labels.txt"))
         )

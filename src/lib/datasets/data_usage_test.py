@@ -7,7 +7,7 @@
 import numpy as np
 import statsmodels.api as sm
 
-from .dataset import Dataset, DatasetInfo, Tensor
+from .dataset import Dataset, DatasetInfo, Array
 
 
 class DataUsageTest(Dataset):
@@ -24,8 +24,8 @@ class DataUsageTest(Dataset):
 
     def info(self):
         return DatasetInfo(
-            features=Tensor(shape=[1], dtype=np.int64),
-            labels=Tensor(shape=[1], dtype=np.float64)
+            features=Array(shape=[1], dtype=np.int64),
+            labels=Array(shape=[1], dtype=np.float64)
         )
 
     def download_and_prepare(self, dl_manager):
