@@ -9,6 +9,7 @@ import argparse
 from datetime import datetime
 from tempfile import TemporaryDirectory
 
+from lib.utils.path import chdir
 from lib.datasets import HDF5Dataset
 from lib.trainer import Trainer
 from lib.core.model import Model
@@ -123,7 +124,9 @@ def run_experiment(training_config_path):
     try:
         logger.info("Starting gymnos trainer ...")
 
-        results = trainer.train(experiment, model, dataset, training, tracking)
+        with chdir(execution_dir):
+            results = trainer.train(experiment, model, dataset, training, tracking)
+
         success = True
 
         if config["save_execution_results"]:
