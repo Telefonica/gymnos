@@ -13,11 +13,11 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
 from .model import Model
-from .mixins import TensorFlowMixin
+from .mixins import TensorFlowSaverMixin
 from ..utils.tensorflow_session import build_tf_session_from_config
 
 
-class DogsVsCatsCNN(TensorFlowMixin, Model):
+class DogsVsCatsCNN(TensorFlowSaverMixin, Model):
     """
     Convolutional neuronal network developed to solve Dogs vs Cats image classification
     task (:class:`lib.datasets.dogs_vs_cats.DogsVsCats`).
