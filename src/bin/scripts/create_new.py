@@ -6,19 +6,9 @@
 
 import os
 import re
-import sys
-import inspect
 import argparse
 
-from pprint import pprint
-from collections import OrderedDict
-
 from lib.utils.io_utils import read_from_json, save_to_json
-from lib.core.dataset import Dataset
-from lib.core.model import Model
-from lib.core.experiment import Experiment
-from lib.core.tracking import Tracking
-from lib.core.training import Training
 
 
 SNAKE_CASE_TEST_RE = re.compile(r'^[a-z]+([a-z\d]+_|_[a-z\d]+|[a-z\d]+)+[a-z\d]+$')
@@ -119,14 +109,14 @@ EXPERIMENT_TYPE = "experiment"
 DATASET_FILE_STR = """
 #
 #
-#   {dataset_name}
+#   {name}
 #
 #
 
 from .dataset import Dataset, DatasetInfo, ClassLabel
 
 
-class {dataset_name}:
+class {name}:
     \"""
     {TODO}: Description of my dataset.
     \"""
@@ -151,14 +141,14 @@ class {dataset_name}:
 MODEL_FILE_STR = """
 #
 #
-#   {model_name}
+#   {name}
 #
 #
 
 from .model import Model
 
 
-class {model_name}(Model):
+class {name}(Model):
     \"""
     {TODO}: Description of my model.
     \"""
@@ -190,16 +180,16 @@ class {model_name}(Model):
 PREPROCESSOR_FILE_STR = """
 #
 #
-#   {preprocessor_name}
+#   {name}
 #
 #
 
 from .preprocessor import Preprocessor
 
 
-class {preprocessor_name}(Preprocessor):
+class {name}(Preprocessor):
     \"""
-    #{TODO}: Description of my preprocessor.
+    {TODO}: Description of my preprocessor.
     \"""
 
     def __init__(self, **parameters):
@@ -219,16 +209,16 @@ class {preprocessor_name}(Preprocessor):
 TRACKER_FILE_STR = """
 #
 #
-#   {tracker_name}
+#   {name}
 #
 #
 
 from .tracker import Tracker
 
 
-class {tracker_name}(Tracker):
+class {name}(Tracker):
     \"""
-    #{TODO}: Description of my tracker
+    {TODO}: Description of my tracker
     \"""
 
     def __init__(self, **parameters):
@@ -262,10 +252,6 @@ class {tracker_name}(Tracker):
         # {OPTIONAL}: Log parameter
         pass
 
-    def log_other(self, name, value):
-        # {OPTIONAL}: Log other
-        pass
-
     def end(self):
         # {OPTIONAL}: Called when the experiment is finished
         pass
@@ -292,7 +278,7 @@ EXPERIMENT_FILE_STR = """
         "seed": null,  // {OPTIONAL} (int): Seed for train/test split. If null, random seed is chosen
         "shuffle": true,  // {OPTIONAL} (bool): Whether or not shuffle dataset
         "one_hot": false, // {OPTIONAL} (bool): Whether or not one-hot encode labels. Some models require one-hot encoded labels, check documentation.
-        "chunk_size": null  // {OPTIONAL} (int): Defines the chunk size in which the dataset will be read.. It may reduce memory usage. By default, it loads dataset into memory
+        "chunk_size": null  // {OPTIONAL} (int): Defines the chunk size in which the dataset will be read. It may reduce memory usage but training may be slower. By default, it loads dataset into memory
     }},
     "model": {{
         "name": xxxxxx,  // {TODO} (str): Model identifier. To see available models, check lib/var/models.json 
@@ -307,7 +293,7 @@ EXPERIMENT_FILE_STR = """
         "log_model_params": true,  // {OPTIONAL} (bool): Whether or not log model parameters
         "log_model_metrics": true,  // {OPTIONAL} (bool): Whether or not log metrics
         "log_training_params": true,  // {OPTIONAL} (bool): Whether or not log training parameters
-        "params": {{  // {OPTIONAL} (dict): Additional parameters to log
+        "additional_params": {{  // {OPTIONAL} (dict): Additional parameters to log
 
         }},
         "trackers": [  // {OPTIONAL} (list of dicts): Define trackers {{"type": <tracker_name>, **tracker_parameters}}, e.g {{"type": "mlflow", "source_name": "gymnos_gpu"}}  To see available trackers, check lib/var/trackers.json 
@@ -317,11 +303,61 @@ EXPERIMENT_FILE_STR = """
 }}
 """ # noqa: E501
 
+
+def create_experiment(experiment_name):
+    file_str = EXPERIMENT_FILE_STR.format(TODO="TODO", OPTIONAL="OPTIONAL")
+    file_path = os.path.join("experiments", args.name + ".json")
+
+    with open(file_path, "x") as archive:
+        archive.write(file_str)
+
+    return [file_path]
+
+
+def create_component(raw_string, name, dirname):
+    camel_name = snake_case_to_camel(name)
+    file_str = raw_string.format(name=camel_name, TODO="TODO({})".format(camel_name),
+                                 OPTIONAL="OPTIONAL({})".format(camel_name))
+
+    file_dir = os.path.join("lib", dirname)
+    file_path = os.path.join(file_dir, name + ".py")
+    init_file_path = os.path.join(file_dir, "__init__.py")
+    var_file_path = os.path.join("lib", "var", dirname + ".json")
+
+    with open(file_path, "x") as archive:
+        archive.write(file_str)
+
+    with open(init_file_path, "a") as archive:
+        archive.write("from .{} import {}\n".format(name, camel_name))
+
+    var_data = read_from_json(var_file_path)
+    var_data[name] = ".".join(["lib", dirname, name, camel_name])
+    save_to_json(var_file_path, var_data)
+
+    return [init_file_path, var_file_path, file_path]
+
+
+def create_dataset(dataset_name):
+    return create_component(DATASET_FILE_STR, dataset_name, "datasets")
+
+
+def create_model(model_name):
+    return create_component(MODEL_FILE_STR, model_name, "models")
+
+
+def create_tracker(tracker_name):
+    return create_component(TRACKER_FILE_STR, tracker_name, "datasets")
+
+
+def create_preprocessor(preprocessor_name):
+    return create_component(PREPROCESSOR_FILE_STR, preprocessor_name, "datasets")
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("type", type=str, choices=[DATASET_TYPE, MODEL_TYPE, PREPROCESSOR_TYPE, TRACKER_TYPE,
                                                    EXPERIMENT_TYPE])
-    parser.add_argument("--name", type=str, required=True, help="Name to generate files (snake case)")
+    parser.add_argument("-n", "--name", type=str, required=True, help="Name to generate files (snake case)")
     args = parser.parse_args()
 
     if not is_snake_case(args.name):
@@ -334,54 +370,15 @@ if __name__ == "__main__":
         raise ValueError(error_str)
 
 
-    camel_name = snake_case_to_camel(args.name)
-
     if args.type == EXPERIMENT_TYPE:
-        file_str = EXPERIMENT_FILE_STR.format(TODO="TODO", OPTIONAL="OPTIONAL")
-        file_path = os.path.join("experiments", args.name + ".json")
-
-        with open(file_path, "x") as archive:
-            archive.write(file_str)
-
-        print("The following files have been created: {}".format(file_path))
-
-        sys.exit()
-
-
-    if args.type == DATASET_TYPE:
-        dirname = "datasets"
-        file_str = DATASET_FILE_STR.format(dataset_name=camel_name, TODO="TODO({})".format(camel_name),
-                                           OPTIONAL="OPTIONAL({})".format(camel_name))
+        modified_files = create_experiment(args.name)
+    elif args.type == DATASET_TYPE:
+        modified_files = create_dataset(args.name)
     elif args.type == MODEL_TYPE:
-        dirname = "models"
-        file_str = MODEL_FILE_STR.format(model_name=camel_name, TODO="TODO({})".format(camel_name),
-                                         OPTIONAL="OPTIONAL({})".format(camel_name))
+        modified_files = create_model(args.name)
     elif args.type == PREPROCESSOR_TYPE:
-        dirname = "preprocessors"
-        file_str = PREPROCESSOR_FILE_STR.format(preprocessor_name=camel_name, TODO="TODO({})".format(camel_name),
-                                                OPTIONAL="OPTIONAL({})".format(camel_name))
+        modified_files = create_preprocessor(args.name)
     elif args.type == TRACKER_TYPE:
-        dirname = "trackers"
-        file_str = PREPROCESSOR_FILE_STR.format(preprocessor_name=camel_name, TODO="TODO({})".format(camel_name),
-                                                OPTIONAL="OPTIONAL({})".format(camel_name))
+        modified_files = create_tracker(args.name)
 
-    file_dir = os.path.join("lib", dirname)
-    file_path = os.path.join(file_dir, args.name + ".py")
-    init_file_path = os.path.join(file_dir, "__init__.py")
-    var_file_path = os.path.join("lib", "var", dirname + ".json")
-
-    with open(file_path, "x") as archive:
-        archive.write(file_str)
-
-    with open(init_file_path, "a") as archive:
-        archive.write("from .{} import {}\n".format(args.name, camel_name))
-
-    var_data = read_from_json(var_file_path)
-    var_data[args.name] = ".".join(["lib", dirname, args.name, camel_name])
-    save_to_json(var_file_path, var_data)
-
-    modified_files = [init_file_path, var_file_path]
-    created_files = [file_path]
-
-    print("The following files have been created: {}".format(", ".join(created_files)))
     print("The following files have been modified: {}".format(", ".join(modified_files)))
