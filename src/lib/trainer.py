@@ -16,6 +16,7 @@ from datetime import datetime
 from collections import OrderedDict
 from keras.utils import to_categorical
 
+from .trackers import History
 from .datasets import HDF5Dataset
 from .utils.timing import ElapsedTimeCalculator
 from .services import DownloadManager
@@ -70,8 +71,6 @@ class Trainer:
     def train(self, experiment, model, dataset, training, tracking):
         elapsed_time_calc = ElapsedTimeCalculator()
 
-        start_datetime = datetime.now()
-
         # RETRIEVE PLATFORM DETAILS
 
         cpu_info = cpuinfo.get_cpu_info()
@@ -106,6 +105,9 @@ class Trainer:
         # START TRACKING
 
         os.makedirs(self.trackings_dir, exist_ok=True)
+
+        history_tracker = History()
+        tracking.trackers.add(history_tracker)
 
         tracking.trackers.start(run_name=experiment.name, logdir=self.trackings_dir)
 
@@ -254,9 +256,12 @@ class Trainer:
 
         return OrderedDict([
             ["experiment_name", experiment.name],
-            ["start_datetime", start_datetime.timestamp()],
-            ["end_datetime", datetime.now().timestamp()],
+            ["start_datetime", history_tracker.start_datetime.timestamp()],
+            ["end_datetime", history_tracker.end_datetime.timestamp()],
             ["elapsed_times", elapsed_time_calc.times],
+            ["tags", history_tracker.tags],
+            ["params", history_tracker.params],
+            ["metrics", history_tracker.metrics],
             ["system_info", system_info],
             ["trackings_dir", self.trackings_dir],
             ["execution_dir", os.getcwd()],
