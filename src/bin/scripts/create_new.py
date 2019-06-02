@@ -275,6 +275,9 @@ EXPERIMENT_FILE_STR = """
         "preprocessors": [    // {OPTIONAL} (list of dicts): Define preprocessors in the following format: {{"type": <preprocessor_name>, **preprocessor_parameters}}, e.g {{"type": "divide", "factor": 255.0}}. To see available preprocessors, check lib/var/preprocessors.json 
 
         ],
+        "data_augmentors": [  // {OPTIONAL} (list of dicts): Define data augmentors in the following format {{"type": <data_augmentor_name>, "probability": <probability_to_apply_augmentation>, **data_augmentors_parameters}}, e.g {{"type": "invert", "probability": 0.4}}. To see available data_augmentors, check lib/var/data_augmentors.json 
+
+        ],
         "seed": null,  // {OPTIONAL} (int): Seed for train/test split. If null, random seed is chosen
         "shuffle": true,  // {OPTIONAL} (bool): Whether or not shuffle dataset
         "one_hot": false, // {OPTIONAL} (bool): Whether or not one-hot encode labels. Some models require one-hot encoded labels, check documentation.

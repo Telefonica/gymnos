@@ -7,13 +7,16 @@
 import os
 import logging
 
+from ..preprocessors import Pipeline as PreprocessorsPipeline
+from ..data_augmentors import Pipeline as DataAugmentorPipeline
+
 from ..utils.io_utils import import_from_json
-from ..preprocessors import Pipeline
 
 logger = logging.getLogger(__name__)
 
 DATASETS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "datasets.json")
 PREPROCESSORS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "preprocessors.json")
+DATA_AUGMENTORS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "data_augmentors.json")
 
 
 class DatasetSamples:
@@ -87,13 +90,17 @@ class Dataset:
         - ``"alphanumeric"``: :class:`lib.preprocessors.texts.alphanumeric.Alphanumeric`,
         - ``"tfidf"``: :class:`lib.preprocessors.texts.tfidf.Tfidf`,
         - ``"kbest"``: :class:`lib.preprocessors.kbest.KBest`,
-        - ``"standard_scaler"``: `sklearn.preprocessing.StandardScaler <https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html>`_
+        - ``"standard_scaler"``: `sklearn.preprocessing.StandardScaler <https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html>`_ # noqa: E501
     seed: int, optional
         Seed used to split dataset.
     shuffle: bool, optional
         Whether or not to shuffle the data before splitting.
     one_hot: bool, optional
         Whether or not to one-hot encode labels. Required for some models.
+    data_augmentors: list of dict, optional
+        List of data augmentors to apply to images dataset. This property requires a list with dictionnaries with at
+        least a ``type`` field specifying the type of data augmentor.  The other properties are the properties for that
+        data augmentor.
 
     Examples
     --------
@@ -119,9 +126,11 @@ class Dataset:
         )
     """
 
-    def __init__(self, name, samples=None, preprocessors=None, seed=None, shuffle=True, one_hot=False, chunk_size=None):
+    def __init__(self, name, samples=None, preprocessors=None, seed=None, shuffle=True, one_hot=False, chunk_size=None,
+                 data_augmentors=None):
         samples = samples or {}
         preprocessors = preprocessors or []
+        data_augmentors = data_augmentors or []
 
         self.name = name
         self.seed = seed
@@ -134,8 +143,15 @@ class Dataset:
         DatasetClass = import_from_json(DATASETS_IDS_TO_MODULES_PATH, name)
         self.dataset = DatasetClass()
 
-        self.pipeline = Pipeline()
+        self.preprocessors = PreprocessorsPipeline()
         for preprocessor_config in preprocessors:
             PreprocessorClass = import_from_json(PREPROCESSORS_IDS_TO_MODULES_PATH, preprocessor_config.pop("type"))
             preprocessor = PreprocessorClass(**preprocessor_config)
-            self.pipeline.add(preprocessor)
+            self.preprocessors.add(preprocessor)
+
+        self.data_augmentors = DataAugmentorPipeline()
+        for data_augmentor_config in data_augmentors:
+            DataAugmentorClass = import_from_json(DATA_AUGMENTORS_IDS_TO_MODULES_PATH,
+                                                  data_augmentor_config.pop("type"))
+            data_augmentor = DataAugmentorClass(**data_augmentor_config)
+            self.data_augmentors.add(data_augmentor)

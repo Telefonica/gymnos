@@ -46,7 +46,7 @@ def read_preferences():
     # Windows and Unix systems use different path separators, we normalize paths to adjust paths
     # separators to current system
     keys_to_normalize = ["download_dir", "extract_dir", "hdf5_datasets_dir", "executions_dir", "trackings_dir",
-                         "trained_model_dir", "trained_pipeline_filename", "training_config_filename",
+                         "trained_model_dir", "trained_preprocessors_filename", "training_config_filename",
                          "execution_results_filename"]
 
     for key in keys_to_normalize:
@@ -140,8 +140,9 @@ def run_experiment(training_config_path):
             os.makedirs(save_model_dir, exist_ok=True)
             model.model.save(save_model_dir)
 
-        if (success and config["save_trained_pipeline"]) or (not success and config["save_trained_model_if_errors"]):
-            dataset.pipeline.save(os.path.join(execution_dir, config["trained_pipeline_filename"]))
+        if (success and config["save_trained_preprocessors"]) or (not success and
+                                                                  config["save_trained_preprocessors_if_errors"]):
+            dataset.preprocessors.save(os.path.join(execution_dir, config["trained_preprocessors_filename"]))
 
         if (success and config["save_training_config"]) or (not success and config["save_training_config_if_errors"]):
             save_to_json(os.path.join(execution_dir, config["training_config_filename"]), training_config_copy)

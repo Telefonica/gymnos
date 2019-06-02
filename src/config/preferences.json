@@ -44,12 +44,12 @@
 
     // Whether or not save trained model to execution directory 
     "save_trained_model": true,
-    // Whether or not save trained preprocessors pipeline to execution directory 
+    // Whether or not save trained preprocessors preprocessors to execution directory 
     "save_trained_model_if_errors": false,
     // Whether or not save model
-    "save_trained_pipeline": true,
-    // Whether or not save pipeline to execution directory if errors ocurred
-    "save_trained_pipeline_if_errors": false,
+    "save_trained_preprocessors": true,
+    // Whether or not save preprocessors to execution directory if errors ocurred
+    "save_trained_preprocessors_if_errors": false,
     // Whether or not save training configuration to execution directory
     "save_training_config": true,
     // Whether or not save training configuration to execution directory if errors ocurred
@@ -59,8 +59,8 @@
 
     // Directory to save trained model w.r.t execution directory. Only relevant if "save_trained_model" is true
     "trained_model_dir": "artifacts",
-    // File path to save pickled trained pipeline. Only relevant if "save_trained_pipeline" is true
-    "trained_pipeline_filename": "artifacts/pipeline.pkl",
+    // File path to save pickled trained preprocessors. Only relevant if "save_trained_preprocessors" is true
+    "trained_preprocessors_filename": "artifacts/preprocessors.pkl",
     // File path to store training configuration w.r.t execution directory. Only relevant if "save_training_config"
     "training_config_filename": "training_config.json",
     // File path to store execution results w.r.t execution directory. Only relevant if "save_execution_results" is true
