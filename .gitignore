@@ -5,3 +5,4 @@ hdf5_datasets/
 trainings/
 downloads/
 preferences.local.json
+.idea
