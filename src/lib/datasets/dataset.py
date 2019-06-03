@@ -29,7 +29,7 @@ class Dataset(metaclass=ABCMeta):
     @abstractmethod
     def download_and_prepare(self, dl_manager):
         """
-        Download files and prepare instance for future calls to __getitem__ and __len__.
+        Download files and prepare instance for future calls to ``__getitem__`` and ``__len__``.
 
         Parameters
         ----------
