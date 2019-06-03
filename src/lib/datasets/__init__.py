@@ -6,3 +6,4 @@ from .dogs_vs_cats import DogsVsCats
 from .data_usage_test import DataUsageTest
 from .unusual_data_usage_test import UnusualDataUsageTest
 from .dataset import Dataset, HDF5Dataset
+from .synthetic_digits import SyntheticDigits

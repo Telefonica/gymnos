@@ -31,6 +31,12 @@ Tiny Imagenet
     :members:
     :inherited-members:
 
+Synthetic digits
+=================
+.. autoclass:: lib.datasets.synthetic_digits.SyntheticDigits
+    :members:
+    :inherited-members:
+
 MTE
 =================
 .. autoclass:: lib.datasets.mte.MTE
