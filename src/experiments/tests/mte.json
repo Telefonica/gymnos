@@ -1,6 +1,5 @@
 {
     "experiment": {
-        "name": "Media Tagging Engine",
         "tags": ["mte", "network"]
     },
     "model": {

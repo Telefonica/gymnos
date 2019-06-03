@@ -10,7 +10,7 @@ from .mixins import KerasMixin
 from keras import models, layers
 
 
-class FashionMnistNN(Model, KerasMixin):
+class FashionMnistNN(KerasMixin, Model):
     """
     Neural network developed to solve Fashion MNIST image classification
     task (:class:`lib.datasets.fashion_mnist.FashionMNIST`).

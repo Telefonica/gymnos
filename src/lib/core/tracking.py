@@ -6,11 +6,9 @@
 
 import os
 
-from pydoc import locate
-
 from ..trackers import TrackerList
 
-from ..utils.io_utils import read_from_json
+from ..utils.io_utils import import_from_json
 
 TRACKERS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "trackers.json")
 
@@ -36,7 +34,7 @@ class Tracking:
             - ``"mlflow"``: :class:`lib.trackers.mlflow.MLFlow`,
             - ``"tensorboard"``: :class:`lib.trackers.tensorboard.Tensorboard`
 
-    params: dict, optional
+    additional_params: dict, optional
         Additional parameters to log
 
     Examples
@@ -56,29 +54,23 @@ class Tracking:
                     "type": "tensorboard"
                 }
             ],
-            params={
+            additional_params={
                 data_scientist="Rubén Salas"
             }
         )
     """
 
     def __init__(self, log_model_params=True, log_model_metrics=True, log_training_params=True, trackers=None,
-                 params=None):
+                 additional_params=None):
         trackers = trackers or []
 
         self.log_model_params = log_model_params
         self.log_model_metrics = log_model_metrics
         self.log_training_params = log_training_params
-        self.params = params or {}
+        self.additional_params = additional_params or {}
 
         self.trackers = TrackerList()
         for tracker_config in trackers:
-            TrackerClass = self.__retrieve_tracker_from_type(tracker_config.pop("type"))
+            TrackerClass = import_from_json(TRACKERS_IDS_TO_MODULES_PATH, tracker_config.pop("type"))
             tracker = TrackerClass(**tracker_config)
             self.trackers.add(tracker)
-
-
-    def __retrieve_tracker_from_type(self, tracker_type):
-        trackers_ids_to_modules = read_from_json(TRACKERS_IDS_TO_MODULES_PATH)
-        tracker_loc = trackers_ids_to_modules[tracker_type]
-        return locate(tracker_loc)

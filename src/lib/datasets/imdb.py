@@ -4,14 +4,12 @@
 #
 #
 
-import os
 import pandas as pd
 
-from .dataset import ClassificationDataset
-from .mixins import KaggleMixin
+from .dataset import Dataset, DatasetInfo, ClassLabel, Array
 
 
-class IMDB(ClassificationDataset, KaggleMixin):
+class IMDB(Dataset):
     """
     Dataset with movie reviews for binary sentiment classification.
 
@@ -31,17 +29,20 @@ class IMDB(ClassificationDataset, KaggleMixin):
         - **Features**: texts
     """
 
-    kaggle_dataset_name = "oumaimahourrane/imdb-reviews"
-    kaggle_dataset_files = ["dataset.csv"]
+    def info(self):
+        return DatasetInfo(
+            features=Array(shape=[], dtype=str),
+            labels=ClassLabel(names=["negative", "positive"])
+        )
 
-    def read(self, download_path):
-        file_path = os.path.join(download_path, self.kaggle_dataset_files[0])
-        data = pd.read_csv(file_path, encoding="latin-1")
-        features, labels = self.__features_labels_split(data)
-        return features, labels
+    def download_and_prepare(self, dl_manager):
+        csv_path = dl_manager.download_kaggle(dataset_name="oumaimahourrane/imdb-reviews",
+                                              file_or_files="dataset.csv")
+        self.data_ = pd.read_csv(csv_path, encoding="latin-1")
 
+    def __getitem__(self, index):
+        row = self.data_.iloc[index]
+        return row["SentimentText"], row["Sentiment"]
 
-    def __features_labels_split(self, data):
-        features = data["SentimentText"]
-        labels = data["Sentiment"]
-        return features, labels
+    def __len__(self):
+        return len(self.data_)

@@ -3,9 +3,13 @@
 #   Predictor
 #
 #
-from .logger import get_logger
+
+import logging
+
 from .utils.platform_details import platform_details
-from .utils.timing import elapsed_time
+from .utils.timing import ElapsedTimeCalculator
+
+logger = logging.getLogger(__name__)
 
 
 class Predictor:
@@ -17,7 +21,6 @@ class Predictor:
     def __init__(self, model, dataset):
         self.model = model
         self.dataset = dataset
-        self.logger = get_logger(prefix=self)
 
     def predict(self, X):
         """
@@ -28,27 +31,29 @@ class Predictor:
         X: dataset used for prediction
 
         """
+        elapsed_time_calc = ElapsedTimeCalculator()
+
         # RETRIEVE PLATFORM DETAILS
 
         for name, key in zip(("Python version", "Platform"), ("python_version", "platform")):
-            self.logger.info("{}: {}".format(name, platform_details(key)))
+            logger.info("{}: {}".format(name, platform_details(key)))
 
-        self.logger.info("Found {} GPUs".format(len(platform_details("gpu"))))
+        logger.info("Found {} GPUs".format(len(platform_details("gpu"))))
 
         # APPLY PREPROCESSORS
 
-        self.logger.info("Apply preprocessors")
+        logger.info("Apply preprocessors")
 
-        with elapsed_time() as elapsed:
-            X = self.dataset.preprocessor_pipeline.transform(X)
+        with elapsed_time_calc("preprocessors_transform") as elapsed:
+            X = self.dataset.preprocessors.transform(X)
 
-        self.logger.debug("Applying preprocessors took {:.2f}s".format(elapsed.s))
+        logger.debug("Applying preprocessors took {:.2f}s".format(elapsed.s))
 
         # PREDICT
 
-        self.logger.info("Apply model")
-        with elapsed_time() as elapsed:
+        logger.info("Predicting with model")
+        with elapsed_time_calc("predict_model") as elapsed:
             prediction = self.model.model.predict(X)
 
-        self.logger.debug("Applying model took {:.2f}s".format(elapsed.s))
+        logger.debug("Predicting with model took {:.2f}s".format(elapsed.s))
         return prediction

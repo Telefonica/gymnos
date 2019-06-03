@@ -6,11 +6,10 @@
 
 import numpy as np
 
-from .dataset import RegressionDataset
-from keras.datasets import boston_housing
+from .dataset import Dataset, DatasetInfo, Array
 
 
-class BostonHousing(RegressionDataset):
+class BostonHousing(Dataset):
     """
     Samples contain 13 attributes of houses at different locations around the Boston suburbs in the late 1970s.
     Targets are the median values of the houses at a location (in k$).
@@ -21,11 +20,21 @@ class BostonHousing(RegressionDataset):
         - **Features**: real
     """
 
-    def download(self, download_path):
-        pass
+    def info(self):
+        return DatasetInfo(
+            features=Array(shape=[13], dtype=np.float32),
+            labels=Array(shape=[], dtype=np.float32)
+        )
 
-    def read(self, download_path):
-        (X_train, y_train), (X_test, y_test) = boston_housing.load_data()
-        X = np.concatenate([X_train, X_test], axis=0)
-        y = np.concatenate([y_train, y_test], axis=0)
+    def download_and_prepare(self, dl_manager):
+        data_path = dl_manager.download("https://s3.amazonaws.com/keras-datasets/boston_housing.npz")
+        self.data_ = np.load(data_path)
+        self.size_ = len(self.data_["x"])  # x and y have the same length
+
+    def __getitem__(self, index):
+        X = self.data_["x"][index]
+        y = self.data_["y"][index]
         return X, y
+
+    def __len__(self):
+        return self.size_

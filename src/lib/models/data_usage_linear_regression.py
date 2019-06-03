@@ -11,7 +11,7 @@ from .mixins import SklearnMixin
 from ..utils.temporal_series_utils import mad_mean_error, nrmsd_error_norm, residual_analysis, rmse_train
 
 
-class DataUsageLinearRegression(Model, SklearnMixin):
+class DataUsageLinearRegression(SklearnMixin, Model):
     """
     Linear Regression developed to solve Data Usage time series regression
     task (:class:`lib.datasets.data_usage_test.DataUsageTest`).

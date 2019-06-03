@@ -8,10 +8,12 @@ import numbers
 
 from keras import callbacks
 from collections.abc import Iterable
+from abc import ABCMeta, abstractmethod
 
 
-class Tracker:
+class Tracker(metaclass=ABCMeta):
 
+    @abstractmethod
     def start(self, run_name, logdir):
         """
         Called when the experiment is started.
@@ -27,8 +29,8 @@ class Tracker:
         logdir: str
             Path of logging.
         """
-        pass
 
+    @abstractmethod
     def add_tag(self, tag):
         """
         Add tag to experiment.
@@ -38,12 +40,12 @@ class Tracker:
         tag: str
             Tag to add.
         """
-        pass
 
     def add_tags(self, tags):
         for tag in tags:
             self.add_tag(tag)
 
+    @abstractmethod
     def log_asset(self, name, file_path):
         """
         Log asset.
@@ -55,8 +57,8 @@ class Tracker:
         file_path: str
             Asset's path.
         """
-        pass
 
+    @abstractmethod
     def log_image(self, name, file_path):
         """
         Log image
@@ -68,8 +70,8 @@ class Tracker:
         file_path: str
             Image's path.
         """
-        pass
 
+    @abstractmethod
     def log_figure(self, name, figure):
         """
         Log Matplotlib figure
@@ -81,8 +83,8 @@ class Tracker:
         figure: matplotlib.Figure
             Matplotlib figure.
         """
-        pass
 
+    @abstractmethod
     def log_metric(self, name, value, step=None):
         """
         Log metric
@@ -96,7 +98,6 @@ class Tracker:
         step: int
             Metric's step.
         """
-        pass
 
     def log_metric_list(self, name, metric_list):
         for step, val in enumerate(metric_list):
@@ -111,6 +112,7 @@ class Tracker:
             else:
                 self.log_metric(prefix + name, value, step)
 
+    @abstractmethod
     def log_param(self, name, value, step=None):
         """
         Log parameter
@@ -122,7 +124,6 @@ class Tracker:
         value: any
             Parameter's value.
         """
-        pass
 
     def log_params(self, dic, prefix=None, step=None):
         prefix = prefix if prefix is not None else ""
@@ -130,33 +131,11 @@ class Tracker:
         for (name, value) in dic.items():
             self.log_param(prefix + name, value, step)
 
-    def log_other(self, name, value):
-        """
-        Log any other value
-
-        Parameters
-        ----------
-        name: str
-            Parameter's name.
-        value: any
-            Parameter's value.
-        """
-        pass
-
-    def log_model_graph(self, graph):
-        """
-        Log TensorFlow model graph.
-
-        Parameters
-        ----------
-        graph: tf.Graph
-            TensorFlow Graph
-        """
-        pass
 
     def get_keras_callback(self, log_params=True, log_metrics=True):
         return KerasCallback(self)  # default callback
 
+    @abstractmethod
     def end(self):
         """
         Called when the experiment is finished.
@@ -165,7 +144,6 @@ class Tracker:
         -----
         Useful to release/write artifacts.
         """
-        pass
 
 
 class KerasCallback(callbacks.Callback):

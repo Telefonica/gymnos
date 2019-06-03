@@ -7,10 +7,10 @@
 import numpy as np
 import statsmodels.api as sm
 
-from .dataset import RegressionDataset
+from .dataset import Dataset, DatasetInfo, Array
 
 
-class DataUsageTest(RegressionDataset):
+class DataUsageTest(Dataset):
     """
     Dataset  of Yearly (1700-2008) data on sunspots from the National Geophysical Data Center.
 
@@ -22,10 +22,13 @@ class DataUsageTest(RegressionDataset):
         - **Features**: xxx
     """
 
-    def download(self, download_path):
-        pass
+    def info(self):
+        return DatasetInfo(
+            features=Array(shape=[1], dtype=np.int64),
+            labels=Array(shape=[1], dtype=np.float64)
+        )
 
-    def read(self, download_path):
+    def download_and_prepare(self, dl_manager):
         data = sm.datasets.sunspots.load_pandas().data
         data = data['SUNACTIVITY'].values
         # Erase zeros on the left
@@ -34,6 +37,11 @@ class DataUsageTest(RegressionDataset):
         consumption_zero_acum = [i for i in consumption if i > 0.0]
         consumption_zero_acum = [float(i) for i in consumption_zero_acum]
 
-        label_serie = np.array(consumption_zero_acum).reshape(-1, 1)
-        features_serie = np.arange(len(consumption_zero_acum)).reshape(-1, 1)
-        return features_serie, label_serie
+        self.labels_ = np.array(consumption_zero_acum).reshape(-1, 1)
+        self.features_ = np.arange(len(consumption_zero_acum)).reshape(-1, 1)
+
+    def __getitem__(self, index):
+        return self.features_[index], self.labels_[index]
+
+    def __len__(self):
+        return len(self.features_)

@@ -1,20 +1,16 @@
 {
-    "experiment": {
-        "name": "Boston Housing"
-    },
     "model": {
         "name": "keras",
         "parameters": {
             "sequential": [
-                {"type": "dense", "units": 512, "activation": "relu", "input_shape": [13]},
+                {"type": "dense", "units": 512, "activation": "relu"},
                 {"type": "dense", "units": 128, "activation": "relu"},
                 {"type": "dense", "units": 1, "activation": "linear"}
             ],
-            "compilation": {
-                "optimizer": "adam",
-                "loss": "mse",
-                "metrics": ["mae"]
-            }
+            "input_shape": [13],
+            "optimizer": "adam",
+            "loss": "mse",
+            "metrics": ["mae"]
         }
     },
     "dataset": {
@@ -46,7 +42,7 @@
         "validation_split": 0.25
     },
     "tracking": {
-        "params": {
+        "additional_params": {
             "device": "cpu"
         },
         "trackers": [

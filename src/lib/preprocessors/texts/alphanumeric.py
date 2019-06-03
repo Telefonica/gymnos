@@ -15,6 +15,12 @@ class Alphanumeric(Preprocessor):
     Keep only alphanumeric characters.
     """
 
+    def fit(self, X, y=None):
+        return self
+
+    def fit_generator(self, generator):
+        return self
+
     def __transform_sample(self, x):
         return re.sub(r'([^\s\w]|_)+', ' ', x)  # only alphanumeric
 

@@ -4,25 +4,148 @@
 #
 #
 
-import os
-import requests
 import pandas as pd
 
 from tqdm import tqdm
 from datetime import datetime
 from sklearn.preprocessing import MultiLabelBinarizer
 
-from ..logger import get_logger
-from .dataset import ClassificationDataset
-from .mixins import PublicURLMixin
 from ..utils.io_utils import read_from_json
+from .dataset import Dataset, DatasetInfo, ClassLabel, Array
 
 
-GENRE_TO_SUBSCRIPTION_MAPPING_PATH = os.path.join(os.path.dirname(__file__), "resources", "mte",
-                                                  "genre_to_subscription.json")
+GENRE_TO_SUBSCRIPTION = {
+    'ATLETISMO': [0],
+    'BALONCESTO': [0],
+    'BALONMANO': [0],
+    'BELLEZA': [1],
+    'BRICOLAJE': [3],
+    'CAZA Y PESCA': [0],
+    'CICLISMO': [0],
+    'CINE': [4],    'CINE ADULTO': [4],
+    'CINE CIENCIA FICCIÓN': [4],
+    'CINE COMEDIA': [4, 2],
+    'CINE COMEDIA ROMANT.': [4, 2],
+    'CINE DE ACCIÓN': [4],
+    'CINE DE ANIMACIÓN': [4],
+    'CINE DE AVENTURAS': [4],
+    'CINE DRAMA': [4],
+    'CINE HISTÓRICO': [4, 5],
+    'CINE INFANTIL': [4, 6],
+    'CINE MUSICAL': [4, 7],
+    'CINE OESTE': [4],
+    'CINE POLICIACO': [4],
+    'CINE SUSPENSE': [4],
+    'CINE TERROR': [4],
+    'CINE TV': [4],
+    'COCINA': [16],
+    'CONCIERTO': [7],
+    'CONCURSO': [8],
+    'CORAZÓN / SOCIEDAD': [8],
+    'CORTO': [],    'CULTURAL/EDUCATIVO': [5],
+    'DANCE / ELECTRÓNICA': [7],
+    'DANZA / BALLET': [7],
+    'DEBATE': [9],
+    'DECORACIÓN': [3],
+    'DEPORTE': [0],
+    'DEPORTES': [0],
+    'DEPORTE ACUÁTICO': [0],
+    'DEPORTE DE INVIERNO': [0],
+    'DEPORTE TRADICIONAL': [0],
+    'DIBUJOS ANIMADOS': [6],
+    'DOC. ACTUALIDAD': [10],
+    'DOC. ARTE Y CULTURA': [10, 5],
+    'DOC. CAZA Y PESCA': [10, 0],
+    'DOC. CIENCIA Y TEC.': [10, 11],
+    'DOC. NATURALEZA': [10],
+    'DOC. TENDENCIAS': [10, 12],
+    'DOC. VIAJES': [10, 13],
+    'DOCU-SERIE': [10, 14],
+    'DOCUMENTAL': [10],
+    'DOCUMENTAL BIOGRAFÍA': [10],
+    'DOCUMENTAL DE CINE': [10, 4],
+    'DOCUMENTAL HISTORIA': [10, 5],
+    'DOCUMENTAL MÚSICA': [10, 7],
+    'DOCUMENTAL POLÍTICA': [10, 9],
+    'DOCUMENTAL SOCIEDAD': [10],
+    'ECONOMÍA': [9],
+    'ENTRETENIM. DEBATE': [8],
+    'ENTRETENIM. ENTREVISTA': [8],
+    'ENTRETENIMIENTO': [8],
+    'ENTREVISTA': [8, 9],
+    'ESOTERISMO': [],
+    'FORMACIÓN ACADÉMICA': [5],
+    'FÚTBOL': [0],
+    'FÚTBOL AMERICANO': [0],
+    'GOLF': [0],    'HOCKEY': [0],
+    'HUMOR': [2],
+    'IDIOMAS': [5],
+    'INF. SOCIEDAD': [],
+    'INFANTIL': [6],
+    'INFANTIL EDUCATIVO': [6],
+    'INFORMACIÓN': [9],
+    'INFORMACIÓN DEPORTE': [9, 0],
+    'INFORMACIÓN POLÍTICA': [9],
+    'INFORMATIVO': [9],
+    'JAZZ / BLUES': [7],
+    'JUEGOS': [8],
+    'LITERATURA': [5],
+    'MAGACÍN': [8],
+    'MAGACÍN INFORMATIVO': [8, 9],
+    'MANUALIDADES': [3],
+    'METEOROLOGÍA': [9],
+    'MINISERIE': [14],
+    'MODA': [12],
+    'MOTOR': [15],
+    'MÚSICA': [7],
+    'MÚSICA CLÁSICA': [7],
+    'OCIO Y AFICIONES': [],
+    'PREESCOLAR': [6],
+    'PROGRAMA CULTURAL': [5],
+    'PROGRAMA DE MÚSICA': [7],
+    'PROGRAMA DEPORTIVO': [0],
+    'PROGRAMA INFANTIL': [6],
+    'RELAC. PERSONALES': [],
+    'RELIGIÓN': [],
+    'REPORTAJES ACTUALIDAD': [9],
+    'RUGBY': [0],
+    'SALUD Y BIENESTAR': [1],
+    'SERIE': [14],
+    'SERIES': [14],
+    'SERIE CIENCIA FICCIÓN': [14],
+    'SERIE COMEDIA': [14],
+    'SERIE DE ACCIÓN': [14],
+    'SERIE DE ANIMACIÓN': [14],
+    'SERIE DE AVENTURAS': [14],
+    'SERIE DE HUMOR': [14, 2],
+    'SERIE DE SUSPENSE': [14],
+    'SERIE DRAMA': [14],
+    'SERIE HISTÓRICA': [14, 5],
+    'SERIE INFANTIL': [14, 6],
+    'SERIE JUVENIL': [14],
+    'SERIE POLICIACA': [14],
+    'TEATRO': [],
+    'TECNOLOGÍAS': [11],
+    'TELE REALIDAD': [8],
+    'TELENOVELA': [8],
+    'TELEVENTA': [],
+    'TENIS': [0],
+    'TERTULIA': [8],
+    'TOROS': [],    'TRADICIONES POPULARES': [5],
+    'TURISMO': [13],
+    'VARIEDADES': [8],
+    'VIDEOCLIPS': [7],
+    'ÓPERA': [7]
+}
+
+EPG_URL = "http://ottcache.dof6.com/movistarplus/webplayer.hls/OTT/epg?from={now}&span=7&channel=&network=movistarplus"
+
+CLASS_NAMES = ["Deportes", "Salud y Belleza", "Humor", "Hogar", "Cine", "Cultural y Educativo", "Infantil", "Música",
+               "Entretenimiento", "Información y Actualidad", "Documental", "Tecnología", "Moda", "Viajes", "Serie",
+               "Motor", "Cocina"]
 
 
-class MTE(ClassificationDataset, PublicURLMixin):
+class MTE(Dataset):
     """
     Dataset to predict topics of video contents from M+ based on the title and the description of the content.
 
@@ -72,100 +195,51 @@ class MTE(ClassificationDataset, PublicURLMixin):
         - **Features**: texts
     """
 
-    public_urls = ("http://ottcache.dof6.com/movistarplus/webplayer.hls/OTT/epg?from={}&span=7&channel=" +
-                   "&network=movistarplus").format(datetime.now().strftime("%Y-%m-%dT%H:%M:%S"))
+    def info(self):
+        return DatasetInfo(
+            features=Array(shape=[], dtype=str),
+            labels=ClassLabel(names=CLASS_NAMES, multilabel=True)
+        )
 
-    def __init__(self):
-        self.logger = get_logger(prefix=self)
+    def download_and_prepare(self, dl_manager):
+        epg_path = dl_manager.download(EPG_URL.format(now=datetime.now().strftime("%Y-%m-%dT%H:%M:%S")))
 
-    def read(self, download_dir):
-        epgs_file_paths = [os.path.join(download_dir, epg) for epg in os.listdir(download_dir)]
-        epg_df = self.__parse_epgs(epgs_file_paths)
-        epg_df = self.__clean_epg(epg_df)
-        epg_df["subscriptions"] = self.__map_genre_to_subscriptions(epg_df.genre)
+        epg_json = read_from_json(epg_path)
 
-        epg_df = epg_df[epg_df.subscriptions.notna()]
-
-        X = epg_df.title + " " + epg_df.description
-
-        y = epg_df.subscriptions
-        y = self.__convert_to_multilabel(y)
-
-        return X, y
-
-    def __convert_to_multilabel(self, subscriptions):
-        mlb = MultiLabelBinarizer()
-
-        return mlb.fit_transform(subscriptions)
-
-
-    def __clean_epg(self, df):
-        df = df.drop_duplicates()
-        df = df.fillna({"title": ""})
-        df = df[df != ""]
-        df = df[df.genre != "SIN CLASIFICAR"]
-        df = df.dropna(subset=["genre"])
-        df = df.dropna(subset=["description"])
-
-        return df
-
-
-    def __map_genre_to_subscriptions(self, genres):
-        mapping_json = read_from_json(GENRE_TO_SUBSCRIPTION_MAPPING_PATH)
-        subscriptions = genres.map(mapping_json)
-
-        if subscriptions.isna().sum() > 0:
-            unknown_genres = genres[subscriptions.isna()].unique().tolist()
-            self.logger.warning("Unknown subscription for the following genres: {}".format(unknown_genres))
-
-        return subscriptions
-
-
-    def __safe_download_json(self, url, params=None):
-        try:
-            res = requests.get(url, params=params)
-            return res.json()
-        except (requests.exceptions.RequestException, ValueError) as err:
-            self.logger.warning("{}: {}".format(url, err))
-            return None
-
-
-    def __parse_epgs(self, epgs_file_paths):
-        df = pd.DataFrame()
-
-        for epg_file_path in tqdm(epgs_file_paths, leave=False, desc="EPGs"):
-            epg_df = self.__parse_epg(epg_file_path)
-            df = pd.concat([df, epg_df], ignore_index=True)
-
-        return df
-
-
-    def __parse_epg(self, file_path):
-        epg_json = read_from_json(file_path)
-
-        df = pd.DataFrame(columns=["title", "description", "genre", "channel_id"])
-
-        df_idx = 0
+        self.sheets_paths_ = []
 
         for channel in tqdm(epg_json, leave=False, desc="Channels"):
             for program in tqdm(channel, desc="Programs"):
                 sheet_url = program.get("Ficha")
                 if sheet_url is None:
+                    print("Sheet url not found. Skipping")
                     continue
 
-                sheet = self.__safe_download_json(sheet_url)
-                if sheet is None:
+                try:
+                    sheet_path = dl_manager.download(sheet_url, verbose=False)
+                except Exception as exception:
+                    print("Error downloading sheet with url {}".format(sheet_url))
                     continue
 
-                if not isinstance(sheet, dict):
-                    self.logger.warning("Error downloading {}: {}".format(sheet_url, sheet))
-                    continue
+                self.sheets_paths_.append(sheet_path)
 
-                df.loc[df_idx] = self.__parse_sheet(sheet)
+        df = pd.DataFrame(columns=["title", "description", "genre", "channel_id"])
+        for idx, sheet_path in enumerate(tqdm(self.sheets_paths_)):
+            sheet = read_from_json(sheet_path)
+            df.loc[idx] = self.__parse_sheet(sheet)
 
-                df_idx += 1
+        df.drop_duplicates(inplace=True)
+        df.fillna({"title": ""}, inplace=True)
+        df = df[df != ""]  # convert empty strings to NaN
+        df = df[df.genre != "SIN CLASIFICAR"]
+        df.dropna(subset=["genre", "description"], inplace=True)
 
-        return df
+        df["subscriptions"] = df.genre.map(GENRE_TO_SUBSCRIPTION)
+
+        df.dropna(subset=["subscriptions"], inplace=True)
+
+        self.features_ = df.title + " " + df.description
+        self.labels_ = MultiLabelBinarizer(classes=range(len(CLASS_NAMES))).fit_transform(df.subscriptions)
 
 
     def __parse_sheet(self, sheet):
@@ -180,3 +254,9 @@ class MTE(ClassificationDataset, PublicURLMixin):
         genre = sheet.get("Genero", {}).get("ComAntena")
 
         return (title, description, genre, channel_id)
+
+    def __getitem__(self, index):
+        return self.features_.iloc[index], self.labels_[index]
+
+    def __len__(self):
+        return len(self.features_)

@@ -4,125 +4,249 @@
 #
 #
 
-import os
-import tempfile
+import h5py
+import pickle
 
-from keras.utils import to_categorical
-
-from ..logger import get_logger
-from ..utils.hdf_manager import HDFManager
+from abc import ABCMeta, abstractmethod
 
 
-class Dataset:
+class Dataset(metaclass=ABCMeta):
     """
     Base class for all Gymnos datasets.
 
-    You need to implement the following methods: ``download`` and ``read``.
+    You need to implement the following methods: ``download_and_prepare``, ``info``, ``__getitem__`` and ``__len__``.
+    """
+    @abstractmethod
+    def info(self):
+        """
+        Returns info about dataset features and labels
+
+        Returns
+        -------
+        dataset_info: DatasetInfo
+        """
+
+    @abstractmethod
+    def download_and_prepare(self, dl_manager):
+        """
+        Download files and prepare instance for future calls to ``__getitem__`` and ``__len__``.
+
+        Parameters
+        ----------
+        dl_manager: DownloadManager
+            Download Manager to download files.
+        """
+
+    @abstractmethod
+    def __getitem__(self, index):
+        """
+        Returns single row of data
+
+        Parameters
+        ----------
+        index: int
+            Row index to retrieve
+
+
+        Returns
+        -------
+        row: np.array or pd.Series
+            Single row of data
+        """
+
+    @abstractmethod
+    def __len__(self):
+        """
+        Returns number of rows
+
+        Returns
+        -------
+        int
+            Number of samples
+        """
+
+
+class HDF5Dataset(Dataset):
+    """
+    Create dataset from HDF5 file.
+
+    Parameters
+    ----------
+    file_path: str
+        HDF5 dataset file path.
+    features_key: str
+        Key to load features.
+    labels_key: str
+        Key to load labels
+    info_key: str
+        Key to load info
     """
 
-    def __init__(self):
-        self.logger = get_logger(prefix=self)
+    def __init__(self, file_path, features_key="features", labels_key="labels", info_key="info"):
+        self.features_key = features_key
+        self.labels_key = labels_key
+        self.info_key = info_key
+
+        self.data = h5py.File(file_path, mode="r")
 
 
-    def download(self, download_path):
+    def info(self):
+        features_info = pickle.loads(self.data[self.features_key].attrs[self.info_key])
+        labels_info = pickle.loads(self.data[self.labels_key].attrs[self.info_key])
+        return DatasetInfo(
+            features=features_info,
+            labels=labels_info
+        )
+
+    def download_and_prepare(self, dl_manager):
         """
-        Download raw data.
-
-        Parameters
-        ----------
-        download_path: str
-            Path where to download data
+        It does nothing.
         """
-        return super().download(download_path)
+        pass
+
+    def __getitem__(self, index):
+        return (
+            self.data[self.features_key][index],
+            self.data[self.labels_key][index]
+        )
+
+    def __len__(self):
+        return len(self.data[self.features_key])  # len(features) == len(labels)
 
 
-    def read(self, download_path):
-        """
-        Read data from download path
+class DatasetInfo:
+    """
+    Dataset info.
 
-        Parameters
-        ----------
-            download_path: str
-                Path where to read data
-        Returns
-        -------
-            X: array_like
-                Features
-            y: array_like
-                Labels
-        """
-        return super().read(download_path)
+    Parameters
+    ----------
+    features: Array
+        Info about features shape and dtype
+    labels: Array
+        Info about labels shape and dtype
+    """
 
-    def load_data(self, hdf5_cache_path=None):
-        """
-        Check if data exists on cache and download, read and save to cache if not.
+    def __init__(self, features, labels):
+        self.features = features
+        self.labels = labels
 
-        Returns
-        -------
-        X: array_like
-            Features
-        y: array_like
-            Labels
-        """
 
-        if hdf5_cache_path is not None:
-            cache = HDFManager(hdf5_cache_path)
+class Array:
+    """
+    Info about data shape and data type.
+
+    Parameters
+    ----------
+    shape: list
+        Data shape without rows
+    dtype: np.dtype or Python data type
+        Data type
+    """
+
+    def __init__(self, shape, dtype):
+        self.shape = shape
+        self.dtype = dtype
+
+    def __str__(self):
+        return "Array <shape={}, dtype={}>".format(self.shape, self.dtype)
+
+
+def _read_lines(file_path):
+    """
+    Read file lines
+
+    Parameters
+    -----------
+    file_path: str
+        File path to read lines.
+
+    Returns
+    -------
+    num_lines: int
+        Number of lines
+    """
+    with open(file_path) as archive:
+        names = [line.rstrip('\n') for line in archive]
+
+    return names
+
+
+class ClassLabel(Array):
+    """
+    Label for classification tasks. It specifies class names
+
+    Parameters
+    ----------
+    num_classes: int, optional
+        Number of classes.
+    names: list of str, optional
+        Class names.
+    names_file: str, optional
+        File path where every line represents a single class name.
+    multilabel: bool, optional
+        Whether or not the label is multilabel
+    dtype: numpy.dtype or Python data type, optional
+        Data type. By default, int
+    """
+
+    def __init__(self, num_classes=None, names=None, names_file=None, multilabel=False, dtype=None):
+        if sum(bool(a) for a in (num_classes, names, names_file)) != 1:
+            raise ValueError("Only a single argument of ClassLabel(num_classes, names, names_file) should be provided.")
+
+        if names is not None:
+            self.names = names
+            self.num_classes = len(self.names)
+        elif names_file is not None:
+            self.names = _read_lines(names_file)
+            self.num_classes = len(self.names)
+        elif num_classes is not None:
+            self.num_classes = num_classes
+            self.names = None
         else:
-            cache = None
+            raise ValueError("A single argument of ClassLabel() should be provided")
 
-        if cache is not None and cache.exists():
-            self.logger.info("Dataset exists on cache ({})".format(hdf5_cache_path))
-            self.logger.info("Retrieving dataset from cache")
-            return cache.retrieve("X"), cache.retrieve("y")
+        if multilabel:
+            shape = [self.num_classes]
+        else:
+            shape = []
 
-        gymnos_dataset_temp_path = os.path.join(tempfile.gettempdir(), "gymnos", self.__class__.__name__)
+        self.multilabel = multilabel
 
-        self.logger.info("Downloading")
-        self.download(gymnos_dataset_temp_path)
+        if dtype is None:
+            dtype = int
 
-        self.logger.info("Reading from {}".format(gymnos_dataset_temp_path))
-        X, y = self.read(gymnos_dataset_temp_path)
+        super().__init__(shape=shape, dtype=dtype)
 
-        if cache is not None:
-            cache.save("X", X)
-            cache.save("y", y)
-
-        return X, y
-
-
-class RegressionDataset(Dataset):
-    """
-    Dataset for regression tasks.
-
-    You need to implement the following methods: ``download`` and ``read``.
-    """
-
-
-class ClassificationDataset(Dataset):
-    """
-    Dataset for classification tasks.
-
-    You need to implement the following methods: ``download`` and ``read``.
-    """
-
-    def load_data(self, one_hot=False, hdf5_cache_path=None):
+    def str2int(self, str_value):
         """
-        Check if data exists on cache and download, read and save to cache if not.
+        Convert class name to index
 
         Parameters
         ----------
-        one_hot: bool, optional
-            Whether or note one-hot encode labels.
+        str_value: str
+            Class name
+
         Returns
         -------
-        X: array_like
-            Features.
-        y: array_like of int
-            Labels.
+        index: int
+            Class index
         """
-        X, y = super().load_data(hdf5_cache_path=hdf5_cache_path)
+        return self.names.index(str_value)
 
-        if one_hot:
-            y = to_categorical(y)
+    def int2str(self, int_value):
+        """
+        Convert index to class name
 
-        return X, y
+        Parameters
+        ----------
+        int_value: int
+            Class index
+
+        Returns
+        --------
+            Class name
+        """
+        return self.names[int_value]
+
+    def __str__(self):
+        return "ClassLabel <shape={}, dtype={}, classes={}>".format(self.shape, self.dtype, self.num_classes)

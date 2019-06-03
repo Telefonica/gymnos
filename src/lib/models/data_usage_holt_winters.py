@@ -52,6 +52,9 @@ class DataUsageHoltWinters(Model):
         """
         return {}
 
+    def fit_generator(self, generator):
+        return {}
+
     def predict(self, X):
         if self.flag_optimize_hiperparams:
             slen = estimated_window(X, 2)

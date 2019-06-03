@@ -6,6 +6,20 @@
             "train": 0.1,
             "test": 0.1
         },
+        "chunk_size": 32,
+        "data_augmentors": [
+            {
+                "type": "zoom",
+                "probability": 0.3,
+                "min_factor": 0.5,
+                "max_factor": 1.5
+            },
+            {
+                "type": "flip",
+                "probability": 0.4,
+                "top_bottom_left_right": "LEFT_RIGHT"
+            }
+        ],
         "preprocessors": [
             {
                 "type": "grayscale"
@@ -24,11 +38,10 @@
                 {"type": "flatten"},
                 {"type": "dense", "units": 200, "activation": "softmax"}
             ],
-            "compilation": {
-                "loss": "categorical_crossentropy",
-                "optimizer": "sgd",
-                "metrics": ["acc"]
-            }
+            "input_shape": [25, 25, 1],
+            "loss": "categorical_crossentropy",
+            "optimizer": "sgd",
+            "metrics": ["acc"]
         }
     }
 }

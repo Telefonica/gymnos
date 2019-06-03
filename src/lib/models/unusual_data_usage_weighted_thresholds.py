@@ -7,10 +7,10 @@
 import numpy as np
 from sklearn.metrics import f1_score, precision_score, recall_score
 
-from sklearn.base import BaseEstimator
+from .model import Model
 
 
-class UnusualDataUsageWT(BaseEstimator):
+class UnusualDataUsageWT(Model):
     """
     This model labels consumptions associated as anomalous using an algorithm. It was developed to solve Unusual
     Data Usage dataset.

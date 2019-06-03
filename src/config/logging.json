@@ -3,7 +3,7 @@
     "disable_existing_loggers": false,
     "formatters": {
         "standard": {
-            "format": "%(asctime)s - %(name)s - %(levelname)s - %(prefix)s - %(message)s"
+            "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
         }
     },
 
@@ -15,20 +15,20 @@
             "stream": "ext://sys.stdout"
         },
         
-        "file_handler": {
+        "file": {
             "class": "logging.FileHandler",
             "level": "DEBUG",
             "formatter": "standard",
-            "filename": "/tmp/gymnos.log",
+            "filename": "execution.log",
             "encoding": "utf8",
             "mode": "w"
         }
     },
 
     "loggers": {
-        "gymnosd": {
+        "": {
             "level": "DEBUG",
-            "handlers": ["console", "file_handler"],
+            "handlers": ["console", "file"],
             "propagate": "no"
         }
     }

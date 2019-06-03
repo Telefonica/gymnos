@@ -5,7 +5,10 @@
 #
 
 import json
+import commentjson
 import numpy as np
+
+from pydoc import locate
 
 
 def read_from_text(file_path):
@@ -26,7 +29,25 @@ def read_from_text(file_path):
         return f.read()
 
 
-def read_from_json(file_path):
+def count_lines(file_path):
+    """
+    Count lines from a file
+
+    Parameters
+    ----------
+    file_path: str
+        File path to count lines
+
+    Returns
+    --------
+    int
+        Number of lines
+    """
+    with open(file_path, "r") as f:
+        return sum(1 for line in f)
+
+
+def read_from_json(file_path, with_comments_support=False):
     """
     Read JSON
 
@@ -41,7 +62,10 @@ def read_from_json(file_path):
         JSON data.
     """
     with open(file_path) as f:
-        return json.load(f)
+        if with_comments_support:
+            return commentjson.load(f)
+        else:
+            return json.load(f)
 
 
 def _json_default(o):
@@ -68,3 +92,28 @@ def save_to_json(path, obj, indent=4):
     """
     with open(path, "w") as outfile:
         json.dump(obj, outfile, indent=indent, default=_json_default)
+
+
+def import_from_json(json_path, key):
+    """
+    Import module from a JSON file.
+    The JSON structure must be in the following format:
+    {
+        <key>: <module_path (e.g lib.core.model.Model)>
+    }
+
+    Parameters
+    ----------
+    json_path: str
+        JSON file path
+    key: str
+        JSON key to read module path
+
+    Returns
+    -------
+    object
+        Imported object
+    """
+    objects_ids_to_modules  = read_from_json(json_path)
+    object_loc = objects_ids_to_modules[key]
+    return locate(object_loc)

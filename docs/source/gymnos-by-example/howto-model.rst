@@ -12,28 +12,30 @@ Model
 
 .. autoclass:: lib.models.model.Model
     :members:
-    :inherited-members:
 
 Mixins
 ------
 
-We provide `mixins <https://www.ianlewis.org/en/mixins-and-python>`_ with default functionality for model methods.
+These days, there's a ton of libraries that help us in our machine learning workflow providing top-performant and tested machine learning models like
+TensorFlow, Keras or Sklearn. To help you develop a model in the Gymnos environment, we provide you with `mixins <https://www.ianlewis.org/en/mixins-and-python>`_ for some libraries so you don't have to overwrite some methods.
+
+The following mixins are available:
 
 Keras
 ===========
 
-.. autoclass:: lib.models.mixins.keras.KerasMixin
+.. autoclass:: lib.models.mixins.KerasMixin
     :members:
 
 Sklearn
 =============
 
-.. autoclass:: lib.models.mixins.sklearn.SklearnMixin
+.. autoclass:: lib.models.mixins.SklearnMixin
     :members:
 
 
-TensorFlow
+TensorFlow Saver
 ================
 
-.. autoclass:: lib.models.mixins.tensorflow.TensorFlowMixin
+.. autoclass:: lib.models.mixins.TensorFlowSaverMixin
     :members:

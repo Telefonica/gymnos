@@ -5,11 +5,10 @@
             "sequential": [
                 {"type": "dense", "units": 1, "activation": "linear"}
             ],
-            "compilation": {
-                "optimizer": "sgd",
-                "loss": "mse",
-                "metrics": ["mae"]
-            }
+            "input_shape": [13],
+            "optimizer": "sgd",
+            "loss": "mse",
+            "metrics": ["mae"]
        } 
     },
     "dataset": {

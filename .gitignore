@@ -1,6 +1,8 @@
 *.pyc
 *.DS_Store
 .env
-cache
-trainings
+hdf5_datasets/
+trainings/
+downloads/
+preferences.local.json
 .idea

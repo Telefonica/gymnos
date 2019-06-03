@@ -25,6 +25,14 @@ class Tensorboard(Tracker):
     def start(self, run_name, logdir):
         self.writer = tf.summary.FileWriter(os.path.join(logdir, "tensorboard", run_name))
 
+    def add_tag(self, tag):
+        pass
+
+    def log_asset(self, name, file_path):
+        pass
+
+    def log_param(self, name, value, step=None):
+        pass
 
     def log_metric(self, name, value, step=None):
         summary = tf.Summary(value=[tf.Summary.Value(tag=name, simple_value=value)])
@@ -57,10 +65,6 @@ class Tensorboard(Tracker):
 
         summary = tf.Summary(value=[tf.Summary.Value(tag=name, image=img_summary)])
         self.writer.add_summary(summary)
-
-
-    def log_model_graph(self, graph):
-        self.writer.add_graph(graph)
 
 
     def end(self):

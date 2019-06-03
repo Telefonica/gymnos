@@ -7,15 +7,17 @@
 import os
 import numpy as np
 
-from tqdm import tqdm
-from glob import iglob
+from glob import glob
 
-from .dataset import ClassificationDataset
-from .mixins import KaggleMixin
 from ..utils.image_utils import imread_rgb, imresize
+from .dataset import Dataset, DatasetInfo, Array, ClassLabel
+
+IMAGE_WIDTH = 150
+IMAGE_HEIGHT = 150
+IMAGE_DEPTH = 3
 
 
-class DogsVsCats(ClassificationDataset, KaggleMixin):
+class DogsVsCats(Dataset):
     """
     Dataset to classify whether images contain either a dog or a cat.
 
@@ -36,26 +38,35 @@ class DogsVsCats(ClassificationDataset, KaggleMixin):
         - **Features**: real, between 0 and 255
     """
 
-    kaggle_dataset_name = "dogs-vs-cats"
-    kaggle_dataset_files = ["train.zip"]
+    def info(self):
+        return DatasetInfo(
+            features=Array(shape=[IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_DEPTH], dtype=np.uint8),
+            labels=ClassLabel(names=["cat", "dog"])
+        )
 
-    def read(self, download_path):
-        images_glob = os.path.join(download_path, "train", "*.jpg")
-        images_paths = [f for f in iglob(images_glob) if os.path.isfile(f)]
 
-        images = np.empty([len(images_paths), 150, 150, 3], dtype=np.float)
-        classes = np.empty_like(images_paths, dtype=np.int)
+    def download_and_prepare(self, dl_manager):
+        train_files = dl_manager.download_kaggle(competition_name="dogs-vs-cats", file_or_files="train.zip")
+        train_dir = dl_manager.extract(train_files)
+        cat_images_paths = glob(os.path.join(train_dir, "train", "cat.*.jpg"))
+        dog_images_paths = glob(os.path.join(train_dir, "train", "dog.*.jpg"))
+        cat_labels = np.full_like(cat_images_paths, 0, dtype=np.int32)
+        dog_labels = np.full_like(dog_images_paths, 1, dtype=np.int32)
 
-        for i, image_path in enumerate(tqdm(images_paths)):
-            image = imread_rgb(image_path)
-            # resize image because we can't have images with different dimensions
-            image = imresize(image, (150, 150))
-            images[i] = image
-            if "dog" in image_path:
-                classes[i] = 0
-            elif "cat" in image_path:
-                classes[i] = 1
-            else:
-                raise ValueError("Class for image {} not recognized".format(image_path))
+        images_paths = np.concatenate([cat_images_paths, dog_images_paths], axis=0)
+        labels = np.concatenate([cat_labels, dog_labels], axis=0)
 
-        return images, classes
+        random_indices = np.random.permutation(len(images_paths))
+
+        self.images_paths_ = images_paths[random_indices]
+        self.labels_ = labels[random_indices]
+
+
+    def __getitem__(self, index):
+        image = imread_rgb(self.images_paths_[index])
+        image = imresize(image, (IMAGE_WIDTH, IMAGE_HEIGHT))
+        return image, self.labels_[index]
+
+
+    def __len__(self):
+        return len(self.images_paths_)
