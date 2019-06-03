@@ -28,13 +28,12 @@
         "name": "keras",
         "parameters": {
             "sequential": [
-                {"type": "dense", "units": 2, "input_shape": [6]}
+                {"type": "dense", "units": 2}
             ],
-            "compilation": {
-                "loss": "categorical_crossentropy",
-                "optimizer": "adam",
-                "metrics": ["acc"]
-            }
+            "input_shape": [6],
+            "loss": "categorical_crossentropy",
+            "optimizer": "adam",
+            "metrics": ["acc"]
         }
     }
 }

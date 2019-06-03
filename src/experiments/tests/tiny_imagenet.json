@@ -35,14 +35,13 @@
         "name": "keras",
         "parameters": {
             "sequential": [
-                {"type": "flatten", "input_shape": [25, 25, 1]},
+                {"type": "flatten"},
                 {"type": "dense", "units": 200, "activation": "softmax"}
             ],
-            "compilation": {
-                "loss": "categorical_crossentropy",
-                "optimizer": "sgd",
-                "metrics": ["acc"]
-            }
+            "input_shape": [25, 25, 1],
+            "loss": "categorical_crossentropy",
+            "optimizer": "sgd",
+            "metrics": ["acc"]
         }
     }
 }
