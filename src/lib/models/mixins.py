@@ -28,7 +28,8 @@ SKLEARN_MODEL_SAVE_FILENAME = "model.joblib"
 class KerasMixin:
     """
     Mixin to write keras methods. It provides implementation for ``fit``, ``predict``, ``evaluate``,
-    ``predict``, ``save`` and ``restore`` methods
+    ``predict``, ``save`` and ``restore`` methods.
+    It requires a ``self.model`` variable with your compiled Keras model.
 
     Attributes
     ----------
@@ -180,8 +181,9 @@ class KerasMixin:
 
 class SklearnMixin:
     """
-    Mixin to write scikit-learn methods. It provides implementation for ``fit``, ``predict``, ``evaluate``, ``save``
+    Mixin to write scikit-learn models. It provides implementation for ``fit``, ``predict``, ``evaluate``, ``save``
     and ``restore`` methods.
+    It requires a ``self.model`` variable with your sklearn estimator.
 
     Attributes
     ----------
@@ -317,7 +319,8 @@ class SklearnMixin:
 
 class TensorFlowSaverMixin:
     """
-    Mixin to write TensorFlow methods. It provides implementation for ``save`` and ``restore`` methods.
+    Mixin to write TensorFlow models. It provides implementation for ``save`` and ``restore`` methods.
+    It requires a ``self.sess`` variable with your TensorFlow session.
 
     Attributes
     ----------

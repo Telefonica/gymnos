@@ -15,7 +15,7 @@ Gymnos runs in a single process ``gymnosd.py``. This process is responsible for:
 
 Apart from that, there two important files holding the system settings:
 
-* ``cache.json`` : paths about where to locate caching facilities 
+* ``preferences.json``: gymnos preferences like download directory, hdf5 datasets directory or where to save models.
 * ``logging.json``: settings for logging facility
 
 
@@ -73,8 +73,4 @@ specialization via the ``lib.core.dataset`` library.
 
 .. image:: ../images/gymnos-datasets.png
     :width: 100%
-    :align: center
-
-.. image:: ../images/flow-diagram-dataset.png
-    :width: 55%
     :align: center

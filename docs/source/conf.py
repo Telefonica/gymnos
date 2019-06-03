@@ -19,7 +19,8 @@ sys.path.insert(0, os.path.abspath(os.path.join("..", "..", "src")))
 
 autodoc_mock_imports = ["keras", "cv2", "tqdm", "kaggle", "numpy", "pandas", "tables", "sklearn",
                         "spacy", "mlflow", "joblib", "statsmodels", "comet_ml",
-                        "h5py", "cpuinfo", "GPUtil", "tensorflow", "scipy", "dill"]
+                        "h5py", "cpuinfo", "GPUtil", "tensorflow", "scipy", "dill",
+                        "commentjson", "PIL"]
 
 # -- Project information -----------------------------------------------------
 
