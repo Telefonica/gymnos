@@ -12,8 +12,8 @@
     "dataset": {
         "name": "mte",
         "samples": {
-            "train": 0.1,
-            "test": 0.05
+            "train": 5,
+            "test": 5
         },
         "preprocessors": [
             {

@@ -3,8 +3,8 @@
         "name": "imdb",
         "one_hot": true,
         "samples": {
-            "train": 0.01,
-            "test": 0.01
+            "train": 5,
+            "test": 5
         },
         "preprocessors": [
             {

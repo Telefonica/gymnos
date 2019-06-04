@@ -2,8 +2,8 @@
     "dataset": {
         "name": "data_usage_test",
         "samples": {
-            "train": 0.1,
-            "test": 0.1
+            "train": 20,
+            "test": 20
         }
     },
     "model": {

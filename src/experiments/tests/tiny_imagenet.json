@@ -3,8 +3,8 @@
         "name": "tiny_imagenet",
         "one_hot": true,
         "samples": {
-            "train": 0.1,
-            "test": 0.1
+            "train": 5,
+            "test": 5
         },
         "chunk_size": 32,
         "data_augmentors": [
