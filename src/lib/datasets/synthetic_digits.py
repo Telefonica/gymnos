@@ -12,6 +12,9 @@ from glob import glob
 from ..utils.image_utils import imread_rgb, imresize
 from .dataset import Dataset, DatasetInfo, ClassLabel, Array
 
+KAGGLE_DATASET_NAME = "prasunroy/synthetic-digits"
+KAGGLE_DATASET_FILENAME = "data.zip"
+
 
 class SyntheticDigits(Dataset):
     """
@@ -28,7 +31,7 @@ class SyntheticDigits(Dataset):
         )
 
     def download_and_prepare(self, dl_manager):
-        data_path = dl_manager.download_kaggle(dataset_name="prasunroy/synthetic-digits", file_or_files="data.zip")
+        data_path = dl_manager.download_kaggle(dataset_name=KAGGLE_DATASET_NAME, file_or_files=KAGGLE_DATASET_FILENAME)
         data_path = dl_manager.extract(data_path)
 
         train_imgs_path = os.path.join(data_path, "synthetic_digits", "imgs_train")

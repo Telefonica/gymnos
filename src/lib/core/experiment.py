@@ -5,6 +5,9 @@
 #
 
 import uuid
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Experiment:
@@ -32,6 +35,7 @@ class Experiment:
 
     def __init__(self, name=None, description=None, tags=None):
         if name is None:
+            logger.info("Experiment name not assigned, automatically assigning a uuid")
             name = uuid.uuid4().hex
         self.name = name
         self.description = description

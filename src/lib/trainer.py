@@ -59,6 +59,8 @@ class Trainer:
         training: core.Training
         tracking: core.Tracking
         """
+        logger.info("Starting experiment {}".format(experiment.name))
+
         elapsed_time_calc = ElapsedTimeCalculator()
 
         # RETRIEVE PLATFORM DETAILS
@@ -130,6 +132,8 @@ class Trainer:
 
         # SPLIT DATASET INTO TRAIN AND TEST
 
+        logger.info("Spliting dataset into train and test")
+
         train_samples = dataset.samples.train
         test_samples = dataset.samples.test
 
@@ -142,6 +146,8 @@ class Trainer:
         test_indices  = np.arange(train_samples, train_samples + test_samples)
 
         indices = np.arange(len(dataset.dataset))
+
+        logger.info("Shuffling dataset")
 
         if dataset.shuffle:
             indices = np.random.permutation(indices)

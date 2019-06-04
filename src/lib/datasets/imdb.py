@@ -4,9 +4,15 @@
 #
 #
 
+import logging
 import pandas as pd
 
 from .dataset import Dataset, DatasetInfo, ClassLabel, Array
+
+logger = logging.getLogger(__name__)
+
+KAGGLE_DATASET_NAME = "oumaimahourrane/imdb-reviews"
+KAGGLE_DATASET_FILENAME = "dataset.csv"
 
 
 class IMDB(Dataset):
@@ -36,8 +42,9 @@ class IMDB(Dataset):
         )
 
     def download_and_prepare(self, dl_manager):
-        csv_path = dl_manager.download_kaggle(dataset_name="oumaimahourrane/imdb-reviews",
-                                              file_or_files="dataset.csv")
+        csv_path = dl_manager.download_kaggle(dataset_name=KAGGLE_DATASET_NAME,
+                                              file_or_files=KAGGLE_DATASET_FILENAME)
+        logger.info("Reading CSV")
         self.data_ = pd.read_csv(csv_path, encoding="latin-1")
 
     def __getitem__(self, index):

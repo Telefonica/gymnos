@@ -7,6 +7,7 @@
 import os
 import uuid
 import shutil
+import logging
 
 from collections.abc import Iterable
 
@@ -15,6 +16,8 @@ from ..utils.hashing import sha1_text
 from ..utils.text_utils import filenamify_url
 from ..utils.extractor import extract_zip, extract_tar, extract_gz
 from ..utils.downloader import download_file_from_url
+
+logger = logging.getLogger(__name__)
 
 
 class DownloadManager:
@@ -67,6 +70,8 @@ class DownloadManager:
         tar_extensions = (".tar", ".tar.bz2", ".tbz2", ".tbz", ".tb2", ".tar.gz")
         gz_extensions  = (".gz",)
         if isinstance(path_or_paths, str):
+            logger.info("Extracting {}".format(path_or_paths))
+
             basename, extension = os.path.splitext(os.path.basename(path_or_paths))
 
             if extension in zip_extensions:
@@ -77,7 +82,7 @@ class DownloadManager:
                 extract_func = extract_gz
             else:
                 if ignore_not_compressed:
-                    print("Extension {} not recognized as compressed file. Ignoring".format(extension))
+                    logger.info("Extension {} not recognized as compressed file. Ignoring".format(extension))
                     return path_or_paths
                 else:
                     raise ValueError("Can't extract file {}. Supported extensions: ".format(
@@ -134,8 +139,10 @@ class DownloadManager:
 
         if isinstance(file_or_files, str):
             if dataset_name is not None:
+                logger.info("Downloading {} from kaggle dataset {}".format(file_or_files, dataset_name))
                 resource_name = dataset_name.replace("/", "_")
             elif competition_name is not None:
+                logger.info("Downloading {} from kaggle competition {}".format(file_or_files, competition_name))
                 resource_name = competition_name
             else:
                 raise ValueError("You must specify dataset_name or competition_name")
@@ -144,7 +151,7 @@ class DownloadManager:
 
             if os.path.isfile(real_file_path) and not self.force_download:
                 if verbose:
-                    print("Download for {}/{} found. Skipping".format(resource_name, file_or_files))
+                    logger.debug("Download for {}/{} found. Skipping".format(resource_name, file_or_files))
                 return real_file_path
 
             tmp_download_dir = os.path.join(self.download_dir, resource_name + "_" + file_or_files + ".tmp." +
@@ -153,6 +160,7 @@ class DownloadManager:
             KaggleService.download(dataset_name=dataset_name, competition_name=competition_name, files=[file_or_files],
                                    download_dir=tmp_download_dir, force=self.force_download, verbose=verbose)
 
+            logger.info("Removing download temporary directory and moving files")
             shutil.move(os.path.join(tmp_download_dir, file_or_files), real_file_path)
             shutil.rmtree(tmp_download_dir)
 
@@ -195,6 +203,8 @@ class DownloadManager:
             If ``url_or_urls`` is a dict, the return type is a dict(name: filepath)
         """
         if isinstance(url_or_urls, str):
+            logger.info("Downloading file from url {}".format(url_or_urls))
+
             sha1_url_hash = sha1_text(url_or_urls)
             slug_url = filenamify_url(url_or_urls)
 
@@ -207,7 +217,7 @@ class DownloadManager:
 
             if os.path.isfile(real_file_path) and not self.force_download:
                 if verbose:
-                    print("Download for url {} found. Skipping".format(url_or_urls))
+                    logger.info("Download for url {} found. Skipping".format(url_or_urls))
                 return real_file_path
 
             tmp_download_dir = os.path.join(self.download_dir, filename + ".tmp." + uuid.uuid4().hex)
@@ -218,6 +228,7 @@ class DownloadManager:
             download_file_from_url(url_or_urls, file_path=tmp_file_path, verbose=verbose,
                                    force=self.force_download)
 
+            logger.info("Removing download temporary directory and moving files")
             shutil.move(tmp_file_path, real_file_path)
             shutil.rmtree(tmp_download_dir)
             return real_file_path

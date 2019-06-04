@@ -4,9 +4,14 @@
 #
 #
 
+import logging
 import numpy as np
 
 from .dataset import Dataset, DatasetInfo, Array
+
+logger = logging.getLogger(__name__)
+
+DOWNLOAD_URL = "https://s3.amazonaws.com/keras-datasets/boston_housing.npz"
 
 
 class BostonHousing(Dataset):
@@ -27,7 +32,8 @@ class BostonHousing(Dataset):
         )
 
     def download_and_prepare(self, dl_manager):
-        data_path = dl_manager.download("https://s3.amazonaws.com/keras-datasets/boston_housing.npz")
+        data_path = dl_manager.download(DOWNLOAD_URL)
+        logger.info("Loading data")
         self.data_ = np.load(data_path)
         self.size_ = len(self.data_["x"])  # x and y have the same length
 
