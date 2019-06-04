@@ -6,12 +6,13 @@ import copy
 import logging
 import argparse
 
+from glob import glob
 from datetime import datetime
-from tempfile import TemporaryDirectory
 
 from lib.utils.path import chdir
 from lib.datasets import HDF5Dataset
 from lib.trainer import Trainer
+from lib.utils.termcolor import cprint
 from lib.core.model import Model
 from lib.core.dataset import Dataset
 from lib.core.training import Training
@@ -101,6 +102,8 @@ def run_experiment(training_config_path):
 
     logger = logging.getLogger(__name__)
 
+    logger.info("Starting gymnos trainer ...")
+
     dataset = Dataset(**training_config["dataset"])
     model = Model(**training_config["model"])
     training = Training(**training_config.get("training", {}))  # optional field
@@ -122,8 +125,6 @@ def run_experiment(training_config_path):
     success = False
 
     try:
-        logger.info("Starting gymnos trainer ...")
-
         with chdir(execution_dir):
             results = trainer.train(experiment, model, dataset, training, tracking)
 
@@ -151,17 +152,16 @@ def run_experiment(training_config_path):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument("-c", "--training_config", help="sets training training configuration file",
-                       action="store")
-    group.add_argument("-t", "--regression_test", help="execute regression test", action="store_true")
+    group.add_argument("-c", "--training_config", action="store",
+                       help="Training config JSON file or directory with JSON training config files")
     args = parser.parse_args()
 
-    if args.regression_test:
-        test_config_filenames = os.listdir(REGRESSION_TESTS_DIR)
-        with TemporaryDirectory() as temp_dir:
-            for i, test_config_filename in enumerate(test_config_filenames):
-                print("{}{} / {} - Current regression test: {}{}".format("\033[91m", i + 1, len(test_config_filenames),
-                                                                         test_config_filename, "\033[0m"))
-                run_experiment(os.path.join(REGRESSION_TESTS_DIR, test_config_filename))
+    if os.path.isdir(args.training_config):
+        training_config_files = glob(os.path.join(args.training_config, "*.json"))
+        cprint("Directory found with {} training files".format(len(training_config_files)), on_color="on_green")
+        for index, training_config in enumerate(training_config_files):
+            cprint("{}/{} - Executing {}".format(index + 1, len(training_config_files), training_config),
+                   on_color='on_cyan')
+            run_experiment(training_config)
     else:
         run_experiment(args.training_config)
