@@ -26,8 +26,6 @@ LOGGING_CONFIG_PATH = os.path.join("config", "logging.json")
 DEFAULT_PREFERENCES_CONFIG_PATH = os.path.join("config", "preferences.json")
 LOCAL_PREFERENCES_CONFIG_PATH = os.path.join("config", "preferences.local.json")
 
-REGRESSION_TESTS_DIR = "experiments/tests"
-
 
 def read_preferences():
     """
