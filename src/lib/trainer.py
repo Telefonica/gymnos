@@ -108,6 +108,24 @@ class Trainer:
         tracking.trackers.log_params(model.parameters)
         tracking.trackers.log_params(tracking.additional_params)
 
+        for model_param_name, model_param_value in training.parameters.items():
+            str_model_param_value = str(model_param_value)
+            if isinstance(model_param_value, dict):
+                str_model_param_value = ", ".join(name + "=" + val for name, val in model_param_value.items())
+
+            max_line_length = 50
+
+            if len(str_model_param_value) < max_line_length:
+                logger.debug("Training with defined parameter {}: {}".format(model_param_name, str_model_param_value))
+            else:
+                if isinstance(model_param_value, (list, tuple)):
+                    logger.debug("Training with defined parameter {} of length {}".format(model_param_name,
+                                                                                          len(model_param_value)))
+                else:
+                    str_model_param_value = str_model_param_value[:max_line_length]
+                    logger.debug("Training with defined parameter {}: {} ...".format(model_param_name,
+                                                                                     str_model_param_value))
+
         # DOWNLOAD DATA
 
         logger.info("Downloading and preparing data")
@@ -141,6 +159,9 @@ class Trainer:
             train_samples = math.floor(train_samples * len(dataset.dataset))
         if 0.0 < test_samples < 1.0:
             test_samples = math.floor(test_samples * len(dataset.dataset))
+
+        logger.debug("Using {} samples for training".format(train_samples))
+        logger.debug("Using {} samples for validation".format(test_samples))
 
         train_indices = np.arange(train_samples)
         test_indices  = np.arange(train_samples, train_samples + test_samples)

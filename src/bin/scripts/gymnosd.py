@@ -114,12 +114,21 @@ def run_experiment(training_config_path):
 
     # Replace dataset by HDF5 dataset if HDF5 file exists
     if os.path.isfile(hdf5_dataset_file_path):
+        logger.info("HDF5 dataset found. It will be used for training")
         dataset.dataset = HDF5Dataset(hdf5_dataset_file_path, features_key=config["hdf5_features_key"],
                                       labels_key=config["hdf5_labels_key"], info_key=config["hdf5_info_key"])
 
+        logger.debug(('HDF5 "{}" key will be used to retrieve info, HDF5 "{}" key will be used to retrieve features ' +
+                      'and HDF5 "{}" key will be used to retrieve labels').format(config["hdf5_info_key"],
+                                                                                  config["hdf5_features_key"],
+                                                                                  config["hdf5_labels_key"]))
+
+    logger.debug("Downloads for dataset files will be located at {}".format(download_dir))
+    logger.debug("Extractions for dataset files will be located at {}".format(extract_dir))
     dl_manager = DownloadManager(download_dir=download_dir, extract_dir=extract_dir,
                                  force_download=config["force_download"], force_extraction=config["force_extraction"])
 
+    logger.debug("Trackings will be located at {}".format(trackings_dir))
     trainer = Trainer(dl_manager, trackings_dir=trackings_dir)
 
     success = False
@@ -129,24 +138,33 @@ def run_experiment(training_config_path):
             results = trainer.train(experiment, model, dataset, training, tracking)
 
         success = True
+        logger.info("Execution succeed!")
 
         if config["save_execution_results"]:
-            save_to_json(os.path.join(execution_dir, config["execution_results_filename"]), results)
+            execution_results_path = os.path.join(execution_dir, config["execution_results_filename"])
+            logger.info(("Saving execution results (elapsed times, metrics, system info, " +
+                         "etc ...) to {}").format(execution_results_path))
+            save_to_json(execution_results_path, results)
     except Exception as e:
         logger.exception("Exception ocurred: {}".format(e))
         raise
     finally:
         if (success and config["save_trained_model"]) or (not success and config["save_trained_model_if_errors"]):
             save_model_dir = os.path.join(execution_dir, config["trained_model_dir"])
+            logger.info("Saving model to directory {}".format(save_model_dir))
             os.makedirs(save_model_dir, exist_ok=True)
             model.model.save(save_model_dir)
 
         if (success and config["save_trained_preprocessors"]) or (not success and
                                                                   config["save_trained_preprocessors_if_errors"]):
-            dataset.preprocessors.save(os.path.join(execution_dir, config["trained_preprocessors_filename"]))
+            pipeline_path = os.path.join(execution_dir, config["trained_preprocessors_filename"])
+            logger.info("Saving preprocessors to {}".format(pipeline_path))
+            dataset.preprocessors.save(pipeline_path)
 
         if (success and config["save_training_config"]) or (not success and config["save_training_config_if_errors"]):
-            save_to_json(os.path.join(execution_dir, config["training_config_filename"]), training_config_copy)
+            training_config_copy_path = os.path.join(execution_dir, config["training_config_filename"])
+            logger.info("Saving original training configuration to {}".format(training_config_copy_path))
+            save_to_json(training_config_copy_path, training_config_copy)
 
 
 if __name__ == "__main__":
