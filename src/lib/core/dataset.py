@@ -21,15 +21,7 @@ DATA_AUGMENTORS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), ".
 
 class DatasetSamples:
 
-    def __init__(self, train=None, test=None):
-        if train is None and test is None:
-            test = 0.25
-            train = 1 - test
-        elif train is None:
-            train = 1 - test
-        elif test is None:
-            test = 1 - train
-
+    def __init__(self, train=0.75, test=0.75):
         self.train = train
         self.test = test
 
