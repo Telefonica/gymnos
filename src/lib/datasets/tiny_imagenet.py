@@ -5,6 +5,7 @@
 #
 
 import os
+import logging
 import numpy as np
 
 from glob import glob
@@ -12,6 +13,11 @@ from glob import glob
 from .dataset import Dataset, DatasetInfo, Array, ClassLabel
 from ..utils.io_utils import read_from_text
 from ..utils.image_utils import imread_rgb
+
+logger = logging.getLogger(__name__)
+
+KAGGLE_DATASET_NAME = "akash2sharma/tiny-imagenet"
+KAGGLE_DATASET_FILENAME = "tiny-imagenet-200.zip"
 
 
 class TinyImagenet(Dataset):
@@ -33,24 +39,27 @@ class TinyImagenet(Dataset):
         )
 
     def download_and_prepare(self, dl_manager):
-        path = dl_manager.download_kaggle(dataset_name="akash2sharma/tiny-imagenet",
-                                          file_or_files="tiny-imagenet-200.zip")
+        path = dl_manager.download_kaggle(dataset_name=KAGGLE_DATASET_NAME,
+                                          file_or_files=KAGGLE_DATASET_FILENAME)
         path = dl_manager.extract(path)
         path = os.path.join(path, "tiny-imagenet-200")
 
         lines = read_from_text(os.path.join(path, "wnids.txt")).splitlines()
         name2num  = {name: idx for idx, name in enumerate(lines)}
 
+        logger.info("Parsing train image files")
         train_images_paths = glob(os.path.join(path, "train", "**", "images", "*.JPEG"))
         train_classnames = [os.path.basename(image_path).split("_")[0] for image_path in train_images_paths]
         train_labels = np.array([name2num[classname] for classname in train_classnames], dtype=np.int32)
 
+        logger.info("Parsing validation image files")
         val_names = read_from_text(os.path.join(path, "val", "val_annotations.txt"))
         valfile2classname = {split[0]: split[1] for split in (line.split("\t") for line in val_names.splitlines())}
         val_images_paths = glob(os.path.join(path, "val", "images", "*.JPEG"))
         val_classnames = [valfile2classname[os.path.basename(filename)] for filename in val_images_paths]
         val_labels = np.array([name2num[classname] for classname in val_classnames], dtype=np.int32)
 
+        logger.info("Concatenating train and validation image files")
         labels = np.concatenate([train_labels, val_labels], axis=0)
         images_paths = np.concatenate([train_images_paths, val_images_paths], axis=0)
 

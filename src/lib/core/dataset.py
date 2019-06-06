@@ -21,15 +21,7 @@ DATA_AUGMENTORS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), ".
 
 class DatasetSamples:
 
-    def __init__(self, train=None, test=None):
-        if train is None and test is None:
-            test = 0.25
-            train = 1 - test
-        elif train is None:
-            train = 1 - test
-        elif test is None:
-            test = 1 - train
-
+    def __init__(self, train=0.75, test=0.75):
         self.train = train
         self.test = test
 
@@ -140,15 +132,18 @@ class Dataset:
 
         self.samples = DatasetSamples(**samples)
 
+        logger.debug("Importing dataset {}".format(name))
         DatasetClass = import_from_json(DATASETS_IDS_TO_MODULES_PATH, name)
         self.dataset = DatasetClass()
 
+        logger.debug("Importing {} preprocessors".format(len(preprocessors)))
         self.preprocessors = PreprocessorsPipeline()
         for preprocessor_config in preprocessors:
             PreprocessorClass = import_from_json(PREPROCESSORS_IDS_TO_MODULES_PATH, preprocessor_config.pop("type"))
             preprocessor = PreprocessorClass(**preprocessor_config)
             self.preprocessors.add(preprocessor)
 
+        logger.debug("Importing {} data augmentors".format(len(data_augmentors)))
         self.data_augmentors = DataAugmentorPipeline()
         for data_augmentor_config in data_augmentors:
             DataAugmentorClass = import_from_json(DATA_AUGMENTORS_IDS_TO_MODULES_PATH,

@@ -5,6 +5,7 @@
 #
 
 import os
+import logging
 import numpy as np
 
 from glob import glob
@@ -15,6 +16,11 @@ from .dataset import Dataset, DatasetInfo, Array, ClassLabel
 IMAGE_WIDTH = 150
 IMAGE_HEIGHT = 150
 IMAGE_DEPTH = 3
+
+KAGGLE_COMPETITION_NAME = "dogs-vs-cats"
+KAGGLE_COMPETITION_FILE = "train.zip"
+
+logger = logging.getLogger(__name__)
 
 
 class DogsVsCats(Dataset):
@@ -46,7 +52,8 @@ class DogsVsCats(Dataset):
 
 
     def download_and_prepare(self, dl_manager):
-        train_files = dl_manager.download_kaggle(competition_name="dogs-vs-cats", file_or_files="train.zip")
+        train_files = dl_manager.download_kaggle(competition_name=KAGGLE_COMPETITION_NAME,
+                                                 file_or_files=KAGGLE_COMPETITION_FILE)
         train_dir = dl_manager.extract(train_files)
         cat_images_paths = glob(os.path.join(train_dir, "train", "cat.*.jpg"))
         dog_images_paths = glob(os.path.join(train_dir, "train", "dog.*.jpg"))

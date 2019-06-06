@@ -5,10 +5,13 @@
 #
 
 import os
+import logging
 
 from ..utils.io_utils import import_from_json
 
 MODELS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "models.json")
+
+logger = logging.getLogger(__name__)
 
 
 class Model:
@@ -44,7 +47,7 @@ class Model:
                 "alpha": 0.5
             }
         )
-    """
+    """  # noqa: E501
 
     def __init__(self, name, parameters=None, description=None):
         parameters = parameters or {}
@@ -53,5 +56,6 @@ class Model:
         self.parameters = parameters
         self.description = description
 
+        logger.debug("Importing model {}".format(name))
         ModelClass = import_from_json(MODELS_IDS_TO_MODULES_PATH, name)
         self.model = ModelClass(**parameters)

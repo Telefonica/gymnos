@@ -5,12 +5,15 @@
 #
 
 import os
+import logging
 
 from ..trackers import TrackerList
 
 from ..utils.io_utils import import_from_json
 
 TRACKERS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "trackers.json")
+
+logger = logging.getLogger(__name__)
 
 
 class Tracking:
@@ -69,6 +72,7 @@ class Tracking:
         self.log_training_params = log_training_params
         self.additional_params = additional_params or {}
 
+        logger.debug("Import {} trackers".format(len(trackers)))
         self.trackers = TrackerList()
         for tracker_config in trackers:
             TrackerClass = import_from_json(TRACKERS_IDS_TO_MODULES_PATH, tracker_config.pop("type"))

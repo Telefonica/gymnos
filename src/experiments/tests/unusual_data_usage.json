@@ -5,8 +5,8 @@
     "dataset": {
         "name": "unusual_data_usage_test",
         "samples": {
-            "train": 0.1,
-            "test": 0.01
+            "train": 5,
+            "test": 5
         },
         "shuffle": false
     }

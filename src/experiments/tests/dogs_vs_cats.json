@@ -11,6 +11,10 @@
     "dataset": {
         "name": "dogs_vs_cats",
         "one_hot": true,
+        "samples": {
+            "train": 5,
+            "test": 5
+        },
         "preprocessors": [
             {
                 "type": "image_resize",

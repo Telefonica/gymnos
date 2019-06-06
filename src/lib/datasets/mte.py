@@ -4,6 +4,7 @@
 #
 #
 
+import logging
 import pandas as pd
 
 from tqdm import tqdm
@@ -12,6 +13,8 @@ from sklearn.preprocessing import MultiLabelBinarizer
 
 from ..utils.io_utils import read_from_json
 from .dataset import Dataset, DatasetInfo, ClassLabel, Array
+
+logger = logging.getLogger(__name__)
 
 
 GENRE_TO_SUBSCRIPTION = {
@@ -212,22 +215,23 @@ class MTE(Dataset):
             for program in tqdm(channel, desc="Programs"):
                 sheet_url = program.get("Ficha")
                 if sheet_url is None:
-                    print("Sheet url not found. Skipping")
+                    logger.warning("Sheet url not found. Skipping")
                     continue
-
                 try:
                     sheet_path = dl_manager.download(sheet_url, verbose=False)
                 except Exception as exception:
-                    print("Error downloading sheet with url {}".format(sheet_url))
+                    logger.error("Error downloading sheet with url {}".format(sheet_url))
                     continue
 
                 self.sheets_paths_.append(sheet_path)
 
+        logger.info("Parsing and loading donwloaded files")
         df = pd.DataFrame(columns=["title", "description", "genre", "channel_id"])
         for idx, sheet_path in enumerate(tqdm(self.sheets_paths_)):
             sheet = read_from_json(sheet_path)
             df.loc[idx] = self.__parse_sheet(sheet)
 
+        logger.info("Applying basic preprocessing to data")
         df.drop_duplicates(inplace=True)
         df.fillna({"title": ""}, inplace=True)
         df = df[df != ""]  # convert empty strings to NaN
