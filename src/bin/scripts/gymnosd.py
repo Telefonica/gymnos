@@ -82,6 +82,8 @@ def run_experiment(training_config_path):
     trackings_dir = config["trackings_dir"].format(**format_kwargs)
     default_experiment_name = config["default_experiment_name"].format(**format_kwargs)
 
+    trackings_dir = os.path.abspath(trackings_dir)
+
     # if the user has not provided an experiment name, we set the experiment name
     # to the default experiment name from config
     training_config["experiment"] = training_config.get("experiment", {})
