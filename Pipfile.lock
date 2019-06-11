@@ -607,11 +607,25 @@
             "index": "pypi",
             "version": "==5.0.0"
         },
+        "pyasn1": {
+            "hashes": [
+                "sha256:da2420fe13a9452d8ae97a0e478adde1dee153b11ba832a95b223a2ba01c10f7",
+                "sha256:da6b43a8c9ae93bc80e2739efb38cc776ba74a886e3e9318d65fe81a8b8a2c6e"
+            ],
+            "version": "==0.4.5"
+        },
         "pyrsistent": {
             "hashes": [
                 "sha256:16692ee739d42cf5e39cef8d27649a8c1fdb7aa99887098f1460057c5eb75c3a"
             ],
             "version": "==0.15.2"
+        },
+        "pysmb": {
+            "hashes": [
+                "sha256:8b364446a9998a7edc128bdf77e3281df613f4951beb69dbd221525f8748bbd3"
+            ],
+            "index": "pypi",
+            "version": "==1.1.27"
         },
         "python-dateutil": {
             "hashes": [

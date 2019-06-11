@@ -26,6 +26,7 @@ dill = "*"
 scipy = "==1.2"
 commentjson = "*"
 pillow = "*"
+pysmb = "*"
 
 [requires]
 python_version = "3.5"
