@@ -1,0 +1,58 @@
+{
+    "experiment": {
+        "name": null, 
+        "description": null, 
+        "tags": [ 
+
+        ]
+    },
+    "dataset": {
+        "name": "dogs_vs_cats", 
+        "samples": {  
+            "train": 0.3,
+            "test": 0.1
+        },
+        "preprocessors": [   
+            {
+                "type": "image_resize",
+                "width": 100,
+                "height": 100 
+            },
+            {
+                "type": "grayscale"
+            },
+            {
+                "type": "divide",
+                "factor": 255.0
+            }
+        ],
+        "seed": null, 
+        "shuffle": true, 
+        "one_hot": true,
+        "chunk_size": null 
+    },
+    "model": {
+        "name": "dogs_vs_cats_cnn", 
+        "parameters": { 
+            "input_shape": [100, 100, 1],
+            "classes": 2
+        }
+    },
+    "training": { 
+        "batch_size": 32,
+        "epochs": 5
+    },
+    "tracking": {
+        "log_model_params": true, 
+        "log_model_metrics": true, 
+        "log_training_params": true, 
+        "additional_params": { 
+
+        },
+        "trackers": [ 
+            {
+                "type": "tensorboard"
+            }
+        ]
+    }
+}
