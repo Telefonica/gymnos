@@ -9,7 +9,6 @@ import argparse
 from glob import glob
 from datetime import datetime
 
-from lib.utils.path import chdir
 from lib.datasets import HDF5Dataset
 from lib.trainer import Trainer
 from lib.utils.termcolor import cprint
@@ -134,8 +133,7 @@ def run_experiment(training_config_path):
     success = False
 
     try:
-        with chdir(execution_dir):
-            results = trainer.train(experiment, model, dataset, training, tracking)
+        results = trainer.train(experiment, model, dataset, training, tracking)
 
         success = True
         logger.info("Execution succeed!")
