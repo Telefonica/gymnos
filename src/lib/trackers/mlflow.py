@@ -19,12 +19,9 @@ class MLFlow(Tracker):
     ----------
     experiment_name: str
         Experiment name, must be unique.
-    source_name: str, optional
-        Name of the source file or URI of the project to be associated with the run.
     """
 
-    def __init__(self, experiment_name=None, source_name=None):
-        self.source_name = source_name
+    def __init__(self, experiment_name=None):
         self.experiment_id = None
         if experiment_name is not None:
             self.experiment_id = mlflow.create_experiment(experiment_name)
@@ -32,7 +29,7 @@ class MLFlow(Tracker):
 
     def start(self, run_name, logdir):
         mlflow.set_tracking_uri(os.path.join(logdir, "mlruns"))
-        mlflow.start_run(run_name=run_name, experiment_id=self.experiment_id, source_name=self.source_name)
+        mlflow.start_run(run_name=run_name, experiment_id=self.experiment_id)
 
     def add_tag(self, tag):
         pass
