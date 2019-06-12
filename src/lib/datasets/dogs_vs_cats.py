@@ -32,9 +32,9 @@ class DogsVsCats(Dataset):
     +----------+--------------+
     | Label    | Description  |
     +==========+==============+
-    | 0        | Dog          |
+    | 0        | Cat          |
     +----------+--------------+
-    | 1        | Cat          |
+    | 1        | Dog          |
     +----------+--------------+
 
     Characteristics

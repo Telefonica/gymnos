@@ -21,7 +21,7 @@ DATA_AUGMENTORS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), ".
 
 class DatasetSamples:
 
-    def __init__(self, train=0.75, test=0.75):
+    def __init__(self, train=0.75, test=0.25):
         self.train = train
         self.test = test
 
@@ -39,13 +39,10 @@ class Dataset:
         The current available datasets are the following:
 
         - ``"boston_housing"``: :class:`lib.datasets.boston_housing.BostonHousing`,
-        - ``"cifar10"``: :class:`lib.datasets.cifar10.CIFAR10`,
         - ``"dogs_vs_cats"``: :class:`lib.datasets.dogs_vs_cats.DogsVsCats`,
-        - ``"fashion_mnist"``: :class:`lib.datasets.fashion_mnist.FashionMNIST`,
         - ``"imdb"``: :class:`lib.datasets.imdb.IMDB`,
-        - ``"kddcup99"``: :class:`lib.datasets.kddcup99.KDDCup99`,
-        - ``"mnist"``: :class:`lib.datasets.mnist.MNIST`,
         - ``"tiny_imagenet"``: :class:`lib.datasets.tiny_imagenet.TinyImagenet`,
+        - ``"synthetic_digits"``: :class:`lib.datasets.synthetic_digits.SyntheticDigits`,
         - ``"mte"``: :class:`lib.datasets.mte.MTE`,
         - ``"data_usage_test"``: :class:`lib.datasets.data_usage_test.DataUsageTest`,
         - ``"unusual_data_usage_test"``: :class:`lib.datasets.unusual_data_usage_test.UnusualDataUsageTest`
@@ -93,6 +90,8 @@ class Dataset:
         List of data augmentors to apply to images dataset. This property requires a list with dictionnaries with at
         least a ``type`` field specifying the type of data augmentor.  The other properties are the properties for that
         data augmentor.
+        The current available preprocessors are the following:
+            TODO
 
     Examples
     --------
