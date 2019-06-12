@@ -4,6 +4,7 @@
 #
 #
 
+import json
 import logging
 import pandas as pd
 
@@ -228,7 +229,12 @@ class MTE(Dataset):
         logger.info("Parsing and loading donwloaded files")
         df = pd.DataFrame(columns=["title", "description", "genre", "channel_id"])
         for idx, sheet_path in enumerate(tqdm(self.sheets_paths_)):
-            sheet = read_from_json(sheet_path)
+            try:
+                sheet = read_from_json(sheet_path)
+            except json.decoder.JSONDecodeError:
+                logger.error("Error reading {}".format(sheet_path))
+                continue
+
             df.loc[idx] = self.__parse_sheet(sheet)
 
         logger.info("Applying basic preprocessing to data")
