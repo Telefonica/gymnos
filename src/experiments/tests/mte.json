@@ -12,8 +12,8 @@
     "dataset": {
         "name": "mte",
         "samples": {
-            "train": 5,
-            "test": 5
+            "train": 50,
+            "test": 50
         },
         "preprocessors": [
             {
@@ -34,7 +34,7 @@
             {
                 "type": "kbest",
                 "scorer": "chi2",
-                "k": 7
+                "k": 5
             }
         ]
     },
