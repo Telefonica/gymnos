@@ -1,15 +1,10 @@
 {
-    "synthetic_digits": "lib.datasets.synthetic_digits.SyntheticDigits",
-    "kddcup99": "lib.datasets.kddcup99.KDDCup99",
     "boston_housing": "lib.datasets.boston_housing.BostonHousing",
     "data_usage_test": "lib.datasets.data_usage_test.DataUsageTest",
     "imdb": "lib.datasets.imdb.IMDB",
-    "cifar10": "lib.datasets.cifar10.CIFAR10",
-    "mnist": "lib.datasets.mnist.MNIST",
     "tiny_imagenet": "lib.datasets.tiny_imagenet.TinyImagenet",
     "dogs_vs_cats": "lib.datasets.dogs_vs_cats.DogsVsCats",
     "unusual_data_usage_test": "lib.datasets.unusual_data_usage_test.UnusualDataUsageTest",
-    "fashion_mnist": "lib.datasets.fashion_mnist.FashionMNIST",
-    "mte": "lib.datasets.mte.MTE",
-    "synthetic_digits": "lib.datasets.synthetic_digits.SyntheticDigits"
+    "synthetic_digits": "lib.datasets.synthetic_digits.SyntheticDigits",
+    "mte": "lib.datasets.mte.MTE"
 }
