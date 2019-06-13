@@ -4,7 +4,9 @@
 #
 #
 
-import cv2 as cv
+import numpy as np
+
+from PIL import Image
 
 
 def imread_rgb(image_path):
@@ -21,8 +23,8 @@ def imread_rgb(image_path):
     image: np.array
         Array of pixels.
     """
-    bgr_image = cv.imread(image_path)
-    return cv.cvtColor(bgr_image, cv.COLOR_BGR2RGB)
+    img = Image.open(image_path)
+    return np.array(img)
 
 
 def imgray(rgb_arr):
@@ -39,7 +41,9 @@ def imgray(rgb_arr):
     gray_img: np.array
         Grasycale array.
     """
-    return cv.cvtColor(rgb_arr, cv.COLOR_RGB2GRAY)
+    img = Image.fromarray(rgb_arr)
+    img = img.convert("L")
+    return np.array(img)
 
 
 def imresize(rgb_arr, size):
@@ -58,4 +62,10 @@ def imresize(rgb_arr, size):
     resized_img: np.array
         Resized image.
     """
-    return cv.resize(rgb_arr, size)
+    img = Image.fromarray(rgb_arr.squeeze())
+    if isinstance(size, (list, tuple)):
+        img = img.resize(size, Image.ANTIALIAS)
+    else:
+        img = img.resize((size, size), Image.ANTIALIAS)
+
+    return np.array(img)

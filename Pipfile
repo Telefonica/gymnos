@@ -9,7 +9,6 @@ sphinx-rtd-theme = "*"
 
 [packages]
 keras = "*"
-opencv-python = "*"
 tqdm = "*"
 kaggle = "*"
 numpy = "*"

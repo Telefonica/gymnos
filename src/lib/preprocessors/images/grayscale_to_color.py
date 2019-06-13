@@ -4,7 +4,7 @@
 #
 #
 
-import cv2 as cv
+import numpy as np
 
 from ...utils.iterator_utils import apply
 from ..preprocessor import Preprocessor
@@ -22,7 +22,7 @@ class GrayscaleToColor(Preprocessor):
         return self
 
     def __transform_sample(self, x):
-        return cv.cvtColor(x, cv.COLOR_GRAY2RGB)
+        return np.squeeze(np.stack([x] * 3, -1))
 
     def transform(self, X):
         return apply(X, self.__transform_sample)
