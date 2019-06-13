@@ -16,10 +16,9 @@ from collections import OrderedDict
 from keras.utils import to_categorical
 
 from .trackers import History
-from .datasets import HDF5Dataset
-from .utils.timing import ElapsedTimeCalculator
 from .services import DownloadManager
 from .utils.text_utils import humanize_bytes
+from .callbacks import CallbackList, TimeHistory
 from .utils.data import Subset, DataLoader, get_approximate_nbytes
 
 
@@ -47,7 +46,7 @@ class Trainer:
         self.dl_manager = dl_manager
         self.trackings_dir = trackings_dir
 
-    def train(self, experiment, model, dataset, training, tracking):
+    def train(self, experiment, model, dataset, training, tracking, callbacks=None):
         """
         Run an experiment
 
@@ -61,7 +60,16 @@ class Trainer:
         """
         logger.info("Starting experiment {}".format(experiment.name))
 
-        elapsed_time_calc = ElapsedTimeCalculator()
+        if callbacks is None:
+            callbacks = []
+
+        callbacks = CallbackList(callbacks)
+
+        time_history = TimeHistory()
+
+        callbacks.add(time_history)
+
+        callbacks.on_train_begin()
 
         # RETRIEVE PLATFORM DETAILS
 
@@ -128,11 +136,14 @@ class Trainer:
 
         # DOWNLOAD DATA
 
-        logger.info("Downloading and preparing data")
-        with elapsed_time_calc("dataset_download_and_prepare") as elapsed:
-            dataset.dataset.download_and_prepare(self.dl_manager)
+        callbacks.on_download_and_prepare_data_begin()
 
-        logger.debug("Downloading and preparing data took {:.2f}".format(elapsed.s))
+        logger.info("Downloading/preparing data")
+        dataset.dataset.download_and_prepare(self.dl_manager)
+
+        callbacks.on_download_and_prepare_data_end()
+
+        logger.debug("Downloading/preparing data took {:.2f}s".format(time_history.times["download_and_prepare_data"]))
 
         # LOG DATASET PROPERTIES
 
@@ -145,10 +156,9 @@ class Trainer:
         logger.debug("Full Dataset Samples: {}".format(len(dataset.dataset)))
         logger.debug("Full Dataset Memory Usage (approx): {}".format(humanize_bytes(nbytes)))
 
-        if isinstance(dataset.dataset, HDF5Dataset):
-            logger.debug("Using HDF5 dataset")
-
         # SPLIT DATASET INTO TRAIN AND TEST
+
+        callbacks.on_train_test_split_begin()
 
         logger.info("Spliting dataset into train and test")
 
@@ -179,7 +189,15 @@ class Trainer:
         train_subset = Subset(dataset.dataset, train_indices)
         test_subset  = Subset(dataset.dataset, test_indices)
 
+        callbacks.on_train_test_split_end()
+
+        logger.debug("Train/test splitting took {:.2f}".format(time_history.times["train_test_split"]))
+
         # LOAD DATA
+
+        callbacks.on_load_data_begin()
+
+        logger.info("Loading data")
 
         load_data_by_chunks = dataset.chunk_size is not None
 
@@ -187,25 +205,27 @@ class Trainer:
             train_loader = DataLoader(train_subset, batch_size=dataset.chunk_size, drop_last=False)
             test_loader  = DataLoader(test_subset, batch_size=dataset.chunk_size, drop_last=False)
         else:
-            logger.info("Loading data into memory")
+            train_data = DataLoader(train_subset, batch_size=len(dataset.dataset), drop_last=False, verbose=True)[0]
+            test_data = DataLoader(test_subset, batch_size=len(dataset.dataset), drop_last=False, verbose=True)[0]
 
-            with elapsed_time_calc("load_data") as elapsed:
-                train_data = DataLoader(train_subset, batch_size=len(dataset.dataset), drop_last=False, verbose=True)[0]
-                test_data = DataLoader(test_subset, batch_size=len(dataset.dataset), drop_last=False, verbose=True)[0]
+        callbacks.on_load_data_end()
 
-            logger.debug("Loading data into memory took {:.2f}s".format(elapsed.s))
+        logger.debug("Loading data took {:.2f}s".format(time_history.times["load_data"]))
 
         # PREPROCESS DATA
 
-        logger.info("Fitting preprocessing pipeline using training data ({})".format(dataset.preprocessors))
+        callbacks.on_fit_preprocessors_begin()
 
-        with elapsed_time_calc("fit_preprocessors") as elapsed:
-            if load_data_by_chunks:
-                dataset.preprocessors.fit_generator(train_loader)
-            else:
-                dataset.preprocessors.fit(train_data[0], train_data[1])
+        logger.info("Fitting preprocessors using training data ({})".format(dataset.preprocessors))
 
-        logger.debug("Fitting preprocessing pipeline took {:.2f}s".format(elapsed.s))
+        if load_data_by_chunks:
+            dataset.preprocessors.fit_generator(train_loader)
+        else:
+            dataset.preprocessors.fit(train_data[0], train_data[1])
+
+        callbacks.on_fit_preprocessors_end()
+
+        logger.debug("Fitting preprocessors took {:.2f}s".format(time_history.times["fit_preprocessors"]))
 
         def augment_data(data):
             if not dataset.data_augmentors:
@@ -240,29 +260,37 @@ class Trainer:
             data = preprocess(data)
             return data
 
+        callbacks.on_preprocess_begin()
+
+        logger.info("Preprocessing")
+
         if load_data_by_chunks:
             train_loader.transform_func = augment_and_preprocess
             test_loader.transform_func = preprocess
         else:
-            logger.info("Preprocessing data ({})".format(dataset.preprocessors))
+            train_data = augment_and_preprocess(train_data)
+            test_data = preprocess(test_data)
 
-            with elapsed_time_calc("transform_data") as elapsed:
-                train_data = augment_and_preprocess(train_data)
-                test_data = preprocess(test_data)
+        callbacks.on_preprocess_end()
 
-            logger.debug("Preprocessing data took {:.2f}s".format(elapsed.s))
+        logger.debug("Preprocessing took {:.2f}s".format(time_history.times["preprocess"]))
+
+        callbacks.on_preprocess_end()
 
         # FIT MODEL
 
-        logger.info("Fitting model using training data")
+        callbacks.on_fit_model_begin()
 
-        with elapsed_time_calc("fit_model") as elapsed:
-            if load_data_by_chunks:
-                train_metrics = model.model.fit_generator(train_loader, **training.parameters)
-            else:
-                train_metrics = model.model.fit(train_data[0], train_data[1], **training.parameters)
+        logger.info("Fitting model")
 
-        logger.debug("Fitting model took {:.2f}s".format(elapsed.s))
+        if load_data_by_chunks:
+            train_metrics = model.model.fit_generator(train_loader, **training.parameters)
+        else:
+            train_metrics = model.model.fit(train_data[0], train_data[1], **training.parameters)
+
+        callbacks.on_fit_model_end()
+
+        logger.debug("Fitting model took {:.2f}s".format(time_history.times["fit_model"]))
 
         for metric_name, metric_value in train_metrics.items():
             logger.info("Results for {} -> mean={:.2f}, min={:.2f}, max={:.2f}".format(metric_name,
@@ -273,15 +301,18 @@ class Trainer:
 
         # EVALUATE MODEL
 
+        callbacks.on_evaluate_model_begin()
+
         logger.info("Evaluating model using test data")
 
-        with elapsed_time_calc("evaluate_model") as elapsed:
-            if load_data_by_chunks:
-                test_metrics = model.model.evaluate_generator(test_loader)
-            else:
-                test_metrics = model.model.evaluate(test_data[0], test_data[1])
+        if load_data_by_chunks:
+            test_metrics = model.model.evaluate_generator(test_loader)
+        else:
+            test_metrics = model.model.evaluate(test_data[0], test_data[1])
 
-        logger.debug("Evaluating model took {:.2f}s".format(elapsed.s))
+        callbacks.on_evaluate_model_end()
+
+        logger.debug("Evaluating model took {:.2f}s".format(time_history.times["evaluate_model"]))
 
         for metric_name, metric_value in test_metrics.items():
             logger.info("test_{}={}".format(metric_name, metric_value))
@@ -290,11 +321,13 @@ class Trainer:
 
         tracking.trackers.end()
 
+        callbacks.on_train_end()
+
         return OrderedDict([
             ["experiment_name", experiment.name],
             ["start_datetime", history_tracker.start_datetime.timestamp()],
             ["end_datetime", history_tracker.end_datetime.timestamp()],
-            ["elapsed_times", elapsed_time_calc.times],
+            ["elapsed_times", time_history.times],
             ["tags", history_tracker.tags],
             ["params", history_tracker.params],
             ["metrics", history_tracker.metrics],
