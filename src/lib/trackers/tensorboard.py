@@ -6,14 +6,12 @@
 #
 
 import os
-import cv2 as cv
-import numpy as np
 import tensorflow as tf
 
 from io import BytesIO
+from PIL import Image
 
 from .tracker import Tracker
-from ..utils.image_utils import imread_rgb
 
 
 
@@ -40,14 +38,13 @@ class Tensorboard(Tracker):
 
 
     def log_image(self, name, file_path):
-        img = imread_rgb(file_path)
+        image = Image.open(file_path)
 
-        is_success, img_buffer = cv.imencode(".jpg", img)
-        buffer = BytesIO(img_buffer)
-
-        img_summary = tf.Summary.Image(encoded_image_string=buffer.getvalue(),
-                                       width=img.shape[1],
-                                       height=img.shape[0])
+        with BytesIO() as buffer:
+            image.save(buffer, format="JPEG")
+            img_summary = tf.Summary.Image(encoded_image_string=buffer.getvalue(),
+                                           width=image.width,
+                                           height=image.height)
 
         summary = tf.Summary(value=[tf.Summary.Value(tag=name, image=img_summary)])
         self.writer.add_summary(summary)
@@ -57,7 +54,7 @@ class Tensorboard(Tracker):
         buffer = BytesIO()
         figure.savefig(buffer, format='png')
         buffer.seek(0)
-        img = cv.imdecode(np.frombuffer(buffer.getbuffer(), np.uint8), -1)
+        img = Image.open(buffer.getbuffer())
 
         img_summary = tf.Summary.Image(encoded_image_string=buffer.getvalue(),
                                        height=img.shape[0],
