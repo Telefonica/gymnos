@@ -1,0 +1,32 @@
+{
+    "model": {
+        "name": "dogs_vs_cats_cnn",
+        "parameters": {
+            "input_shape": [50, 50, 3],
+            "classes": 10
+        }
+    },
+    "dataset": {
+        "name": "synthetic_digits",
+        "one_hot": true,
+        "preprocessors": [
+            {
+                "type": "image_resize",
+                "width": 50,
+                "height": 50
+            },
+            {
+                "type": "divide",
+                "factor": 255
+            }
+        ],
+        "samples": {
+            "train": 10,
+            "test": 5
+        }
+    },
+    "training": {
+        "epochs": 2,
+        "validation_split": 0.25
+    }
+}
