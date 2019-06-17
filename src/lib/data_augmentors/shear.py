@@ -6,11 +6,11 @@
 
 import math
 import random
-import numpy as np
 
 from PIL import Image
 
 from .data_augmentor import DataAugmentor
+from ..utils.image_utils import arr_to_img, img_to_arr
 
 
 class Shear(DataAugmentor):
@@ -65,7 +65,7 @@ class Shear(DataAugmentor):
         # We will use scikit-image for this so first convert to a matrix
         # using NumPy
         # amount_to_shear = round(random.uniform(self.max_shear_left, self.max_shear_right), 2)
-        # image_array = np.array(image)
+        # image_array = img_to_arr(image)
         # And here we are using SciKit Image's `transform` class.
         # shear_transformer = transform.AffineTransform(shear=amount_to_shear)
         # image_sheared = transform.warp(image_array, shear_transformer)
@@ -75,7 +75,7 @@ class Shear(DataAugmentor):
         #     warnings.simplefilter("ignore")
         #     return Image.fromarray(img_as_ubyte(image_sheared))
         ######################################################################
-        image = Image.fromarray(image)
+        image = arr_to_img(image)
         width, height = image.size
 
         # For testing.
@@ -165,4 +165,4 @@ class Shear(DataAugmentor):
 
             image = image.resize((width, height), resample=Image.BICUBIC)
 
-        return np.array(image)
+        return img_to_arr(image)

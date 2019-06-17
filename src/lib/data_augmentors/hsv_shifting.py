@@ -9,6 +9,7 @@ import numpy as np
 from PIL import Image
 
 from .data_augmentor import DataAugmentor
+from ..utils.image_utils import arr_to_img, img_to_arr
 
 
 class HSVShifting(DataAugmentor):
@@ -25,7 +26,7 @@ class HSVShifting(DataAugmentor):
         self.value_shift = value_shift
 
     def transform(self, image):
-        image = Image.fromarray(image)
+        image = arr_to_img(image)
         hsv = np.array(image.convert("HSV"), 'float64')
         hsv /= 255.
 
@@ -40,4 +41,4 @@ class HSVShifting(DataAugmentor):
 
         image = Image.fromarray(hsv, "HSV").convert("RGB")
 
-        return np.array(image)
+        return img_to_arr(image)

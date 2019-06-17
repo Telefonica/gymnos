@@ -6,11 +6,11 @@
 
 import math
 import random
-import numpy as np
 
 from PIL import Image
 
 from .data_augmentor import DataAugmentor
+from ..utils.image_utils import arr_to_img, img_to_arr
 
 
 class ZoomGroundTruth(DataAugmentor):
@@ -49,7 +49,7 @@ class ZoomGroundTruth(DataAugmentor):
         :type image: np.array
         :return: The zoomed in image.
         """
-        image = Image.fromarray(image)
+        image = arr_to_img(image)
         factor = round(random.uniform(self.min_factor, self.max_factor), 2)
 
         w, h = image.size
@@ -64,4 +64,4 @@ class ZoomGroundTruth(DataAugmentor):
                                    math.floor((float(w_zoomed) / 2) + (float(w) / 2)),
                                    math.floor((float(h_zoomed) / 2) + (float(h) / 2))))
 
-        return np.array(image)
+        return img_to_arr(image)

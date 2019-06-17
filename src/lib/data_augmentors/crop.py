@@ -5,10 +5,8 @@
 #
 
 import random
-import numpy as np
 
-from PIL import Image
-
+from ..utils.image_utils import arr_to_img, img_to_arr
 from .data_augmentor import DataAugmentor
 
 
@@ -52,7 +50,7 @@ class Crop(DataAugmentor):
         :type image: np.array
         :return: The transformed image
         """
-        image = Image.fromarray(image)
+        image = arr_to_img(image)
         w, h = image.size  # All images must be the same size, so we can just check the first image in the list
 
         left_shift = random.randint(0, int((w - self.width)))
@@ -60,7 +58,7 @@ class Crop(DataAugmentor):
 
         # TODO: Fix. We may want a full crop.
         if self.width > w or self.height > h:
-            return np.array(image)
+            return img_to_arr(image)
 
         if self.centre:
             image = image.crop(((w / 2) - (self.width / 2), (h / 2) - (self.height / 2), (w / 2) + (self.width / 2),
@@ -68,4 +66,4 @@ class Crop(DataAugmentor):
         else:
             image = image.crop((left_shift, down_shift, self.width + left_shift, self.height + down_shift))
 
-        return np.array(image)
+        return img_to_arr(image)

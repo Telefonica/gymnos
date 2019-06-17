@@ -11,6 +11,7 @@ import numpy as np
 from PIL import Image
 
 from .data_augmentor import DataAugmentor
+from ..utils.image_utils import arr_to_img, img_to_arr
 
 
 class Skew(DataAugmentor):
@@ -82,7 +83,7 @@ class Skew(DataAugmentor):
         :type image: np.array
         :return: The transformed image
         """
-        image = Image.fromarray(image)
+        image = arr_to_img(image)
         # Width and height taken from first image in list.
         # This requires that all ground truth images in the list
         # have identical dimensions!
@@ -209,4 +210,4 @@ class Skew(DataAugmentor):
                                 perspective_skew_coefficients_matrix,
                                 resample=Image.BICUBIC)
 
-        return np.array(image)
+        return img_to_arr(image)

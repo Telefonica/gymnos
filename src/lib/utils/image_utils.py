@@ -24,7 +24,20 @@ def imread_rgb(image_path):
         Array of pixels.
     """
     img = Image.open(image_path)
-    return np.array(img)
+    return img_to_arr(img)
+
+
+def arr_to_img(arr):
+    return Image.fromarray(arr.squeeze())
+
+
+def img_to_arr(img):
+    arr = np.array(img, dtype=np.uint8)
+
+    if arr.ndim < 3:
+        arr = arr[..., np.newaxis]
+
+    return arr
 
 
 def imgray(rgb_arr):
@@ -41,9 +54,9 @@ def imgray(rgb_arr):
     gray_img: np.array
         Grasycale array.
     """
-    img = Image.fromarray(rgb_arr)
+    img = arr_to_img(rgb_arr)
     img = img.convert("L")
-    return np.array(img)
+    return img_to_arr(img)
 
 
 def imresize(rgb_arr, size):
@@ -62,10 +75,10 @@ def imresize(rgb_arr, size):
     resized_img: np.array
         Resized image.
     """
-    img = Image.fromarray(rgb_arr.squeeze())
+    img = arr_to_img(rgb_arr)
     if isinstance(size, (list, tuple)):
         img = img.resize(size, Image.ANTIALIAS)
     else:
         img = img.resize((size, size), Image.ANTIALIAS)
 
-    return np.array(img)
+    return img_to_arr(img)

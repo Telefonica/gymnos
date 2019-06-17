@@ -4,11 +4,10 @@
 #
 #
 
-import numpy as np
-
 from .data_augmentor import DataAugmentor
 
-from PIL import ImageOps, Image
+from PIL import ImageOps
+from ..utils.image_utils import arr_to_img, img_to_arr
 
 
 class Invert(DataAugmentor):
@@ -37,6 +36,6 @@ class Invert(DataAugmentor):
         :type image: np.array
         :return: The transformed image
         """
-        image = Image.fromarray(image)
+        image = arr_to_img(image)
         image = ImageOps.invert(image)
-        return np.array(image)
+        return img_to_arr(image)

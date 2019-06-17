@@ -4,11 +4,8 @@
 #
 #
 
-import numpy as np
-
-from PIL import Image
-
 from .data_augmentor import DataAugmentor
+from ..utils.image_utils import arr_to_img, img_to_arr
 
 
 class Resize(DataAugmentor):
@@ -47,7 +44,7 @@ class Resize(DataAugmentor):
         :type image: np.array
         :return: The transformed image
         """
-        image = Image.fromarray(image)
+        image = arr_to_img(image)
         # TODO: Automatically change this to ANTIALIAS or BICUBIC depending on the size of the file
         image = image.resize((self.width, self.height), eval("Image.%s" % self.resample_filter))
-        return np.array(image)
+        return img_to_arr(image)

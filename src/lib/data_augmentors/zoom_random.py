@@ -6,11 +6,11 @@
 
 import math
 import random
-import numpy as np
 
 from PIL import Image
 
 from .data_augmentor import DataAugmentor
+from ..utils.image_utils import arr_to_img, img_to_arr
 
 
 class ZoomRandom(DataAugmentor):
@@ -50,7 +50,7 @@ class ZoomRandom(DataAugmentor):
         :type image: np.array
         :return: The transformed image
         """
-        image = Image.fromarray(image)
+        image = arr_to_img(image)
         if self.randomise:
             r_percentage_area = round(random.uniform(0.1, self.percentage_area), 2)
         else:
@@ -67,4 +67,4 @@ class ZoomRandom(DataAugmentor):
                             h_new + random_down_shift))
 
         image = image.resize((w, h), resample=Image.BICUBIC)
-        return np.array(image)
+        return img_to_arr(image)

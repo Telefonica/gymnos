@@ -37,6 +37,12 @@ Synthetic digits
     :members:
     :inherited-members:
 
+Rock Paper Scissors
+=======================
+.. autoclass:: lib.datasets.rock_paper_scissors.RockPaperScissors
+    :members:
+    :inherited-members:
+
 MTE
 =================
 .. autoclass:: lib.datasets.mte.MTE

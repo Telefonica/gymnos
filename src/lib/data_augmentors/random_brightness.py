@@ -6,9 +6,10 @@
 
 import numpy as np
 
-from .data_augmentor import DataAugmentor
+from PIL import ImageEnhance
 
-from PIL import ImageEnhance, Image
+from .data_augmentor import DataAugmentor
+from ..utils.image_utils import arr_to_img, img_to_arr
 
 
 class RandomBrightness(DataAugmentor):
@@ -47,9 +48,9 @@ class RandomBrightness(DataAugmentor):
         :type image: np.array
         :return: The transformed image
         """
-        image = Image.fromarray(image)
+        image = arr_to_img(image)
         factor = np.random.uniform(self.min_factor, self.max_factor)
 
         image_enhancer_brightness = ImageEnhance.Brightness(image)
         image = image_enhancer_brightness.enhance(factor)
-        return np.array(image)
+        return img_to_arr(image)

@@ -9,13 +9,14 @@ import uuid
 import shutil
 import logging
 
+from urllib.parse import urlparse
 from collections.abc import Iterable
 
 from .kaggle import KaggleService
 from ..utils.hashing import sha1_text
 from ..utils.text_utils import filenamify_url
 from ..utils.extractor import extract_zip, extract_tar, extract_gz
-from ..utils.downloader import download_file_from_url
+from ..utils.downloader import download_file_from_url, download_file_from_smb
 
 logger = logging.getLogger(__name__)
 
@@ -225,8 +226,20 @@ class DownloadManager:
 
             os.makedirs(tmp_download_dir)
 
-            download_file_from_url(url_or_urls, file_path=tmp_file_path, verbose=verbose,
-                                   force=self.force_download)
+            uri_parsed = urlparse(url_or_urls)
+
+            if uri_parsed.scheme == "smb":
+                username = os.getenv("SMB_USERNAME")
+                password = os.getenv("SMB_PASSWORD")
+                if username is None or password is None:
+                    raise ValueError(('To download from {}, you must set environment variable ' +
+                                      '"SMB_USERNAME" and "SMB_PASSWORD"').format(uri_parsed.hostname))
+
+                download_file_from_smb(url_or_urls, file_path=tmp_file_path, username=username,
+                                       password=password, verbose=verbose, force=self.force_download)
+            else:
+                download_file_from_url(url_or_urls, file_path=tmp_file_path, verbose=verbose,
+                                       force=self.force_download)
 
             logger.info("Removing download temporary directory and moving files")
             shutil.move(tmp_file_path, real_file_path)

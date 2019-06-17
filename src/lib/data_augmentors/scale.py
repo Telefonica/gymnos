@@ -4,9 +4,8 @@
 #
 #
 
-import numpy as np
-
 from .data_augmentor import DataAugmentor
+from ..utils.image_utils import arr_to_img, img_to_arr
 
 from PIL import Image
 
@@ -47,7 +46,7 @@ class Scale(DataAugmentor):
         :type image: np.array
         :return: The transformed image
         """
-        image = Image.fromarray(image)
+        image = arr_to_img(image)
         w, h = image.size
 
         new_h = int(h * self.scale_factor)
@@ -55,4 +54,4 @@ class Scale(DataAugmentor):
 
         image = image.resize((new_w, new_h), resample=Image.BICUBIC)
 
-        return np.array(image)
+        return img_to_arr(image)

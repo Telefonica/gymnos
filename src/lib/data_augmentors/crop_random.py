@@ -6,10 +6,8 @@
 
 import math
 import random
-import numpy as np
 
-from PIL import Image
-
+from ..utils.image_utils import arr_to_img, img_to_arr
 from .data_augmentor import DataAugmentor
 
 
@@ -39,7 +37,7 @@ class CropRandom(DataAugmentor):
         :type image: np.array
         :return: The transformed image
         """
-        image = Image.fromarray(image)
+        image = arr_to_img(image)
         w, h = image.size
 
         w_new = int(math.floor(w * self.percentage_area))
@@ -51,4 +49,4 @@ class CropRandom(DataAugmentor):
         image = image.crop((random_left_shift, random_down_shift, w_new + random_left_shift,
                             h_new + random_down_shift))
 
-        return np.array(image)
+        return img_to_arr(image)

@@ -4,8 +4,6 @@
 #
 #
 
-import numpy as np
-
 from ...utils.image_utils import imgray
 from ...utils.iterator_utils import apply
 from ..preprocessor import Preprocessor
@@ -24,8 +22,6 @@ class Grayscale(Preprocessor):
 
     def __transform_sample(self, x):
         gray_img = imgray(x)
-        if gray_img.ndim < 3:
-            gray_img = gray_img[..., np.newaxis]
         return gray_img
 
     def transform(self, X):

@@ -5,9 +5,9 @@
 #
 
 import random
-import numpy as np
 
 from PIL import Image
+from ..utils.image_utils import arr_to_img, img_to_arr
 from .data_augmentor import DataAugmentor
 
 
@@ -47,7 +47,7 @@ class Flip(DataAugmentor):
         :type image: np.array
         :return: The transformed image
         """
-        image = Image.fromarray(image)
+        image = arr_to_img(image)
         random_axis = random.randint(0, 1)
 
         if self.top_bottom_left_right == "LEFT_RIGHT":
@@ -60,4 +60,4 @@ class Flip(DataAugmentor):
             elif random_axis == 1:
                 image = image.transpose(Image.FLIP_TOP_BOTTOM)
 
-        return np.array(image)
+        return img_to_arr(image)
