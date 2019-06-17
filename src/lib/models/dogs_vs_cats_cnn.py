@@ -113,7 +113,7 @@ class DogsVsCatsCNN(TensorFlowSaverMixin, Model):
 
         # Iterate by epoch
         for epoch in range(epochs):
-            print("Epoch {}/{}".format(epoch, epochs))
+            print("Epoch {}/{}".format(epoch + 1, epochs))
 
             losses = []
             batch_pbar = trange(0, len(X), batch_size)
@@ -129,6 +129,8 @@ class DogsVsCatsCNN(TensorFlowSaverMixin, Model):
                 batch_pbar.set_description("Loss: {:.2f}  Acc: {:.2f}".format(losses[-1],
                                                                               self.evaluate(X_batch, y_batch)["acc"]))
 
+            print("Evaluating epoch")
+
             metrics["loss"].append(np.mean(losses))
             for metric_name, value in self.evaluate(X, y).items():
                 metrics[metric_name].append(value)
@@ -137,8 +139,11 @@ class DogsVsCatsCNN(TensorFlowSaverMixin, Model):
                 val_loss = self.sess.run(self.loss, feed_dict={self.input: val_data[0],
                                                                self.labels: val_data[1]})
                 metrics["val_loss"].append(np.mean(val_loss))
+                print("val_loss={}".format(val_loss))
+
                 for metric_name, value in self.evaluate(*val_data).items():
                     metrics["val_" + metric_name].append(value)
+                    print("val_{}={}".format(metric_name, value))
 
         return metrics
 

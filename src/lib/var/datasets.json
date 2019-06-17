@@ -6,5 +6,6 @@
     "dogs_vs_cats": "lib.datasets.dogs_vs_cats.DogsVsCats",
     "unusual_data_usage_test": "lib.datasets.unusual_data_usage_test.UnusualDataUsageTest",
     "synthetic_digits": "lib.datasets.synthetic_digits.SyntheticDigits",
-    "mte": "lib.datasets.mte.MTE"
+    "mte": "lib.datasets.mte.MTE",
+    "rock_paper_scissors": "lib.datasets.rock_paper_scissors.RockPaperScissors"
 }

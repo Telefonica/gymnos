@@ -1,0 +1,44 @@
+{
+    "model": {
+        "name": "dogs_vs_cats_cnn",
+        "parameters": {
+            "input_shape": [80, 80, 1],
+            "classes": 3
+        }
+    },
+    "dataset": {
+        "name": "rock_paper_scissors",
+        "one_hot": true,
+        "samples": {
+            "train": 10,
+            "test": 10
+        },
+        "preprocessors": [
+            {
+                "type": "image_resize",
+                "width": 80,
+                "height": 80
+            },
+            {
+                "type": "divide",
+                "factor": 255
+            }
+        ],
+        "data_augmentors": [
+            {
+                "type": "distort",
+                "probability": 0.3,
+                "grid_width": 10,
+                "grid_height": 10,
+                "magnitude": 3
+            }
+        ]
+    },
+    "tracking": {
+        "trackers": [
+            {
+                "type": "tensorboard"
+            }
+        ]
+    }
+}

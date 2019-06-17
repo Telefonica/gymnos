@@ -7,3 +7,4 @@ from .data_usage_test import DataUsageTest
 from .unusual_data_usage_test import UnusualDataUsageTest
 from .dataset import Dataset, HDF5Dataset
 from .synthetic_digits import SyntheticDigits
+from .rock_paper_scissors import RockPaperScissors
