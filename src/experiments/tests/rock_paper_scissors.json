@@ -26,6 +26,13 @@
         ],
         "data_augmentors": [
             {
+                "type": "crop",
+                "probability": 0.2,
+                "width": 50,
+                "height": 50,
+                "centre": true
+            },
+            {
                 "type": "distort",
                 "probability": 0.3,
                 "grid_width": 10,
