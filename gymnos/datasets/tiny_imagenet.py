@@ -34,8 +34,7 @@ class TinyImagenet(Dataset):
     def info(self):
         return DatasetInfo(
             features=Array(shape=[64, 64, 3], dtype=np.uint8),
-            labels=ClassLabel(names_file=os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                                      "tiny_imagenet_labels.txt"))
+            labels=ClassLabel(names_file=os.path.join(os.path.dirname(__file__), "tiny_imagenet_labels.txt"))
         )
 
     def download_and_prepare(self, dl_manager):
