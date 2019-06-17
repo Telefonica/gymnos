@@ -43,6 +43,12 @@ Rock Paper Scissors
     :members:
     :inherited-members:
 
+Rock Paper Scissors
+=======================
+.. autoclass:: lib.datasets.rock_paper_scissors.RockPaperScissors
+    :members:
+    :inherited-members:
+
 MTE
 =================
 .. autoclass:: gymnos.datasets.mte.MTE
