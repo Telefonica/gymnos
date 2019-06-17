@@ -10,6 +10,7 @@ import numpy as np
 from PIL import Image
 
 from .data_augmentor import DataAugmentor
+from ..utils.image_utils import arr_to_img, img_to_arr
 
 
 class RandomErasing(DataAugmentor):
@@ -48,7 +49,7 @@ class RandomErasing(DataAugmentor):
         :type image: np.array
         :return: The transformed image
         """
-        image = Image.fromarray(image)
+        image = arr_to_img(image)
         w, h = image.size
 
         w_occlusion_max = int(w * self.rectangle_area)
@@ -71,4 +72,4 @@ class RandomErasing(DataAugmentor):
 
         image.paste(rectangle, (random_position_x, random_position_y))
 
-        return np.array(image)
+        return img_to_arr(image)

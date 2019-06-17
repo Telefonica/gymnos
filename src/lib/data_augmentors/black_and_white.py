@@ -4,9 +4,9 @@
 #
 #
 
-import numpy as np
+from PIL import ImageOps
 
-from PIL import Image, ImageOps
+from ..utils.image_utils import arr_to_img, img_to_arr
 
 from .data_augmentor import DataAugmentor
 
@@ -54,7 +54,7 @@ class BlackAndWhite(DataAugmentor):
         # An alternative would be to use
         # PIL.ImageOps.posterize(image=image, bits=1)
         # but this might be faster.
-        image = Image.fromarray(image)
+        image = arr_to_img(image)
         image = ImageOps.grayscale(image)
         image = image.point(lambda x: 0 if x < self.threshold else 255, '1')
-        return np.array(image)
+        return img_to_arr(image)

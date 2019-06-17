@@ -6,8 +6,8 @@
 
 import math
 import random
-import numpy as np
 
+from ..utils.image_utils import arr_to_img, img_to_arr
 from .data_augmentor import DataAugmentor
 
 from PIL import Image
@@ -71,7 +71,7 @@ class RotateRange(DataAugmentor):
         :type image: np.array
         :return: The transformed image
         """
-        image = Image.fromarray(image)
+        image = arr_to_img(image)
         # TODO: Small rotations of 1 or 2 degrees can create black pixels
         random_left = random.randint(self.max_left_rotation, 0)
         random_right = random.randint(0, self.max_right_rotation)
@@ -118,4 +118,4 @@ class RotateRange(DataAugmentor):
         # Return the image, re-sized to the size of the image passed originally
         image = image.resize((x, y), resample=Image.BICUBIC)
 
-        return np.array(image)
+        return img_to_arr(image)

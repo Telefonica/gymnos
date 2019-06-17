@@ -7,8 +7,9 @@
 import numpy as np
 
 from .data_augmentor import DataAugmentor
+from ..utils.image_utils import arr_to_img, img_to_arr
 
-from PIL import ImageEnhance, Image
+from PIL import ImageEnhance
 
 
 class RandomContrast(DataAugmentor):
@@ -47,9 +48,9 @@ class RandomContrast(DataAugmentor):
         :type image: np.array
         :return: The transformed image
         """
-        image = Image.fromarray(image)
+        image = arr_to_img(image)
         factor = np.random.uniform(self.min_factor, self.max_factor)
 
         image_enhancer_contrast = ImageEnhance.Contrast(image)
         image = image_enhancer_contrast.enhance(factor)
-        return np.array(image)
+        return img_to_arr(image)

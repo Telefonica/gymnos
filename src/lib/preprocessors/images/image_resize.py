@@ -37,9 +37,6 @@ class ImageResize(Preprocessor):
     def __transform_sample(self, x):
         resized = imresize(x, (self.width, self.height))
 
-        if resized.ndim < 3:
-            resized = resized[..., np.newaxis]
-
         return resized
 
 

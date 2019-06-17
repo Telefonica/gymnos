@@ -5,11 +5,11 @@
 #
 
 import random
-import numpy as np
 
 from PIL import Image
 
 from .data_augmentor import DataAugmentor
+from ..utils.image_utils import arr_to_img, img_to_arr
 
 
 class RotateStandard(DataAugmentor):
@@ -38,7 +38,7 @@ class RotateStandard(DataAugmentor):
         :type image: np.array
         :return: The transformed image
         """
-        image = Image.fromarray(image)
+        image = arr_to_img(image)
         random_left = random.randint(self.max_left_rotation, 0)
         random_right = random.randint(0, self.max_right_rotation)
 
@@ -53,4 +53,4 @@ class RotateStandard(DataAugmentor):
 
         image = image.rotate(rotation, expand=self.expand, resample=Image.BICUBIC)
 
-        return np.array(image)
+        return img_to_arr(image)

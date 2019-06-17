@@ -6,10 +6,7 @@
 
 import random
 
-import numpy as np
-
-from PIL import Image
-
+from ..utils.image_utils import arr_to_img, img_to_arr
 from .data_augmentor import DataAugmentor
 
 
@@ -54,7 +51,7 @@ class Rotate(DataAugmentor):
         :type image: np.array
         :return: The transformed image
         """
-        image = Image.fromarray(image)
+        image = arr_to_img(image)
         random_factor = random.randint(1, 3)
 
         if self.rotation == -1:
@@ -62,4 +59,4 @@ class Rotate(DataAugmentor):
         else:
             image = image.rotate(self.rotation, expand=True)
 
-        return np.array(image)
+        return img_to_arr(image)

@@ -6,10 +6,8 @@
 
 import math
 import random
-import numpy as np
 
-from PIL import Image
-
+from ..utils.image_utils import arr_to_img, img_to_arr
 from .data_augmentor import DataAugmentor
 
 
@@ -51,7 +49,7 @@ class CropPercentage(DataAugmentor):
         :type image: np.array
         :return: The transformed image
         """
-        image = Image.fromarray(image)
+        image = arr_to_img(image)
         if self.randomise_percentage_area:
             r_percentage_area = round(random.uniform(0.1, self.percentage_area), 2)
         else:
@@ -72,4 +70,4 @@ class CropPercentage(DataAugmentor):
         else:
             image = image.crop((left_shift, down_shift, w_new + left_shift, h_new + down_shift))
 
-        return np.array(image)
+        return img_to_arr(image)
