@@ -14,7 +14,7 @@ from io import BytesIO
 from gymnos.core.model import Model
 from gymnos.core.dataset import Dataset
 from gymnos.utils.io_utils import read_from_json
-from bin.scripts.gymnosd import read_preferences
+from bin.lib.preferences import read_preferences
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
