@@ -16,7 +16,7 @@ from tqdm import tqdm
 from gymnos.core.dataset import Dataset
 from gymnos.services import DownloadManager
 from gymnos.utils.data import DataLoader
-from bin.scripts.gymnosd import read_preferences
+from bin.lib.preferences import read_preferences
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
