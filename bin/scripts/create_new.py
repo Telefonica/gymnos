@@ -8,7 +8,7 @@ import os
 import re
 import argparse
 
-from lib.utils.io_utils import read_from_json, save_to_json
+from gymnos.utils.io_utils import read_from_json, save_to_json
 
 
 SNAKE_CASE_TEST_RE = re.compile(r'^[a-z]+([a-z\d]+_|_[a-z\d]+|[a-z\d]+)+[a-z\d]+$')
@@ -16,7 +16,7 @@ SNAKE_CASE_TEST_DASH_RE = re.compile(r'^[a-z]+([a-z\d]+-|-[a-z\d]+)+[a-z\d]+$')
 SNAKE_CASE_REPLACE_RE = re.compile(r'(_)([a-z\d])')
 SNAKE_CASE_REPLACE_DASH_RE = re.compile('(-)([a-z\d])')
 
-VAR_FILES_DIR = os.path.join("lib", "var")
+VAR_FILES_DIR = os.path.join("gymnos", "var")
 DATASETS_VAR_FILE_PATH = os.path.join(VAR_FILES_DIR, "datasets.json")
 MODELS_VAR_FILE_PATH = os.path.join(VAR_FILES_DIR, "models.json")
 TRACKERS_VAR_FILE_PATH = os.path.join(VAR_FILES_DIR, "trackers.json")
@@ -241,7 +241,7 @@ class {name}(Tracker):
         pass
 
     def log_figure(self, name, figure):
-        # {OPTIONAL}: Log Matplotlib figure
+        # {OPTIONAL}: Log Matplotgymnos figure
         pass
 
     def log_metric(self, name, value, step=None):
@@ -267,15 +267,15 @@ EXPERIMENT_FILE_STR = """
         ]
     }},
     "dataset": {{
-        "name": xxxxxx,  // {TODO} (str): dataset identifier.  To see available datasets, check lib/var/datasets.json 
+        "name": xxxxxx,  // {TODO} (str): dataset identifier.  To see available datasets, check gymnos/var/datasets.json 
         "samples": {{   // {OPTIONAL} (dict<str: int or float>): Split dataset into train and test subset. If float, it specifies a ratio, e.g 0.75 -> 75%, if int it specifies number of samples. Train and test samples must be > 0.
             "train": 0.75,
             "test": 0.25
         }},
-        "preprocessors": [    // {OPTIONAL} (list of dicts): Define preprocessors in the following format: {{"type": <preprocessor_name>, **preprocessor_parameters}}, e.g {{"type": "divide", "factor": 255.0}}. To see available preprocessors, check lib/var/preprocessors.json 
+        "preprocessors": [    // {OPTIONAL} (list of dicts): Define preprocessors in the following format: {{"type": <preprocessor_name>, **preprocessor_parameters}}, e.g {{"type": "divide", "factor": 255.0}}. To see available preprocessors, check gymnos/var/preprocessors.json 
 
         ],
-        "data_augmentors": [  // {OPTIONAL} (list of dicts): Define data augmentors in the following format {{"type": <data_augmentor_name>, "probability": <probability_to_apply_augmentation>, **data_augmentors_parameters}}, e.g {{"type": "invert", "probability": 0.4}}. To see available data_augmentors, check lib/var/data_augmentors.json 
+        "data_augmentors": [  // {OPTIONAL} (list of dicts): Define data augmentors in the following format {{"type": <data_augmentor_name>, "probability": <probability_to_apply_augmentation>, **data_augmentors_parameters}}, e.g {{"type": "invert", "probability": 0.4}}. To see available data_augmentors, check gymnos/var/data_augmentors.json 
 
         ],
         "seed": null,  // {OPTIONAL} (int): Seed for train/test split. If null, random seed is chosen
@@ -284,7 +284,7 @@ EXPERIMENT_FILE_STR = """
         "chunk_size": null  // {OPTIONAL} (int): Defines the chunk size in which the dataset will be read. It may reduce memory usage but training may be slower. By default, it loads dataset into memory
     }},
     "model": {{
-        "name": xxxxxx,  // {TODO} (str): Model identifier. To see available models, check lib/var/models.json 
+        "name": xxxxxx,  // {TODO} (str): Model identifier. To see available models, check gymnos/var/models.json 
         "parameters": {{  // {OPTIONAL} (str): Parameters for model constructor
 
         }}
@@ -299,7 +299,7 @@ EXPERIMENT_FILE_STR = """
         "additional_params": {{  // {OPTIONAL} (dict): Additional parameters to log
 
         }},
-        "trackers": [  // {OPTIONAL} (list of dicts): Define trackers {{"type": <tracker_name>, **tracker_parameters}}, e.g {{"type": "mlflow", "source_name": "gymnos_gpu"}}  To see available trackers, check lib/var/trackers.json 
+        "trackers": [  // {OPTIONAL} (list of dicts): Define trackers {{"type": <tracker_name>, **tracker_parameters}}, e.g {{"type": "mlflow", "source_name": "gymnos_gpu"}}  To see available trackers, check gymnos/var/trackers.json 
 
         ]
     }}
@@ -322,10 +322,10 @@ def create_component(raw_string, name, dirname):
     file_str = raw_string.format(name=camel_name, TODO="TODO({})".format(camel_name),
                                  OPTIONAL="OPTIONAL({})".format(camel_name))
 
-    file_dir = os.path.join("lib", dirname)
+    file_dir = os.path.join("gymnos", dirname)
     file_path = os.path.join(file_dir, name + ".py")
     init_file_path = os.path.join(file_dir, "__init__.py")
-    var_file_path = os.path.join("lib", "var", dirname + ".json")
+    var_file_path = os.path.join("gymnos", "var", dirname + ".json")
 
     with open(file_path, "x") as archive:
         archive.write(file_str)
@@ -334,7 +334,7 @@ def create_component(raw_string, name, dirname):
         archive.write("from .{} import {}\n".format(name, camel_name))
 
     var_data = read_from_json(var_file_path)
-    var_data[name] = ".".join(["lib", dirname, name, camel_name])
+    var_data[name] = ".".join(["gymnos", dirname, name, camel_name])
     save_to_json(var_file_path, var_data)
 
     return [init_file_path, var_file_path, file_path]

@@ -1,4 +1,0 @@
-{
-    "accuracy_multilabel": "lib.utils.keras_metrics.accuracy_multilabel",
-    "precision": "lib.utils.keras_metrics.precision"
-}
