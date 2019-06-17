@@ -9,20 +9,21 @@ import argparse
 from glob import glob
 from datetime import datetime
 
-from lib.datasets import HDF5Dataset
-from lib.trainer import Trainer
-from lib.utils.termcolor import cprint
-from lib.core.model import Model
-from lib.core.dataset import Dataset
-from lib.core.training import Training
-from lib.core.tracking import Tracking
-from lib.services.download_manager import DownloadManager
-from lib.utils.io_utils import save_to_json, read_from_json
+from gymnos.datasets import HDF5Dataset
+from gymnos.trainer import Trainer
+from gymnos.utils.termcolor import cprint
+from gymnos.core.model import Model
+from gymnos.core.dataset import Dataset
+from gymnos.core.training import Training
+from gymnos.core.tracking import Tracking
+from gymnos.core.experiment import Experiment
+from gymnos.services.download_manager import DownloadManager
+from gymnos.utils.io_utils import save_to_json, read_from_json
 
-LOGGING_CONFIG_PATH = os.path.join("config", "logging.json")
+LOGGING_CONFIG_PATH = os.path.join("bin", "config", "logging.json")
 
-DEFAULT_PREFERENCES_CONFIG_PATH = os.path.join("config", "preferences.json")
-LOCAL_PREFERENCES_CONFIG_PATH = os.path.join("config", "preferences.local.json")
+DEFAULT_PREFERENCES_CONFIG_PATH = os.path.join("bin", "config", "preferences.json")
+LOCAL_PREFERENCES_CONFIG_PATH = os.path.join("bin", "config", "preferences.local.json")
 
 
 def read_preferences():

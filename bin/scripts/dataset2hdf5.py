@@ -13,9 +13,9 @@ import numpy as np
 
 from tqdm import tqdm
 
-from lib.core.dataset import Dataset
-from lib.services import DownloadManager
-from lib.utils.data import DataLoader
+from gymnos.core.dataset import Dataset
+from gymnos.services import DownloadManager
+from gymnos.utils.data import DataLoader
 from bin.scripts.gymnosd import read_preferences
 
 if __name__ == '__main__':

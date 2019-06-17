@@ -11,9 +11,9 @@ import numpy as np
 from pprint import pprint
 from PIL import Image
 from io import BytesIO
-from lib.core.model import Model
-from lib.core.dataset import Dataset
-from lib.utils.io_utils import read_from_json
+from gymnos.core.model import Model
+from gymnos.core.dataset import Dataset
+from gymnos.utils.io_utils import read_from_json
 from bin.scripts.gymnosd import read_preferences
 
 if __name__ == '__main__':

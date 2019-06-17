@@ -1,0 +1,5 @@
+{
+    "comet_ml": "gymnos.trackers.comet_ml.CometML",
+    "mlflow": "gymnos.trackers.mlflow.MLFlow",
+    "tensorboard": "gymnos.trackers.tensorboard.Tensorboard"
+}

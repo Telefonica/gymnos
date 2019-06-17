@@ -1,0 +1,4 @@
+{
+    "accuracy_multilabel": "gymnos.utils.keras_metrics.accuracy_multilabel",
+    "precision": "gymnos.utils.keras_metrics.precision"
+}
