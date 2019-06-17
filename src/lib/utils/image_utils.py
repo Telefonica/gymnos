@@ -56,7 +56,7 @@ def imgray(rgb_arr):
     """
     img = arr_to_img(rgb_arr)
     img = img.convert("L")
-    return arr_to_img(rgb_arr)
+    return img_to_arr(img)
 
 
 def imresize(rgb_arr, size):

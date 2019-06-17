@@ -6,7 +6,7 @@
             "train": 5,
             "test": 5
         },
-        "chunk_size": 32,
+        "chunk_size": 2,
         "data_augmentors": [
             {
                 "type": "zoom",
