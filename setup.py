@@ -15,7 +15,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/Telefonica/gymnos",
-    packages=setuptools.find_packages(),
+    packages=setuptools.find_packages(where="gymnos"),
     package_data={
         "gymnos": DATASET_FILES
     },
