@@ -5,6 +5,7 @@
 #
 
 import os
+import dill
 import base64
 import argparse
 import numpy as np
@@ -39,7 +40,9 @@ if __name__ == '__main__':
     dataset = Dataset(**training_config["dataset"])
 
     model.model.restore(model_dir)
-    dataset.preprocessors.restore(preprocessors_filepath)
+
+    with open(preprocessors_filepath, "rb") as fp:
+        dataset.preprocessors = dill.load(fp)
 
     samples = []
     for sample in prediction_config["samples"]:

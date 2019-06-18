@@ -3,6 +3,7 @@
 import os
 import uuid
 import copy
+import dill
 import logging
 import argparse
 
@@ -123,7 +124,8 @@ def run_experiment(training_config_path):
                                                                   config["save_trained_preprocessors_if_errors"]):
             pipeline_path = os.path.join(execution_dir, config["trained_preprocessors_filename"])
             logger.info("Saving preprocessors to {}".format(pipeline_path))
-            dataset.preprocessors.save(pipeline_path)
+            with open(pipeline_path, "wb") as fp:
+                dill.dump(dataset.preprocessors, fp)
 
         if (success and config["save_training_config"]) or (not success and config["save_training_config_if_errors"]):
             training_config_copy_path = os.path.join(execution_dir, config["training_config_filename"])

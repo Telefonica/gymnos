@@ -35,7 +35,6 @@ setuptools.setup(
         "statsmodels",
         "py-cpuinfo",
         "gputil",
-        "dill",
         "scipy!=1.3",
         "commentjson",
         "pillow"
