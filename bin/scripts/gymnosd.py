@@ -10,9 +10,9 @@ import argparse
 from glob import glob
 from datetime import datetime
 
+from bin.lib.hdf5 import HDF5Dataset
 from bin.lib.preferences import read_preferences
 
-from gymnos.datasets import HDF5Dataset
 from gymnos.trainer import Trainer
 from gymnos.utils.termcolor import cprint
 from gymnos.core.model import Model
