@@ -3,7 +3,7 @@ from .crop import Crop
 from .crop_percentage import CropPercentage
 from .distort import Distort
 from .flip import Flip
-from .gaussian_distorsion import GaussianDistortion
+from .gaussian_distortion import GaussianDistortion
 from .greyscale import Greyscale
 from .histogram_equalisation import HistogramEqualisation
 from .hsv_shifting import HSVShifting
