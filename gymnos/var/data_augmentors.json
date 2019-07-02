@@ -5,7 +5,7 @@
     "crop_random": "gymnos.data_augmentors.crop_random.CropRandom",
     "distort": "gymnos.data_augmentors.distort.Distort",
     "flip": "gymnos.data_augmentors.flip.Flip",
-    "gaussian_distorsion": "gymnos.data_augmentors.gaussian_distorsion.GaussianDistorsion",
+    "gaussian_distortion": "gymnos.data_augmentors.gaussian_distortion.GaussianDistortion",
     "greyscale": "gymnos.data_augmentors.greyscale.Greyscale",
     "histogram_equalisation": "gymnos.data_augmentors.histogram_equalisation.HistogramEqualisation",
     "hsv_shifting": "gymnos.data_augmentors.hsv_shifting.HSVShifting",
