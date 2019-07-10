@@ -46,6 +46,7 @@ class Dataset:
         - ``"mte"``: :class:`lib.datasets.mte.MTE`,
         - ``"data_usage_test"``: :class:`lib.datasets.data_usage_test.DataUsageTest`,
         - ``"unusual_data_usage_test"``: :class:`lib.datasets.unusual_data_usage_test.UnusualDataUsageTest`
+        - ``"rock_paper_scissors"``: :class:`lib.datasets.rock_paper_scissors.RockPaperScissors`
 
     samples: dict, optional
         Samples to split dataset into random train and test subsets
@@ -53,20 +54,17 @@ class Dataset:
         The following properties are available:
 
         **train**: `float` or `int`, optional
-            If float, should be between 0.0 and 1.0 and represent the proportion of the dataset to
-            include in the train split.
+            If float, should be between 0.0 and 1.0 and represent the proportion of the dataset to include in the train split.
             If int, represents the absolute number of train samples.
             If None, the value is automatically set to the complement of the test size.
         **test**: `float` or `int`, optional
-            If float, should be between 0.0 and 1.0 and represent the proportion of the dataset to
-            include in the test split.
+            If float, should be between 0.0 and 1.0 and represent the proportion of the dataset to include in the test split.
             If int, represents the absolute number of test samples.
             If None, the value is set to the complement of the train size.
             If None and ``train_size`` is unspecified, by default the value is set to 0.25.
     preprocessors: list of dict, optional
         List of preprocessors to apply to dataset. This property requires a list with dictionnaries with at least
-        a ``type`` field specifying the type of preprocessor.  The other properties are the properties for that
-        preprocessor.
+        a ``type`` field specifying the type of preprocessor.  The other properties are the properties for that preprocessor.
 
         The current available preprocessors are the following:
 
