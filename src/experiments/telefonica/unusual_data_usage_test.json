@@ -7,7 +7,6 @@
         ]
     },
     "model": {
-        "description": "Anomaly detection for one serie of web traffic",
         "name": "unusual_data_usage_weighted_thresholds"
     },
     "dataset": {

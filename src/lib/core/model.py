@@ -32,8 +32,6 @@ class Model:
         - ``"mte_nn"``: :class:`lib.models.mte_nn.MTENN`
     parameters: dict, optional
         Parameters associated with the model
-    description: str, optional
-        Optional description of the model
     Examples
     --------
 
@@ -41,7 +39,6 @@ class Model:
 
         Model(
             name="data_usage_holt_winters",
-            description="Holt Winters with low parameters",
             parameters={
                 "beta": 0.029,
                 "alpha": 0.5
@@ -49,12 +46,11 @@ class Model:
         )
     """  # noqa: E501
 
-    def __init__(self, name, parameters=None, description=None):
+    def __init__(self, name, parameters=None):
         parameters = parameters or {}
 
         self.name = name
         self.parameters = parameters
-        self.description = description
 
         logger.debug("Importing model {}".format(name))
         ModelClass = import_from_json(MODELS_IDS_TO_MODULES_PATH, name)

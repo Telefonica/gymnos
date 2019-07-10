@@ -4,7 +4,6 @@
          "tags": ["temporal-series", "forecasting"]
     },
     "model": {
-        "description": "Prediction for one serie of web traffic",
         "name": "data_usage_holt_winters"
     },
     "dataset": {
