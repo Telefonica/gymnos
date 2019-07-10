@@ -1,8 +1,4 @@
 {
-    "experiment": {
-        "name": "Media Tagging Engine",
-        "tags": ["mte", "network"]
-    },
     "model": {
         "name": "mte_nn",
         "parameters": {

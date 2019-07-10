@@ -46,19 +46,18 @@ class Trainer:
         self.dl_manager = dl_manager
         self.trackings_dir = trackings_dir
 
-    def train(self, experiment, model, dataset, training, tracking, callbacks=None):
+    def train(self, model, dataset, training, tracking, callbacks=None):
         """
         Run an experiment
 
         Parameters
         ----------
-        experiment: core.Experiment
         model: core.Model
         dataset: core.Dataset
         training: core.Training
         tracking: core.Tracking
         """
-        logger.info("Starting experiment {}".format(experiment.name))
+        logger.info("Running experiment with id: {}".format(tracking.run_id))
 
         if callbacks is None:
             callbacks = []
@@ -109,12 +108,17 @@ class Trainer:
         history_tracker = History()
         tracking.trackers.add(history_tracker)
 
-        tracking.trackers.start(run_name=experiment.name, logdir=self.trackings_dir)
+        tracking.trackers.start(run_id=tracking.run_id, logdir=self.trackings_dir)
 
         # LOG PARAMETERS
 
         tracking.trackers.log_params(model.parameters)
         tracking.trackers.log_params(tracking.additional_params)
+        if tracking.log_model_params:
+            tracking.trackers.log_params(model.parameters)
+
+        if tracking.log_training_params:
+            tracking.trackers.log_params(training.parameters)
 
         for model_param_name, model_param_value in training.parameters.items():
             str_model_param_value = str(model_param_value)
@@ -297,7 +301,8 @@ class Trainer:
                                                                                        np.mean(metric_value),
                                                                                        np.min(metric_value),
                                                                                        np.max(metric_value)))
-        tracking.trackers.log_metrics(train_metrics)
+        if tracking.log_model_metrics:
+            tracking.trackers.log_metrics(train_metrics)
 
         # EVALUATE MODEL
 
@@ -317,14 +322,15 @@ class Trainer:
         for metric_name, metric_value in test_metrics.items():
             logger.info("test_{}={}".format(metric_name, metric_value))
 
-        tracking.trackers.log_metrics(test_metrics, prefix="test_")
+        if tracking.log_model_metrics:
+            tracking.trackers.log_metrics(test_metrics, prefix="test_")
 
         tracking.trackers.end()
 
         callbacks.on_train_end()
 
         return OrderedDict([
-            ["experiment_name", experiment.name],
+            ["run_id", tracking.run_id],
             ["start_datetime", history_tracker.start_datetime.timestamp()],
             ["end_datetime", history_tracker.end_datetime.timestamp()],
             ["elapsed_times", time_history.times],
@@ -333,7 +339,6 @@ class Trainer:
             ["metrics", history_tracker.metrics],
             ["system_info", system_info],
             ["trackings_dir", self.trackings_dir],
-            ["execution_dir", os.getcwd()],
             ["download_dir", self.dl_manager.download_dir],
             ["extract_dir", self.dl_manager.extract_dir]
         ])

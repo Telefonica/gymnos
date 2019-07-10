@@ -5,6 +5,7 @@
 #
 
 import os
+import uuid
 import logging
 
 from ..trackers import TrackerList
@@ -20,6 +21,10 @@ class Tracking:
     """
     Parameters
     ----------
+    run_id: str, optional
+        ID of the run to log under. If not provided, it will be a random UUID
+    tags: list of str, optional
+        Tags for current run.
     log_model_params: bool, optional
         Whether or not log model parameters
     log_model_metrics: bool, optional
@@ -28,8 +33,7 @@ class Tracking:
         Whether or not log training params.
     trackers: list of dict, optional
         List of trackers to log parameters and metrics. This property requires a list with dictionnaries with at least
-        a ``type`` field specifying the type of tracker. The other properties are the properties for that
-        tracker.
+        a ``type`` field specifying the type of tracker. The other properties are the arguments for the constructor of that tracker.
 
         The current available trackers are the following:
 
@@ -61,16 +65,20 @@ class Tracking:
                 data_scientist="Rubén Salas"
             }
         )
-    """
+    """ # noqa: E501
 
-    def __init__(self, log_model_params=True, log_model_metrics=True, log_training_params=True, trackers=None,
-                 additional_params=None):
+    def __init__(self, run_id=None, tags=None, log_model_params=True, log_model_metrics=True, log_training_params=True,
+                 trackers=None):
         trackers = trackers or []
 
+        if run_id is None:
+            run_id = uuid.uuid4().hex
+
+        self.tags = tags or []
+        self.run_id = run_id
         self.log_model_params = log_model_params
         self.log_model_metrics = log_model_metrics
         self.log_training_params = log_training_params
-        self.additional_params = additional_params or {}
 
         logger.debug("Import {} trackers".format(len(trackers)))
         self.trackers = TrackerList()

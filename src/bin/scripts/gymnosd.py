@@ -16,7 +16,6 @@ from lib.core.model import Model
 from lib.core.dataset import Dataset
 from lib.core.training import Training
 from lib.core.tracking import Tracking
-from lib.core.experiment import Experiment
 from lib.services.download_manager import DownloadManager
 from lib.utils.io_utils import save_to_json, read_from_json
 
@@ -79,17 +78,15 @@ def run_experiment(training_config_path):
     extract_dir = config["extract_dir"].format(**format_kwargs)
     executions_dir = config["executions_dir"].format(**format_kwargs)
     trackings_dir = config["trackings_dir"].format(**format_kwargs)
-    default_experiment_name = config["default_experiment_name"].format(**format_kwargs)
 
     trackings_dir = os.path.abspath(trackings_dir)
 
-    # if the user has not provided an experiment name, we set the experiment name
-    # to the default experiment name from config
-    training_config["experiment"] = training_config.get("experiment", {})
-    if training_config["experiment"].get("name") is None:
-        training_config["experiment"]["name"] = default_experiment_name
+    dataset = Dataset(**training_config["dataset"])
+    model = Model(**training_config["model"])
+    training = Training(**training_config.get("training", {}))  # optional field
+    tracking = Tracking(**training_config.get("tracking", {}))  # optional field)
 
-    execution_dir = os.path.join(executions_dir, training_config["experiment"]["name"])
+    execution_dir = os.path.join(executions_dir, tracking.run_id)
 
     os.makedirs(execution_dir)
     os.makedirs(trackings_dir, exist_ok=True)
@@ -102,12 +99,6 @@ def run_experiment(training_config_path):
     logger = logging.getLogger(__name__)
 
     logger.info("Starting gymnos trainer ...")
-
-    dataset = Dataset(**training_config["dataset"])
-    model = Model(**training_config["model"])
-    training = Training(**training_config.get("training", {}))  # optional field
-    experiment = Experiment(**training_config.get("experiment", {}))  # optional field
-    tracking = Tracking(**training_config.get("tracking", {}))  # optional field)
 
     hdf5_dataset_file_path = os.path.join(config["hdf5_datasets_dir"], dataset.name + config["hdf5_file_extension"])
 
@@ -133,7 +124,7 @@ def run_experiment(training_config_path):
     success = False
 
     try:
-        results = trainer.train(experiment, model, dataset, training, tracking)
+        results = trainer.train(model, dataset, training, tracking)
 
         success = True
         logger.info("Execution succeed!")

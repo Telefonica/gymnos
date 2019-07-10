@@ -1,7 +1,4 @@
 {
-    "experiment": {
-        "tags": ["mte", "network"]
-    },
     "model": {
         "name": "mte_nn",
         "parameters": {

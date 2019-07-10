@@ -8,7 +8,6 @@ Gymnos allows you to configure and train powerful models without writing a singl
 
 To run an experiment, the following keys are available:
 
-    - ``"experiment"``: defines name and description of the experiment
     - ``"dataset"``: defines the dataset with the associated preprocessing
     - ``"model"``:  defines the model
     - ``"training"``: defines training parameters
@@ -19,9 +18,6 @@ Each key is associated with a Python instance that builds the Python objects fro
 .. image:: images/gymnos-training-config.png
    :width: 100%
 
-Experiment
-==========
-.. autoclass:: lib.core.experiment.Experiment
 
 Dataset
 ==========

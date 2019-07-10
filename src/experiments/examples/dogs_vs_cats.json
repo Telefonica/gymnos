@@ -1,11 +1,4 @@
 {
-    "experiment": {
-        "name": null, 
-        "description": null, 
-        "tags": [ 
-
-        ]
-    },
     "dataset": {
         "name": "dogs_vs_cats", 
         "samples": {  
