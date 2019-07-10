@@ -112,13 +112,13 @@ class Trainer:
 
         # LOG PARAMETERS
 
-        tracking.trackers.log_params(model.parameters)
-        tracking.trackers.log_params(tracking.additional_params)
         if tracking.log_model_params:
             tracking.trackers.log_params(model.parameters)
 
         if tracking.log_training_params:
             tracking.trackers.log_params(training.parameters)
+
+        tracking.trackers.log_tags(tracking.tags)
 
         for model_param_name, model_param_value in training.parameters.items():
             str_model_param_value = str(model_param_value)

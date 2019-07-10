@@ -23,8 +23,8 @@ class Tracking:
     ----------
     run_id: str, optional
         ID of the run to log under. If not provided, it will be a random UUID
-    tags: list of str, optional
-        Tags for current run.
+    tags: dict, optional
+        Tags for current run. The keys will be the tag names and the values will be the tag values.
     log_model_params: bool, optional
         Whether or not log model parameters
     log_model_metrics: bool, optional
@@ -41,14 +41,14 @@ class Tracking:
             - ``"mlflow"``: :class:`lib.trackers.mlflow.MLFlow`,
             - ``"tensorboard"``: :class:`lib.trackers.tensorboard.Tensorboard`
 
-    additional_params: dict, optional
-        Additional parameters to log
-
     Examples
     --------
     .. code-block:: py
 
         Tracking(
+            tags={
+                "user": "John Doe"
+            },
             log_model_params=True,
             log_model_metrics=True,
             log_training_metrics=False,
@@ -60,10 +60,7 @@ class Tracking:
                 {
                     "type": "tensorboard"
                 }
-            ],
-            additional_params={
-                data_scientist="Rubén Salas"
-            }
+            ]
         )
     """ # noqa: E501
 
@@ -74,7 +71,7 @@ class Tracking:
         if run_id is None:
             run_id = uuid.uuid4().hex
 
-        self.tags = tags or []
+        self.tags = tags or {}
         self.run_id = run_id
         self.log_model_params = log_model_params
         self.log_model_metrics = log_model_metrics

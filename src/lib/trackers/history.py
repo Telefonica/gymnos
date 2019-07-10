@@ -18,15 +18,15 @@ class History(Tracker):
 
         self.start_datetime = datetime.now()
 
-        self.tags = []
+        self.tags = {}
         self.params = {}
         self.assets = {}
         self.images = {}
         self.figures = {}
         self.metrics = defaultdict(list)
 
-    def add_tag(self, tag):
-        self.tags.append(tag)
+    def log_tag(self, key, value):
+        self.tags[key] = value
 
     def log_asset(self, name, file_path):
         self.assets[name] = file_path

@@ -36,8 +36,8 @@ class CometML(Tracker):
                                      log_git_metadata=False, log_git_patch=False)
         self.experiment.set_name(run_name)
 
-    def add_tag(self, tag):
-        self.experiment.add_tag(tag)
+    def log_tag(self, key, value):
+        self.experiment.add_tag("{}__{}".format(key, value))
 
 
     def log_asset(self, name, file_path):
