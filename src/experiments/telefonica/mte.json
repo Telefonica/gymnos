@@ -1,10 +1,5 @@
 {
-    "experiment": {
-        "name": "Media Tagging Engine",
-        "tags": ["mte", "network"]
-    },
     "model": {
-        "description": "Media Tagging Engine Subscription Classifier",
         "name": "mte_nn",
         "parameters": {
             "input_shape": [20000]

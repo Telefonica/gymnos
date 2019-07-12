@@ -23,7 +23,7 @@ class Tensorboard(Tracker):
     def start(self, run_name, logdir):
         self.writer = tf.summary.FileWriter(os.path.join(logdir, "tensorboard", run_name))
 
-    def add_tag(self, tag):
+    def log_tag(self, key, value):
         pass
 
     def log_asset(self, name, file_path):

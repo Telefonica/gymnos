@@ -31,6 +31,9 @@
         "validation_split": 0.2
     },
     "tracking": {
+        "tags": {
+            "training_type": "regression_test"
+        },
         "trackers": [
             {
                 "type": "tensorboard"

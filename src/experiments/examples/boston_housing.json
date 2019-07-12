@@ -37,9 +37,6 @@
         "validation_split": 0.25
     },
     "tracking": {
-        "additional_params": {
-            "device": "cpu"
-        },
         "trackers": [
             {
                 "type": "tensorboard"

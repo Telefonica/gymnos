@@ -42,6 +42,9 @@
         ]
     },
     "tracking": {
+        "tags": {
+            "training_type": "regression_test"
+        },
         "trackers": [
             {
                 "type": "tensorboard"

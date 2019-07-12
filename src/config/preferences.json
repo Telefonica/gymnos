@@ -39,8 +39,6 @@
     "executions_dir": "trainings/{dataset_name}/executions",
     // Directory to store tracking artifacts generated from trainings. Available formats: dataset_name, model_name, uuid, datetime
     "trackings_dir": "trainings/{dataset_name}/trackings",
-    // The default experiment name if you don't provide one. Available formats: dataset_name, model_name, uuid, datetime
-    "default_experiment_name": "{uuid}",
 
     // Whether or not save trained model to execution directory 
     "save_trained_model": true,

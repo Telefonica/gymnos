@@ -14,7 +14,7 @@ from abc import ABCMeta, abstractmethod
 class Tracker(metaclass=ABCMeta):
 
     @abstractmethod
-    def start(self, run_name, logdir):
+    def start(self, run_id, logdir):
         """
         Called when the experiment is started.
 
@@ -24,26 +24,28 @@ class Tracker(metaclass=ABCMeta):
 
         Parameters
         ----------
-        run_name: str
-            Name identifying the experiment's run.
+        run_id: str
+            ID identifying the experiment's run.
         logdir: str
             Path of logging.
         """
 
     @abstractmethod
-    def add_tag(self, tag):
+    def log_tag(self, key, value):
         """
-        Add tag to experiment.
+        Log tag to experiment.
 
         Parameters
         ----------
-        tag: str
-            Tag to add.
+        key: str
+            Tag name.
+        value: str
+            Tag value.
         """
 
-    def add_tags(self, tags):
-        for tag in tags:
-            self.add_tag(tag)
+    def log_tags(self, tags):
+        for key, value in tags.items():
+            self.log_tag(key, value)
 
     @abstractmethod
     def log_asset(self, name, file_path):
@@ -99,7 +101,7 @@ class Tracker(metaclass=ABCMeta):
             Metric's step.
         """
 
-    def log_metric_list(self, name, metric_list):
+    def __log_metric_list(self, name, metric_list):
         for step, val in enumerate(metric_list):
             self.log_metric(name, val, step)
 
@@ -108,7 +110,7 @@ class Tracker(metaclass=ABCMeta):
 
         for (name, value) in dic.items():
             if isinstance(value, Iterable):
-                self.log_metric_list(prefix + name, value)
+                self.__log_metric_list(prefix + name, value)
             else:
                 self.log_metric(prefix + name, value, step)
 
@@ -184,17 +186,17 @@ class TrackerList:
     def reset(self):
         self.trackers = []
 
-    def start(self, run_name, logdir):
+    def start(self, run_id, logdir):
         for tracker in self.trackers:
-            tracker.start(run_name, logdir)
+            tracker.start(run_id, logdir)
 
-    def add_tag(self, tag):
+    def log_tag(self, key, value):
         for tracker in self.trackers:
-            tracker.add_tag(tag)
+            tracker.log_tag(key, value)
 
-    def add_tags(self, tags):
+    def log_tags(self, tags):
         for tracker in self.trackers:
-            tracker.add_tags(tags)
+            tracker.log_tags(tags)
 
     def log_asset(self, name, file_path):
         for tracker in self.trackers:
@@ -223,14 +225,6 @@ class TrackerList:
     def log_params(self, dic, prefix=None, step=None):
         for tracker in self.trackers:
             tracker.log_params(dic, prefix, step)
-
-    def log_other(self, name, value):
-        for tracker in self.trackers:
-            tracker.log_other(name, value)
-
-    def log_model_graph(self, graph):
-        for tracker in self.trackers:
-            tracker.log_model_graph(graph)
 
     def get_keras_callbacks(self, log_params=True, log_metrics=True):
         callbacks = []

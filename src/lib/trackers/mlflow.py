@@ -31,8 +31,8 @@ class MLFlow(Tracker):
         mlflow.set_tracking_uri(os.path.join(logdir, "mlruns"))
         mlflow.start_run(run_name=run_name, experiment_id=self.experiment_id)
 
-    def add_tag(self, tag):
-        pass
+    def log_tag(self, key, value):
+        mlflow.set_tag(key, value)
 
     def log_metric(self, name, value, step=None):
         mlflow.log_metric(name, value)

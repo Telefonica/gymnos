@@ -1,11 +1,4 @@
 {
-    "experiment": {
-        "name": null, 
-        "description": null, 
-        "tags": [ 
-
-        ]
-    },
     "dataset": {
         "name": "dogs_vs_cats", 
         "samples": {  
@@ -43,12 +36,6 @@
         "epochs": 5
     },
     "tracking": {
-        "log_model_params": true, 
-        "log_model_metrics": true, 
-        "log_training_params": true, 
-        "additional_params": { 
-
-        },
         "trackers": [ 
             {
                 "type": "tensorboard"
