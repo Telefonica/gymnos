@@ -51,3 +51,22 @@ def import_from_json(json_path, key):
     object_loc = objects_ids_to_modules[key]
     return locate(object_loc)
 
+
+def read_lines(file_path):
+    """
+    Read file lines
+
+    Parameters
+    -----------
+    file_path: str
+        File path to read lines.
+
+    Returns
+    -------
+    lines: list of str
+        Text for each line.
+    """
+    with open(file_path) as archive:
+        names = [line.rstrip('\n') for line in archive]
+
+    return names

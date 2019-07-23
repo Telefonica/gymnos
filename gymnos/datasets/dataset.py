@@ -6,6 +6,7 @@
 
 from abc import ABCMeta, abstractmethod
 
+from ..utils.io_utils import read_lines
 
 class Dataset(metaclass=ABCMeta):
     """
@@ -100,26 +101,6 @@ class Array:
         return "Array <shape={}, dtype={}>".format(self.shape, self.dtype)
 
 
-def _read_lines(file_path):
-    """
-    Read file lines
-
-    Parameters
-    -----------
-    file_path: str
-        File path to read lines.
-
-    Returns
-    -------
-    num_lines: int
-        Number of lines
-    """
-    with open(file_path) as archive:
-        names = [line.rstrip('\n') for line in archive]
-
-    return names
-
-
 class ClassLabel(Array):
     """
     Label for classification tasks. It specifies class names
@@ -146,7 +127,7 @@ class ClassLabel(Array):
             self.names = names
             self.num_classes = len(self.names)
         elif names_file is not None:
-            self.names = _read_lines(names_file)
+            self.names = read_lines(names_file)
             self.num_classes = len(self.names)
         elif num_classes is not None:
             self.num_classes = num_classes
