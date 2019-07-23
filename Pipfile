@@ -10,6 +10,11 @@ sphinx="sphinx-autobuild docs/source docs/build"
 sphinx = "*"
 sphinx-rtd-theme = "*"
 sphinx-autobuild = "*"
+pytest = "*"
+pytest-cov = "*"
+pytest-xdist = "*"
+pytest-mock = "*"
+requests-mock = "*"
 
 [packages]
 gymnos = {editable = true,extras = ["complete"],path = "."}
