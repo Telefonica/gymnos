@@ -11,13 +11,17 @@ import numpy as np
 from glob import glob
 
 from .dataset import Dataset, DatasetInfo, Array, ClassLabel
-from ..utils.io_utils import read_from_text
 from ..utils.image_utils import imread_rgb
+from ..utils.io_utils import read_file_text
 
 logger = logging.getLogger(__name__)
 
 KAGGLE_DATASET_NAME = "akash2sharma/tiny-imagenet"
 KAGGLE_DATASET_FILENAME = "tiny-imagenet-200.zip"
+
+IMAGE_WIDTH = 64
+IMAGE_HEIGHT = 64
+IMAGE_DEPTH = 3
 
 
 class TinyImagenet(Dataset):
@@ -33,7 +37,7 @@ class TinyImagenet(Dataset):
 
     def info(self):
         return DatasetInfo(
-            features=Array(shape=[64, 64, 3], dtype=np.uint8),
+            features=Array(shape=[IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_DEPTH], dtype=np.uint8),
             labels=ClassLabel(names_file=os.path.join(os.path.dirname(__file__), "tiny_imagenet_labels.txt"))
         )
 
@@ -43,7 +47,7 @@ class TinyImagenet(Dataset):
         path = dl_manager.extract(path)
         path = os.path.join(path, "tiny-imagenet-200")
 
-        lines = read_from_text(os.path.join(path, "wnids.txt")).splitlines()
+        lines = read_file_text(os.path.join(path, "wnids.txt")).splitlines()
         name2num  = {name: idx for idx, name in enumerate(lines)}
 
         logger.info("Parsing train image files")
@@ -52,7 +56,7 @@ class TinyImagenet(Dataset):
         train_labels = np.array([name2num[classname] for classname in train_classnames], dtype=np.int32)
 
         logger.info("Parsing validation image files")
-        val_names = read_from_text(os.path.join(path, "val", "val_annotations.txt"))
+        val_names = read_file_text(os.path.join(path, "val", "val_annotations.txt"))
         valfile2classname = {split[0]: split[1] for split in (line.split("\t") for line in val_names.splitlines())}
         val_images_paths = glob(os.path.join(path, "val", "images", "*.JPEG"))
         val_classnames = [valfile2classname[os.path.basename(filename)] for filename in val_images_paths]

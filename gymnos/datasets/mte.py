@@ -12,7 +12,6 @@ from tqdm import tqdm
 from datetime import datetime
 from sklearn.preprocessing import MultiLabelBinarizer
 
-from ..utils.io_utils import read_from_json
 from .dataset import Dataset, DatasetInfo, ClassLabel, Array
 
 logger = logging.getLogger(__name__)
@@ -208,7 +207,8 @@ class MTE(Dataset):
     def download_and_prepare(self, dl_manager):
         epg_path = dl_manager.download(EPG_URL.format(now=datetime.now().strftime("%Y-%m-%dT%H:%M:%S")))
 
-        epg_json = read_from_json(epg_path)
+        with open(epg_path) as fp:
+            epg_json = json.load(fp)
 
         self.sheets_paths_ = []
 
@@ -220,8 +220,8 @@ class MTE(Dataset):
                     continue
                 try:
                     sheet_path = dl_manager.download(sheet_url, verbose=False)
-                except Exception as exception:
-                    logger.error("Error downloading sheet with url {}".format(sheet_url))
+                except Exception as e:
+                    logger.error("Error downloading sheet with url {}: {}".format(sheet_url, type(e).__name__))
                     continue
 
                 self.sheets_paths_.append(sheet_path)
@@ -230,7 +230,8 @@ class MTE(Dataset):
         df = pd.DataFrame(columns=["title", "description", "genre", "channel_id"])
         for idx, sheet_path in enumerate(tqdm(self.sheets_paths_)):
             try:
-                sheet = read_from_json(sheet_path)
+                with open(sheet_path) as fp:
+                    sheet = json.load(fp)
             except json.decoder.JSONDecodeError:
                 logger.error("Error reading {}".format(sheet_path))
                 continue
@@ -249,7 +250,8 @@ class MTE(Dataset):
         df.dropna(subset=["subscriptions"], inplace=True)
 
         self.features_ = df.title + " " + df.description
-        self.labels_ = MultiLabelBinarizer(classes=range(len(CLASS_NAMES))).fit_transform(df.subscriptions)
+        mlb_binarizer = MultiLabelBinarizer(classes=range(len(CLASS_NAMES)))
+        self.labels_ = mlb_binarizer.fit_transform(df.subscriptions)
 
 
     def __parse_sheet(self, sheet):

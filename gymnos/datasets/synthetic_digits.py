@@ -15,6 +15,10 @@ from .dataset import Dataset, DatasetInfo, ClassLabel, Array
 KAGGLE_DATASET_NAME = "prasunroy/synthetic-digits"
 KAGGLE_DATASET_FILENAME = "data.zip"
 
+IMAGE_WIDTH = 128
+IMAGE_HEIGHT = 128
+IMAGE_DEPTH = 3
+
 
 class SyntheticDigits(Dataset):
     """
@@ -26,7 +30,7 @@ class SyntheticDigits(Dataset):
 
     def info(self):
         return DatasetInfo(
-            features=Array(shape=[28, 28, 1], dtype=np.uint8),
+            features=Array(shape=[IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_DEPTH], dtype=np.uint8),
             labels=ClassLabel(num_classes=10)
         )
 
@@ -49,7 +53,7 @@ class SyntheticDigits(Dataset):
     def __getitem__(self, index):
         label = self.labels_[index]
         image = imread_rgb(self.images_paths_[index])
-        image = imresize(image, (128, 128))
+        image = imresize(image, (IMAGE_WIDTH, IMAGE_HEIGHT))
         return image, label
 
     def __len__(self):
