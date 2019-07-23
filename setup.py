@@ -88,10 +88,12 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     package_data={
         "gymnos": DATASET_FILES,
+        "bin": ["config/logging.json"]
     },
     python_requires=">=3.5",
     install_requires=REQUIRED_DEPENDENCIES,
     extras_require=EXTRAS_REQUIRE,
+    entry_points={"console_scripts": ["gymnos = bin.cli:main"]},
     classifiers=[
         "Development Status :: 1 - Alpha",
         "Programming Language :: Python :: 3",
