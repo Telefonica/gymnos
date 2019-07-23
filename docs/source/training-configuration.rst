@@ -21,16 +21,16 @@ Each key is associated with a Python instance that builds the Python objects fro
 
 Dataset
 ==========
-.. autoclass:: lib.core.dataset.Dataset
+.. autoclass:: gymnos.core.dataset.Dataset
 
 Model
 ==========
-.. autoclass:: lib.core.model.Model
+.. autoclass:: gymnos.core.model.Model
 
 Training
 ========
-.. autoclass:: lib.core.training.Training
+.. autoclass:: gymnos.core.training.Training
 
 Tracking
 ========
-.. autoclass:: lib.core.tracking.Tracking
+.. autoclass:: gymnos.core.tracking.Tracking

@@ -28,8 +28,7 @@ Instructions about how to build and install the Gymnos framework can be found in
 Would you like to train your model as simple as this?:
 
 ```sh
-python3 -m bin.scripts.gymnosd -c my_config.json
-
+gymnos train training.json
 ```
 
 ## Documentation
@@ -39,9 +38,6 @@ The Gymnos documentation is hosted at [Read the docs](http://dev-aura-comp-01:80
 ## Development
 
 Gymnos is still under development. Contributions are always welcome!
-Please follow the
-[Developers Guide](https://contributing.html)
-if you want to help.
 
 ## Maintainers
 [@kawaits](https://github.com/kawaits)

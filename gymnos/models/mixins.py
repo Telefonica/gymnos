@@ -204,16 +204,18 @@ class KerasClassifierMixin(BaseKerasMixin):
 class KerasRegressorMixin(BaseKerasMixin):
 
     def predict(self, X):
-        """Returns predictions for the given test data.
-        # Arguments
-            x: array-like, shape `(n_samples, n_features)`
-                Test samples where `n_samples` is the number of samples
-                and `n_features` is the number of features.
-            **kwargs: dictionary arguments
-                Legal arguments are the arguments of `Sequential.predict`.
-        # Returns
-            preds: array-like, shape `(n_samples,)`
-                Predictions.
+        """
+        Return predictions using Keras model.
+
+        Parameters
+        ----------
+        X: array_like
+            Features
+
+        Returns
+        -------
+        y_pred: array_like
+            Predicted values.
         """
         return np.squeeze(self.model.predict(X), axis=-1)
 
