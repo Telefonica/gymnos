@@ -5,9 +5,8 @@
 #
 
 import math
-import keras
+import tensorflow
 import numpy as np
-import pandas as pd
 
 from tqdm import tqdm
 from sys import getsizeof
@@ -38,7 +37,13 @@ class Subset:
 
 def get_approximate_nbytes(sequence):
     sample = sequence[0]
-    return len(sequence) * getsizeof(sample)
+
+    if hasattr(sample, "nbytes"):
+        nbytes = sample.nbytes
+    else:
+        nbytes = getsizeof(sample)
+
+    return len(sequence) * nbytes
 
 
 def default_collate_func(samples):
@@ -47,7 +52,7 @@ def default_collate_func(samples):
 
     Parameters
     ----------
-        samples: list or objects
+        samples: list of objects
 
     Returns
     -------
@@ -55,14 +60,10 @@ def default_collate_func(samples):
         If type for ``samples`` is ``pd.Series``, return ``pd.DataFrame``, else, return
         ``np.array``.
     """
-    sample = samples[0]
-    if isinstance(sample, (pd.Series, pd.DataFrame)):
-        return pd.concat(samples, axis=1)
-    else:
-        return np.array(samples)
+    return np.array(samples)
 
 
-class DataLoader(keras.utils.Sequence):
+class DataLoader(tensorflow.keras.utils.Sequence):
     # we inherit from keras Sequence to make it work with Keras but keras.Sequence doesn't provide
     # any additional functionality, it only defines abstract methods
 
