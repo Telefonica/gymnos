@@ -6,5 +6,6 @@
     "dogs_vs_cats": "gymnos.datasets.dogs_vs_cats.DogsVsCats",
     "unusual_data_usage_test": "gymnos.datasets.unusual_data_usage_test.UnusualDataUsageTest",
     "synthetic_digits": "gymnos.datasets.synthetic_digits.SyntheticDigits",
-    "mte": "gymnos.datasets.mte.MTE"
+    "mte": "gymnos.datasets.mte.MTE",
+    "rock_paper_scissors": "gymnos.datasets.rock_paper_scissors.RockPaperScissors"
 }
