@@ -5,11 +5,13 @@
 #
 
 import os
+import dill
 import math
 import GPUtil
 import cpuinfo
 import platform
 import logging
+import tempfile
 import numpy as np
 
 from collections import OrderedDict
@@ -433,3 +435,151 @@ class Trainer:
         probs = self.model.model.predict_proba(X)
 
         return probs
+
+    def _save_experiment(self, path):
+        """
+        Save experiment
+
+        Parameters
+        ----------
+        path: str
+            Path to store pickled experiment
+        """
+        with open(path, "wb") as fp:
+            dill.dump(self.experiment, fp)
+
+
+    def _save_model(self, path):
+        """
+        Save model without inner model instance
+
+        Parameters
+        ----------
+        path: str
+            Path to store pickled model
+        """
+        model_model = self.model.model
+        self.model.model = None
+        with open(path, "wb") as fp:
+            dill.dump(self.model, fp)
+        self.model.model = model_model
+
+
+    def _save_tracking(self, path):
+        """
+        Save tracking without trackers
+
+        Parameters
+        ----------
+        path: str
+            Path to store pickled tracking
+        """
+        tracking_trackers = self.tracking.trackers
+        self.tracking.trackers = None
+        with open(path, "wb") as fp:
+            dill.dump(self.tracking, fp)
+        self.tracking.trackers = tracking_trackers
+
+    def _save_training(self, path):
+        """
+        Save training parameters
+
+        Parameters
+        ----------
+        path: str
+            Path to store pickled training
+        """
+        with open(path, "wb") as fp:
+            dill.dump(self.training, fp)
+
+    def _save_dataset(self, path):
+        """
+        Save dataset without inner dataset and preprocessors instance
+
+        Parameters
+        ----------
+        path: str
+            Path to store pickled dataset
+        """
+        dataset_preprocessors = self.dataset.preprocessors
+        self.dataset.preprocessors = None
+        dataset_dataset = self.dataset.dataset
+        self.dataset.dataset = None
+
+        with open(path, "wb") as fp:
+            dill.dump(self.dataset, fp)
+
+        self.dataset.preprocessors = dataset_preprocessors
+        self.dataset.dataset = dataset_dataset
+
+
+    def save(self, path):
+        """
+        Save trainer instance.
+
+        Parameters
+        ----------
+        path: str
+            Path to store trainer (zipped file)
+        """
+        with tempfile.TemporaryDirectory() as tempdir:
+            self._save_experiment(os.path.join(tempdir, "experiment.pkl"))
+
+            self._save_model(os.path.join(tempdir, "model.pkl"))
+
+            model_store_dir = os.path.join(tempdir, "saved_model")
+            os.makedirs(model_store_dir)
+            self.model.model.save(model_store_dir)
+
+            self._save_training(os.path.join(tempdir, "training.pkl"))
+
+            self._save_tracking(os.path.join(tempdir, "tracking.pkl"))
+
+            self._save_dataset(os.path.join(tempdir, "dataset.pkl"))
+
+            with open(os.path.join(tempdir, "saved_preprocessors.pkl"), "wb") as fp:
+                dill.dump(self.dataset.preprocessors, fp)
+
+            zipdir(tempdir, path)
+
+    @staticmethod
+    def load(path):
+        """
+        Load trainer instance
+
+        Parameters
+        ----------
+        path: str
+            Path to load trainer (zipped file)
+
+        Returns
+        -------
+        Trainer
+            Restored trainer instance.
+        """
+        with tempfile.TemporaryDirectory() as tempdir:
+            extract_zip(path, extract_dir=tempdir)
+
+            with open(os.path.join(tempdir, "experiment.pkl"), "rb") as fp:
+                experiment = dill.load(fp)
+
+            with open(os.path.join(tempdir, "training.pkl"), "rb") as fp:
+                training = dill.load(fp)
+
+            with open(os.path.join(tempdir, "model.pkl"), "rb") as fp:
+                model = dill.load(fp)
+            model.model = load_model(model.name, **model.parameters)
+            model.model.restore(os.path.join(tempdir, "saved_model"))
+
+            with open(os.path.join(tempdir, "dataset.pkl"), "rb") as fp:
+                dataset = dill.load(fp)
+            dataset.dataset = load_dataset(dataset.name)
+
+            with open(os.path.join(tempdir, "saved_preprocessors.pkl"), "rb") as fp:
+                dataset.preprocessors = dill.load(fp)
+
+            with open(os.path.join(tempdir, "tracking.pkl"), "rb") as fp:
+                tracking = dill.load(fp)
+            tracking.load_trackers()
+
+        return Trainer(experiment, model, dataset, training, tracking)
