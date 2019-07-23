@@ -32,7 +32,7 @@ class MLFlow(Tracker):
         lazy_imports.mlflow.start_run(run_name=run_name, experiment_id=self.experiment_id)
 
     def log_tag(self, key, value):
-        mlflow.set_tag(key, value)
+        lazy_imports.mlflow.set_tag(key, value)
 
     def log_metric(self, name, value, step=None):
         lazy_imports.mlflow.log_metric(name, value)

@@ -18,14 +18,11 @@ def history():
 
 class TestHistoryTracker:
 
-    def test_add_tag(self, history):
-        history.add_tag("hello")
-        history.add_tag("world")
-        assert history.tags == ["hello", "world"]
+    def test_log_tag(self, history):
+        ...
 
-    def test_add_tags(self, history):
-        history.add_tags(["hello", "world"])
-        assert history.tags == ["hello", "world"]
+    def test_log_tags(self, history):
+        ...
 
     def test_log_asset(self, history):
         history.log_asset("image", "folder/image.png")
