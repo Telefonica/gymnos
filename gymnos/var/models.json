@@ -3,7 +3,6 @@
     "data_usage_linear_regression": "gymnos.models.data_usage_linear_regression.DataUsageLinearRegression",
     "data_usage_holt_winters": "gymnos.models.data_usage_holt_winters.DataUsageHoltWinters",
     "unusual_data_usage_weighted_thresholds": "gymnos.models.unusual_data_usage_weighted_thresholds.UnusualDataUsageWT",
-    "fashion_mnist_nn": "gymnos.models.fashion_mnist_nn.FashionMnistNN",
     "keras": "gymnos.models.keras.Keras",
     "mte_nn": "gymnos.models.mte_nn.MTENN"
 }
