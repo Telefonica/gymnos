@@ -15,7 +15,7 @@ from collections.abc import Iterable
 from .kaggle import KaggleService
 from ..utils.hashing import sha1_text
 from ..utils.text_utils import filenamify_url
-from ..utils.extractor import extract_zip, extract_tar, extract_gz
+from ..utils.archiver import extract_zip, extract_tar, extract_gz
 from ..utils.downloader import download_file_from_url, download_file_from_smb
 
 logger = logging.getLogger(__name__)

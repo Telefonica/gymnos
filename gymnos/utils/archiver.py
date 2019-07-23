@@ -16,6 +16,15 @@ from tqdm import tqdm
 logger = logging.getLogger(__name__)
 
 
+def zipdir(dir_to_compress, zip_file_path):
+    with zipfile.ZipFile(zip_file_path, "w", zipfile.ZIP_DEFLATED) as zip_file:
+        for root, dirs, files in os.walk(dir_to_compress):
+            for file_or_dir in files + dirs:
+                zip_file.write(
+                    os.path.join(root, file_or_dir),
+                    os.path.relpath(os.path.join(root, file_or_dir), dir_to_compress))
+
+
 def extract_zip(file_path, extract_dir=".", force=False, verbose=True):
     """
     Extract .zip file to directory
@@ -105,9 +114,9 @@ def extract_tar(file_path, extract_dir=".", force=False, verbose=True):
         if verbose:
             iterator = tqdm(iterable=iterator, total=len(tarball.getmembers()))
         for member in iterator:
-            file_path = os.path.join(extract_dir, member)
+            file_path = os.path.normpath(os.path.join(extract_dir, member.name))
             if os.path.isfile(file_path) and not force:
                 continue
-            tarball.extract(member=member)
+            tarball.extract(member=member, path=extract_dir)
 
     return extract_dir

@@ -11,7 +11,7 @@ import functools
 from pydoc import locate
 from collections import Iterable
 
-from ..utils.extractor import extract_zip
+from ..utils.archiver import extract_zip
 
 
 class KaggleCredentialsError(Exception):
