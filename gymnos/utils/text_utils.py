@@ -45,7 +45,8 @@ def humanize_url(url):
     re_end = re.compile(r"/$")
     url = re_end.sub("", re_start.sub("", url))
     url = url.replace("www.", "")
-    url = url.replace("ww2.", "")
+    url = url.replace("www2.", "")
+    url = url.replace("www3.", "")
     return url
 
 
