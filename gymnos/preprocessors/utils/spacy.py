@@ -1,10 +1,10 @@
 #
 #
-#   Spacy Utils
+#   Spacy utils
 #
 #
 
-import spacy
+from ...utils.lazy_imports import lazy_imports
 
 
 def get_spacy_nlp(language="es"):
@@ -22,10 +22,9 @@ def get_spacy_nlp(language="es"):
         Spacy model.
     """
     try:
-        return spacy.load(language)
+        return lazy_imports.spacy.load(language)
     except OSError:
         print("Downloading language model for the spaCy POS tagger\n"
               "(don't worry, this will only happen once)")
-        from spacy.cli import download
-        download(language)
-        return spacy.load(language)
+        lazy_imports.spacy.cli.download(language)
+        return lazy_imports.spacy.load(language)

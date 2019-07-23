@@ -9,10 +9,9 @@ import os
 import tensorflow as tf
 
 from io import BytesIO
-from PIL import Image
 
 from .tracker import Tracker
-
+from ..utils.lazy_imports import lazy_imports
 
 
 class Tensorboard(Tracker):
@@ -38,7 +37,7 @@ class Tensorboard(Tracker):
 
 
     def log_image(self, name, file_path):
-        image = Image.open(file_path)
+        image = lazy_imports.Image.open(file_path)
 
         with BytesIO() as buffer:
             image.save(buffer, format="JPEG")
@@ -54,7 +53,7 @@ class Tensorboard(Tracker):
         buffer = BytesIO()
         figure.savefig(buffer, format='png')
         buffer.seek(0)
-        img = Image.open(buffer.getbuffer())
+        img = lazy_imports.Image.open(buffer.getbuffer())
 
         img_summary = tf.Summary.Image(encoded_image_string=buffer.getvalue(),
                                        height=img.shape[0],

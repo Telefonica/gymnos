@@ -6,8 +6,7 @@
 
 import numpy as np
 from math import sqrt
-from statsmodels.tsa.stattools import acf
-from statsmodels.tsa.stattools import pacf
+from ...utils.lazy_imports import lazy_imports
 
 
 def estimated_window(series, limit_inf_days):
@@ -23,9 +22,8 @@ def estimated_window(series, limit_inf_days):
         slen: (float) temporary window optimized for each user
 
     """
-
     try:
-        auto_corr = pacf(series, int(len(series) / 2), method='ols')
+        auto_corr = lazy_imports.statsmodels_tsa.stattools.pacf(series, int(len(series) / 2), method='ols')
         auto_corr = [float(abs(val)) for val in auto_corr]
 
     except np.linalg.linalg.LinAlgError as err:
@@ -244,8 +242,7 @@ def residual_analysis(col_real, col_pred):
     if col_real and col_pred and len(col_real) > 0 and len(col_pred) > 0:
         length = len(col_real)
         array_residuals = [col_real[i] - col_pred[i] for i in range(length)]
-
-        array_p_values = acf(array_residuals, qstat=True)[2]
+        array_p_values = lazy_imports.statsmodels_tsa.stattools.acf(array_residuals, qstat=True)[2]
         len_value_with_corr = len([i for i in list(array_p_values) if i < 0.05])
 
         if array_residuals == [0] * len(array_residuals):

@@ -5,9 +5,9 @@
 #
 
 import numpy as np
-import statsmodels.api as sm
 
 from .dataset import Dataset, DatasetInfo, Array
+from ..utils.lazy_imports import lazy_imports
 
 
 class DataUsageTest(Dataset):
@@ -29,7 +29,7 @@ class DataUsageTest(Dataset):
         )
 
     def download_and_prepare(self, dl_manager):
-        data = sm.datasets.sunspots.load_pandas().data
+        data = lazy_imports.statsmodels_api.datasets.sunspots.load_pandas().data
         data = data['SUNACTIVITY'].values
         # Erase zeros on the left
         consumption_zero = [i for i in list(data) if i > 0.0]

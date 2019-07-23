@@ -4,8 +4,8 @@
 #
 #
 
-from comet_ml import Experiment  # we must import comet.ml before everything
 from .tracker import Tracker
+from ..utils.lazy_imports import lazy_imports
 
 
 class CometML(Tracker):
@@ -30,6 +30,7 @@ class CometML(Tracker):
 
 
     def start(self, run_name, logdir):
+        Experiment = lazy_imports.comet_ml.Experiment
         self.experiment = Experiment(api_key=self.api_key, project_name=self.project_name, workspace=self.workspace,
                                      log_code=False, log_graph=False, auto_param_logging=False,
                                      auto_metric_logging=False, parse_args=False, log_env_details=True,

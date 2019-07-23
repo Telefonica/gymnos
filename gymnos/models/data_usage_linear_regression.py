@@ -8,7 +8,7 @@ from sklearn.linear_model import LinearRegression
 
 from .model import Model
 from .mixins import SklearnMixin
-from ..utils.temporal_series_utils import mad_mean_error, nrmsd_error_norm, residual_analysis, rmse_train
+from .utils.temporal_series_utils import mad_mean_error, nrmsd_error_norm, residual_analysis, rmse_train
 
 
 class DataUsageLinearRegression(SklearnMixin, Model):
