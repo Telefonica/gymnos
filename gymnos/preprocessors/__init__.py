@@ -2,6 +2,7 @@ from .kbest import KBest
 from .divide import Divide
 from .replace import Replace
 from .texts.tfidf import Tfidf
+from .standard_scaler import StandardScaler
 from .texts.alphanumeric import Alphanumeric
 from .texts.lemmatization import Lemmatization
 from .texts.binary_vectorizer import BinaryVectorizer
