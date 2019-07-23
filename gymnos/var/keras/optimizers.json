@@ -1,9 +1,9 @@
 {
-    "sgd": "keras.optimizers.SGD",
-    "rmsprop": "keras.optimizers.RMSprop",
-    "adagrad": "keras.optimizers.Adagrad",
-    "adadelta": "keras.optimizers.Adadelta",
-    "adam": "keras.optimizers.Adam",
-    "adamax": "keras.optimizers.Adamax",
-    "nadam": "keras.optimizers.Nadam"
+    "sgd": "tensorflow.keras.optimizers.SGD",
+    "rmsprop": "tensorflow.keras.optimizers.RMSprop",
+    "adagrad": "tensorflow.keras.optimizers.Adagrad",
+    "adadelta": "tensorflow.keras.optimizers.Adadelta",
+    "adam": "tensorflow.keras.optimizers.Adam",
+    "adamax": "tensorflow.keras.optimizers.Adamax",
+    "nadam": "tensorflow.keras.optimizers.Nadam"
 }
