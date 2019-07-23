@@ -6,4 +6,7 @@ trainings/
 downloads/
 preferences.local.json
 .idea
+.coverage
+htmlcov
 gymnos.egg-info
+*.h5
