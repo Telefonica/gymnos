@@ -4,12 +4,12 @@
 #
 #
 
-from keras import models, layers
+from tensorflow.keras import models, layers
 
 from .model import Model
 from .mixins import KerasMixin
+from .utils.keras_metrics import accuracy_multilabel, precision
 
-from ..utils.keras_metrics import accuracy_multilabel, precision
 
 
 class MTENN(KerasMixin, Model):

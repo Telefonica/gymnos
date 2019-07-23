@@ -4,12 +4,11 @@
 #
 #
 
-import spacy
-
-from ...utils.spacy_utils import get_spacy_nlp
-
-from ..preprocessor import Preprocessor
 from sklearn.feature_extraction.text import TfidfVectorizer
+
+from ..utils.spacy import get_spacy_nlp
+from ...utils.lazy_imports import lazy_imports
+from ..preprocessor import Preprocessor
 
 
 class Tfidf(Preprocessor):
@@ -20,7 +19,7 @@ class Tfidf(Preprocessor):
     ----
     Refer to `sklearn.feature_extraction.text.TfidfVectorizer <https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html>`_
     for parameter details.
-    """
+    """ # noqa: E501
 
     def __init__(self, lowercase=True, strip_accents=None, language="english", skip_stop_words=True, ngram_range=(1, 1),
                  max_df=1.0, min_df=1.0, max_features=None, use_idf=True, sublinear_tf=False):
@@ -61,9 +60,9 @@ class Tfidf(Preprocessor):
 
     def stop_words_for_language(self, language):
         if language == "english":
-            return spacy.lang.en.stop_words.STOP_WORDS
+            return lazy_imports.spacy.lang.en.stop_words.STOP_WORDS
         if language == "spanish":
-            return spacy.lang.es.stop_words.STOP_WORDS
+            return lazy_imports.spacy.lang.es.stop_words.STOP_WORDS
         else:
             return None
 

@@ -5,8 +5,8 @@
 #
 
 import numpy as np
-import statsmodels.api as sm
 
+from ..utils.lazy_imports import lazy_imports
 from .dataset import Dataset, DatasetInfo, Array
 
 
@@ -29,7 +29,7 @@ class UnusualDataUsageTest(Dataset):
         )
 
     def download_and_prepare(self, dl_manager):
-        data = sm.datasets.sunspots.load_pandas().data
+        data = lazy_imports.statsmodels_api.datasets.sunspots.load_pandas().data
         self.labels_ = data['SUNACTIVITY'].values
         self.features_ = np.arange(len(self.labels_))
 

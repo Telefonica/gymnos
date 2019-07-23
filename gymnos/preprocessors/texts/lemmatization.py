@@ -7,7 +7,7 @@
 
 from ..preprocessor import Preprocessor
 from ...utils.iterator_utils import apply
-from ...utils.spacy_utils import get_spacy_nlp
+from ..utils.spacy import get_spacy_nlp
 
 
 class Lemmatization(Preprocessor):

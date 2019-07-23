@@ -5,12 +5,12 @@
 #
 
 import numpy as np
+
 from scipy.optimize import fmin_l_bfgs_b
 
 from .model import Model
-from ..utils.temporal_series_utils import estimated_window, initial_trend, initial_seasonal_components, \
-    rmse_holt_winters
-from ..utils.temporal_series_utils import mad_mean_error, nrmsd_error_norm, residual_analysis, rmse_train
+from .utils.temporal_series_utils import estimated_window, initial_trend, initial_seasonal_components, rmse_holt_winters
+from .utils.temporal_series_utils import mad_mean_error, nrmsd_error_norm, residual_analysis, rmse_train
 
 
 class DataUsageHoltWinters(Model):

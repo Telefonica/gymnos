@@ -13,7 +13,7 @@ import logging
 import numpy as np
 
 from collections import OrderedDict
-from keras.utils import to_categorical
+from tensorflow.keras.utils import to_categorical
 
 from .trackers import History
 from .services import DownloadManager

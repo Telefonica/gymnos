@@ -6,7 +6,7 @@
 
 import numbers
 
-from keras import callbacks
+from tensorflow.keras import callbacks
 from collections.abc import Iterable
 from abc import ABCMeta, abstractmethod
 
