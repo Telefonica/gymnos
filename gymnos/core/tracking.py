@@ -76,6 +76,8 @@ class Tracking:
         self.log_model_metrics = log_model_metrics
         self.log_training_params = log_training_params
 
+        self.trackers_spec = trackers
+
         self.load_trackers()
 
 

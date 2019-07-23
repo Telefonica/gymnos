@@ -23,7 +23,7 @@ from .loader import load_model, load_dataset
 from .utils.text_utils import humanize_bytes
 from .utils.archiver import extract_zip, zipdir
 from .callbacks import CallbackList, TimeHistory
-from .core import Experiment, Model, Dataset, Training, Tracking
+from .core import Model, Dataset, Training, Tracking
 from .utils.data import Subset, DataLoader, get_approximate_nbytes
 
 logger = logging.getLogger(__name__)
@@ -35,15 +35,13 @@ class Trainer:
 
     Parameters
     ----------
-    experiment: core.Experiment
     model: core.Model
     dataset: core.Dataset
     training: core.Training
     tracking: core.Tracking
     """
 
-    def __init__(self, experiment, model, dataset, training, tracking):
-        self.experiment = experiment
+    def __init__(self, model, dataset, training, tracking):
         self.model = model
         self.dataset = dataset
         self.training = training
@@ -63,13 +61,11 @@ class Trainer:
         -------
         trainer: Trainer
         """
-        experiment = spec.get("experiment", {})
         model = spec.get("model", {})
         dataset = spec.get("dataset", {})
         training = spec.get("training", {})
         tracking = spec.get("tracking", {})
         return Trainer(
-            experiment=Experiment(**experiment),
             model=Model(**model),
             dataset=Dataset(**dataset),
             training=Training(**training),
@@ -101,8 +97,6 @@ class Trainer:
             dl_manager = DownloadManager()
         if trackings_dir is None:
             trackings_dir = os.getcwd()
-
-        logger.info("Starting experiment {}".format(self.experiment.name))
 
         if callbacks is None:
             callbacks = []
@@ -436,19 +430,6 @@ class Trainer:
 
         return probs
 
-    def _save_experiment(self, path):
-        """
-        Save experiment
-
-        Parameters
-        ----------
-        path: str
-            Path to store pickled experiment
-        """
-        with open(path, "wb") as fp:
-            dill.dump(self.experiment, fp)
-
-
     def _save_model(self, path):
         """
         Save model without inner model instance
@@ -523,8 +504,6 @@ class Trainer:
             Path to store trainer (zipped file)
         """
         with tempfile.TemporaryDirectory() as tempdir:
-            self._save_experiment(os.path.join(tempdir, "experiment.pkl"))
-
             self._save_model(os.path.join(tempdir, "model.pkl"))
 
             model_store_dir = os.path.join(tempdir, "saved_model")
@@ -560,9 +539,6 @@ class Trainer:
         with tempfile.TemporaryDirectory() as tempdir:
             extract_zip(path, extract_dir=tempdir)
 
-            with open(os.path.join(tempdir, "experiment.pkl"), "rb") as fp:
-                experiment = dill.load(fp)
-
             with open(os.path.join(tempdir, "training.pkl"), "rb") as fp:
                 training = dill.load(fp)
 
@@ -582,4 +558,4 @@ class Trainer:
                 tracking = dill.load(fp)
             tracking.load_trackers()
 
-        return Trainer(experiment, model, dataset, training, tracking)
+        return Trainer(model, dataset, training, tracking)
