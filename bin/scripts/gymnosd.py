@@ -95,13 +95,12 @@ def run_experiment(training_config_path):
                                  force_download=config["force_download"], force_extraction=config["force_extraction"])
 
     logger.debug("Trackings will be located at {}".format(trackings_dir))
-    trainer = Trainer(dl_manager, trackings_dir=trackings_dir)
+    trainer = Trainer(experiment, model, dataset, training, tracking)
 
     success = False
 
     try:
-        results = trainer.train(model, dataset, training, tracking)
-
+        results = trainer.train(dl_manager, trackings_dir=trackings_dir)
         success = True
         logger.info("Execution succeed!")
 
