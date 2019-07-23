@@ -3,29 +3,16 @@ name = "pypi"
 url = "https://pypi.org/simple"
 verify_ssl = true
 
+[scripts]
+sphinx="sphinx-autobuild docs/source docs/build"
+
 [dev-packages]
 sphinx = "*"
 sphinx-rtd-theme = "*"
+sphinx-autobuild = "*"
 
 [packages]
-keras = "*"
-tqdm = "*"
-kaggle = "*"
-numpy = "*"
-pandas = "*"
-scikit-learn = "*"
-spacy = "*"
-comet-ml = "*"
-mlflow = "*"
-joblib = "*"
-statsmodels = "*"
-py-cpuinfo = "*"
-gputil = "*"
-dill = "*"
-scipy = "==1.2"
-commentjson = "*"
-pillow = "*"
-pysmb = "*"
+gymnos = {editable = true,extras = ["complete"],path = "."}
 
 [requires]
-python_version = "3.5"
+python_version = "3.6"
