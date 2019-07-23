@@ -27,7 +27,7 @@ class BostonHousing(Dataset):
 
     def info(self):
         return DatasetInfo(
-            features=Array(shape=[13], dtype=np.float32),
+            features=Array(shape=[13], dtype=np.float64),
             labels=Array(shape=[], dtype=np.float32)
         )
 
