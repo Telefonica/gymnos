@@ -5,15 +5,13 @@
 #
 
 import os
-import keras
-import sklearn
 import joblib
+import sklearn
+import numpy as np
 import tensorflow as tf
 
 from collections.abc import Iterable
-from keras.models import load_model
-from sklearn.model_selection import cross_val_score, train_test_split
-
+from tensorflow.keras.models import load_model
 
 from ..utils.io_utils import import_from_json
 
@@ -22,10 +20,11 @@ KERAS_CALLBACKS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), ".
                                                    "callbacks.json")
 
 KERAS_MODEL_SAVE_FILENAME = "model.h5"
+TENSORFLOW_SESSION_FILENAME = "session.ckpt"
 SKLEARN_MODEL_SAVE_FILENAME = "model.joblib"
 
 
-class KerasMixin:
+class BaseKerasMixin:
     """
     Mixin to write keras methods. It provides implementation for ``fit``, ``predict``, ``evaluate``,
     ``predict``, ``save`` and ``restore`` methods.
@@ -40,7 +39,8 @@ class KerasMixin:
     def fit(self, X, y, batch_size=None, epochs=1, verbose=1, callbacks=None, validation_split=0.0, shuffle=True,
             class_weight=None, sample_weight=None, initial_epoch=0, steps_per_epoch=None, validation_steps=None):
         """
-        Parameters for Keras fit method, more info in `keras <https://keras.io/models/sequential/#fit>`_
+        Fit model to training data.
+        More info about fit parameters at `keras <https://keras.io/models/sequential/#fit>`_
 
         Parameters
         ----------
@@ -72,6 +72,7 @@ class KerasMixin:
             the next epoch.
         validation_steps: int, optional
             Total number of steps (batches of samples) to validate before stopping.
+
         Returns
         -------
         dict
@@ -130,17 +131,6 @@ class KerasMixin:
             metrics = [metrics]
         return dict(zip(self.model.metrics_names, metrics))
 
-    def predict(self, X):
-        """
-        Predict using Keras model.
-
-        Parameters
-        ----------
-        X: array_like
-            Features
-        """
-        return self.model.predict(X)
-
     def save(self, save_dir):
         """
         Save keras model to h5.
@@ -162,6 +152,70 @@ class KerasMixin:
             Path (Directory) where the model is saved.
         """
         self.model = load_model(os.path.join(save_dir, KERAS_MODEL_SAVE_FILENAME))
+
+
+class KerasClassifierMixin(BaseKerasMixin):
+
+    def predict(self, X):
+        """
+        Predict using Keras model.
+
+        Parameters
+        ----------
+        X: array_like
+            Features
+
+        Returns
+        -------
+        y_pred: array_like
+            Predicted labels
+        """
+        proba = self.model.predict(X)
+        if proba.shape[-1] > 1:
+            classes = proba.argmax(axis=-1)
+        else:
+            classes = (proba > 0.5).astype('int32')
+        return classes
+
+    def predict_proba(self, X):
+        """
+        Predict probabilities using Keras model.
+
+        Parameters
+        ----------
+        X: array_like
+            Features
+
+        Returns
+        -------
+        y_proba_pred: array_like
+            Predicted label probabilities
+        """
+        probs = self.model.predict(X)
+
+        # check if binary classification
+        if probs.shape[1] == 1:
+            # first column is probability of class 0 and second is of class 1
+            probs = np.hstack([1 - probs, probs])
+
+        return probs
+
+
+class KerasRegressorMixin(BaseKerasMixin):
+
+    def predict(self, X):
+        """Returns predictions for the given test data.
+        # Arguments
+            x: array-like, shape `(n_samples, n_features)`
+                Test samples where `n_samples` is the number of samples
+                and `n_features` is the number of features.
+            **kwargs: dictionary arguments
+                Legal arguments are the arguments of `Sequential.predict`.
+        # Returns
+            preds: array-like, shape `(n_samples,)`
+                Predictions.
+        """
+        return np.squeeze(self.model.predict(X), axis=-1)
 
 
 class SklearnMixin:
@@ -219,12 +273,12 @@ class SklearnMixin:
         metrics = {}
         if cross_validation is not None:
             print("Computing cross validation score")
-            cv_metrics = cross_val_score(self.model, X, y, **cross_validation)
+            cv_metrics = sklearn.model_selection.cross_val_score(self.model, X, y, **cross_validation)
             metrics["cv_" + self.metric_name] = cv_metrics
 
         val_data = []
         if validation_split and 0.0 < validation_split < 1.0:
-            X, X_val, y, y_val = train_test_split(X, y, test_size=validation_split)
+            X, X_val, y, y_val = sklearn.model_selection.train_test_split(X, y, test_size=validation_split)
             val_data = [X_val, y_val]
             print("Using {} samples for train and {} samples for validation".format(len(X), len(X_val)))
 
@@ -265,6 +319,25 @@ class SklearnMixin:
             Predictions from ``X``
         """
         return self.model.predict(X)
+
+    def predict_proba(self, X):
+        """
+        Predict probabilities using scikit-learn model.
+
+        Parameters
+        ----------
+        X: array_like
+            Features
+
+        Returns
+        -------
+        predictions: array_like
+            Predictions from ``X``
+        """
+        try:
+            return self.model.predict_proba(X)
+        except AttributeError:
+            return super().predict_proba(X)
 
     def evaluate(self, X, y):
         """
@@ -323,7 +396,7 @@ class TensorFlowSaverMixin:
             Path (Directory) where session is saved.
         """
         saver = tf.train.Saver()
-        saver.restore(self.sess, os.path.join(save_path, "session.ckpt"))
+        saver.restore(self.sess, os.path.join(save_path, TENSORFLOW_SESSION_FILENAME))
 
     def save(self, save_path):
         """
@@ -335,4 +408,4 @@ class TensorFlowSaverMixin:
             Path (Directory) to save session.
         """
         saver = tf.train.Saver()
-        saver.save(self.sess, os.path.join(save_path, "session.ckpt"))
+        saver.save(self.sess, os.path.join(save_path, TENSORFLOW_SESSION_FILENAME))

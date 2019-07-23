@@ -72,6 +72,22 @@ class Model(metaclass=ABCMeta):
             Predictions from ``X``.
         """
 
+    def predict_proba(self, X):
+        """
+        Predict probabilities (classification tasks).
+
+        Parameters
+        ----------
+        X: array_like
+            Features
+
+        Returns
+        -------
+        predictions: array_like
+            Label probabilities from ``X``.
+        """
+        raise NotImplementedError("Model {} don't implement fit_generator method".format(self.__class__.__name__))
+
     @abstractmethod
     def evaluate(self, X, y):
         """
