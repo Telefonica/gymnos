@@ -1,6 +1,6 @@
 {
     "model": {
-        "name": "keras",
+        "name": "keras_regressor",
         "parameters": {
             "sequential": [
                 {"type": "dense", "units": 512, "activation": "relu"},
