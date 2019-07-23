@@ -387,3 +387,49 @@ class Trainer:
             ["download_dir", dl_manager.download_dir],
             ["extract_dir", dl_manager.extract_dir]
         ])
+
+
+    def predict(self, X):
+        """
+        Predict values.
+
+        Parameters
+        ----------
+        X: np.ndarray
+            Samples to predict
+
+        Returns
+        -------
+        predictions: np.ndarray
+            Predicted values
+        """
+        logger.info("Preprocessing samples ({})".format(self.dataset.preprocessors))
+        X = self.dataset.preprocessors.transform(X)
+
+        logger.info("Predicting labels using {}".format(self.model.name))
+        predictions = self.model.model.predict(X)
+
+        return predictions
+
+
+    def predict_proba(self, X):
+        """
+        Predict probabilities (only if model supports probabilities i.e ``predict_proba`` method is implemented)
+
+        Parameters
+        ----------
+        X: np.ndarray
+            Samples to predict
+
+        Returns
+        -------
+        probabilities: np.ndarray
+            Predicted probabilities.
+        """
+        logger.info("Preprocessing samples ({})".format(self.dataset.preprocessors))
+        X = self.dataset.preprocessors.transform(X)
+
+        logger.info("Predicting label probabilities using {}".format(self.model.name))
+        probs = self.model.model.predict_proba(X)
+
+        return probs
