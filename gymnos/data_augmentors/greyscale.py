@@ -40,5 +40,6 @@ class Greyscale(DataAugmentor):
         :return: The transformed image
         """
         image = arr_to_img(image)
-        image = ImageOps.grayscale(image)
-        return img_to_arr(image)
+        new_image = ImageOps.grayscale(image)
+        new_image = new_image.convert(image.mode)
+        return img_to_arr(new_image)

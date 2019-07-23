@@ -65,7 +65,7 @@ class GaussianDistortion(DataAugmentor):
 
         .. math::
 
-         e^{- \Big( \\frac{(x-\\text{mex})^2}{\\text{sdx}} + \\frac{(y-\\text{mey})^2}{\\text{sdy}} \Big) }
+         e^{- \\Big( \\frac{(x-\\text{mex})^2}{\\text{sdx}} + \\frac{(y-\\text{mey})^2}{\\text{sdy}} \\Big) }
         """
         super().__init__(probability)
         self.grid_width = grid_width

@@ -20,9 +20,12 @@ wish to extend Augmentor or wish to see how operations function internally.
 
 For detailed information on extending Augmentor, see :ref:`extendingaugmentor`.
 """
+import random
+
+from abc import ABCMeta, abstractmethod
 
 
-class DataAugmentor:
+class DataAugmentor(metaclass=ABCMeta):
     """
     The class :class:`DataAugmentor` represents the base class for all operations
     that can be performed. Inherit from :class:`DataAugmentor`, overload
@@ -53,12 +56,11 @@ class DataAugmentor:
         """
         return self.__class__.__name__
 
+    @abstractmethod
     def transform(self, item):
         """
         Perform the operation on the passed images. Each operation must at least
-        have this function, which accepts a list containing objects of type
-        PIL.Image, performs its operation, and returns a new list containing
-        objects of type PIL.Image.
+        have this function, which accepts an image as a numPy array.
 
         :param image: The image(s) to transform.
         :type image: np.array
@@ -81,7 +83,9 @@ class Pipeline:
 
     def transform(self, item):
         for data_augmentor in self.data_augmentors:
-            item = data_augmentor.transform(item)
+            r = round(random.uniform(0, 1), 1)
+            if r <= data_augmentor.probability:
+                item = data_augmentor.transform(item)
         return item
 
     def __str__(self):
