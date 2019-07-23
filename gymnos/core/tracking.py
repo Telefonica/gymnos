@@ -8,11 +8,10 @@ import os
 import uuid
 import logging
 
+from copy import deepcopy
+
+from ..loader import load
 from ..trackers import TrackerList
-
-from ..utils.io_utils import import_from_json
-
-TRACKERS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "trackers.json")
 
 logger = logging.getLogger(__name__)
 
@@ -77,9 +76,11 @@ class Tracking:
         self.log_model_metrics = log_model_metrics
         self.log_training_params = log_training_params
 
-        logger.debug("Import {} trackers".format(len(trackers)))
+        self.load_trackers()
+
+
+    def load_trackers(self):
         self.trackers = TrackerList()
-        for tracker_config in trackers:
-            TrackerClass = import_from_json(TRACKERS_IDS_TO_MODULES_PATH, tracker_config.pop("type"))
-            tracker = TrackerClass(**tracker_config)
+        for tracker_config in deepcopy(self.trackers_spec):
+            tracker = load(tracker=tracker_config.pop("type"), **tracker_config)
             self.trackers.add(tracker)
