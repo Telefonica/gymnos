@@ -5,12 +5,12 @@ How to create a Model
 Implementing a model in Gymnos is really simple, just inherit from ``Model`` and overwrite some methods.
 
 .. note::
-    The training configuration (:class:`lib.core.model.Model`) will read ``lib.var.models.json`` to find the model given the model's name. If you want to add a model, give it a name and add the model's location.
+    The training configuration (:class:`gymnos.core.model.Model`) will read ``gymnos.var.models.json`` to find the model given the model's name. If you want to add a model, give it a name and add the model's location.
 
 Model
 -----
 
-.. autoclass:: lib.models.model.Model
+.. autoclass:: gymnos.models.model.Model
     :members:
 
 Mixins
@@ -21,21 +21,27 @@ TensorFlow, Keras or Sklearn. To help you develop a model in the Gymnos environm
 
 The following mixins are available:
 
-Keras
-===========
+Keras Classifier
+=================
 
-.. autoclass:: lib.models.mixins.KerasMixin
+.. autoclass:: gymnos.models.mixins.KerasClassifierMixin
+    :members:
+
+Keras Regressor
+=================
+
+.. autoclass:: gymnos.models.mixins.KerasRegressorMixin
     :members:
 
 Sklearn
 =============
 
-.. autoclass:: lib.models.mixins.SklearnMixin
+.. autoclass:: gymnos.models.mixins.SklearnMixin
     :members:
 
 
 TensorFlow Saver
 ================
 
-.. autoclass:: lib.models.mixins.TensorFlowSaverMixin
+.. autoclass:: gymnos.models.mixins.TensorFlowSaverMixin
     :members:

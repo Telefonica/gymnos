@@ -2,13 +2,13 @@
 How to create a Dataset
 #####################################
 
-Implementing a dataset in Gymnos is really simple, just inherit from :class:`lib.datasets.dataset.Dataset` and overwrite some methods.
+Implementing a dataset in Gymnos is really simple, just inherit from :class:`gymnos.datasets.dataset.Dataset` and overwrite some methods.
 
 .. note::
-    The training configuration (:class:`lib.core.dataset.Dataset`) will read ``lib.var.datasets.json`` to find the dataset given the dataset's name. If you want to add a dataset, give it a name and add the dataset's location.
+    The training configuration (:class:`gymnos.core.dataset.Dataset`) will read ``gymnos.var.datasets.json`` to find the dataset given the dataset's name. If you want to add a dataset, give it a name and add the dataset's location.
 
 
-.. autoclass:: lib.datasets.dataset.Dataset
+.. autoclass:: gymnos.datasets.dataset.Dataset
     :members:
     :special-members: __getitem__, __len__
 
@@ -16,26 +16,26 @@ Implementing a dataset in Gymnos is really simple, just inherit from :class:`lib
 Download Manager
 ------------------
 
-.. autoclass:: lib.services.download_manager.DownloadManager
+.. autoclass:: gymnos.services.download_manager.DownloadManager
     :members:
 
 
 Dataset Info
 ------------------
 
-.. autoclass:: lib.datasets.dataset.DatasetInfo
+.. autoclass:: gymnos.datasets.dataset.DatasetInfo
     :members:
 
 Array
 ^^^^^
 
-.. autoclass:: lib.datasets.dataset.Array
+.. autoclass:: gymnos.datasets.dataset.Array
     :members:
 
 
 ClassLabel
 """""""""""
 
-.. autoclass:: lib.datasets.dataset.ClassLabel
+.. autoclass:: gymnos.datasets.dataset.ClassLabel
     :members:
     :show-inheritance:

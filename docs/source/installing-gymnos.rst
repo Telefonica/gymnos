@@ -11,52 +11,63 @@ We offer two different ways to install Gymnos (Python and Docker).
 Python
 ==========
 
-First, obtain `Python 3 <https://www.python.org/downloads/>`_ and `Pipenv <https://github.com/pypa/pipenv>`_ (``pip install pipenv``) if you do not already have them. Using Pipenv will make the installation and execution easier as it creates and manages a virtualenv for your projects, as well as install required dependencies.
-To set up an isolated environment and install dependencies just run:
+First, obtain `Python 3 <https://www.python.org/downloads/>`_ if you do not already have it. It is recommended to setup a virtual environment with `virtualenv <https://github.com/pypa/virtualenv>`_ or `Pipenv <https://github.com/pypa/pipenv>`_ .
+
+First, clone repository:
 
 .. code-block:: bash
 
-  pipenv sync
+  git clone https://github.com/Telefonica/gymnos/tree/devel
 
-However, note that TensorFlow must be installed manually. Either:
+In order to make Gymnos as light as possible and at the same time have the maximum possible flexibility when developing Gymnos, we will only install core dependencies:
 
 .. code-block:: bash
 
-  pipenv run pip install tensorflow
+  pip3 install -e .
+
+but we also provide 2 possible additional installations:
+
+**a) Install all dependencies**
+
+.. code-block:: bash
+
+  pip3 install -e .[complete]
+
+**b) Install specific module dependency**
+
+.. code-block:: bash
+
+  pip3 install -e .[<type>.<module>]
+
+For example, to install dependencies for tracker ``"mflow"``: :class:`lib.trackers.mlflow.MLFlow`.
+
+.. code-block:: bash
+
+  pip3 install -e .[trackers.mlflow]
+
+Check ``setup.py`` file to see module dependencies.
+
+
+Note that TensorFlow must be installed manually. Either:
+
+.. code-block:: bash
+
+  pip3 install .[tensorflow]
 
 Or
 
 .. code-block:: bash
 
-  pipenv run pip install tensorflow-gpu
+  pip3 install .[tensorflow-gpu]
 
-depending on whether you have a GPU. (If you run into problems, try TensorFlow 1.13.1)
+depending on whether you have a GPU or CPU only.
 
-Finally, before running any of the scripts, enter the environment with:
-
-.. code-block:: bash
-
-  pipenv shell
-
-The execution directory is located at ``src``:
+To get started, let's run Gymnos CLI to check if installation was successful. We will solve Boston Housing dataset `Boston Housing dataset <https://www.cs.toronto.edu/~delve/data/boston/bostonDetail.html>`_
 
 .. code-block:: bash
 
-  cd src
+  gymnos train experiments/examples/boston_housing.json
 
-You're now ready to run gymnos. You can execute an experiment by running:
-
-.. code-block:: bash
-
-  python3 -m bin.scripts.gymnosd -c <config_path>
-
-Gymnos ships with some example experiments that should get you up and running quickly. To actually get gymnos running, do the following:
-
-.. code-block:: bash
-
-  python3 -m bin.scripts.gymnosd -c experiments/examples/boston_housing.json
-
-This will run an experiment for Boston Housting dataset.
 
 Docker
 ==========
@@ -76,6 +87,14 @@ Build image
 
 If you are a developer and want to build the gymnos image from scratch, choose a Dockerfile that suits 
 your development environment.
+
+First, clone repository:
+
+.. code-block:: bash
+
+  git clone https://github.com/Telefonica/gymnos/tree/devel
+
+Then build Docker container:
 
 .. code-block:: bash
 
@@ -161,6 +180,55 @@ GPU version.
 
   nvidia-docker run -it gymnos-gpu
 
+To get started let's run Gymnos CLI to check if installation was successful. We will solve Boston Housing dataset `Boston Housing dataset <https://www.cs.toronto.edu/~delve/data/boston/bostonDetail.html>`_
+
+
+Developing for gymnos
+=======================
+
+We provide a ``Pipfile`` with all dependencies resolved for the project (including dev dependencies). First obtain `Pipenv <https://github.com/pypa/pipenv>`_ and then install Gymnos with development dependencies:
+
+.. code-block:: bash
+
+  pipenv install --dev
+
+If you have not installed TensorFlow, install it with:
+
+.. code-block:: bash
+
+  pipenv run pip3 install .[tensorflow]
+
+Or ``tensorflow-gpu`` for GPU environments:
+
+.. code-block:: bash
+
+  pipenv run pip3 install .[tensorflow-gpu]
+
+Then, enter virtual environment:
+
+.. code-block:: bash
+
+  pipenv shell
+
+Run tests
+----------
+
+.. code-block:: bash
+
+  pytest
+
+To also run slow tests:
+
+.. code-block:: bash
+
+  pytest --runslow
+
+Build documentation
+--------------------
+
+.. code-block:: bash
+
+  pipenv run sphinx
 
 The docker environment has all the dependencies resolved to execute your new project with:
 
