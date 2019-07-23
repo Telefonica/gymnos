@@ -1,0 +1,20 @@
+{
+    "xception": "tensorflow.keras.applications.xception.Xception",
+    "vgg16": "tensorflow.keras.applications.vgg16.VGG16",
+    "vgg19": "tensorflow.keras.applications.vgg19.VGG19",
+    "resnet50": "tensorflow.keras.applications.resnet.ResNet50",
+    "resnet101": "tensorflow.keras.applications.resnet.ResNet101",
+    "resnet152": "tensorflow.keras.applications.resnet.ResNet152",
+    "resnet50v2": "tensorflow.keras.applications.resnet_v2.ResNet50V2",
+    "resnet101v2": "tensorflow.keras.applications.resnet_v2.ResNet101V2",
+    "resnet152v2": "tensorflow.keras.applications.resnet_v2.ResNet152V2",
+    "resnetx50" : "tensorflow.keras.applications.resnext.ResNeXt50",
+    "resnetxt101": "tensorflow.keras.applications.resnext.ResNeXt101",
+    "inceptionv3": "tensorflow.keras.applications.inception_v3.InceptionV3",
+    "inceptionresnetv2": "tensorflow.keras.applications.inception_resnet_v2.InceptionResNetV2",
+    "mobilenet": "tensorflow.keras.applications.mobilenet.MobileNet",
+    "mobilenetv2": "tensorflow.keras.applications.mobilenet_v2.MobileNetV2",
+    "densenet121": "tensorflow.keras.applications.densenet.DenseNet121",
+    "nasnetlarge": "tensorflow.keras.applications.nasnet.NASNetLarge",
+    "nasnetmobile": "tensorflow.keras.applications.nasnet.NASNetMobile"
+}
