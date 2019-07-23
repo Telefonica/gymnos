@@ -4,19 +4,16 @@
 #
 #
 
-import os
 import logging
+
+from copy import deepcopy
+
+from ..loader import load
 
 from ..preprocessors import Pipeline as PreprocessorsPipeline
 from ..data_augmentors import Pipeline as DataAugmentorPipeline
 
-from ..utils.io_utils import import_from_json
-
 logger = logging.getLogger(__name__)
-
-DATASETS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "datasets.json")
-PREPROCESSORS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "preprocessors.json")
-DATA_AUGMENTORS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "data_augmentors.json")
 
 
 class DatasetSamples:
@@ -27,6 +24,9 @@ class DatasetSamples:
 
         if (self.test + self.train < 1.0):
             logger.warning("Using only {:.2f}% of total data".format(self.train + self.test))
+
+        if (isinstance(train, float)) and isinstance(test, float) and (train + test > 1.0):
+            raise ValueError("If train/test datatype is float, it must be lower than 1.0")
 
 
 class Dataset:
@@ -126,24 +126,25 @@ class Dataset:
         self.one_hot = one_hot
         self.shuffle = shuffle
         self.chunk_size = chunk_size
+        self.preprocessors_spec = preprocessors
+        self.data_augmentors_spec = data_augmentors
 
         self.samples = DatasetSamples(**samples)
 
-        logger.debug("Importing dataset {}".format(name))
-        DatasetClass = import_from_json(DATASETS_IDS_TO_MODULES_PATH, name)
-        self.dataset = DatasetClass()
+        self.dataset = load(dataset=name)
 
-        logger.debug("Importing {} preprocessors".format(len(preprocessors)))
+        self.load_preprocessors()
+        self.load_data_augmentors()
+
+
+    def load_preprocessors(self):
         self.preprocessors = PreprocessorsPipeline()
-        for preprocessor_config in preprocessors:
-            PreprocessorClass = import_from_json(PREPROCESSORS_IDS_TO_MODULES_PATH, preprocessor_config.pop("type"))
-            preprocessor = PreprocessorClass(**preprocessor_config)
+        for preprocessor_config in deepcopy(self.preprocessors_spec):
+            preprocessor = load(preprocessor=preprocessor_config.pop("type"), **preprocessor_config)
             self.preprocessors.add(preprocessor)
 
-        logger.debug("Importing {} data augmentors".format(len(data_augmentors)))
+    def load_data_augmentors(self):
         self.data_augmentors = DataAugmentorPipeline()
-        for data_augmentor_config in data_augmentors:
-            DataAugmentorClass = import_from_json(DATA_AUGMENTORS_IDS_TO_MODULES_PATH,
-                                                  data_augmentor_config.pop("type"))
-            data_augmentor = DataAugmentorClass(**data_augmentor_config)
+        for data_augmentor_config in deepcopy(self.data_augmentors_spec):
+            data_augmentor = load(data_augmentor=data_augmentor_config.pop("type"), **data_augmentor_config)
             self.data_augmentors.add(data_augmentor)

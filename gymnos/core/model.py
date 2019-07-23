@@ -4,12 +4,11 @@
 #
 #
 
-import os
 import logging
 
-from ..utils.io_utils import import_from_json
+from copy import deepcopy
 
-MODELS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "models.json")
+from ..loader import load_model
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +51,4 @@ class Model:
         self.name = name
         self.parameters = parameters
 
-        logger.debug("Importing model {}".format(name))
-        ModelClass = import_from_json(MODELS_IDS_TO_MODULES_PATH, name)
-        self.model = ModelClass(**parameters)
+        self.model = load_model(name, **deepcopy(parameters))
