@@ -4,17 +4,16 @@
 #
 #
 
+import sklearn
+
 import numpy as np
 import tensorflow as tf
 
 from tqdm import trange
 from collections import defaultdict
-from sklearn.metrics import accuracy_score
-from sklearn.model_selection import train_test_split
 
 from .model import Model
 from .mixins import TensorFlowSaverMixin
-from ..utils.tensorflow_session import build_tf_session_from_config
 
 
 class DogsVsCatsCNN(TensorFlowSaverMixin, Model):
@@ -54,7 +53,7 @@ class DogsVsCatsCNN(TensorFlowSaverMixin, Model):
         )
     """
 
-    def __init__(self, input_shape, classes=2, session=None):
+    def __init__(self, input_shape, classes=2, sess=None):
         self.input = tf.placeholder(tf.float32, shape=[None] + input_shape)
         self.labels = tf.placeholder(tf.float32, shape=[None, classes])
         self.is_training = tf.placeholder(tf.bool)
@@ -80,8 +79,7 @@ class DogsVsCatsCNN(TensorFlowSaverMixin, Model):
         optimizer = tf.train.AdamOptimizer(learning_rate=0.001)
         self.train_op = optimizer.minimize(self.loss)
 
-        session = session or {}
-        self.sess = build_tf_session_from_config(**session)
+        self.sess = sess or tf.Session()
         self.sess.run(tf.global_variables_initializer())
 
 
@@ -108,7 +106,7 @@ class DogsVsCatsCNN(TensorFlowSaverMixin, Model):
 
         val_data = []
         if validation_split and 0.0 < validation_split < 1.0:
-            X, X_val, y, y_val = train_test_split(X, y, test_size=validation_split)
+            X, X_val, y, y_val = sklearn.model_selection.train_test_split(X, y, test_size=validation_split)
             val_data = [X_val, y_val]
 
         # Iterate by epoch
@@ -147,13 +145,16 @@ class DogsVsCatsCNN(TensorFlowSaverMixin, Model):
 
         return metrics
 
-
     def predict(self, X):
-        predictions = self.sess.run(self.output_softmax, feed_dict={self.input: X, self.is_training: False})
-        return predictions
+        proba = self.predict_proba(X)
+        return np.argmax(proba, axis=-1)
+
+    def predict_proba(self, X):
+        proba = self.sess.run(self.output_softmax, feed_dict={self.input: X, self.is_training: False})
+        return proba
 
     def evaluate(self, X, y):
         y_pred = self.predict(X)
         return {
-            "acc": accuracy_score(np.argmax(y, axis=1), np.argmax(y_pred, axis=1))
+            "acc": sklearn.metrics.accuracy_score(np.argmax(y, axis=1), y_pred)
         }
