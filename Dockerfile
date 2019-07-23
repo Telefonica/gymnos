@@ -8,12 +8,14 @@ ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
 COPY Pipfile* ./
+COPY setup.py ./
 
 RUN pip3 install --upgrade pip  && \
     pip3 install pipenv && \
     pipenv install --system
 
-COPY src ./
+COPY gymnos ./
+COPY bin ./
 
 ENV GIT_PYTHON_REFRESH quiet
 
