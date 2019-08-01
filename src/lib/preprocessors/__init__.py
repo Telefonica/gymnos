@@ -4,6 +4,7 @@ from .replace import Replace
 from .texts.tfidf import Tfidf
 from .texts.alphanumeric import Alphanumeric
 from .texts.lemmatization import Lemmatization
+from .texts.binary_vectorizer import BinaryVectorizer
 from .images.grayscale import Grayscale
 from .images.image_resize import ImageResize
 from .images.grayscale_to_color import GrayscaleToColor

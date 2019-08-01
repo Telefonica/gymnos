@@ -8,5 +8,6 @@
     "alphanumeric": "lib.preprocessors.texts.alphanumeric.Alphanumeric",
     "tfidf": "lib.preprocessors.texts.tfidf.Tfidf",
     "kbest": "lib.preprocessors.kbest.KBest",
-    "standard_scaler": "lib.preprocessors.standard_scaler.StandardScaler"
+    "standard_scaler": "lib.preprocessors.standard_scaler.StandardScaler",
+    "binary_vectorizer": "lib.preprocessors.texts.binary_vectorizer.BinaryVectorizer"
 }

@@ -42,6 +42,12 @@ Tfidf (Text)
 .. autoclass:: lib.preprocessors.texts.tfidf.Tfidf
     :members:
 
+Binary Vectorizer (Text)
+=================
+
+.. autoclass:: lib.preprocessors.texts.binary_vectorizer.BinaryVectorizer
+    :members:
+
 Grayscale (Images)
 =======================
 
