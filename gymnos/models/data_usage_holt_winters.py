@@ -97,8 +97,7 @@ class DataUsageHoltWinters(Model):
                 last_smooth = smooth
                 smooth = self.alpha * (X[i] - seasonals[i % self.slen]) + (1 - self.alpha) * (smooth + trend)
                 trend = self.beta * (smooth - last_smooth) + (1 - self.beta) * trend
-                seasonals[i % self.slen] = (self.gamma * (X[i] - smooth) +
-                                            (1 - self.gamma) * seasonals[i % self.slen])
+                seasonals[i % self.slen] = (self.gamma * (X[i] - smooth) + (1 - self.gamma) * seasonals[i % self.slen])
                 result.append(smooth + trend + seasonals[i % self.slen])
 
         future_predictions = result[-self.n_preds:]

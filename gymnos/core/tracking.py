@@ -4,7 +4,6 @@
 #
 #
 
-import os
 import uuid
 import logging
 
@@ -61,7 +60,7 @@ class Tracking:
                 }
             ]
         )
-    """ # noqa: E501
+    """  # noqa: E501
 
     def __init__(self, run_id=None, tags=None, log_model_params=True, log_model_metrics=True, log_training_params=True,
                  trackers=None):

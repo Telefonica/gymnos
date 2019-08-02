@@ -47,7 +47,7 @@ class Preprocessor(metaclass=ABCMeta):
         self: Preprocessor
             Own instance for chain purposes.
         """
-        raise NotImplementedError(("Preprocessor {} don't implement fit_generator " +
+        raise NotImplementedError(("Preprocessor {} don't implement fit_generator "
                                    "method").format(self.__class__.__name__))
 
     @abstractmethod

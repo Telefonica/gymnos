@@ -13,8 +13,8 @@ from gymnos.services.download_manager import DownloadManager
 
 BOSTON_HOUSING_SPEC = {
     "model": {
-       "name": "keras_regressor",
-       "parameters": {
+        "name": "keras_regressor",
+        "parameters": {
             "sequential": [
                 {"type": "dense", "units": 1, "activation": "linear"}
             ],
@@ -22,7 +22,7 @@ BOSTON_HOUSING_SPEC = {
             "optimizer": "sgd",
             "loss": "mse",
             "metrics": ["mae"]
-       }
+        }
     },
     "dataset": {
         "name": "boston_housing",
@@ -105,11 +105,7 @@ DOGS_VS_CATS_SPEC = {
                 "type": "divide",
                 "factor": 255
             }
-        ],
-        "samples": {
-            "train": 0.01,
-            "test": 0.01
-        }
+        ]
     },
     "training": {
         "batch_size": 32,

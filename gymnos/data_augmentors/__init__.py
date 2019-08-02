@@ -16,3 +16,8 @@ from .skew import Skew
 from .zoom import Zoom
 from .zoom_ground_truth import ZoomGroundTruth
 from .zoom_random import ZoomRandom
+
+__all__ = ["Distort", "Flip", "GaussianDistortion", "Greyscale", "HistogramEqualisation",
+           "Pipeline", "DataAugmentor", "Invert", "RandomBrightness", "RandomColor", "RandomContrast",
+           "RandomErasing", "Rotate", "RotateRange", "Shear", "Skew", "Zoom", "ZoomGroundTruth",
+           "ZoomRandom"]

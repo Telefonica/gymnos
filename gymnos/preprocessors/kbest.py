@@ -21,7 +21,7 @@ class KBest(Preprocessor):
             - ``"chi2"``: `sklearn.feature_selection.chi2 <https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.chi2.html#sklearn.feature_selection.chi2>`_
     k: int, optional
         Number of top features to select. The “all” option bypasses selection, for use in a parameter search.
-    """ # noqa: E501
+    """  # noqa: E501
 
     def __init__(self, scorer, k=1000):
         if scorer == "chi2":

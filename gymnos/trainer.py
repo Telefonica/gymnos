@@ -17,7 +17,7 @@ import numpy as np
 from collections import OrderedDict
 from tensorflow.keras.utils import to_categorical
 
-from .trackers import History
+from .trackers.history import History
 from .services import DownloadManager
 from .loader import load_model, load_dataset
 from .utils.text_utils import humanize_bytes

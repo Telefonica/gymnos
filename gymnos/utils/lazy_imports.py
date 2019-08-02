@@ -39,9 +39,9 @@ def _try_import_and_autoinstall(module_to_import, module_to_install):
         return importlib.import_module(module_to_import)
     except ImportError:
         warning_msg = (
-            'Tried importing {importing} but failed. The module you are trying to use may have additional dependencies.\n' # noqa: E501
+            'Tried importing {importing} but failed. The module you are trying to use may have additional dependencies.\n'  # noqa: E501
             'Gymnos-Autoinstall is activated so we will we try to install library "{installing}" automatically.\n'
-            'Note that Gymnos-Autoinstall is currently in beta and that you may encounter issues using this functionality.\n' # noqa: E501
+            'Note that Gymnos-Autoinstall is currently in beta and that you may encounter issues using this functionality.\n'  # noqa: E501
             'If Gymnos-Autoinstall fails, please install manually "{installing}".\n'
             'To disable Gymnos-Autoinstall, set environment variable "GYMNOS_AUTOINSTALL=0".'
         )

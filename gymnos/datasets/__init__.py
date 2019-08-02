@@ -8,3 +8,7 @@ from .unusual_data_usage_test import UnusualDataUsageTest
 from .dataset import Dataset, DatasetInfo, Array, ClassLabel, HDF5Dataset
 from .synthetic_digits import SyntheticDigits
 from .rock_paper_scissors import RockPaperScissors
+
+__all__ = ["BostonHousing", "IMDB", "TinyImagenet", "MTE", "DogsVsCats",
+           "DataUsageTest", "UnusualDataUsageTest", "Dataset", "DatasetInfo", "Array",
+           "ClassLabel", "HDF5Dataset", "SyntheticDigits", "RockPaperScissors"]

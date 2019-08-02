@@ -19,7 +19,7 @@ class Tfidf(Preprocessor):
     ----
     Refer to `sklearn.feature_extraction.text.TfidfVectorizer <https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html>`_
     for parameter details.
-    """ # noqa: E501
+    """  # noqa: E501
 
     def __init__(self, lowercase=True, strip_accents=None, language="english", skip_stop_words=True, ngram_range=(1, 1),
                  max_df=1.0, min_df=1.0, max_features=None, use_idf=True, sublinear_tf=False):

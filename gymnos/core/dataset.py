@@ -113,7 +113,7 @@ class Dataset:
                 }
             ]
         )
-    """
+    """  # noqa: E501
 
     def __init__(self, name, samples=None, preprocessors=None, seed=None, shuffle=True, one_hot=False, chunk_size=None,
                  data_augmentors=None):

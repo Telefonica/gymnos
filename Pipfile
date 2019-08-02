@@ -16,6 +16,7 @@ pytest-cov = "*"
 pytest-xdist = "*"
 pytest-mock = "*"
 requests-mock = "*"
+flake8 = "*"
 
 [packages]
 gymnos = {editable = true,extras = ["complete"],path = "."}
