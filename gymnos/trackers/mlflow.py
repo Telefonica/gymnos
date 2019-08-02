@@ -1,6 +1,6 @@
 #
 #
-#   MLFlow Tracker
+#   MLflow Tracker
 #
 #
 
@@ -11,7 +11,7 @@ from .tracker import Tracker
 from ..utils.lazy_imports import lazy_imports
 
 
-class MLFlow(Tracker):
+class MLflow(Tracker):
     """
     Tracker for `MLflow <https://www.mlflow.org>`_.
 

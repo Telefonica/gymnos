@@ -14,7 +14,7 @@ from .tracker import Tracker
 from ..utils.lazy_imports import lazy_imports
 
 
-class Tensorboard(Tracker):
+class TensorBoard(Tracker):
     """
     Tracker for `TensorBoard <https://github.com/tensorflow/tensorboard>`_.
     """
