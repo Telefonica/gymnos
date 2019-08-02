@@ -151,7 +151,6 @@ class HDF5Dataset(Dataset):
 
         self.data = h5py.File(file_path, mode="r")
 
-
     def info(self):
         features_info = pickle.loads(self.data[self.features_key].attrs[self.info_key])
         labels_info = pickle.loads(self.data[self.labels_key].attrs[self.info_key])
@@ -174,7 +173,6 @@ class HDF5Dataset(Dataset):
 
     def __len__(self):
         return len(self.data[self.features_key])  # len(features) == len(labels)
-
 
 
 class DatasetInfo:

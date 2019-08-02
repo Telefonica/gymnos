@@ -15,6 +15,5 @@ def test_model_instance():
 
     assert isinstance(model.model, gymnos.models.DogsVsCatsCNN)
 
-
     with pytest.raises(ValueError):
         model = Model("dummy")

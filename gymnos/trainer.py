@@ -384,7 +384,6 @@ class Trainer:
             ["extract_dir", dl_manager.extract_dir]
         ])
 
-
     def predict(self, X):
         """
         Predict values.
@@ -406,7 +405,6 @@ class Trainer:
         predictions = self.model.model.predict(X)
 
         return predictions
-
 
     def predict_proba(self, X):
         """
@@ -444,7 +442,6 @@ class Trainer:
         with open(path, "wb") as fp:
             dill.dump(self.model, fp)
         self.model.model = model_model
-
 
     def _save_tracking(self, path):
         """
@@ -492,7 +489,6 @@ class Trainer:
 
         self.dataset.preprocessors = dataset_preprocessors
         self.dataset.dataset = dataset_dataset
-
 
     def save(self, path):
         """

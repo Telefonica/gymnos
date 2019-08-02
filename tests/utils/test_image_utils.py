@@ -21,7 +21,6 @@ def test_arr_to_img():
     assert isinstance(new_image, Image.Image)
     assert np.array(new_image).ndim == 2
 
-
     image = np.random.randint(0, 255, [100, 100], dtype=np.uint8)
     new_image = arr_to_img(image)
     assert isinstance(new_image, Image.Image)

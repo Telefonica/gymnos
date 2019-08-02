@@ -82,7 +82,6 @@ class DogsVsCatsCNN(TensorFlowSaverMixin, Model):
         self.sess = sess or tf.Session()
         self.sess.run(tf.global_variables_initializer())
 
-
     def fit(self, X, y, epochs=10, batch_size=64, validation_split=0):
         """
         Parameters

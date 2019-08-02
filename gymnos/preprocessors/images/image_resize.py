@@ -36,6 +36,5 @@ class ImageResize(Preprocessor):
         resized = imresize(x, (self.width, self.height))
         return resized
 
-
     def transform(self, X):
         return apply(X, self.__transform_sample)

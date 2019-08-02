@@ -25,7 +25,8 @@ GENRE_TO_SUBSCRIPTION = {
     'BRICOLAJE': [3],
     'CAZA Y PESCA': [0],
     'CICLISMO': [0],
-    'CINE': [4],    'CINE ADULTO': [4],
+    'CINE': [4],
+    'CINE ADULTO': [4],
     'CINE CIENCIA FICCIÓN': [4],
     'CINE COMEDIA': [4, 2],
     'CINE COMEDIA ROMANT.': [4, 2],
@@ -45,7 +46,8 @@ GENRE_TO_SUBSCRIPTION = {
     'CONCIERTO': [7],
     'CONCURSO': [8],
     'CORAZÓN / SOCIEDAD': [8],
-    'CORTO': [],    'CULTURAL/EDUCATIVO': [5],
+    'CORTO': [],
+    'CULTURAL/EDUCATIVO': [5],
     'DANCE / ELECTRÓNICA': [7],
     'DANZA / BALLET': [7],
     'DEBATE': [9],
@@ -80,7 +82,8 @@ GENRE_TO_SUBSCRIPTION = {
     'FORMACIÓN ACADÉMICA': [5],
     'FÚTBOL': [0],
     'FÚTBOL AMERICANO': [0],
-    'GOLF': [0],    'HOCKEY': [0],
+    'GOLF': [0],
+    'HOCKEY': [0],
     'HUMOR': [2],
     'IDIOMAS': [5],
     'INF. SOCIEDAD': [],
@@ -134,7 +137,8 @@ GENRE_TO_SUBSCRIPTION = {
     'TELEVENTA': [],
     'TENIS': [0],
     'TERTULIA': [8],
-    'TOROS': [],    'TRADICIONES POPULARES': [5],
+    'TOROS': [],
+    'TRADICIONES POPULARES': [5],
     'TURISMO': [13],
     'VARIEDADES': [8],
     'VIDEOCLIPS': [7],
@@ -252,7 +256,6 @@ class MTE(Dataset):
         self.features_ = df.title + " " + df.description
         mlb_binarizer = MultiLabelBinarizer(classes=range(len(CLASS_NAMES)))
         self.labels_ = mlb_binarizer.fit_transform(df.subscriptions)
-
 
     def __parse_sheet(self, sheet):
         title = sheet.get("Titulo")

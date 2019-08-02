@@ -35,7 +35,6 @@ class Tensorboard(Tracker):
         summary = tf.Summary(value=[tf.Summary.Value(tag=name, simple_value=value)])
         self.writer.add_summary(summary, step)
 
-
     def log_image(self, name, file_path):
         image = lazy_imports.Image.open(file_path)
 
@@ -47,7 +46,6 @@ class Tensorboard(Tracker):
 
         summary = tf.Summary(value=[tf.Summary.Value(tag=name, image=img_summary)])
         self.writer.add_summary(summary)
-
 
     def log_figure(self, name, figure):
         buffer = BytesIO()
@@ -61,7 +59,6 @@ class Tensorboard(Tracker):
 
         summary = tf.Summary(value=[tf.Summary.Value(tag=name, image=img_summary)])
         self.writer.add_summary(summary)
-
 
     def end(self):
         self.writer.flush()

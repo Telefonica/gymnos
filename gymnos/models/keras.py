@@ -56,7 +56,6 @@ class BaseKeras(Model):
 
         return optimizer
 
-
     def __build_metrics_from_config(self, metrics):
         metrics_funcs = []
         with open(KERAS_METRICS_IDS_TO_MODULES_PATH) as fp:
@@ -70,10 +69,8 @@ class BaseKeras(Model):
 
         return metrics_funcs
 
-
     def __build_sequential_from_config(self, input_shape, sequential_config):
         input_layer = layers.Input(input_shape)
-
 
         output_layer = input_layer
         for layer_config in sequential_config:
@@ -90,7 +87,6 @@ class BaseKeras(Model):
         model = models.Model(inputs=[input_layer], outputs=[output_layer])
 
         return model
-
 
 
 class KerasClassifier(KerasClassifierMixin, BaseKeras):

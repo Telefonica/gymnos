@@ -41,6 +41,5 @@ class Lemmatization(Preprocessor):
         doc = self.nlp(str(x))
         return " ".join([token.lemma_ for token in doc])
 
-
     def transform(self, X):
         return apply(X, self.__transform_sample)

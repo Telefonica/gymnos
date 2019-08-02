@@ -46,7 +46,6 @@ class DownloadManager:
         os.makedirs(self.download_dir, exist_ok=True)
         os.makedirs(self.extract_dir, exist_ok=True)
 
-
     def extract(self, path_or_paths, ignore_not_compressed=True):
         """
         Extract file/s.
@@ -106,7 +105,6 @@ class DownloadManager:
             return data_paths
         else:
             raise ValueError("path_or_paths must be a str, an iterable or a dict. Got {}".format(type(path_or_paths)))
-
 
     def download_kaggle(self, dataset_name=None, competition_name=None, file_or_files=None, verbose=True):
         """
@@ -181,7 +179,6 @@ class DownloadManager:
             return file_paths
         else:
             raise ValueError("file_or_files must be a str, a dict or an iterable")
-
 
     def download(self, url_or_urls, verbose=True):
         """

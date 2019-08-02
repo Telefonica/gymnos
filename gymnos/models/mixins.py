@@ -100,7 +100,6 @@ class BaseKerasMixin:
 
         return callbacks
 
-
     def fit_generator(self, generator, steps_per_epoch=None, epochs=1, verbose=1, callbacks=None,
                       class_weight=None, max_queue_size=10, workers=1, use_multiprocessing=False, shuffle=False,
                       initial_epoch=0):
@@ -241,7 +240,6 @@ class SklearnMixin:
         else:
             return ""
 
-
     def fit(self, X, y, validation_split=0, cross_validation=None):
         """
         Parameters
@@ -304,7 +302,6 @@ class SklearnMixin:
             return self.evaluate_generator(generator)
         else:
             return self.fit_generator(generator)
-
 
     def predict(self, X):
         """

@@ -133,7 +133,6 @@ class Tracker(metaclass=ABCMeta):
         for (name, value) in dic.items():
             self.log_param(prefix + name, value, step)
 
-
     def get_keras_callback(self, log_params=True, log_metrics=True):
         return KerasCallback(self)  # default callback
 
@@ -154,7 +153,6 @@ class KerasCallback(callbacks.Callback):
         self.tracker = tracker
         self.log_params = log_params
         self.log_metrics = log_metrics
-
 
     def on_epoch_end(self, epoch, logs=None):
         logs = logs or {}

@@ -71,11 +71,9 @@ class TinyImagenet(Dataset):
         self.labels_ = labels[random_indices]
         self.images_paths_ = images_paths[random_indices]
 
-
     def __getitem__(self, index):
         image = imread_rgb(self.images_paths_[index])
         return image, self.labels_[index]
-
 
     def __len__(self):
         return len(self.images_paths_)

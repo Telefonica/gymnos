@@ -95,10 +95,8 @@ class CallbackList:
     def __init__(self, callbacks):
         self.callbacks = callbacks
 
-
     def add(self, callback):
         self.callbacks.append(callback)
-
 
     def on_train_begin(self):
         for callback in self.callbacks:

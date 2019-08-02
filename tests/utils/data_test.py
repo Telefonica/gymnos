@@ -23,7 +23,6 @@ class TestSubset:
 
         assert len(subset) == len(sequence)
 
-
     def test_getitem_2(self):
         sequence = np.arange(5)
         indices = sequence
@@ -33,7 +32,6 @@ class TestSubset:
             assert subset[i] == i
 
         assert len(subset) == len(sequence)
-
 
 
 class NumericDataset(Dataset):
@@ -98,7 +96,6 @@ class TestDataLoader:
 
         assert np.array_equal(loader[0][0], dataset.x[:2]**2)
         assert np.array_equal(loader[0][1], dataset.y[:2])
-
 
     def test_getitem_4(self, dataset):
         loader = DataLoader(dataset, batch_size=4, drop_last=True)

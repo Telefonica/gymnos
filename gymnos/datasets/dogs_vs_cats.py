@@ -50,7 +50,6 @@ class DogsVsCats(Dataset):
             labels=ClassLabel(names=["cat", "dog"])
         )
 
-
     def download_and_prepare(self, dl_manager):
         train_files = dl_manager.download_kaggle(competition_name=KAGGLE_COMPETITION_NAME,
                                                  file_or_files=KAGGLE_COMPETITION_FILE)
@@ -68,12 +67,10 @@ class DogsVsCats(Dataset):
         self.images_paths_ = images_paths[random_indices]
         self.labels_ = labels[random_indices]
 
-
     def __getitem__(self, index):
         image = imread_rgb(self.images_paths_[index])
         image = imresize(image, (IMAGE_WIDTH, IMAGE_HEIGHT))
         return image, self.labels_[index]
-
 
     def __len__(self):
         return len(self.images_paths_)

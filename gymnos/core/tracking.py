@@ -79,7 +79,6 @@ class Tracking:
 
         self.load_trackers()
 
-
     def load_trackers(self):
         self.trackers = TrackerList()
         for tracker_config in deepcopy(self.trackers_spec):

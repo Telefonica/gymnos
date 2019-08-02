@@ -69,7 +69,6 @@ class DataAugmentor(metaclass=ABCMeta):
         raise RuntimeError("Illegal call to base class.")
 
 
-
 class Pipeline:
 
     def __init__(self, data_augmentors=None):
