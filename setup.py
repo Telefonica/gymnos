@@ -93,7 +93,7 @@ setuptools.setup(
     python_requires=">=3.5",
     install_requires=REQUIRED_DEPENDENCIES,
     extras_require=EXTRAS_REQUIRE,
-    entry_points={"console_scripts": ["gymnos = bin.cli:main"]},
+    entry_points={"console_scripts": ["gymnos = scripts.cli:main"]},
     classifiers=[
         "Development Status :: 1 - Alpha",
         "Programming Language :: Python :: 3",
