@@ -12,6 +12,19 @@ DATASET_FILES = [
     "datasets/tiny_imagenet_labels.txt"
 ]
 
+VAR_FILES = [
+    "var/data_augmentors.json",
+    "var/datasets.json",
+    "var/models.json",
+    "var/preprocessors.json",
+    "var/trackers.json",
+    "var/keras/applications.json",
+    "var/keras/callbacks.json",
+    "var/keras/layers.json",
+    "var/keras/metrics.json",
+    "var/keras/optimizers.json",
+]
+
 REQUIRED_DEPENDENCIES = [
     "kaggle",
     "requests",
@@ -87,7 +100,7 @@ setuptools.setup(
     url="https://github.com/Telefonica/gymnos",
     packages=setuptools.find_packages(),
     package_data={
-        "gymnos": DATASET_FILES,
+        "gymnos": DATASET_FILES + VAR_FILES,
         "bin": ["config/logging.json"]
     },
     python_requires=">=3.5",
