@@ -101,7 +101,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     package_data={
         "gymnos": DATASET_FILES + VAR_FILES,
-        "bin": ["config/logging.json"]
+        "scripts": ["config/logging.json"]
     },
     python_requires=">=3.5",
     install_requires=REQUIRED_DEPENDENCIES,
