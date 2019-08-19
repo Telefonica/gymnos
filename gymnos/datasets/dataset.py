@@ -70,6 +70,19 @@ class Dataset(metaclass=ABCMeta):
             Number of samples
         """
 
+    def as_numpy(self):
+        features = []
+        labels = []
+        for index in range(len(self)):
+            X, y = self[index]
+            features.append(X)
+            labels.append(y)
+
+        features = np.array(features)
+        labels = np.array(labels)
+
+        return features, labels
+
     def to_hdf5(self, file_path, features_key="features", labels_key="labels", info_key="info", chunk_size=None,
                 compression="gzip", compression_opts=None, force=False):
         """
