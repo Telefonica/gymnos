@@ -30,12 +30,6 @@ class Tracking:
         List of trackers to log parameters and metrics. This property requires a list with dictionnaries with at least
         a ``type`` field specifying the type of tracker. The other properties are the arguments for the constructor of that tracker.
 
-        The current available trackers are the following:
-
-            - ``"comet_ml"``: :class:`lib.trackers.comet_ml.CometML`,
-            - ``"mlflow"``: :class:`lib.trackers.mlflow.MLFlow`,
-            - ``"tensorboard"``: :class:`lib.trackers.tensorboard.Tensorboard`
-
     Examples
     --------
     .. code-block:: py

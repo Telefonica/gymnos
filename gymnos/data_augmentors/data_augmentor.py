@@ -2,23 +2,11 @@
 # Author: Marcus D. Bloice <https://github.com/mdbloice> and contributors
 # Licensed under the terms of the MIT Licence.
 """
-The DataAugmentors module contains classes for all operations used by Augmentor.
-
-The classes contained in this module are not called or instantiated directly
-by the user, instead the user interacts with the
-:class:`~Augmentor.Pipeline.Pipeline` class and uses the utility functions contained
-there.
-
 In this module, each operation is a subclass of type :class:`DataAugmentor`.
-The :class:`~Augmentor.Pipeline.Pipeline` objects expect :class:`DataAugmentor`
+The :class:`~Pipeline` objects expect :class:`DataAugmentor`
 types, and therefore all operations are of type :class:`DataAugmentor`, and
 provide their own implementation of the :func:`~DataAugmentor.transform`
 function.
-
-Hence, the documentation for this module is intended for developers who
-wish to extend Augmentor or wish to see how operations function internally.
-
-For detailed information on extending Augmentor, see :ref:`extendingaugmentor`.
 """
 import random
 
@@ -32,9 +20,7 @@ class DataAugmentor(metaclass=ABCMeta):
     """
     The class :class:`DataAugmentor` represents the base class for all operations
     that can be performed. Inherit from :class:`DataAugmentor`, overload
-    its methods, and instantiate super to create a new operation. See
-    the section on extending Augmentor with custom operations at
-    :ref:`extendingaugmentor`.
+    its methods, and instantiate super to create a new operation.
     """
 
     def __init__(self, probability):

@@ -15,8 +15,6 @@ class Greyscale(DataAugmentor):
     This class is used to convert images into greyscale. That is, it converts
     images into having only shades of grey (pixel value intensities)
     varying from 0 to 255 which represent black and white respectively.
-
-    .. seealso:: The :class:`BlackAndWhite` class.
     """
 
     def __init__(self, probability):

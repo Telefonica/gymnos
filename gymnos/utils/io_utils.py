@@ -30,9 +30,12 @@ def import_from_json(json_path, key):
     """
     Import module from a JSON file.
     The JSON structure must be in the following format:
-    {
-        <key>: <module_path (e.g lib.core.model.Model)>
-    }
+
+    .. code-block::
+
+        {
+            <key>: <module_path (e.g gymnos.core.model.Model)>
+        }
 
     Parameters
     ----------

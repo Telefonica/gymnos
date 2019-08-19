@@ -67,7 +67,7 @@ def extract_gz(file_path, extract_dir=".", force=False):
     file_path: str
         Gz file path.
     extract_dir: str, optional
-        Directory to extract file. *.gz files can only contain one file. By default, current directory
+        Directory to extract file. \*.gz files can only contain one file. By default, current directory
     force: bool, optional
         Whether or not force extraction if file exists
 

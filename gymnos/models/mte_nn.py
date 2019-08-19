@@ -13,11 +13,11 @@ from .utils.keras_metrics import accuracy_multilabel, precision
 
 class MTENN(KerasClassifierMixin, Model):
     """
-    Neural network developed to solve MTE subscription classification task (:class:`lib.datasets.mte.MTE`).
+    Neural network developed to solve MTE subscription classification task (:class:`gymnos.datasets.mte.MTE`).
 
     Parameters
     ----------
-    input_shape: list, optional
+    input_shape: list
         Shape of features.
     classes: int, 17
         Number of classes to classify images into. This is useful if

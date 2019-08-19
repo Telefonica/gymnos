@@ -28,14 +28,11 @@ class RotateRange(DataAugmentor):
 
     .. math::
 
-        E = \\frac{\\frac{\\sin{\\theta_{a}}}{\\sin{\\theta_{b}}}\\Big(X-\\frac{\\sin{\\theta_{a}}}{\\sin{\\theta_{b}}} Y\\Big)}{1-\\frac{(\\sin{\\theta_{a}})^2}{(\\sin{\\theta_{b}})^2}} # noqa E501
+        E = \\frac{\\frac{\\sin{\\theta_{a}}}{\\sin{\\theta_{b}}}\\Big(X-\\frac{\\sin{\\theta_{a}}}{\\sin{\\theta_{b}}} Y\\Big)}{1-\\frac{(\\sin{\\theta_{a}})^2}{(\\sin{\\theta_{b}})^2}}
 
     which describes how :math:`E` is derived, and then follows
     :math:`B = Y - E` and :math:`A = \\frac{\\sin{\\theta_{a}}}{\\sin{\\theta_{b}}} B`.
-
-    The :ref:`rotating` section describes this in detail and has example
-    images to demonstrate this.
-    """
+    """  # noqa: E501
 
     def __init__(self, probability, max_left_rotation, max_right_rotation):
         """

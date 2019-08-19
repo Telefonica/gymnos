@@ -19,7 +19,7 @@ from .mixins import TensorFlowSaverMixin
 class DogsVsCatsCNN(TensorFlowSaverMixin, Model):
     """
     Convolutional neuronal network developed to solve Dogs vs Cats image classification
-    task (:class:`lib.datasets.dogs_vs_cats.DogsVsCats`).
+    task (:class:`gymnos.datasets.dogs_vs_cats.DogsVsCats`).
 
     Note
     ----
@@ -32,9 +32,8 @@ class DogsVsCatsCNN(TensorFlowSaverMixin, Model):
     classes: int, optional
         Optional number of classes to classify images into. This is useful if
         you want to train this model with another dataset.
-    session: dict, optional
-        Configuration for TensorFlow session. To see available properties:
-        `tf.ConfigProto <https://www.tensorflow.org/api_docs/python/tf/ConfigProto>`_
+    session: tf.Session, optional
+        Tensorflow Session
 
     Note
     ----
@@ -47,9 +46,7 @@ class DogsVsCatsCNN(TensorFlowSaverMixin, Model):
         DogsVsCatsCNN(
             input_shape=[120, 120, 3],
             classes=2,
-            session={
-                "log_device_placement": True
-            }
+            session=None
         )
     """
 

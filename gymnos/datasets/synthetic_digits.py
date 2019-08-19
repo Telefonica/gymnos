@@ -26,6 +26,12 @@ class SyntheticDigits(Dataset):
     This dataset contains 12,000 synthetically generated images of English digits embedded on random backgrounds.
     The images are generated with varying fonts, colors, scales and rotations.
     The backgrounds are randomly selected from a subset of COCO dataset.
+
+    Characteristics:
+        - **Classes**: 3
+        - **Samples total**: 2641
+        - **Dimensionality**: [150, 150, 1]
+        - **Features**: real, between 0 and 255
     """
 
     def info(self):

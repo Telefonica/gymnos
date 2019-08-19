@@ -39,19 +39,7 @@ class Dataset:
     Parameters
     ----------
     name: str
-        Name of dataset, the current available datasets are the following:
-
-        The current available datasets are the following:
-
-        - ``"boston_housing"``: :class:`lib.datasets.boston_housing.BostonHousing`,
-        - ``"dogs_vs_cats"``: :class:`lib.datasets.dogs_vs_cats.DogsVsCats`,
-        - ``"imdb"``: :class:`lib.datasets.imdb.IMDB`,
-        - ``"tiny_imagenet"``: :class:`lib.datasets.tiny_imagenet.TinyImagenet`,
-        - ``"synthetic_digits"``: :class:`lib.datasets.synthetic_digits.SyntheticDigits`,
-        - ``"mte"``: :class:`lib.datasets.mte.MTE`,
-        - ``"data_usage_test"``: :class:`lib.datasets.data_usage_test.DataUsageTest`,
-        - ``"unusual_data_usage_test"``: :class:`lib.datasets.unusual_data_usage_test.UnusualDataUsageTest`
-        - ``"rock_paper_scissors"``: :class:`lib.datasets.rock_paper_scissors.RockPaperScissors`
+        Dataset name.
 
     samples: dict, optional
         Samples to split dataset into random train and test subsets
@@ -70,19 +58,6 @@ class Dataset:
     preprocessors: list of dict, optional
         List of preprocessors to apply to dataset. This property requires a list with dictionnaries with at least
         a ``type`` field specifying the type of preprocessor.  The other properties are the properties for that preprocessor.
-
-        The current available preprocessors are the following:
-
-        - ``"divide"``: :class:`lib.preprocessors.divide.Divide`,
-        - ``"grayscale"``: :class:`lib.preprocessors.images.grayscale.Grayscale`,
-        - ``"image_resize"``: :class:`lib.preprocessors.images.image_resize.ImageResize`,
-        - ``"replace"``: :class:`lib.preprocessors.replace.Replace`,
-        - ``"grayscale_to_color"``: :class:`lib.preprocessors.images.grayscale_to_color.GrayscaleToColor`,
-        - ``"lemmatization"``: :class:`lib.preprocessors.texts.lemmatization.Lemmatization`,
-        - ``"alphanumeric"``: :class:`lib.preprocessors.texts.alphanumeric.Alphanumeric`,
-        - ``"tfidf"``: :class:`lib.preprocessors.texts.tfidf.Tfidf`,
-        - ``"kbest"``: :class:`lib.preprocessors.kbest.KBest`,
-        - ``"standard_scaler"``: `sklearn.preprocessing.StandardScaler <https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html>`_ # noqa: E501
     seed: int, optional
         Seed used to split dataset.
     shuffle: bool, optional
@@ -93,8 +68,6 @@ class Dataset:
         List of data augmentors to apply to images dataset. This property requires a list with dictionnaries with at
         least a ``type`` field specifying the type of data augmentor.  The other properties are the properties for that
         data augmentor.
-        The current available preprocessors are the following:
-            TODO
 
     Examples
     --------
@@ -104,8 +77,8 @@ class Dataset:
             name= "tiny_imagenet",
             one_hot=True,
             samples={
-                "train": 0.1,
-                "test": 0.1
+                "train": 0.8,
+                "test": 0.2
             },
             preprocessors=[
                 {

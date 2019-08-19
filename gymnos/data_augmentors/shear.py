@@ -24,10 +24,7 @@ class Shear(DataAugmentor):
     image is returned by this class. That is to say, that after a shear
     has been performed, the largest possible area of the same aspect ratio
     of the original image is cropped from the sheared image, and this is
-    then resized to match the original image size. The
-    :ref:`shearing` section describes this in detail.
-
-    For sample code with image examples see :ref:`shearing`.
+    then resized to match the original image size.
     """
 
     def __init__(self, probability, max_shear_left, max_shear_right):
