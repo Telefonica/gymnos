@@ -49,7 +49,7 @@ class Trainer:
         self.tracking = tracking
 
     @staticmethod
-    def from_spec(spec):
+    def from_dict(spec):
         """
         Create trainer from dictionnary specifying experiment, model, dataset, training and tracking specs.
 
@@ -71,6 +71,14 @@ class Trainer:
             dataset=Dataset(**dataset),
             training=Training(**training),
             tracking=Tracking(**tracking)
+        )
+
+    def to_dict(self):
+        return dict(
+            dataset=self.dataset.to_dict(),
+            model=self.model.to_dict(),
+            training=self.training.to_dict(),
+            tracking=self.tracking.to_dict()
         )
 
     def train(self, dl_manager=None, trackings_dir=None, callbacks=None):

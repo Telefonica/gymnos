@@ -4,7 +4,10 @@
 #
 #
 
+from . import load
+
 from tqdm import tqdm
+from copy import deepcopy
 from abc import ABCMeta, abstractmethod
 
 
@@ -124,3 +127,14 @@ class Pipeline:
 
     def __len__(self):
         return len(self.preprocessors)
+
+    @staticmethod
+    def from_dict(specs):
+        preprocessors = []
+        for preprocessor_spec in specs:
+            preprocessor_spec = deepcopy(preprocessor_spec)
+            preprocessor_type = preprocessor_spec.pop("type")
+            preprocessor = load(preprocessor_type, **preprocessor_spec)
+            preprocessors.append(preprocessor)
+
+        return Pipeline(preprocessors)

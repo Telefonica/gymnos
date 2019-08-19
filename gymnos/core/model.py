@@ -8,7 +8,7 @@ import logging
 
 from copy import deepcopy
 
-from ..loader import load_model
+from .. import models
 
 logger = logging.getLogger(__name__)
 
@@ -51,4 +51,10 @@ class Model:
         self.name = name
         self.parameters = parameters
 
-        self.model = load_model(name, **deepcopy(parameters))
+        self.model = models.load(name, **deepcopy(parameters))
+
+    def to_dict(self):
+        return dict(
+            name=self.name,
+            parameters=self.parameters
+        )

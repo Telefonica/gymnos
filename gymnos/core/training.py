@@ -24,3 +24,8 @@ class Training:
 
     def __init__(self, **parameters):
         self.parameters = parameters
+
+    def to_dict(self):
+        return dict(
+            parameters=self.parameters
+        )

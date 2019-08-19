@@ -7,10 +7,7 @@
 import uuid
 import logging
 
-from copy import deepcopy
-
-from ..loader import load
-from ..trackers import TrackerList
+from ..trackers.tracker import TrackerList
 
 logger = logging.getLogger(__name__)
 
@@ -77,10 +74,14 @@ class Tracking:
 
         self.trackers_spec = trackers
 
-        self.load_trackers()
+        self.trackers = TrackerList.from_dict(trackers)
 
-    def load_trackers(self):
-        self.trackers = TrackerList()
-        for tracker_config in deepcopy(self.trackers_spec):
-            tracker = load(tracker=tracker_config.pop("type"), **tracker_config)
-            self.trackers.add(tracker)
+    def to_dict(self):
+        return dict(
+            run_id=self.run_id,
+            tags=self.tags,
+            log_model_params=self.log_model_params,
+            log_model_metrics=self.log_model_metrics,
+            log_training_params=self.log_training_params,
+            trackers=self.trackers_spec
+        )

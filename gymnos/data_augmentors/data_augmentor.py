@@ -22,6 +22,9 @@ For detailed information on extending Augmentor, see :ref:`extendingaugmentor`.
 """
 import random
 
+from . import load
+
+from copy import deepcopy
 from abc import ABCMeta, abstractmethod
 
 
@@ -93,3 +96,14 @@ class Pipeline:
 
     def __len__(self):
         return len(self.data_augmentors)
+
+    @staticmethod
+    def from_dict(specs):
+        data_augmentors = []
+        for data_augmentor_spec in specs:
+            data_augmentor_spec = deepcopy(data_augmentor_spec)
+            data_augmentor_type = data_augmentor_spec.pop("type")
+            data_augmentor = load(data_augmentor_type, **data_augmentor_spec)
+            data_augmentors.append(data_augmentor)
+
+        return Pipeline(data_augmentors)

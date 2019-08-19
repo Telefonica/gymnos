@@ -6,6 +6,9 @@
 
 import numbers
 
+from . import load
+
+from copy import deepcopy
 from tensorflow.keras import callbacks
 from collections.abc import Iterable
 from abc import ABCMeta, abstractmethod
@@ -237,3 +240,14 @@ class TrackerList:
 
     def __len__(self):
         return len(self.trackers)
+
+    @staticmethod
+    def from_dict(specs):
+        trackers = []
+        for tracker_spec in specs:
+            tracker_spec = deepcopy(tracker_spec)
+            tracker_type = tracker_spec.pop("type")
+            tracker = load(tracker_type, **tracker_spec)
+            trackers.append(tracker)
+
+        return TrackerList(trackers)

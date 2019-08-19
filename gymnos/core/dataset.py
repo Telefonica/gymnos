@@ -6,8 +6,6 @@
 
 import logging
 
-from copy import deepcopy
-
 from .. import datasets
 from ..preprocessors.preprocessor import Pipeline as PreprocessorPipeline
 from ..data_augmentors.data_augmentor import Pipeline as DataAugmentorPipeline
@@ -17,15 +15,23 @@ logger = logging.getLogger(__name__)
 
 class DatasetSamples:
 
-    def __init__(self, train=0.75, test=0.25):
-        self.train = train
+    def __init__(self, train=None, test=None):
+        if (isinstance(train, float)) and isinstance(test, float) and (train + test > 1.0):
+            raise ValueError("If train/test datatype is float, it must be lower than 1.0")
+
+        if train is None and test is None:
+            train = 0.75
+            test = 1 - train
+        elif train is None:
+            train = 1 - test
+        elif test is None:
+            test = 1 - train
+
         self.test = test
+        self.train = train
 
         if (self.test + self.train < 1.0):
             logger.warning("Using only {:.2f}% of total data".format(self.train + self.test))
-
-        if (isinstance(train, float)) and isinstance(test, float) and (train + test > 1.0):
-            raise ValueError("If train/test datatype is float, it must be lower than 1.0")
 
 
 class Dataset:
@@ -125,24 +131,29 @@ class Dataset:
         self.one_hot = one_hot
         self.shuffle = shuffle
         self.chunk_size = chunk_size
-        self.preprocessors_spec = preprocessors
-        self.data_augmentors_spec = data_augmentors
 
         self.samples = DatasetSamples(**samples)
 
-
-        self.load_preprocessors()
-        self.load_data_augmentors()
-
-    def load_preprocessors(self):
-        self.preprocessors = PreprocessorsPipeline()
-        for preprocessor_config in deepcopy(self.preprocessors_spec):
-            preprocessor = load(preprocessor=preprocessor_config.pop("type"), **preprocessor_config)
-            self.preprocessors.add(preprocessor)
-
-    def load_data_augmentors(self):
-        self.data_augmentors = DataAugmentorPipeline()
-        for data_augmentor_config in deepcopy(self.data_augmentors_spec):
-            data_augmentor = load(data_augmentor=data_augmentor_config.pop("type"), **data_augmentor_config)
-            self.data_augmentors.add(data_augmentor)
         self.dataset = datasets.load(name)
+
+        # we save these specs so we can export it via to_dict
+        self.preprocessors_specs = preprocessors
+        self.data_augmentors_specs = data_augmentors
+
+        self.preprocessors = PreprocessorPipeline.from_dict(preprocessors)
+        self.data_augmentors = DataAugmentorPipeline.from_dict(data_augmentors)
+
+    def to_dict(self):
+        return dict(
+            name=self.name,
+            seed=self.seed,
+            one_hot=self.one_hot,
+            shuffle=self.shuffle,
+            chunk_size=self.chunk_size,
+            samples=dict(
+                train=self.samples.train,
+                test=self.samples.test
+            ),
+            preprocessors=self.preprocessors_specs,
+            data_augmentors=self.data_augmentors_specs
+        )
