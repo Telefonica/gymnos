@@ -6,7 +6,7 @@
 
 import numpy as np
 
-from gymnos.preprocessors import ImageResize
+from gymnos.preprocessors.images.image_resize import ImageResize
 
 
 def test_transform(random_rgb_image, random_gray_image):

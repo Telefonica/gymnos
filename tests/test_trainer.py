@@ -305,7 +305,7 @@ UNUSUAL_DATA_USAGE = {
                                   IMDB_SPEC, DOGS_VS_CATS_SPEC, BOSTON_HOUSING_SPEC, DATA_USAGE_HOLT_WINTERS_SPEC,
                                   DATA_USAGE_LINEAR_REGRESSION_SPEC])
 def test_training(spec, tmp_path):
-    trainer = Trainer.from_spec(spec)
+    trainer = Trainer.from_dict(spec)
 
     dl_manager = DownloadManager(download_dir=str(tmp_path / "downloads"))
 

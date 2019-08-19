@@ -7,7 +7,7 @@
 import pytest
 import numpy as np
 from gymnos.utils.data import Subset, DataLoader
-from gymnos.datasets import Dataset
+from gymnos.datasets.dataset import Dataset
 
 
 class TestSubset:

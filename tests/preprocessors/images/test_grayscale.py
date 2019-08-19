@@ -6,7 +6,7 @@
 
 import numpy as np
 
-from gymnos.preprocessors import Grayscale
+from gymnos.preprocessors.images.grayscale import Grayscale
 
 
 def test_transform():

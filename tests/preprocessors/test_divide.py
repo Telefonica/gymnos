@@ -6,7 +6,7 @@
 
 import numpy as np
 
-from gymnos.preprocessors import Divide
+from gymnos.preprocessors.divide import Divide
 
 
 def test_transform():

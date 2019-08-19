@@ -6,7 +6,7 @@
 
 import numpy as np
 
-from gymnos.preprocessors import GrayscaleToColor
+from gymnos.preprocessors.images.grayscale_to_color import GrayscaleToColor
 
 
 def test_transform(random_gray_image):

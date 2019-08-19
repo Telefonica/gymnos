@@ -4,7 +4,7 @@
 #
 #
 
-from gymnos.preprocessors import Alphanumeric
+from gymnos.preprocessors.texts.alphanumeric import Alphanumeric
 
 
 def test_transform():

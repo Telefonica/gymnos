@@ -19,13 +19,13 @@ def test_tracker_instance():
     )
     tracking = Tracking(trackers=[tracker_1, tracker_2])
 
-    assert isinstance(tracking.trackers, gymnos.trackers.TrackerList)
+    assert isinstance(tracking.trackers, gymnos.trackers.tracker.TrackerList)
 
     assert len(tracking.trackers) == 2
 
     tracking = Tracking()
 
-    assert isinstance(tracking.trackers, gymnos.trackers.TrackerList)
+    assert isinstance(tracking.trackers, gymnos.trackers.tracker.TrackerList)
 
     assert len(tracking.trackers) == 0
 

@@ -6,7 +6,7 @@
 
 import numpy as np
 
-from gymnos.preprocessors import StandardScaler
+from gymnos.preprocessors.standard_scaler import StandardScaler
 
 
 def test_transform():

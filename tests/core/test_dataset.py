@@ -9,7 +9,7 @@ import gymnos.preprocessors
 import gymnos.data_augmentors
 
 from gymnos.core.dataset import Dataset
-from gymnos.datasets import BostonHousing
+from gymnos.datasets.boston_housing import BostonHousing
 
 DATASET_NAME = "boston_housing"
 
@@ -53,16 +53,16 @@ def test_dataset_preprocessors():
 
     dataset = Dataset(DATASET_NAME, preprocessors=[preprocessor_spec_1, preprocessor_spec_2])
 
-    assert isinstance(dataset.preprocessors, gymnos.preprocessors.Pipeline)
+    assert isinstance(dataset.preprocessors, gymnos.preprocessors.preprocessor.Pipeline)
 
     assert len(dataset.preprocessors) == 2
 
     for preprocessor in dataset.preprocessors.preprocessors:
-        assert isinstance(preprocessor, gymnos.preprocessors.Preprocessor)
+        assert isinstance(preprocessor, gymnos.preprocessors.preprocessor.Preprocessor)
 
     dataset = Dataset(DATASET_NAME)
 
-    assert isinstance(dataset.preprocessors, gymnos.preprocessors.Pipeline)
+    assert isinstance(dataset.preprocessors, gymnos.preprocessors.preprocessor.Pipeline)
 
     assert len(dataset.preprocessors) == 0
 
@@ -91,13 +91,13 @@ def test_dataset_data_augmentors():
 
     dataset = Dataset(DATASET_NAME, data_augmentors=[data_augmentor_spec_1, data_augmentor_spec_2])
 
-    assert isinstance(dataset.data_augmentors, gymnos.data_augmentors.Pipeline)
+    assert isinstance(dataset.data_augmentors, gymnos.data_augmentors.data_augmentor.Pipeline)
 
     assert len(dataset.data_augmentors) == 2
 
     dataset = Dataset(DATASET_NAME)
 
-    assert isinstance(dataset.data_augmentors, gymnos.data_augmentors.Pipeline)
+    assert isinstance(dataset.data_augmentors, gymnos.data_augmentors.data_augmentor.Pipeline)
 
     assert len(dataset.data_augmentors) == 0
 

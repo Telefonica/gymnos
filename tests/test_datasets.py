@@ -1,9 +1,4 @@
-#
-#
-#   Test common properties for datasets
-#
-#
-
+import gymnos
 import pytest
 import numbers
 import pkgutil
@@ -11,10 +6,10 @@ import importlib
 import numpy as np
 import pandas as pd
 
-from gymnos.datasets import HDF5Dataset
+from gymnos.datasets.dataset import HDF5Dataset
 
-from gymnos.datasets import Dataset, ClassLabel
-from gymnos.services import DownloadManager
+from gymnos.datasets.dataset import Dataset, ClassLabel
+from gymnos.services.download_manager import DownloadManager
 
 
 for (module_loader, name, ispkg) in pkgutil.iter_modules(["gymnos.datasets"]):
@@ -23,6 +18,15 @@ for (module_loader, name, ispkg) in pkgutil.iter_modules(["gymnos.datasets"]):
 all_dataset_classes = [cls for cls in Dataset.__subclasses__() if cls != HDF5Dataset]
 
 ARRAY_LIKE_TYPES = [numbers.Number, frozenset, list, set, tuple, np.ndarray, pd.Series, pd.DataFrame]
+
+
+def test_load():
+    dataset = gymnos.datasets.load("boston_housing")
+
+    assert isinstance(dataset, gymnos.datasets.dataset.Dataset)
+
+    with pytest.raises(ValueError):
+        _ = gymnos.datasets.load("dummy")
 
 
 @pytest.mark.slow

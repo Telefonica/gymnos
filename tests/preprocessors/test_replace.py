@@ -5,7 +5,7 @@
 #
 
 import numpy as np
-from gymnos.preprocessors import Replace
+from gymnos.preprocessors.replace import Replace
 
 
 def test_transform():
