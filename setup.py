@@ -85,6 +85,8 @@ EXTRAS_REQUIRE["models"] = sorted(set(sum(MODELS_EXTRAS_DEPENDENCIES.values(), [
 EXTRAS_REQUIRE["preprocessors"] = sorted(set(sum(PREPROCESSORS_EXTRAS_DEPENDENCIES.values(), [])))
 EXTRAS_REQUIRE["trackers"] = sorted(set(sum(TRACKERS_EXTRAS_DEPENDENCIES.values(), [])))
 
+EXTRAS_REQUIRE["serve"] = ["flask"]
+
 EXTRAS_REQUIRE["complete"] = sorted(set(sum(EXTRAS_REQUIRE.values(), [])))
 
 EXTRAS_REQUIRE["tensorflow"] = ["tensorflow>1.8.0"]

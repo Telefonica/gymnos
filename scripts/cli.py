@@ -154,6 +154,43 @@ def predict(saved_trainer, json_file=None, images=None):
     print(json.dumps(response, cls=NDArrayEncoder, indent=4))
 
 
+def serve(saved_trainer, host=None, port=None, debug=None):
+    from flask import Flask, request, jsonify
+    from gymnos.trainer import Trainer
+    from gymnos.datasets.dataset import ClassLabel
+
+    app = Flask(__name__)
+    app.json_encoder = NDArrayEncoder
+
+    @app.route("/", methods=["GET"])
+    def info():
+        # FIXME: the trainer should be loaded before every request but there are issues combining tf with flask requests
+        trainer = Trainer.load(saved_trainer)
+
+        return jsonify(trainer.to_dict())
+
+    @app.route("/", methods=["POST"])
+    def predict():
+        # FIXME: same as above
+        trainer = Trainer.load(saved_trainer)
+
+        response = dict(predictions=trainer.predict(request.json))
+
+        try:
+            response["probabilities"] = trainer.predict_proba(request.json)
+        except NotImplementedError:
+            pass
+
+        labels = trainer.dataset.dataset.info().labels
+        if isinstance(labels, ClassLabel):
+            response["classes"] = dict(
+                names=labels.names,
+                total=labels.num_classes
+            )
+
+        return response
+
+    app.run(host=host, port=port, debug=debug)
 
 
 def build_parser():
@@ -195,6 +232,15 @@ def build_parser():
     predict_parser_group.add_argument("--image", help="Image file path to predict", nargs="*", type=str,
                                       action="append")
 
+    # MARK: Serve parsers
+
+    serve_parser = subparsers.add_parser("serve")
+    serve_parser.add_argument("saved_trainer", help="Saved trainer file", type=str)
+    serve_parser.add_argument("--host", help="Hostname to listen to.", type=str, required=False)
+    serve_parser.add_argument("--port", help="Port to listen to.", type=int, required=False)
+    serve_parser.add_argument("--debug", help="Enable or disable debug mode", default=False, required=False,
+                              action="store_true")
+
     return parser
 
 
@@ -210,6 +256,8 @@ def main():
               execution_dir=args.execution_dir, trackings_dir=args.trackings_dir)
     elif args.command == "predict":
         predict(args.saved_trainer, args.json, args.image)
+    elif args.command == "serve":
+        serve(args.saved_trainer, host=args.host, port=args.port, debug=args.debug)
     else:
         parser.print_help()
 
