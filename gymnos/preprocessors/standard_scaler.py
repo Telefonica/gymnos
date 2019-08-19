@@ -4,7 +4,7 @@
 #
 #
 
-import sklearn
+import sklearn.preprocessing
 
 from .preprocessor import Preprocessor
 
