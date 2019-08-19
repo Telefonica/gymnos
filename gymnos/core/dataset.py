@@ -8,10 +8,9 @@ import logging
 
 from copy import deepcopy
 
-from ..loader import load
-
-from ..preprocessors import Pipeline as PreprocessorsPipeline
-from ..data_augmentors import Pipeline as DataAugmentorPipeline
+from .. import datasets
+from ..preprocessors.preprocessor import Pipeline as PreprocessorPipeline
+from ..data_augmentors.data_augmentor import Pipeline as DataAugmentorPipeline
 
 logger = logging.getLogger(__name__)
 
@@ -131,7 +130,6 @@ class Dataset:
 
         self.samples = DatasetSamples(**samples)
 
-        self.dataset = load(dataset=name)
 
         self.load_preprocessors()
         self.load_data_augmentors()
@@ -147,3 +145,4 @@ class Dataset:
         for data_augmentor_config in deepcopy(self.data_augmentors_spec):
             data_augmentor = load(data_augmentor=data_augmentor_config.pop("type"), **data_augmentor_config)
             self.data_augmentors.add(data_augmentor)
+        self.dataset = datasets.load(name)

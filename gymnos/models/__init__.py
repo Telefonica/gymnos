@@ -1,11 +1,12 @@
-from .model import Model
-from .mte_nn import MTENN
-from .dogs_vs_cats_cnn import DogsVsCatsCNN
-from .keras import KerasClassifier, KerasRegressor
-from .data_usage_holt_winters import DataUsageHoltWinters
-from .data_usage_linear_regression import DataUsageLinearRegression
-from .unusual_data_usage_weighted_thresholds import UnusualDataUsageWT
+import os
+
+from ..utils.io_utils import import_from_json
 
 
-__all__ = ["Model", "MTENN", "DogsVsCatsCNN", "KerasClassifier", "KerasRegressor",
-           "DataUsageHoltWinters", "DataUsageLinearRegression", "UnusualDataUsageWT"]
+def load(name, **params):
+    try:
+        Model = import_from_json(os.path.join(os.path.dirname(__file__), "..", "var", "models.json"),
+                                 name)
+    except KeyError as e:
+        raise ValueError("Model with name {} not found".format(name)) from e
+    return Model(**params)

@@ -18,8 +18,9 @@ from collections import OrderedDict
 from tensorflow.keras.utils import to_categorical
 
 from .trackers.history import History
-from .services import DownloadManager
-from .loader import load_model, load_dataset
+from .trackers.tracker import TrackerList
+from .services.download_manager import DownloadManager
+from . import models, datasets
 from .utils.text_utils import humanize_bytes
 from .utils.archiver import extract_zip, zipdir
 from .callbacks import CallbackList, TimeHistory
@@ -540,18 +541,18 @@ class Trainer:
 
             with open(os.path.join(tempdir, "model.pkl"), "rb") as fp:
                 model = dill.load(fp)
-            model.model = load_model(model.name, **model.parameters)
+            model.model = models.load(model.name, **model.parameters)
             model.model.restore(os.path.join(tempdir, "saved_model"))
 
             with open(os.path.join(tempdir, "dataset.pkl"), "rb") as fp:
                 dataset = dill.load(fp)
-            dataset.dataset = load_dataset(dataset.name)
+            dataset.dataset = datasets.load(dataset.name)
 
             with open(os.path.join(tempdir, "saved_preprocessors.pkl"), "rb") as fp:
                 dataset.preprocessors = dill.load(fp)
 
             with open(os.path.join(tempdir, "tracking.pkl"), "rb") as fp:
                 tracking = dill.load(fp)
-            tracking.load_trackers()
+            tracking.trackers = TrackerList.from_dict(tracking.trackers_spec)
 
         return Trainer(model, dataset, training, tracking)

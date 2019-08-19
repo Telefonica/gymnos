@@ -1,16 +1,12 @@
-from .kbest import KBest
-from .divide import Divide
-from .replace import Replace
-from .texts.tfidf import Tfidf
-from .standard_scaler import StandardScaler
-from .texts.alphanumeric import Alphanumeric
-from .texts.lemmatization import Lemmatization
-from .texts.binary_vectorizer import BinaryVectorizer
-from .images.grayscale import Grayscale
-from .images.image_resize import ImageResize
-from .images.grayscale_to_color import GrayscaleToColor
-from .preprocessor import Preprocessor, Pipeline
+import os
 
-__all__ = ["KBest", "Divide", "Replace", "Tfidf", "StandardScaler",
-           "Alphanumeric", "Lemmatization", "Grayscale", "ImageResize",
-           "GrayscaleToColor", "Preprocessor", "Pipeline"]
+from ..utils.io_utils import import_from_json
+
+
+def load(name, **params):
+    try:
+        Preprocessor = import_from_json(os.path.join(os.path.dirname(__file__), "..", "var", "preprocessors.json"),
+                                        name)
+    except KeyError as e:
+        raise ValueError("Preprocessor with name {} not found".format(name)) from e
+    return Preprocessor(**params)

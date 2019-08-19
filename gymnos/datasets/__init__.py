@@ -1,14 +1,11 @@
-from .boston_housing import BostonHousing
-from .imdb import IMDB
-from .tiny_imagenet import TinyImagenet
-from .mte import MTE
-from .dogs_vs_cats import DogsVsCats
-from .data_usage_test import DataUsageTest
-from .unusual_data_usage_test import UnusualDataUsageTest
-from .dataset import Dataset, DatasetInfo, Array, ClassLabel, HDF5Dataset
-from .synthetic_digits import SyntheticDigits
-from .rock_paper_scissors import RockPaperScissors
+import os
 
-__all__ = ["BostonHousing", "IMDB", "TinyImagenet", "MTE", "DogsVsCats",
-           "DataUsageTest", "UnusualDataUsageTest", "Dataset", "DatasetInfo", "Array",
-           "ClassLabel", "HDF5Dataset", "SyntheticDigits", "RockPaperScissors"]
+from ..utils.io_utils import import_from_json
+
+
+def load(name, **params):
+    try:
+        Dataset = import_from_json(os.path.join(os.path.dirname(__file__), "..", "var", "datasets.json"), name)
+    except KeyError as e:
+        raise ValueError("Dataset with name {} not found".format(name)) from e
+    return Dataset(**params)

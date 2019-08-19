@@ -1,23 +1,26 @@
-from .distort import Distort
-from .flip import Flip
-from .gaussian_distortion import GaussianDistortion
-from .greyscale import Greyscale
-from .histogram_equalisation import HistogramEqualisation
-from . data_augmentor import Pipeline, DataAugmentor
-from .invert import Invert
-from .random_brightness import RandomBrightness
-from .random_color import RandomColor
-from .random_contrast import RandomContrast
-from .random_erasing import RandomErasing
-from .rotate import Rotate
-from .rotate_range import RotateRange
-from .shear import Shear
-from .skew import Skew
-from .zoom import Zoom
-from .zoom_ground_truth import ZoomGroundTruth
-from .zoom_random import ZoomRandom
+import os
 
-__all__ = ["Distort", "Flip", "GaussianDistortion", "Greyscale", "HistogramEqualisation",
-           "Pipeline", "DataAugmentor", "Invert", "RandomBrightness", "RandomColor", "RandomContrast",
-           "RandomErasing", "Rotate", "RotateRange", "Shear", "Skew", "Zoom", "ZoomGroundTruth",
-           "ZoomRandom"]
+from ..utils.io_utils import import_from_json
+
+
+def load(name, **params):
+    """
+    Load data augmentor by name
+
+    Parameters
+    -------------
+    name: str
+        Data Augmentor name
+    **params: any
+        Any parameter for data augmentor constructor
+
+    Returns
+    ----------
+    data_augmentor: DataAugmentor
+    """
+    try:
+        DataAugmentor = import_from_json(os.path.join(os.path.dirname(__file__), "..", "var", "data_augmentors.json"),
+                                         name)
+    except KeyError as e:
+        raise ValueError("DataAugmentor with name {} not found".format(name)) from e
+    return DataAugmentor(**params)
