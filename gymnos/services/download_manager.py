@@ -37,7 +37,7 @@ class DownloadManager:
         Whether or not force extraction if file exists
     """
 
-    def __init__(self, download_dir=".", extract_dir=None, force_download=False, force_extraction=False):
+    def __init__(self, download_dir="downloads", extract_dir=None, force_download=False, force_extraction=False):
         self.download_dir = os.path.expanduser(download_dir)
         self.extract_dir = os.path.expanduser(extract_dir or os.path.join(download_dir, "extracted"))
         self.force_download = force_download
