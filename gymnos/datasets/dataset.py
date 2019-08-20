@@ -204,6 +204,9 @@ class DatasetInfo:
         self.features = features
         self.labels = labels
 
+    def __repr__(self):
+        return "Features <{}>, Labels <{}>".format(self.features, self.labels)
+
 
 class Array:
     """
@@ -221,7 +224,7 @@ class Array:
         self.shape = shape
         self.dtype = dtype
 
-    def __str__(self):
+    def __repr__(self):
         return "Array <shape={}, dtype={}>".format(self.shape, self.dtype)
 
 
@@ -302,5 +305,5 @@ class ClassLabel(Array):
         """
         return self.names[int_value]
 
-    def __str__(self):
+    def __repr__(self):
         return "ClassLabel <shape={}, dtype={}, classes={}>".format(self.shape, self.dtype, self.num_classes)
