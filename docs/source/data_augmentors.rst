@@ -88,11 +88,6 @@ rotate
 .. autoclass:: gymnos.data_augmentors.rotate.Rotate
     :noindex:
 
-rotate_range
-==================================
-.. autoclass:: gymnos.data_augmentors.rotate_range.RotateRange
-    :noindex:
-
 shear
 ==================================
 .. autoclass:: gymnos.data_augmentors.shear.Shear

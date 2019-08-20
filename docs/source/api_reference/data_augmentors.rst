@@ -65,11 +65,6 @@ gymnos.data_augmentors.rotate
 .. automodule:: gymnos.data_augmentors.rotate
     :members:
 
-gymnos.data_augmentors.rotate_range
-============================================
-.. automodule:: gymnos.data_augmentors.rotate_range
-    :members:
-
 gymnos.data_augmentors.shear
 ============================================
 .. automodule:: gymnos.data_augmentors.shear

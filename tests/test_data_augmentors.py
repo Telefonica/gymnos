@@ -13,7 +13,6 @@ from gymnos.data_augmentors.random_color import RandomColor
 from gymnos.data_augmentors.random_contrast import RandomContrast
 from gymnos.data_augmentors.random_erasing import RandomErasing
 from gymnos.data_augmentors.rotate import Rotate
-from gymnos.data_augmentors.rotate_range import RotateRange
 from gymnos.data_augmentors.shear import Shear
 from gymnos.data_augmentors.skew import Skew
 from gymnos.data_augmentors.zoom import Zoom
@@ -43,7 +42,6 @@ def test_load():
     RandomContrast(probability=1, min_factor=0.5, max_factor=0.8),
     RandomErasing(probability=1, rectangle_area=0.5),
     Rotate(probability=1, rotation=90),
-    RotateRange(probability=1, max_left_rotation=120, max_right_rotation=30),
     Shear(probability=1, max_shear_left=2, max_shear_right=4),
     Skew(probability=1, skew_type="TILT", magnitude=35),
     Zoom(probability=1, min_factor=5.0, max_factor=20.0),
