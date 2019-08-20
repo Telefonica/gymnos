@@ -92,6 +92,11 @@ And then get predictions using the saved trainer:
 $ gymnos predict saved_trainer.zip --image cat.png
 ```
 
+Or run a server to compute predictions:
+```sh
+$ gymnos serve saved_trainer.zip
+```
+
 ## Examples and documentation
 
 Gymnos comes with a range of example [Jupyter notebooks](examples/) and [configurations](experiments/examples/) for different experiments.

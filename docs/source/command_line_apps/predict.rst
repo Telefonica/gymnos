@@ -11,6 +11,8 @@ Usage
     :prog: gymnos
     :path: predict
 
+.. _json_predict_examples:
+
 Examples
 -------------
 

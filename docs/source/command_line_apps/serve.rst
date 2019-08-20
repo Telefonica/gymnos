@@ -13,7 +13,7 @@ Run API REST server to make predictions.
         $ pip3 install .[serve]
 
 Usage
---------
+================
 
 .. argparse::
     :ref: scripts.cli.build_parser
@@ -22,7 +22,7 @@ Usage
 
 
 Examples
-----------
+================
 
 These examples assume that the saved trainer file is called ``saved_trainer.zip``.
 
@@ -45,3 +45,39 @@ To enable debug mode:
 .. code-block:: console
 
     $ gymnos serve saved_trainer.zip --debug 1
+
+Endpoints
+================
+
+Info
+--------
+
+Returns JSON with saved trainer info / specifications.
+
+.. code-block::
+
+    GET /
+
+
+Predictions
+------------------
+
+Returns predictions from input samples using saved trainer.
+
+.. code-block::
+
+    POST /
+
+The body should be a JSON containing a list with the input samples to predict. For example:
+
+.. code-block:: json
+    :caption: body
+
+    [
+        [0.2, 0.5, 0.1],
+        [0.4, 1.2, 5.3]
+    ]
+
+.. seealso:: 
+
+    :ref:`json_predict_examples` for predict command
