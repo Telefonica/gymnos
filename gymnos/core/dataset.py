@@ -40,7 +40,8 @@ class Dataset:
     ----------
     name: str
         Dataset name.
-
+    parameters: dict, optional
+        Dataset constructor parameters
     samples: dict, optional
         Samples to split dataset into random train and test subsets
 
@@ -93,9 +94,10 @@ class Dataset:
         )
     """  # noqa: E501
 
-    def __init__(self, name, samples=None, preprocessors=None, seed=None, shuffle=True, one_hot=False, chunk_size=None,
-                 data_augmentors=None):
+    def __init__(self, name, parameters=None, samples=None, preprocessors=None, seed=None, shuffle=True, one_hot=False,
+                 chunk_size=None, data_augmentors=None):
         samples = samples or {}
+        parameters = parameters or {}
         preprocessors = preprocessors or []
         data_augmentors = data_augmentors or []
 
@@ -103,11 +105,12 @@ class Dataset:
         self.seed = seed
         self.one_hot = one_hot
         self.shuffle = shuffle
+        self.parameters = parameters
         self.chunk_size = chunk_size
 
         self.samples = DatasetSamples(**samples)
 
-        self.dataset = datasets.load(name)
+        self.dataset = datasets.load(name, **parameters)
 
         # we save these specs so we can export it via to_dict
         self.preprocessors_specs = preprocessors
@@ -123,6 +126,7 @@ class Dataset:
             one_hot=self.one_hot,
             shuffle=self.shuffle,
             chunk_size=self.chunk_size,
+            parameters=self.parameters,
             samples=dict(
                 train=self.samples.train,
                 test=self.samples.test
