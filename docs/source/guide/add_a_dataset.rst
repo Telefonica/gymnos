@@ -28,7 +28,17 @@ If you want to :ref:`contribute to our repo <contributing>` and add a new datase
 
   $ python3 -m scripts.create_new dataset --name my_dataset
 
-This command will create ``gymnos/datasets/my_dataset.py`` and modify ``gymnos/var/datasets.json`` to reference dataset name with their location so we can load it using ``gymnos.load``.
+This command will create ``gymnos/datasets/my_dataset.py``, and modify ``gymnos/__init__.py`` to register dataset so we can load it using ``gymnos.load``.
+
+The dataset registration process is done by associating the dataset name with their path:
+
+.. code-block:: python
+    :caption: gymnos/__init__.py
+
+    datasets.register(
+        name="my_dataset",
+        entry_point="gymnos.datasets.my_dataset.MyDataset"
+    )
 
 Go to ``gymnos/datasets/my_dataset.py`` and then search for TODO(my_dataset) in the generated file to do the modifications.
 
@@ -134,6 +144,26 @@ Writing an example sequence
 This methods will typically read source dataset artifacts (e.g a CSV file). In the previous example, we have downloaded dataset images and save their paths into the ``self.image_paths_`` variable.
 
 
+Summary
+=============
+
+1. Create ``MyDataset`` in ``gymnos/dataset/my_dataset.py`` inheriting from :class:`gymnos.datasets.dataset.Dataset` and implementing the abstract methods:
+
+* ``info()``
+* ``download_and_prepare(dl_manager)``
+* ``__getitem__(index)``
+* ``__len__()``
+
+2. Register the dataset in ``gymnos/__init__.py`` by adding:
+
+.. code-block:: python
+
+    datasets.register(
+        name="my_dataset",
+        entry_point="gymnos.datasets.my_dataset.MyDataset"
+    )
+
+
 Adding the dataset to ``Telefonica/gymnos``
 ===========================================
 
@@ -166,3 +196,35 @@ You can lint files running ``flake8`` command:
 .. code-block:: console
 
     $ flake8
+
+
+Adding the dataset from other repository
+=================================================
+
+You can also add a dataset from other repository in a very simple way by converting your repository in a Python library.
+
+Once you have defined your ``setup.py``, create and register your Gymnos datasets in the same way we have shown.
+
+Here is a minimal example. Say we have our library named ``gymnos_my_datasets`` and we want to add the dataset ``my_dataset``. You have to:
+
+1. Create ``MyDataset`` in ``gymnos_my_datasets/my_dataset.py`` inheriting from :class:`gymnos.datasets.dataset.Dataset` and implementing the abstract methods
+2. Register dataset in your module ``__init__.py`` referencing the name and the path:
+
+.. code-block:: python
+    :caption: gymnos_my_datasets/__init__.py
+
+    import gymnos
+
+    gymnos.datasets.register(
+        name="my_dataset",
+        entry_point="gymnos_my_datasets.my_dataset.MyDataset"
+    )
+
+
+That's it, when someone wants to run ``my_dataset`` from ``gymnos_my_datasets``, simply ``pip install`` the package and reference the package when you are loading the dataset with the following format: ``<module_name>:<dataset_name>``.
+
+For example:
+
+.. code-block:: python
+
+    gymnos.datasets.load("gymnos_my_datasets:my_dataset")

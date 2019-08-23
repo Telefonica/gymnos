@@ -27,7 +27,17 @@ If you want to :ref:`contribute to our repo <contributing>` and add a new tracke
 
     $ python3 -m scripts.create_new tracker --name my_tracker
 
-This command will create ``gymnos/trackers/my_tracker.py`` and modify ``gymnos/var/trackers.json`` to reference tracker name with their location so we can load it using ``gymnos.load``.
+This command will create ``gymnos/trackers/my_tracker.py``, and modify ``gymnos/__init__.py`` to register tracker so we can load it using ``gymnos.load``.
+
+The tracker registration process is done by associating the tracker name with their path:
+
+.. code-block:: python
+    :caption: gymnos/__init__.py
+
+    trackers.register(
+        name="my_tracker",
+        entry_point="gymnos.trackers.my_tracker.MyTracker"
+    )
 
 Go to ``gymnos/trackers/my_tracker.py`` and then search for TODO(my_tracker) in the generated file to do the modifications.
 
@@ -64,7 +74,7 @@ my_tracker.py
         def __init__(self, **parameters):
             # TODO(my_tracker): Define and initialize tracker parameters
         
-        def start(run_id, logdir):
+        def start(self, run_id, logdir):
             # OPTIONAL: Initialize tracker
             pass
         
@@ -97,6 +107,30 @@ my_tracker.py
             pass
 
 
+Summary
+=============
+
+1. Create ``MyTracker`` in ``gymnos/tracker/my_tracker.py`` inheriting from :class:`gymnos.trackers.tracker.Tracker` implementing any of the following available methods:
+
+- ``start(run_id, logdir)``
+- ``add_tag(self, tag)``
+- ``log_asset(self, name, file_path)``
+- ``log_image(self, name, file_path)``
+- ``log_figure(self, name, figure)``
+- ``log_metric(self, name, value, step=None)``
+- ``log_param(self, name, value, step=None)``
+- ``end(self)``
+
+2. Register the tracker in ``gymnos/__init__.py`` by adding:
+
+.. code-block:: python
+
+    trackers.register(
+        name="my_tracker",
+        entry_point="gymnos.trackers.my_tracker.MyTracker"
+    )
+
+
 Adding the tracker to ``Telefonica/gymnos``
 ===========================================
 
@@ -118,3 +152,34 @@ You can lint files running ``flake8`` command:
 .. code-block:: console
 
     $ flake8
+
+Adding the tracker from other repository
+=================================================
+
+You can also add a tracker from other repository in a very simple way by converting your repository in a Python library.
+
+Once you have defined your ``setup.py``, create and register your Gymnos trackers in the same way we have shown.
+
+Here is a minimal example. Say we have our library named ``gymnos_my_trackers`` and we want to add the tracker ``my_tracker``. You have to:
+
+1. Create ``MyTracker`` in ``gymnos_my_trackers/my_tracker.py`` inheriting from :class:`gymnos.trackers.tracker.Tracker` and implementing the abstract methods
+2. Register tracker in your module ``__init__.py`` referencing the name and the path:
+
+.. code-block:: python
+    :caption: gymnos_my_trackers/__init__.py
+
+    import gymnos
+
+    gymnos.trackers.register(
+        name="my_tracker",
+        entry_point="gymnos_my_trackers.my_tracker.MyTracker"
+    )
+
+
+That's it, when someone wants to run ``my_tracker`` from ``gymnos_my_trackers``, simply ``pip install`` the package and reference the package when you are loading the tracker with the following format: ``<module_name>:<tracker_name>``.
+
+For example:
+
+.. code-block:: python
+
+    gymnos.trackers.load("gymnos_my_trackers:my_tracker")

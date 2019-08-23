@@ -1,6 +1,0 @@
-{
-    "early_stopping": "tensorflow.keras.callbacks.EarlyStopping",
-    "model_checkpoint": "tensorflow.keras.callbacks.ModelCheckpoint",
-    "reduce_learning": "tensorflow.keras.callbacks.ReduceLROnPlateau",
-    "tensorboard": "tensorflow.keras.callbacks.TensorBoard"   
-}

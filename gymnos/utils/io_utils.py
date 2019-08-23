@@ -4,9 +4,6 @@
 #
 #
 
-import json
-from pydoc import locate
-
 
 def read_file_text(file_path):
     """
@@ -24,35 +21,6 @@ def read_file_text(file_path):
     """
     with open(file_path) as f:
         return f.read()
-
-
-def import_from_json(json_path, key):
-    """
-    Import module from a JSON file.
-    The JSON structure must be in the following format:
-
-    .. code-block::
-
-        {
-            <key>: <module_path (e.g gymnos.core.model.Model)>
-        }
-
-    Parameters
-    ----------
-    json_path: str
-        JSON file path
-    key: str
-        JSON key to read module path
-
-    Returns
-    -------
-    object
-        Imported object
-    """
-    with open(json_path) as f:
-        objects_ids_to_modules = json.load(f)
-    object_loc = objects_ids_to_modules[key]
-    return locate(object_loc)
 
 
 def read_lines(file_path):

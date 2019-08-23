@@ -1,12 +1,18 @@
-import os
+#
+#
+#   Models
+#
+#
 
-from ..utils.io_utils import import_from_json
+from ..registration import ComponentRegistry
 
 
-def load(name, **params):
-    try:
-        Model = import_from_json(os.path.join(os.path.dirname(__file__), "..", "var", "models.json"),
-                                 name)
-    except KeyError as e:
-        raise ValueError("Model with name {} not found".format(name)) from e
-    return Model(**params)
+registry = ComponentRegistry("dataset")  # global component registry
+
+
+def register(name, entry_point):
+    return registry.register(name, entry_point)
+
+
+def load(name, **kwargs):
+    return registry.load(name, **kwargs)

@@ -13,11 +13,8 @@ import tensorflow as tf
 from collections.abc import Iterable
 from tensorflow.keras.models import load_model
 
-from ..utils.io_utils import import_from_json
+from .utils.keras_modules import import_keras_module
 
-
-KERAS_CALLBACKS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "keras",
-                                                   "callbacks.json")
 
 KERAS_MODEL_SAVE_FILENAME = "model.h5"
 TENSORFLOW_SESSION_FILENAME = "session.ckpt"
@@ -92,10 +89,8 @@ class BaseKerasMixin:
     def __instantiate_callbacks(self, callbacks_config):
         callbacks = []
         for callback_config in callbacks_config:
-            callback_type = callback_config.pop("type")
-            CallbackClass = import_from_json(KERAS_CALLBACKS_IDS_TO_MODULES_PATH, callback_type)
-
-            callback = CallbackClass(**callback_config)
+            cls = import_keras_module(callback_config.pop("type"), "callbacks")
+            callback = cls(**callback_config)
             callbacks.append(callback)
 
         return callbacks

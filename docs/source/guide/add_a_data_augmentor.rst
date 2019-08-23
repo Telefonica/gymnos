@@ -23,7 +23,17 @@ If you want to :ref:`contribute to our repo <contributing>` and add a new data_a
 
   $ python3 -m scripts.create_new data_augmentor --name my_data_augmentor
 
-This command will create ``gymnos/data_augmentors/my_data_augmentor.py``,and modify ``gymnos/var/data_augmentors.json`` to reference data_augmentor name with their location so we can load it using ``gymnos.load``.
+This command will create ``gymnos/data_augmentors/my_data_augmentor.py``, and modify ``gymnos/__init__.py`` to register data augmentor so we can load it using ``gymnos.load``.
+
+The data augmentor registration process is done by associating the data augmentor name with their path:
+
+.. code-block:: python
+    :caption: gymnos/__init__.py
+
+    data_augmentors.register(
+        name="my_data_augmentor",
+        entry_point="gymnos.data_augmentors.my_data_augmentor.MyDataAugmentor"
+    )
 
 Go to ``gymnos/data_augmentors/my_data_augmentor.py`` and then search for TODO(my_data_augmentor) in the generated file to do the modifications.
 
@@ -95,6 +105,23 @@ Implement this method to perform data augmentation on image.
 
     This method can't change the input shape.
 
+
+Summary
+=============
+
+1. Create ``MyDataAugmentor`` in ``gymnos/data_augmentor/my_data_augmentor.py`` inheriting from :class:`gymnos.data_augmentors.data_augmentor.DataAugmentor` and implementing the following methods:
+
+    - transform(self, item)
+
+2. Register the data augmentor in ``gymnos/__init__.py`` by adding:
+
+.. code-block:: python
+
+    data_augmentors.register(
+        name="my_data_augmentor",
+        entry_point="gymnos.data_augmentors.my_data_augmentor.MyDataAugmentor"
+    )
+
 Adding the data augmentor to ``Telefonica/gymnos``
 ===================================================
 
@@ -119,3 +146,35 @@ You can lint files running ``flake8`` command:
 .. code-block:: console
 
     $ flake8
+
+
+Adding the data augmentor from other repository
+=================================================
+
+You can also add a data augmentor from other repository in a very simple way by converting your repository in a Python library.
+
+Once you have defined your ``setup.py``, create and register your Gymnos data augmentors in the same way we have shown.
+
+Here is a minimal example. Say we have our library named ``gymnos_my_data_augmentors`` and we want to add the data augmentor ``my_data_augmentor``. You have to:
+
+1. Create ``MyDataAugmentor`` in ``gymnos_my_data_augmentors/my_data_augmentor.py`` inheriting from :class:`gymnos.data_augmentors.data_augmentor.DataAugmentor` and implementing the abstract methods
+2. Register data augmentor in your module ``__init__.py`` referencing the name and the path:
+
+.. code-block:: python
+    :caption: gymnos_my_data_augmentors/__init__.py
+
+    import gymnos
+
+    gymnos.data_augmentors.register(
+        name="my_data_augmentor",
+        entry_point="gymnos_my_data_augmentors.my_data_augmentor.MyDataAugmentor"
+    )
+
+
+That's it, when someone wants to run ``my_data_augmentor`` from ``gymnos_my_data_augmentors``, simply ``pip install`` the package and reference the package when you are loading the data augmentor with the following format: ``<module_name>:<data_augmentor_name>``.
+
+For example:
+
+.. code-block:: python
+
+    gymnos.data_augmentors.load("gymnos_my_data_augmentors:my_data_augmentor")

@@ -4,22 +4,11 @@
 #
 #
 
-import os
-import json
-
-from pydoc import locate
 from tensorflow.keras import models, layers
 
 from .model import Model
-from ..utils.io_utils import import_from_json
+from .utils.keras_modules import import_keras_module
 from .mixins import KerasClassifierMixin, KerasRegressorMixin
-
-
-KERAS_LAYERS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "keras", "layers.json")
-KERAS_METRICS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "keras", "metrics.json")
-KERAS_OPTIMIZERS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "keras", "optimizers.json")
-KERAS_APPLICATIONS_IDS_TO_MODULES_PATH = os.path.join(os.path.dirname(__file__), "..", "var", "keras",
-                                                      "applications.json")
 
 
 class BaseKeras(Model):
@@ -48,23 +37,19 @@ class BaseKeras(Model):
 
     def __build_optimizer_from_config(self, optimizer):
         if isinstance(optimizer, dict):
-            with open(KERAS_OPTIMIZERS_IDS_TO_MODULES_PATH) as fp:
-                optimizers_ids_to_modules = json.load(fp)
-
-            OptimizerClass = locate(optimizers_ids_to_modules[optimizer.pop("type")])
-            optimizer = OptimizerClass(**optimizer)
+            cls = import_keras_module(optimizer.pop("type"), "optimizers")
+            optimizer = cls(**optimizer)
 
         return optimizer
 
     def __build_metrics_from_config(self, metrics):
         metrics_funcs = []
-        with open(KERAS_METRICS_IDS_TO_MODULES_PATH) as fp:
-            metrics_ids_to_modules = json.load(fp)
+
         for metric_name in metrics:
-            if metric_name in metrics_ids_to_modules:
-                metric_func = locate(metrics_ids_to_modules[metric_name])
+            try:
+                metric_func = import_keras_module(metric_name, "metrics")
                 metrics_funcs.append(metric_func)
-            else:
+            except ValueError:
                 metrics_funcs.append(metric_name)
 
         return metrics_funcs
@@ -76,11 +61,11 @@ class BaseKeras(Model):
         for layer_config in sequential_config:
             layer_type = layer_config.pop("type")
             if layer_type == "application":
-                LayerClass = import_from_json(KERAS_APPLICATIONS_IDS_TO_MODULES_PATH, layer_config.pop("application"))
-                layer = LayerClass(**layer_config)
+                cls = import_keras_module(layer_config.pop("application"), "applications")
+                layer = cls(**layer_config)
             else:
-                LayerClass = import_from_json(KERAS_LAYERS_IDS_TO_MODULES_PATH, layer_type)
-                layer = LayerClass(**layer_config)
+                cls = import_keras_module(layer_type, "layers")
+                layer = cls(**layer_config)
 
             output_layer = layer(output_layer)
 

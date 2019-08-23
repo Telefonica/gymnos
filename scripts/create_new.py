@@ -6,17 +6,14 @@
 
 import os
 import re
-import json
+import gymnos
 import argparse
-
-from collections import OrderedDict
+from inspect import cleandoc
 
 SNAKE_CASE_TEST_RE = re.compile(r'^[a-z]+([a-z\d]+_|_[a-z\d]+|[a-z\d]+)+[a-z\d]+$')
 SNAKE_CASE_TEST_DASH_RE = re.compile(r'^[a-z]+([a-z\d]+-|-[a-z\d]+)+[a-z\d]+$')
 SNAKE_CASE_REPLACE_RE = re.compile(r'(_)([a-z\d])')
 SNAKE_CASE_REPLACE_DASH_RE = re.compile('(-)([a-z\d])')
-
-VAR_FILES_DIR = os.path.join("gymnos", "var")
 
 
 def is_string(obj):
@@ -223,7 +220,7 @@ class {name}(Tracker):
     def __init__(self, **parameters):
         pass  # {TODO}: Define and initialize tracker parameters
 
-    def start(run_name, logdir):
+    def start(self, run_id, logdir):
         # {OPTIONAL}: Initialize tracker
         pass
 
@@ -286,47 +283,55 @@ class {name}(DataAugmentor):
 """
 
 
-def create_component(raw_string, name, dirname):
+def create_component(raw_string, name, dirname, registry):
+    if name in registry:
+        raise ValueError("Component with name {} already exists".format(name))
+
     camel_name = snake_case_to_camel(name)
     file_str = raw_string.format(name=camel_name, TODO="TODO({})".format(camel_name),
                                  OPTIONAL="OPTIONAL({})".format(camel_name))
 
     file_dir = os.path.join("gymnos", dirname)
     file_path = os.path.join(file_dir, name + ".py")
-    var_file_path = os.path.join("gymnos", "var", dirname + ".json")
 
     with open(file_path, "x") as archive:
         archive.write(file_str)
 
-    with open(var_file_path) as fp:
-        var_data = json.load(fp, object_pairs_hook=OrderedDict)
-        var_data[name] = ".".join(["gymnos", dirname, name, camel_name])
+    init_file_path = os.path.join("gymnos", "__init__.py")
 
-    with open(var_file_path, "w") as fp:
-        json.dump(var_data, fp, indent=4)
-        fp.write("\n")  # Add newline cause Py JSON does not
+    with open(init_file_path, "a") as fp:
+        fp.write("\n")
+        fp.write(cleandoc("""
+            {}.register(
+                name="{}",
+                entry_point="{}"
+            )
+        """.format(dirname, name, ".".join(["gymnos", dirname, name, camel_name]))))
+        fp.write("\n")
 
-    return [var_file_path, file_path]
+    return [init_file_path, file_path]
 
 
 def create_dataset(dataset_name):
-    return create_component(DATASET_FILE_STR, dataset_name, "datasets")
+    return create_component(DATASET_FILE_STR, dataset_name, "datasets", gymnos.datasets.registry)
 
 
 def create_model(model_name):
-    return create_component(MODEL_FILE_STR, model_name, "models")
+    return create_component(MODEL_FILE_STR, model_name, "models", gymnos.models.registry)
 
 
 def create_tracker(tracker_name):
-    return create_component(TRACKER_FILE_STR, tracker_name, "trackers")
+    return create_component(TRACKER_FILE_STR, tracker_name, "trackers", gymnos.trackers.registry)
 
 
 def create_preprocessor(preprocessor_name):
-    return create_component(PREPROCESSOR_FILE_STR, preprocessor_name, "preprocessors")
+    return create_component(PREPROCESSOR_FILE_STR, preprocessor_name, "preprocessors",
+                            gymnos.preprocessors.registry)
 
 
 def create_data_augmentor(data_augmentor_name):
-    return create_component(DATA_AUGMENTOR_FILE_STR, data_augmentor_name, "data_augmentors")
+    return create_component(DATA_AUGMENTOR_FILE_STR, data_augmentor_name, "data_augmentors",
+                            gymnos.data_augmentors.registry)
 
 
 if __name__ == "__main__":

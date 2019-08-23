@@ -18,14 +18,23 @@ Writing ``my_model.py``
 
 Use the default template
 ---------------------------
-If you want to :ref:`contribute to our repo <contributing>` and add a new dataset, the following script will help you get started generating the required python files. To use it, clone the `Gymnos <https://github.com/Telefonica/gymnos>`_ repository and run the following command:
+If you want to :ref:`contribute to our repo <contributing>` and add a new model, the following script will help you get started generating the required python files. To use it, clone the `Gymnos <https://github.com/Telefonica/gymnos>`_ repository and run the following command:
 
 .. code-block:: console
 
     $ python3 -m scripts.create_new model --name my_model
 
-This command will create ``gymnos/models/my_model.py`` and modify ``gymnos/var/models.json`` to reference
-model name with their location so we can load it using ``gymnos.load``.
+This command will create ``gymnos/models/my_model.py``, and modify ``gymnos/__init__.py`` to register model so we can load it using ``gymnos.load``.
+
+The model registration process is done by associating the model name with their path:
+
+.. code-block:: python
+    :caption: gymnos/__init__.py
+
+    models.register(
+        name="my_model",
+        entry_point="gymnos.models.my_model.MyModel"
+    )
 
 Go to ``gymnos/models/my_model.py`` and then search for TODO(my_model) in the generated file to do the modifications.
 
@@ -185,6 +194,27 @@ Restore trained model
         self.model.load(os.path.join(save_dir, "session.pkl"))
         self.model.load_weights(os.path.join(save_dir, "weights.h5"))
 
+Summary
+=============
+
+1. Create ``MyModel`` in ``gymnos/model/my_model.py`` inheriting from :class:`gymnos.models.model.Model` and implementing the abstract methods:
+
+* ``fit``
+* ``fit_generator`` (optional)
+* ``predict``
+* ``evaluate``
+* ``save``
+* ``restore``
+
+2. Register the model in ``gymnos/__init__.py`` by adding:
+
+.. code-block:: python
+
+    models.register(
+        name="my_model",
+        entry_point="gymnos.models.my_model.MyModel"
+    )
+
 Don't Repeat Yourself with mixins
 ===================================
 
@@ -338,6 +368,7 @@ Hereda de ``TensorFlowSaverMixin`` y asigna a la variable ``self.sess`` tu sesi√
             ...
             self.sess = tf.Session()
 
+
 Adding the model to ``Telefonica/gymnos``
 ==========================================
 
@@ -362,3 +393,34 @@ You can lint files running ``flake8`` command:
 .. code-block:: console
 
     $ flake8
+
+Adding the model from other repository
+=================================================
+
+You can also add a model from other repository in a very simple way by converting your repository in a Python library.
+
+Once you have defined your ``setup.py``, create and register your Gymnos models in the same way we have shown.
+
+Here is a minimal example. Say we have our library named ``gymnos_my_models`` and we want to add the model ``my_model``. You have to:
+
+1. Create ``MyModel`` in ``gymnos_my_models/my_model.py`` inheriting from :class:`gymnos.models.model.Model` and implementing the abstract methods
+2. Register model in your module ``__init__.py`` referencing the name and the path:
+
+.. code-block:: python
+    :caption: gymnos_my_models/__init__.py
+
+    import gymnos
+
+    gymnos.models.register(
+        name="my_model",
+        entry_point="gymnos_my_models.my_model.MyModel"
+    )
+
+
+That's it, when someone wants to run ``my_model`` from ``gymnos_my_models``, simply ``pip install`` the package and reference the package when you are loading the model with the following format: ``<module_name>:<model_name>``.
+
+For example:
+
+.. code-block:: python
+
+    gymnos.models.load("gymnos_my_models:my_model")

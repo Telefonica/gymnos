@@ -1,26 +1,43 @@
-import os
+#
+#
+#   Data Augmentors
+#
+#
 
-from ..utils.io_utils import import_from_json
+from ..registration import ComponentRegistry
 
 
-def load(name, **params):
+registry = ComponentRegistry("data augmentor")  # global component registry
+
+
+def register(name, entry_point):
     """
-    Load data augmentor by name
+    Register dataset.
 
     Parameters
-    -------------
+    -----------
     name: str
-        Data Augmentor name
-    **params: any
-        Any parameter for data augmentor constructor
+        Dataset id to register
+    entry_point: str
+        Dataset path
+    """
+    return registry.register(name, entry_point)
+
+
+def load(name, **kwargs):
+    """
+    Load registered dataset
+
+    Parameters
+    ----------
+    name: str
+        Dataset id to load
+    **kwargs: any
+        Dataset constructor arguments
 
     Returns
-    ----------
-    data_augmentor: DataAugmentor
+    --------
+    dataset: gymnos.datasets.dataset.Dataset
+        Dataset instance
     """
-    try:
-        DataAugmentor = import_from_json(os.path.join(os.path.dirname(__file__), "..", "var", "data_augmentors.json"),
-                                         name)
-    except KeyError as e:
-        raise ValueError("DataAugmentor with name {} not found".format(name)) from e
-    return DataAugmentor(**params)
+    return registry.load(name, **kwargs)
