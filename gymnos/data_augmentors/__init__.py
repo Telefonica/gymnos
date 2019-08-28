@@ -12,32 +12,32 @@ registry = ComponentRegistry("data augmentor")  # global component registry
 
 def register(name, entry_point):
     """
-    Register dataset.
+    Register data augmentor.
 
     Parameters
     -----------
     name: str
-        Dataset id to register
+        Data augmentor id to register
     entry_point: str
-        Dataset path
+        Data augmentor path
     """
     return registry.register(name, entry_point)
 
 
 def load(name, **kwargs):
     """
-    Load registered dataset
+    Load registered data augmentor
 
     Parameters
     ----------
     name: str
-        Dataset id to load
+        Data augmentor id to load
     **kwargs: any
-        Dataset constructor arguments
+        Data augmentor constructor arguments
 
     Returns
     --------
-    dataset: gymnos.datasets.dataset.Dataset
-        Dataset instance
+    data augmentor: gymnos.data augmentors.data augmentor.data augmentor
+        Data augmentor instance
     """
     return registry.load(name, **kwargs)

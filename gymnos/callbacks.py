@@ -8,6 +8,9 @@ import time
 
 
 class Callback:
+    """
+    Base class for all Gymnos callbacks
+    """
 
     def on_train_begin(self):
         """
@@ -91,11 +94,27 @@ class Callback:
 
 
 class CallbackList:
+    """
+    Class to execute multiple callbacks at the same time.
+
+    Parameters
+    ------------
+    callbacks: list of Callback
+        Callbacks to add to the queue
+    """
 
     def __init__(self, callbacks):
         self.callbacks = callbacks
 
     def add(self, callback):
+        """
+        Add a callback
+
+        Parameters
+        -------------
+        callback: Callback
+            Callback to add to the queue
+        """
         self.callbacks.append(callback)
 
     def on_train_begin(self):
@@ -164,6 +183,9 @@ class CallbackList:
 
 
 class TimeHistory(Callback):
+    """
+    Class to measure time between steps
+    """
 
     def on_train_begin(self):
         self.times = {}

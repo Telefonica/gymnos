@@ -25,10 +25,23 @@ gymnos.datasets.data_usage_test
 .. automodule:: gymnos.datasets.data_usage_test
     :members:
 
+
+gymnos.datasets.unusual_data_usage_test
+===============================================
+
+.. automodule:: gymnos.datasets.unusual_data_usage_test
+    :members:
+
 gymnos.datasets.dogs_vs_cats
 ===============================
 
 .. automodule:: gymnos.datasets.dogs_vs_cats
+    :members:
+
+gymnos.datasets.tiny_imagenet
+===============================
+
+.. automodule:: gymnos.datasets.tiny_imagenet
     :members:
 
 gymnos.datasets.imdb
@@ -47,4 +60,10 @@ gymnos.datasets.rock_paper_scissors
 =========================================
 
 .. automodule:: gymnos.datasets.rock_paper_scissors
+    :members:
+
+gymnos.datasets.synthetic_digits
+===============================================
+
+.. automodule:: gymnos.datasets.synthetic_digits
     :members:

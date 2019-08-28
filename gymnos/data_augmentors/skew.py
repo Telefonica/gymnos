@@ -18,48 +18,42 @@ class Skew(DataAugmentor):
     """
     This class is used to perform perspective skewing on images. It allows
     for skewing from a total of 12 different perspectives.
+
+    As well as the required :attr:`probability` parameter, the type of
+    skew that is performed is controlled using a :attr:`skew_type` and a
+    :attr:`magnitude` parameter. The :attr:`skew_type` controls the
+    direction of the skew, while :attr:`magnitude` controls the degree
+    to which the skew is performed.
+
+    Images are skewed **in place** and an image of the same size is
+    returned by this function. That is to say, that after a skew
+    has been performed, the largest possible area of the same aspect ratio
+    of the original image is cropped from the skewed image, and this is
+    then resized to match the original image size.
+
+    :param probability: Controls the probability that the operation is
+     performed when it is invoked in the pipeline.
+    :param skew_type: Must be one of ``TILT``, ``TILT_TOP_BOTTOM``,
+     ``TILT_LEFT_RIGHT``, or ``CORNER``.
+
+     - ``TILT`` will randomly skew either left, right, up, or down.
+       Left or right means it skews on the x-axis while up and down
+       means that it skews on the y-axis.
+     - ``TILT_TOP_BOTTOM`` will randomly skew up or down, or in other
+       words skew along the y-axis.
+     - ``TILT_LEFT_RIGHT`` will randomly skew left or right, or in other
+       words skew along the x-axis.
+     - ``CORNER`` will randomly skew one **corner** of the image either
+       along the x-axis or y-axis. This means in one of 8 different
+       directions, randomly.
+
+    :param magnitude: The degree to which the image is skewed.
+    :type probability: float
+    :type skew_type: str
+    :type magnitude: int
     """
 
     def __init__(self, probability, skew_type, magnitude):
-        """
-        As well as the required :attr:`probability` parameter, the type of
-        skew that is performed is controlled using a :attr:`skew_type` and a
-        :attr:`magnitude` parameter. The :attr:`skew_type` controls the
-        direction of the skew, while :attr:`magnitude` controls the degree
-        to which the skew is performed.
-
-        To see examples of the various skews, see :ref:`perspectiveskewing`.
-
-        Images are skewed **in place** and an image of the same size is
-        returned by this function. That is to say, that after a skew
-        has been performed, the largest possible area of the same aspect ratio
-        of the original image is cropped from the skewed image, and this is
-        then resized to match the original image size. The
-        :ref:`perspectiveskewing` section describes this in detail.
-
-        :param probability: Controls the probability that the operation is
-         performed when it is invoked in the pipeline.
-        :param skew_type: Must be one of ``TILT``, ``TILT_TOP_BOTTOM``,
-         ``TILT_LEFT_RIGHT``, or ``CORNER``.
-
-         - ``TILT`` will randomly skew either left, right, up, or down.
-           Left or right means it skews on the x-axis while up and down
-           means that it skews on the y-axis.
-         - ``TILT_TOP_BOTTOM`` will randomly skew up or down, or in other
-           words skew along the y-axis.
-         - ``TILT_LEFT_RIGHT`` will randomly skew left or right, or in other
-           words skew along the x-axis.
-         - ``CORNER`` will randomly skew one **corner** of the image either
-           along the x-axis or y-axis. This means in one of 8 different
-           directions, randomly.
-
-         To see examples of the various skews, see :ref:`perspectiveskewing`.
-
-        :param magnitude: The degree to which the image is skewed.
-        :type probability: Float
-        :type skew_type: String
-        :type magnitude: Integer
-        """
         super().__init__(probability)
         self.skew_type = skew_type
         self.magnitude = magnitude

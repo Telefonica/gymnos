@@ -7,10 +7,13 @@ Gymnos API reference
 
 .. toctree::
     core
-    utils
+    trainer
     services
     datasets
     preprocessors
     data_augmentors
     models
     trackers
+    registration
+    callbacks
+    utils

@@ -16,57 +16,56 @@ from .data_augmentor import DataAugmentor
 class GaussianDistortion(DataAugmentor):
     """
     This class performs randomised, elastic gaussian distortions on images.
+
+    As well as the probability, the granularity of the distortions
+    produced by this class can be controlled using the width and
+    height of the overlaying distortion grid. The larger the height
+    and width of the grid, the smaller the distortions. This means
+    that larger grid sizes can result in finer, less severe distortions.
+    As well as this, the magnitude of the distortions vectors can
+    also be adjusted.
+
+    :param probability: Controls the probability that the operation is
+     performed when it is invoked in the pipeline.
+    :param grid_width: The width of the gird overlay, which is used
+     by the class to apply the transformations to the image.
+    :param grid_height: The height of the gird overlay, which is used
+     by the class to apply the transformations to the image.
+    :param magnitude: Controls the degree to which each distortion is
+     applied to the overlaying distortion grid.
+    :param corner: which corner of picture to distort.
+     Possible values: "bell"(circular surface applied), "ul"(upper left),
+     "ur"(upper right), "dl"(down left), "dr"(down right).
+    :param method: possible values: "in"(apply max magnitude to the chosen
+     corner), "out"(inverse of method in).
+    :param mex: used to generate 3d surface for similar distortions.
+     Surface is based on normal distribution.
+    :param mey: used to generate 3d surface for similar distortions.
+     Surface is based on normal distribution.
+    :param sdx: used to generate 3d surface for similar distortions.
+     Surface is based on normal distribution.
+    :param sdy: used to generate 3d surface for similar distortions.
+     Surface is based on normal distribution.
+    :type probability: float
+    :type grid_width: int
+    :type grid_height: int
+    :type magnitude: int
+    :type corner: str
+    :type method: str
+    :type mex: float
+    :type mey: float
+    :type sdx: float
+    :type sdy: float
+
+    For values :attr:`mex`, :attr:`mey`, :attr:`sdx`, and :attr:`sdy` the
+    surface is based on the normal distribution:
+
+    .. math::
+
+     e^{- \\Big( \\frac{(x-\\text{mex})^2}{\\text{sdx}} + \\frac{(y-\\text{mey})^2}{\\text{sdy}} \\Big) }
     """
 
     def __init__(self, probability, grid_width, grid_height, magnitude, corner, method, mex, mey, sdx, sdy):
-        """
-        As well as the probability, the granularity of the distortions
-        produced by this class can be controlled using the width and
-        height of the overlaying distortion grid. The larger the height
-        and width of the grid, the smaller the distortions. This means
-        that larger grid sizes can result in finer, less severe distortions.
-        As well as this, the magnitude of the distortions vectors can
-        also be adjusted.
-
-        :param probability: Controls the probability that the operation is
-         performed when it is invoked in the pipeline.
-        :param grid_width: The width of the gird overlay, which is used
-         by the class to apply the transformations to the image.
-        :param grid_height: The height of the gird overlay, which is used
-         by the class to apply the transformations to the image.
-        :param magnitude: Controls the degree to which each distortion is
-         applied to the overlaying distortion grid.
-        :param corner: which corner of picture to distort.
-         Possible values: "bell"(circular surface applied), "ul"(upper left),
-         "ur"(upper right), "dl"(down left), "dr"(down right).
-        :param method: possible values: "in"(apply max magnitude to the chosen
-         corner), "out"(inverse of method in).
-        :param mex: used to generate 3d surface for similar distortions.
-         Surface is based on normal distribution.
-        :param mey: used to generate 3d surface for similar distortions.
-         Surface is based on normal distribution.
-        :param sdx: used to generate 3d surface for similar distortions.
-         Surface is based on normal distribution.
-        :param sdy: used to generate 3d surface for similar distortions.
-         Surface is based on normal distribution.
-        :type probability: Float
-        :type grid_width: Integer
-        :type grid_height: Integer
-        :type magnitude: Integer
-        :type corner: String
-        :type method: String
-        :type mex: Float
-        :type mey: Float
-        :type sdx: Float
-        :type sdy: Float
-
-        For values :attr:`mex`, :attr:`mey`, :attr:`sdx`, and :attr:`sdy` the
-        surface is based on the normal distribution:
-
-        .. math::
-
-         e^{- \\Big( \\frac{(x-\\text{mex})^2}{\\text{sdx}} + \\frac{(y-\\text{mey})^2}{\\text{sdy}} \\Big) }
-        """
         super().__init__(probability)
         self.grid_width = grid_width
         self.grid_height = grid_height
@@ -85,7 +84,7 @@ class GaussianDistortion(DataAugmentor):
         during instantiation, returning the newly distorted image.
 
         :param image: The image(s) to be distorted.
-        :type image: np.array
+        :type image: np.ndarray
         :return: The transformed image
         """
         image = arr_to_img(image)

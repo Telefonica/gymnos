@@ -25,24 +25,23 @@ class Shear(DataAugmentor):
     has been performed, the largest possible area of the same aspect ratio
     of the original image is cropped from the sheared image, and this is
     then resized to match the original image size.
+
+    The shearing is randomised in magnitude, from 0 to the
+    :attr:`max_shear_left` or 0 to :attr:`max_shear_right` where the
+    direction is randomised. The shear axis is also randomised
+    i.e. if it shears up/down along the y-axis or
+    left/right along the x-axis.
+
+    :param probability: Controls the probability that the operation is
+     performed when it is invoked in the pipeline.
+    :param max_shear_left: The maximum shear to the left.
+    :param max_shear_right: The maximum shear to the right.
+    :type probability: float
+    :type max_shear_left: int
+    :type max_shear_right: int
     """
 
     def __init__(self, probability, max_shear_left, max_shear_right):
-        """
-        The shearing is randomised in magnitude, from 0 to the
-        :attr:`max_shear_left` or 0 to :attr:`max_shear_right` where the
-        direction is randomised. The shear axis is also randomised
-        i.e. if it shears up/down along the y-axis or
-        left/right along the x-axis.
-
-        :param probability: Controls the probability that the operation is
-         performed when it is invoked in the pipeline.
-        :param max_shear_left: The maximum shear to the left.
-        :param max_shear_right: The maximum shear to the right.
-        :type probability: Float
-        :type max_shear_left: Integer
-        :type max_shear_right: Integer
-        """
         super().__init__(probability)
         self.max_shear_left = max_shear_left
         self.max_shear_right = max_shear_right

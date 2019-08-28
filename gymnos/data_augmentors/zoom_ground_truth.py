@@ -17,26 +17,25 @@ class ZoomGroundTruth(DataAugmentor):
     """
     This class is used to enlarge images (to zoom) but to return a cropped
     region of the zoomed image of the same size as the original image.
+
+    The amount of zoom applied is randomised, from between
+    :attr:`min_factor` and :attr:`max_factor`. Set these both to the same
+    value to always zoom by a constant factor.
+
+    :param probability: Controls the probability that the operation is
+     performed when it is invoked in the pipeline.
+    :param min_factor: The minimum amount of zoom to apply. Set both the
+     :attr:`min_factor` and :attr:`min_factor` to the same values to zoom
+     by a constant factor.
+    :param max_factor: The maximum amount of zoom to apply. Set both the
+     :attr:`min_factor` and :attr:`min_factor` to the same values to zoom
+     by a constant factor.
+    :type probability: float
+    :type min_factor: float
+    :type max_factor: float
     """
 
     def __init__(self, probability, min_factor, max_factor):
-        """
-        The amount of zoom applied is randomised, from between
-        :attr:`min_factor` and :attr:`max_factor`. Set these both to the same
-        value to always zoom by a constant factor.
-
-        :param probability: Controls the probability that the operation is
-         performed when it is invoked in the pipeline.
-        :param min_factor: The minimum amount of zoom to apply. Set both the
-         :attr:`min_factor` and :attr:`min_factor` to the same values to zoom
-         by a constant factor.
-        :param max_factor: The maximum amount of zoom to apply. Set both the
-         :attr:`min_factor` and :attr:`min_factor` to the same values to zoom
-         by a constant factor.
-        :type probability: Float
-        :type min_factor: Float
-        :type max_factor: Float
-        """
         super().__init__(probability)
         self.min_factor = min_factor
         self.max_factor = max_factor

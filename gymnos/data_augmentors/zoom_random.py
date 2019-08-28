@@ -16,24 +16,23 @@ from ..utils.image_utils import arr_to_img, img_to_arr
 class ZoomRandom(DataAugmentor):
     """
     This class is used to zoom into random areas of the image.
+
+    Zooms into a random area of the image, rather than the centre of
+    the image, as is done by :class:`Zoom`. The zoom factor is fixed
+    unless :attr:`randomise` is set to ``True``.
+
+    :param probability: Controls the probability that the operation is
+     performed when it is invoked in the pipeline.
+    :param percentage_area: A value between 0.1 and 1 that represents the
+     area that will be cropped, with 1 meaning the entire area of the
+     image will be cropped and 0.1 mean 10% of the area of the image
+     will be cropped, before zooming.
+    :param randomise: If ``True``, uses the :attr:`percentage_area` as an
+     upper bound, and randomises the zoom level from between 0.1 and
+     :attr:`percentage_area`.
     """
 
     def __init__(self, probability, percentage_area, randomise):
-        """
-        Zooms into a random area of the image, rather than the centre of
-        the image, as is done by :class:`Zoom`. The zoom factor is fixed
-        unless :attr:`randomise` is set to ``True``.
-
-        :param probability: Controls the probability that the operation is
-         performed when it is invoked in the pipeline.
-        :param percentage_area: A value between 0.1 and 1 that represents the
-         area that will be cropped, with 1 meaning the entire area of the
-         image will be cropped and 0.1 mean 10% of the area of the image
-         will be cropped, before zooming.
-        :param randomise: If ``True``, uses the :attr:`percentage_area` as an
-         upper bound, and randomises the zoom level from between 0.1 and
-         :attr:`percentage_area`.
-        """
         super().__init__(probability)
         self.percentage_area = percentage_area
         self.randomise = randomise

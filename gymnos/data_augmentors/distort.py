@@ -16,31 +16,30 @@ from .data_augmentor import DataAugmentor
 class Distort(DataAugmentor):
     """
     This class performs randomised, elastic distortions on images.
+
+    As well as the probability, the granularity of the distortions
+    produced by this class can be controlled using the width and
+    height of the overlaying distortion grid. The larger the height
+    and width of the grid, the smaller the distortions. This means
+    that larger grid sizes can result in finer, less severe distortions.
+    As well as this, the magnitude of the distortions vectors can
+    also be adjusted.
+
+    :param probability: Controls the probability that the operation is
+     performed when it is invoked in the pipeline.
+    :param grid_width: The width of the gird overlay, which is used
+     by the class to apply the transformations to the image.
+    :param grid_height: The height of the gird overlay, which is used
+     by the class to apply the transformations to the image.
+    :param magnitude: Controls the degree to which each distortion is
+     applied to the overlaying distortion grid.
+    :type probability: float
+    :type grid_width: int
+    :type grid_height: int
+    :type magnitude: int
     """
 
     def __init__(self, probability, grid_width, grid_height, magnitude):
-        """
-        As well as the probability, the granularity of the distortions
-        produced by this class can be controlled using the width and
-        height of the overlaying distortion grid. The larger the height
-        and width of the grid, the smaller the distortions. This means
-        that larger grid sizes can result in finer, less severe distortions.
-        As well as this, the magnitude of the distortions vectors can
-        also be adjusted.
-
-        :param probability: Controls the probability that the operation is
-         performed when it is invoked in the pipeline.
-        :param grid_width: The width of the gird overlay, which is used
-         by the class to apply the transformations to the image.
-        :param grid_height: The height of the gird overlay, which is used
-         by the class to apply the transformations to the image.
-        :param magnitude: Controls the degree to which each distortion is
-         applied to the overlaying distortion grid.
-        :type probability: Float
-        :type grid_width: Integer
-        :type grid_height: Integer
-        :type magnitude: Integer
-        """
         super().__init__(probability)
         self.grid_width = grid_width
         self.grid_height = grid_height

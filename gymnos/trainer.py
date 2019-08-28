@@ -17,10 +17,10 @@ import numpy as np
 from collections import OrderedDict
 from tensorflow.keras.utils import to_categorical
 
+from . import models, datasets
 from .trackers.history import History
 from .trackers.tracker import TrackerList
 from .services.download_manager import DownloadManager
-from . import models, datasets
 from .utils.text_utils import humanize_bytes
 from .utils.archiver import extract_zip, zipdir
 from .callbacks import CallbackList, TimeHistory
@@ -36,10 +36,14 @@ class Trainer:
 
     Parameters
     ----------
-    model: core.Model
-    dataset: core.Dataset
-    training: core.Training
-    tracking: core.Tracking
+    model: gymnos.core.model.Model
+        Instance of core model
+    dataset: gymnos.core.dataset.Dataset
+        Instance of core.dataset
+    training: gymnos.core.training.Training
+        Instance of core.training
+    tracking: gymnos.core.tracking.Tracking
+        Instance of core.tracking
     """
 
     def __init__(self, model, dataset, training, tracking):
@@ -56,7 +60,13 @@ class Trainer:
         Parameters
         ----------
         spec: dict
-            Dictionnary with the following keys: "experiment", "model", "dataset", "training", "tracking"
+            Dictionnary with the following keys:
+
+                - ``"experiment"``
+                - ``"model"``
+                - ``"dataset"``
+                - ``"training"``
+                - ``"tracking"``
 
         Returns
         -------
@@ -74,6 +84,14 @@ class Trainer:
         )
 
     def to_dict(self):
+        """
+        Convert trainer to dictionnary specifying core components
+
+        Returns
+        -----------
+        dict
+            Trainer components
+        """
         return dict(
             dataset=self.dataset.to_dict(),
             model=self.model.to_dict(),

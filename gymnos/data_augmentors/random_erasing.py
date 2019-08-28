@@ -25,18 +25,17 @@ class RandomErasing(DataAugmentor):
     Exactly this is provided by this class.
 
     Random Erasing can make a trained neural network more robust to occlusion.
+
+    The size of the random rectangle is controlled using the
+    :attr:`rectangle_area` parameter. This area is random in its
+    width and height.
+
+    :param probability: The probability that the operation will be
+     performed.
+    :param rectangle_area: The percentage are of the image to occlude.
     """
 
     def __init__(self, probability, rectangle_area):
-        """
-        The size of the random rectangle is controlled using the
-        :attr:`rectangle_area` parameter. This area is random in its
-        width and height.
-
-        :param probability: The probability that the operation will be
-         performed.
-        :param rectangle_area: The percentage are of the image to occlude.
-        """
         super().__init__(probability)
         self.rectangle_area = rectangle_area
 

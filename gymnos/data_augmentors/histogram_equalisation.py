@@ -16,17 +16,16 @@ class HistogramEqualisation(DataAugmentor):
     """
     The class :class:`HistogramEqualisation` is used to perform histogram
     equalisation on images passed to its :func:`transform` function.
+
+    As there are no further user definable parameters, the class is
+    instantiated using only the :attr:`probability` argument.
+
+    :param probability: Controls the probability that the operation is
+     performed when it is invoked in the pipeline.
+    :type probability: float
     """
 
     def __init__(self, probability):
-        """
-        As there are no further user definable parameters, the class is
-        instantiated using only the :attr:`probability` argument.
-
-        :param probability: Controls the probability that the operation is
-         performed when it is invoked in the pipeline.
-        :type probability: Float
-        """
         super().__init__(probability)
 
     def transform(self, image):
@@ -37,7 +36,7 @@ class HistogramEqualisation(DataAugmentor):
 
         :param image: The image(s) on which to perform the histogram
          equalisation.
-        :type image: np.array
+        :type image: np.ndarray
         :return: The transformed image
         """
         # If an image is a colour image, the histogram will

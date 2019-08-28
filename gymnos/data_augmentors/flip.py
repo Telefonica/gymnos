@@ -17,24 +17,24 @@ class Flip(DataAugmentor):
 
     The class allows an image to be mirrored along either
     its x axis or its y axis, or randomly.
+    The direction of the flip, or whether it should be randomised, is
+    controlled using the :attr:`top_bottom_left_right` parameter.
+
+    :param probability: Controls the probability that the operation is
+     performed when it is invoked in the pipeline.
+    :type probability: float
+    :type top_bottom_left_right: str
+    :param top_bottom_left_right: Controls the direction the image should
+     be mirrored. Must be one of ``LEFT_RIGHT``, ``TOP_BOTTOM``, or
+     ``RANDOM``.
+
+     - ``LEFT_RIGHT`` defines that the image is mirrored along its x axis.
+     - ``TOP_BOTTOM`` defines that the image is mirrored along its y axis.
+     - ``RANDOM`` defines that the image is mirrored randomly along
+       either the x or y axis.
     """
 
     def __init__(self, probability, top_bottom_left_right):
-        """
-        The direction of the flip, or whether it should be randomised, is
-        controlled using the :attr:`top_bottom_left_right` parameter.
-
-        :param probability: Controls the probability that the operation is
-         performed when it is invoked in the pipeline.
-        :param top_bottom_left_right: Controls the direction the image should
-         be mirrored. Must be one of ``LEFT_RIGHT``, ``TOP_BOTTOM``, or
-         ``RANDOM``.
-
-         - ``LEFT_RIGHT`` defines that the image is mirrored along its x axis.
-         - ``TOP_BOTTOM`` defines that the image is mirrored along its y axis.
-         - ``RANDOM`` defines that the image is mirrored randomly along
-           either the x or y axis.
-        """
         super().__init__(probability)
         self.top_bottom_left_right = top_bottom_left_right
 
@@ -43,8 +43,8 @@ class Flip(DataAugmentor):
         Mirror the image according to the `attr`:top_bottom_left_right`
         argument passed to the constructor and return the mirrored image.
 
-        :param image: The image(s) to mirror.
-        :type image: np.array
+        :param image: The image to mirror.
+        :type image: np.ndarray
         :return: The transformed image
         """
         image = arr_to_img(image)
