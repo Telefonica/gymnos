@@ -269,7 +269,8 @@ class {name}(DataAugmentor):
     {TODO}: Description of my preprocessor.
     \"""
 
-    def __init__(self, **parameters):
+    def __init__(self, probability, **parameters):
+        super().__init__(probability)
         pass  # {TODO}: Define and initialize model parameters
 
     def fit(self, X, y=None):
