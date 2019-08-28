@@ -13,7 +13,7 @@ from inspect import cleandoc
 SNAKE_CASE_TEST_RE = re.compile(r'^[a-z]+([a-z\d]+_|_[a-z\d]+|[a-z\d]+)+[a-z\d]+$')
 SNAKE_CASE_TEST_DASH_RE = re.compile(r'^[a-z]+([a-z\d]+-|-[a-z\d]+)+[a-z\d]+$')
 SNAKE_CASE_REPLACE_RE = re.compile(r'(_)([a-z\d])')
-SNAKE_CASE_REPLACE_DASH_RE = re.compile('(-)([a-z\d])')
+SNAKE_CASE_REPLACE_DASH_RE = re.compile(r'(-)([a-z\d])')
 
 
 def is_string(obj):
@@ -59,7 +59,7 @@ def is_snake_case(string, separator="_"):
             "_": SNAKE_CASE_TEST_RE,
             "-": SNAKE_CASE_TEST_DASH_RE
         }
-        re_template = "^[a-z]+([a-z\d]+{sign}|{sign}[a-z\d]+|[a-z\d]+)+[a-z\d]+$"
+        re_template = r"^[a-z]+([a-z\d]+{sign}|{sign}[a-z\d]+|[a-z\d]+)+[a-z\d]+$"
         r = re_map.get(separator, re.compile(re_template.format(sign=re.escape(separator))))
         return bool(r.search(string))
     return False
@@ -86,7 +86,7 @@ def snake_case_to_camel(string, upper_case_first=True, separator='_'):
         '_': SNAKE_CASE_REPLACE_RE,
         '-': SNAKE_CASE_REPLACE_DASH_RE
     }
-    r = re_map.get(separator, re.compile('({sign})([a-z\d])'.format(sign=re.escape(separator))))
+    r = re_map.get(separator, re.compile(r'({sign})([a-z\d])'.format(sign=re.escape(separator))))
     string = r.sub(lambda m: m.group(2).upper(), string)
     if upper_case_first:
         return string[0].upper() + string[1:]
