@@ -6,8 +6,9 @@
 
 import os
 import joblib
-import sklearn
 import numpy as np
+import sklearn.base
+import sklearn.model_selection
 import tensorflow as tf
 
 from collections.abc import Iterable

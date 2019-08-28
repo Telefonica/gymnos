@@ -1,21 +1,22 @@
 import gymnos
 import pytest
 import numbers
-import pkgutil
-import importlib
 import numpy as np
 import pandas as pd
 
-from gymnos.datasets.dataset import HDF5Dataset
+from gymnos.datasets.mte import MTE
+from gymnos.datasets.boston_housing import BostonHousing
+from gymnos.datasets.dogs_vs_cats import DogsVsCats
+from gymnos.datasets.imdb import IMDB
+from gymnos.datasets.rock_paper_scissors import RockPaperScissors
+from gymnos.datasets.synthetic_digits import SyntheticDigits
+from gymnos.datasets.tiny_imagenet import TinyImagenet
+from gymnos.datasets.data_usage_test import DataUsageTest
+from gymnos.datasets.unusual_data_usage_test import UnusualDataUsageTest
 
-from gymnos.datasets.dataset import Dataset, ClassLabel
+from gymnos.datasets.dataset import ClassLabel
 from gymnos.services.download_manager import DownloadManager
 
-
-for (module_loader, name, ispkg) in pkgutil.iter_modules(["gymnos.datasets"]):
-    importlib.import_module('.' + name, __package__)
-
-all_dataset_classes = [cls for cls in Dataset.__subclasses__() if cls != HDF5Dataset]
 
 ARRAY_LIKE_TYPES = [numbers.Number, frozenset, list, set, tuple, np.ndarray, pd.Series, pd.DataFrame]
 
@@ -30,12 +31,19 @@ def test_load():
 
 
 @pytest.mark.slow
-@pytest.mark.parametrize("dataset", [DatasetSubClass() for DatasetSubClass in all_dataset_classes])
+@pytest.mark.parametrize("dataset", [
+    MTE(),
+    RockPaperScissors(),
+    BostonHousing(),
+    DogsVsCats(),
+    IMDB(),
+    SyntheticDigits(),
+    TinyImagenet(),
+    DataUsageTest(),
+    UnusualDataUsageTest()
+])
 def test_samples(dataset, tmp_path):
-    if dataset.__class__.__name__ == "MTE":
-        return
-
-    dl_manager = DownloadManager(download_dir=str(tmp_path))
+    dl_manager = DownloadManager(download_dir=str(tmp_path / "Downloads"))
     dataset.download_and_prepare(dl_manager)
 
     sample = dataset[0]

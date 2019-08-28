@@ -4,7 +4,8 @@
 #
 #
 
-import sklearn
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
 
 import numpy as np
 import tensorflow as tf
@@ -102,7 +103,7 @@ class DogsVsCatsCNN(TensorFlowSaverMixin, Model):
 
         val_data = []
         if validation_split and 0.0 < validation_split < 1.0:
-            X, X_val, y, y_val = sklearn.model_selection.train_test_split(X, y, test_size=validation_split)
+            X, X_val, y, y_val = train_test_split(X, y, test_size=validation_split)
             val_data = [X_val, y_val]
 
         # Iterate by epoch
@@ -152,5 +153,5 @@ class DogsVsCatsCNN(TensorFlowSaverMixin, Model):
     def evaluate(self, X, y):
         y_pred = self.predict(X)
         return {
-            "acc": sklearn.metrics.accuracy_score(np.argmax(y, axis=1), y_pred)
+            "acc": accuracy_score(np.argmax(y, axis=1), y_pred)
         }
