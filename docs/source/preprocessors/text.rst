@@ -17,3 +17,8 @@ tfidf
 .. autoclass:: gymnos.preprocessors.texts.tfidf.Tfidf
     :noindex:
 
+
+binary_vectorizer
+=================================
+.. autoclass:: gymnos.preprocessors.texts.binary_vectorizer.BinaryVectorizer
+    :noindex:

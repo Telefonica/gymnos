@@ -48,6 +48,12 @@ gymnos.preprocessors.texts.tfidf
 .. automodule:: gymnos.preprocessors.texts.tfidf
     :members:
 
+gymnos.preprocessors.texts.binary_vectorizer
+--------------------------------------------------
+
+.. automodule:: gymnos.preprocessors.texts.binary_vectorizer
+    :members:
+
 gymnos.preprocessors.utils
 ============================
 

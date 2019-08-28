@@ -131,6 +131,11 @@ preprocessors.register(
 )
 
 preprocessors.register(
+    name="binary_vectorizer",
+    entry_point="gymnos.preprocessors.texts.binary_vectorizer.BinaryVectorizer"
+)
+
+preprocessors.register(
     name="grayscale_to_color",
     entry_point="gymnos.preprocessors.images.grayscale_to_color.GrayscaleToColor"
 )

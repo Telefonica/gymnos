@@ -6,7 +6,7 @@
 
 from ..preprocessor import Preprocessor
 
-from keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.text import Tokenizer
 
 
 class BinaryVectorizer(Preprocessor):
