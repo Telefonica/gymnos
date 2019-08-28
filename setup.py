@@ -13,16 +13,7 @@ DATASET_FILES = [
 ]
 
 VAR_FILES = [
-    "var/data_augmentors.json",
-    "var/datasets.json",
-    "var/models.json",
-    "var/preprocessors.json",
-    "var/trackers.json",
-    "var/keras/applications.json",
-    "var/keras/callbacks.json",
-    "var/keras/layers.json",
-    "var/keras/metrics.json",
-    "var/keras/optimizers.json",
+    "models/var/keras_modules.json"
 ]
 
 REQUIRED_DEPENDENCIES = [
