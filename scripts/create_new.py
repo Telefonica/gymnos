@@ -98,6 +98,7 @@ MODEL_TYPE = "model"
 PREPROCESSOR_TYPE = "preprocessor"
 TRACKER_TYPE = "tracker"
 DATA_AUGMENTOR_TYPE = "data_augmentor"
+SERVICE_TYPE = "service"
 
 DATASET_FILE_STR = """
 #
@@ -282,6 +283,28 @@ class {name}(DataAugmentor):
         pass  # {TODO}: Preprocess data
 """
 
+SERVICE_FILE_STR = """
+#
+#
+#   {name}
+#
+#
+
+from .service import Service, ServiceConfig, Value
+
+
+class {name}(Service):
+    \"""
+    {TODO}: Description of my service.
+    \"""
+
+    class Config(ServiceConfig):
+        pass  # {OPTIONAL}: Define your required and optional configuration variables.
+
+    def download(self, *args, **kwargs):
+        pass  # {OPTIONAL}: Download file.
+"""
+
 
 def create_component(raw_string, name, dirname, registry):
     if name in registry:
@@ -334,10 +357,15 @@ def create_data_augmentor(data_augmentor_name):
                             gymnos.data_augmentors.registry)
 
 
+def create_service(service_name):
+    return create_component(SERVICE_FILE_STR, service_name, "services",
+                            gymnos.services.registry)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("type", type=str, choices=[DATASET_TYPE, MODEL_TYPE, PREPROCESSOR_TYPE, TRACKER_TYPE,
-                                                   DATA_AUGMENTOR_TYPE])
+                                                   DATA_AUGMENTOR_TYPE, SERVICE_TYPE])
     parser.add_argument("-n", "--name", type=str, required=True, help="Name to generate files (snake case)")
     args = parser.parse_args()
 
@@ -360,6 +388,8 @@ if __name__ == "__main__":
         modified_files = create_tracker(args.name)
     elif args.type == DATA_AUGMENTOR_TYPE:
         modified_files = create_data_augmentor(args.name)
+    elif args.type == SERVICE_TYPE:
+        modified_files = create_service(args.name)
     else:
         parser.print_help()
 

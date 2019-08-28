@@ -51,8 +51,8 @@ class DogsVsCats(Dataset):
         )
 
     def download_and_prepare(self, dl_manager):
-        train_files = dl_manager.download_kaggle(competition_name=KAGGLE_COMPETITION_NAME,
-                                                 file_or_files=KAGGLE_COMPETITION_FILE)
+        train_files = dl_manager["kaggle"].download(competition_name=KAGGLE_COMPETITION_NAME,
+                                                    file_or_files=KAGGLE_COMPETITION_FILE)
         train_dir = dl_manager.extract(train_files)
         cat_images_paths = glob(os.path.join(train_dir, "train", "cat.*.jpg"))
         dog_images_paths = glob(os.path.join(train_dir, "train", "dog.*.jpg"))

@@ -42,8 +42,8 @@ class IMDB(Dataset):
         )
 
     def download_and_prepare(self, dl_manager):
-        csv_path = dl_manager.download_kaggle(dataset_name=KAGGLE_DATASET_NAME,
-                                              file_or_files=KAGGLE_DATASET_FILENAME)
+        csv_path = dl_manager["kaggle"].download(dataset_name=KAGGLE_DATASET_NAME,
+                                                 file_or_files=KAGGLE_DATASET_FILENAME)
         logger.info("Reading CSV")
         self.data_ = pd.read_csv(csv_path, encoding="latin-1")
 

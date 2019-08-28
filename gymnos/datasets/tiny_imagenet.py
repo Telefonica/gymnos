@@ -42,8 +42,8 @@ class TinyImagenet(Dataset):
         )
 
     def download_and_prepare(self, dl_manager):
-        path = dl_manager.download_kaggle(dataset_name=KAGGLE_DATASET_NAME,
-                                          file_or_files=KAGGLE_DATASET_FILENAME)
+        path = dl_manager["kaggle"].download(dataset_name=KAGGLE_DATASET_NAME,
+                                             file_or_files=KAGGLE_DATASET_FILENAME)
         path = dl_manager.extract(path)
         path = os.path.join(path, "tiny-imagenet-200")
 

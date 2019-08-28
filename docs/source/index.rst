@@ -8,6 +8,7 @@ Gymnos
    introduction
    installation
    datasets/overview
+   services
    models/overview
    preprocessors/overview
    data_augmentors

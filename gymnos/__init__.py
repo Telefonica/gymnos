@@ -1,4 +1,5 @@
 from . import models
+from . import services
 from . import datasets
 from . import trackers
 from . import preprocessors
@@ -50,6 +51,23 @@ datasets.register(
 datasets.register(
     name="rock_paper_scissors",
     entry_point="gymnos.datasets.rock_paper_scissors.RockPaperScissors"
+)
+
+# MARK: Services registration
+
+services.register(
+    name="http",
+    entry_point="gymnos.services.http.HTTP"
+)
+
+services.register(
+    name="kaggle",
+    entry_point="gymnos.services.kaggle.Kaggle"
+)
+
+services.register(
+    name="smb",
+    entry_point="gymnos.services.smb.SMB"
 )
 
 # MARK: Models registration

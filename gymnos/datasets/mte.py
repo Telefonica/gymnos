@@ -209,7 +209,7 @@ class MTE(Dataset):
         )
 
     def download_and_prepare(self, dl_manager):
-        epg_path = dl_manager.download(EPG_URL.format(now=datetime.now().strftime("%Y-%m-%dT%H:%M:%S")))
+        epg_path = dl_manager["http"].download(EPG_URL.format(now=datetime.now().strftime("%Y-%m-%dT%H:%M:%S")))
 
         with open(epg_path) as fp:
             epg_json = json.load(fp)
@@ -223,7 +223,7 @@ class MTE(Dataset):
                     logger.warning("Sheet url not found. Skipping")
                     continue
                 try:
-                    sheet_path = dl_manager.download(sheet_url, verbose=False)
+                    sheet_path = dl_manager["http"].download(sheet_url, verbose=False)
                 except Exception as e:
                     logger.error("Error downloading sheet with url {}: {}".format(sheet_url, type(e).__name__))
                     continue

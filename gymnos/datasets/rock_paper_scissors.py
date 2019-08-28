@@ -45,7 +45,7 @@ class RockPaperScissors(Dataset):
         )
 
     def download_and_prepare(self, dl_manager):
-        path = dl_manager.download(DATASET_SMB_URI)
+        path = dl_manager["smb"].download(DATASET_SMB_URI)
         path = dl_manager.extract(path)
 
         rock_img_paths = glob(os.path.join(path, "rock", "*.png"))
