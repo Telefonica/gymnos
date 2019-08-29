@@ -32,20 +32,4 @@ This project intends to set up the bases to fill the gap for the above scenarios
 ***********************
 Contributions
 ***********************
-This project is made by developers for developers. Contributions are very welcome.
-So please find us at `GitHub <https://github.com/Telefonica/gymnos.git>`_. and follow
-the next section to get started.
-
-
-Clone the Repository
-===========================
-
-To clone the source code, execute the following command:
-
-.. code-block:: bash
-
-    git clone --recursive https://github.com/Telefonica/gymnos.git
-    cd gymnos
-
-.. note::
-    If you want to help developing Gymnos, please contribute at ``devel`` branch
+This project is made by developers for developers. Contributions are very welcome. Check :ref:`contributing` to get started.

@@ -3,30 +3,24 @@ name = "pypi"
 url = "https://pypi.org/simple"
 verify_ssl = true
 
+[scripts]
+"sphinx:watch"="sphinx-autobuild docs/source docs/build --watch gymnos --watch scripts"
+"sphinx:build"="make -C docs html"
+
 [dev-packages]
 sphinx = "*"
 sphinx-rtd-theme = "*"
+sphinx-autobuild = "*"
+pytest = "*"
+pytest-cov = "*"
+pytest-xdist = "*"
+pytest-mock = "*"
+requests-mock = "*"
+flake8 = "*"
+sphinx-argparse = "*"
 
 [packages]
-keras = "*"
-tqdm = "*"
-kaggle = "*"
-numpy = "*"
-pandas = "*"
-tables = "*"
-scikit-learn = "*"
-spacy = "*"
-comet-ml = "*"
-mlflow = "*"
-joblib = "*"
-statsmodels = "*"
-py-cpuinfo = "*"
-gputil = "*"
-dill = "*"
-scipy = "==1.2"
-commentjson = "*"
-pillow = "*"
-pysmb = "*"
+gymnos = {editable = true,extras = ["complete"],path = "."}
 
 [requires]
-python_version = "3.5"
+python_version = "3.6"

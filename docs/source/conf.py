@@ -15,7 +15,7 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath(os.path.join("..", "..", "src")))
+sys.path.insert(0, os.path.abspath(os.path.join("..", "..")))
 
 autodoc_mock_imports = ["keras", "cv2", "tqdm", "kaggle", "numpy", "pandas", "tables", "sklearn",
                         "spacy", "mlflow", "joblib", "statsmodels", "comet_ml",
@@ -54,9 +54,10 @@ extensions = [
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
+    'sphinxarg.ext'
 ]
 
-add_module_names = False
+add_module_names = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

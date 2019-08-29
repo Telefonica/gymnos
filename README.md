@@ -1,50 +1,125 @@
 # Gymnos
 [![Build Status](https://dev.azure.com/pablolopezcoya/gymnos/_apis/build/status/Telefonica.gymnos-devel?branchName=devel)](https://dev.azure.com/pablolopezcoya/gymnos/_build/latest?definitionId=3&branchName=devel)
- [![Python Version](https://img.shields.io/badge/python-3.5+-blue.svg)](https://www.python.org/downloads/release/python-356/)
+ [![Python Version](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/release/python-369/)
+ [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-A training platform for AI models
+Gymnos is a model training library in Python for Machine Learning. It aims to define conventions in the APIs of the basic components of any supervised learning system such as datasets, models, preprocessors or trackers and therefore be able to execute the training of any model in a simple and automatic way.
 
-## Table of Contents
+## Installation
 
-- [Background](#background)
-- [Build and Install](#build-and-install)
-- [Example](#example)
-- [Documentation](#documentation)
-- [Development](#development)
-- [Maintainers](#maintainers)
-- [License](#license)
+Gymnos is written in Python.
 
-## Background
-
-To unify model training criteria 
-
-## Build and Install
-
-Instructions about how to build and install the Gymnos framework can be found in the [Gymnos documentation](http://dev-aura-comp-01:8081)
-
-
-## Example
-
-Would you like to train your model as simple as this?:
-
+Install using `pip` from the command line:
 ```sh
-python3 -m bin.scripts.gymnosd -c my_config.json
-
+$ pip install git+https://github.com/Telefonica/gymnos.git
 ```
 
-## Documentation
+See the documentation for building from source.
 
-The Gymnos documentation is hosted at [Read the docs](http://dev-aura-comp-01:8081).
+## Quick Start Guide and Usage
+To begin, instantiate a `Trainer` object and define the components of your supervised learning system:
+```py
+import gymnos
+
+# Instantiate a Gymnos trainer definining ML system configuration
+trainer = gymnos.Trainer(
+    dataset={
+        "name": "dogs_vs_cats",
+        "preprocessors": [
+            {
+                "type": "image_resize",
+                "width": 80,
+                "height": 80
+            }
+        ],
+        "data_augmentors": [
+            {
+                "type": "zoom",
+                "probability": 0.3,
+                "min_factor": 0.1,
+                "max_factor": 0.5
+            }
+        ]
+        "samples": {
+            "train": 0.8,
+            "test": 0.2
+        }
+    },
+    model={
+        "name": "dogs_vs_cats_cnn",
+        "input_shape": [80, 80, 3]
+    },
+    training={
+        "epochs": 5,
+        "validation_split": 0.25
+    },
+    tracking={
+        "trackers": [
+            {
+                "type": "tensorboard"
+            },
+            {
+                "type": "mlflow"
+            }
+        ]
+    }
+)
+
+# Start training
+trainer.train()
+
+# Predict values and probabilities
+predictions = trainer.predict(samples)
+probabilities = trainer.predict_proba(samples)
+
+# Save trainer
+trainer.save("saved_trainer.zip")
+
+# Load saved trainer
+trainer = gymnos.Trainer.load("saved_trainer.zip")
+```
+
+### Command Line
+
+You can train your ML system directly from your command line defining your supervised learning system in a JSON file like you would do in code:
+
+```sh
+$ gymnos train experiment.json
+```
+
+And then get predictions using the saved trainer:
+```sh
+$ gymnos predict saved_trainer.zip --image cat.png
+```
+
+Or run a server to compute predictions:
+```sh
+$ gymnos serve saved_trainer.zip
+```
+
+## Examples and documentation
+
+Gymnos comes with a range of example [Jupyter notebooks](examples/) and [configurations](experiments/examples/) for different experiments.
+
+For instance, to run a configuration for [Dogs vs. Cats dataset](https://www.kaggle.com/c/dogs-vs-cats), execute the following line:
+```sh
+$ gymnos train experiments/examples/dogs_vs_cats.json
+```
+
+For more information check out [Gymnos documentation](http://dev-aura-comp-01:8081).
 
 ## Development
+Gymnos is still under development. Contributions are always welcome!.
 
-Gymnos is still under development. Contributions are always welcome!
-Please follow the
-[Developers Guide](https://contributing.html)
-if you want to help.
+## License
+Gymnos is licensed under [GNU General Public License v3.0](LICENSE)
+
+## Tests
+To run the automated tests, clone the repository and run:
+```sh
+$ pytest
+```
+from the command line.
 
 ## Maintainers
 [@kawaits](https://github.com/kawaits)
-
-## License
-Gymnos is licensed under [GNU General Public License v3.0](LICENSE.txt)
