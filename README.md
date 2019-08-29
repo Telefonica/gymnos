@@ -1,6 +1,6 @@
 # Gymnos
 [![Build Status](https://dev.azure.com/pablolopezcoya/gymnos/_apis/build/status/Telefonica.gymnos-devel?branchName=devel)](https://dev.azure.com/pablolopezcoya/gymnos/_build/latest?definitionId=3&branchName=devel)
- [![Python Version](https://img.shields.io/badge/python-3.5+-blue.svg)](https://www.python.org/downloads/release/python-356/)
+ [![Python Version](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/release/python-369/)
  [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 Gymnos is a model training library in Python for Machine Learning. It aims to define conventions in the APIs of the basic components of any supervised learning system such as datasets, models, preprocessors or trackers and therefore be able to execute the training of any model in a simple and automatic way.

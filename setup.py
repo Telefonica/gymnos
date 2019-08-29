@@ -96,7 +96,7 @@ setuptools.setup(
         "gymnos": DATASET_FILES + VAR_FILES,
         "scripts": ["config/logging.json"]
     },
-    python_requires=">=3.5",
+    python_requires=">=3.6",
     install_requires=REQUIRED_DEPENDENCIES,
     extras_require=EXTRAS_REQUIRE,
     entry_points={"console_scripts": ["gymnos = scripts.cli:main"]},
