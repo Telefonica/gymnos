@@ -18,6 +18,7 @@ pool:
 steps:
 - script: |
     echo Generate documentation
+    pip3 install sphinx sphinx-rtd-theme sphinx-argparse
     sphinx-build -b html docs/source docs/build
     sudo systemctl stop gymnos_rtd
     cp -r docs/build $(gymnosRTDPath)
@@ -25,10 +26,13 @@ steps:
   displayName: 'Documentation'
 - script: |
     echo "Unit tests"
+    pip3 install pytest pytest-cov pytest-mock requests-mock
+    pip3 install .
     pytest
   displayName: "Unit tests"
 - script: |
     echo "Style guide"
+    pip3 install flake8
     flake8
   displayName: "Style guide"
 - script: |
