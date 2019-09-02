@@ -24,15 +24,18 @@ steps:
     sudo systemctl start gymnos_rtd
   displayName: 'Documentation'
 - script: |
+    echo "Unit tests"
+    pytest
+  displayName: "Unit tests"
+- script: |
+    echo "Style guide"
+    flake8
+  displayName: "Style guide"
+- script: |
     echo Generate docker images
     docker build -t $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName) -f Dockerfile .
     docker build -t $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName):gpu-latest -f Dockerfile.gpu .
   displayName: 'Generate docker images'
-- script: |
-    echo Launching Functional Regression
-    docker run $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName) -c experiments/boston_housing.json
-    docker run $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName) -c experiments/mnist.json
-  displayName: 'Test - Functional Regression'
 - script: |
     echo Push images to Telefonica artifactory
     docker login -u $(dockerId) -p $(dockerPassword) $(telefonicaDockerHubDomain)
