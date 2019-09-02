@@ -11,7 +11,7 @@ Gymnos is written in Python.
 
 Install using `pip` from the command line:
 ```sh
-$ pip install git+https://github.com/Telefonica/gymnos.git
+$ pip install git+https://github.com/Telefonica/gymnos.git@devel#egg=gymnos
 ```
 
 See the documentation for building from source.
