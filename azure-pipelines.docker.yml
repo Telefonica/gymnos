@@ -18,7 +18,7 @@ pool:
 steps:
 - script: |
     echo Generate documentation
-    python3.6 -m pip install sphinx sphinx-rtd-theme sphinx-argparse flask numpy
+    python3.6 -m pip install sphinx sphinx-rtd-theme sphinx-argparse flask numpy --user
     sphinx-build -b html docs/source docs/build
     sudo systemctl stop gymnos_rtd
     cp -r docs/build $(gymnosRTDPath)
@@ -26,16 +26,16 @@ steps:
   displayName: 'Documentation'
 - script: |
     echo "Style guide"
-    python3.6 -m pip install flake8
-    flake8
+    python3.6 -m pip install flake8 --user
+    python3.6 -m flake8
   displayName: "Style guide"
 - script: |
     echo "Install library"
-    python3.6 -m pip install .
+    python3.6 -m pip install . --user
 - script: |
     echo "Unit tests"
-    python3.6 -m pip install pytest pytest-cov pytest-mock requests-mock
-    python3 -m pytest
+    python3.6 -m pip install pytest pytest-cov pytest-mock requests-mock --user
+    python3.6 -m pytest
   displayName: "Unit tests"
 - script: |
     echo Generate docker images
