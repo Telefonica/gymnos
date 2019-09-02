@@ -30,11 +30,13 @@ steps:
     python3.6 -m flake8
   displayName: "Style guide"
 - script: |
-    echo "Install library"
+    echo "Library installation"
     python3.6 -m pip install . --user
+    python3.6 -m pip install .[tensorflow] --user
+    displayName: "Library installation"
 - script: |
     echo "Unit tests"
-    python3.6 -m pip install pytest pytest-cov pytest-mock requests-mock --user
+    python3.6 -m pip install pytest pytest-cov pytest-mock requests-mock pytest-azurepipelines--user
     python3.6 -m pytest
   displayName: "Unit tests"
 - script: |
