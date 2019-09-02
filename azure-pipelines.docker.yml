@@ -18,21 +18,30 @@ pool:
 steps:
 - script: |
     echo Generate documentation
+    python3.6 -m pip install sphinx sphinx-rtd-theme sphinx-argparse flask numpy
     sphinx-build -b html docs/source docs/build
     sudo systemctl stop gymnos_rtd
     cp -r docs/build $(gymnosRTDPath)
     sudo systemctl start gymnos_rtd
   displayName: 'Documentation'
 - script: |
+    echo "Style guide"
+    python3.6 -m pip install flake8
+    flake8
+  displayName: "Style guide"
+- script: |
+    echo "Install library"
+    python3.6 -m pip install .
+- script: |
+    echo "Unit tests"
+    python3.6 -m pip install pytest pytest-cov pytest-mock requests-mock
+    python3 -m pytest
+  displayName: "Unit tests"
+- script: |
     echo Generate docker images
     docker build -t $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName) -f Dockerfile .
     docker build -t $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName):gpu-latest -f Dockerfile.gpu .
   displayName: 'Generate docker images'
-- script: |
-    echo Launching Functional Regression
-    docker run $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName) -c experiments/boston_housing.json
-    docker run $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName) -c experiments/mnist.json
-  displayName: 'Test - Functional Regression'
 - script: |
     echo Push images to Telefonica artifactory
     docker login -u $(dockerId) -p $(dockerPassword) $(telefonicaDockerHubDomain)
