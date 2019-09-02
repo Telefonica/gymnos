@@ -33,7 +33,7 @@ steps:
     echo "Library installation"
     python3.6 -m pip install . --user
     python3.6 -m pip install .[tensorflow] --user
-    displayName: "Library installation"
+  displayName: "Library installation"
 - script: |
     echo "Unit tests"
     python3.6 -m pip install pytest pytest-cov pytest-mock requests-mock pytest-azurepipelines--user
