@@ -23,7 +23,15 @@ steps:
     sudo systemctl stop gymnos_rtd
     cp -r docs/build $(gymnosRTDPath)
     sudo systemctl start gymnos_rtd
-  displayName: 'Documentation'
+  displayName: 'Generate documentation'
+  condition: ne(variables['Build.Reason'], 'PullRequest')
+- script: |
+    echo Validate documentation
+    python3.6 -m pip install sphinx sphinx-rtd-theme sphinx-argparse flask numpy --user
+    tmp_dir=$(mktemp -d -t ci-XXXXXXXXXX)
+    sphinx-build -W -b html docs/source $tmp_dir
+  displayName: 'Validate documentation'
+  condition: eq(variables['Build.Reason'], 'PullRequest')
 - script: |
     echo "Style guide"
     python3.6 -m pip install flake8 --user
