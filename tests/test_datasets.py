@@ -30,7 +30,7 @@ def test_load():
         _ = gymnos.datasets.load("dummy")
 
 
-@pytest.mark.slow
+@pytest.mark.integration
 @pytest.mark.parametrize("dataset", [
     MTE(),
     RockPaperScissors(),
@@ -42,8 +42,8 @@ def test_load():
     DataUsageTest(),
     UnusualDataUsageTest()
 ])
-def test_samples(dataset, tmp_path):
-    dl_manager = DownloadManager(download_dir=str(tmp_path / "Downloads"))
+def test_samples(dataset, session_tmp_path):
+    dl_manager = DownloadManager(download_dir=str(session_tmp_path))
     dataset.download_and_prepare(dl_manager)
 
     sample = dataset[0]
