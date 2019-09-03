@@ -300,13 +300,13 @@ UNUSUAL_DATA_USAGE = {
 }
 
 
-@pytest.mark.slow
+@pytest.mark.integration
 @pytest.mark.parametrize("spec", [UNUSUAL_DATA_USAGE, TINY_IMAGENET_SPEC, SYNTHETIC_DIGITS, ROCK_PAPER_SCISSORS_SPEC,
                                   IMDB_SPEC, DOGS_VS_CATS_SPEC, BOSTON_HOUSING_SPEC, DATA_USAGE_HOLT_WINTERS_SPEC,
                                   DATA_USAGE_LINEAR_REGRESSION_SPEC])
-def test_training(spec, tmp_path):
+def test_training(spec, tmp_path, session_tmp_path):
     trainer = Trainer.from_dict(spec)
 
-    dl_manager = DownloadManager(download_dir=str(tmp_path / "downloads"))
+    dl_manager = DownloadManager(download_dir=str(session_tmp_path))
 
     trainer.train(dl_manager, trackings_dir=os.path.join(str(tmp_path / "trackings")))
