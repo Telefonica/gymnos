@@ -47,6 +47,13 @@ steps:
     python3.6 -m pip install pytest pytest-cov pytest-mock requests-mock pytest-azurepipelines --user
     python3.6 -m pytest
   displayName: "Unit tests"
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+- script: |
+    echo "Integration tests"
+    python3.6 -m pip install pytest pytest-cov pytest-mock requests-mock pytest-azurepipelines --user
+    python3.6 -m pytest --integration
+  displayName: "Integration tests"
+  condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
 - script: |
     echo Generate docker images
     docker build -t $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName) -f Dockerfile .
@@ -64,4 +71,3 @@ steps:
     docker rm $(docker ps -a | grep gymnos | tr -s ' ' | cut -d ' ' -f 1)
     docker rmi $(docker images | grep gymnos | tr -s ' ' | cut -d ' ' -f 3)
   displayName: 'Agent cleaning'
-
