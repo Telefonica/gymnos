@@ -30,7 +30,7 @@ Or
 
 .. code-block:: console
 
-  $ pip3 install .[tensorflow-gpu]
+  $ pip3 install .[tensorflow_gpu]
 
 depending on whether you have an NVIDIA GPU available or not.
 
