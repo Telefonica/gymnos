@@ -12,7 +12,7 @@ import inspect
 logger = logging.getLogger(__name__)
 
 
-def _load_config(self, path):
+def _load_config(path):
     with open(path) as fp:
         config = json.load(fp)
     return config
