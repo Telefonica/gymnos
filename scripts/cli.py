@@ -7,7 +7,6 @@
 import os
 import uuid
 import json
-import flask
 import argparse
 import itertools
 import numpy as np
@@ -17,7 +16,7 @@ from PIL import Image
 from collections import OrderedDict
 
 
-class NDArrayEncoder(flask.json.JSONEncoder):
+class NDArrayEncoder(json.JSONEncoder):
     """
     Json Encoder to handle Numpy arrays
     """
