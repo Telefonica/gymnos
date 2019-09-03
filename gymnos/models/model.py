@@ -86,7 +86,7 @@ class Model(metaclass=ABCMeta):
         predictions: array_like
             Label probabilities from ``X``.
         """
-        raise NotImplementedError("Model {} don't implement fit_generator method".format(self.__class__.__name__))
+        raise NotImplementedError("Model {} don't implement predict_proba method".format(self.__class__.__name__))
 
     @abstractmethod
     def evaluate(self, X, y):
