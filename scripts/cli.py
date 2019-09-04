@@ -16,10 +16,7 @@ from PIL import Image
 from collections import OrderedDict
 
 
-class NDArrayEncoder(json.JSONEncoder):
-    """
-    Json Encoder to handle Numpy arrays
-    """
+class NumpyEncoder(json.JSONEncoder):
 
     def default(self, obj):
         if isinstance(obj, np.ndarray):
@@ -68,7 +65,7 @@ def save_to_json(path, obj, indent=4, *args, **kwargs):
         Indentation to save file (pretty print JSON)
     """
     with open(path, "w") as outfile:
-        json.dump(obj, outfile, indent=indent, cls=NDArrayEncoder, default=_json_default, *args, **kwargs)
+        json.dump(obj, outfile, indent=indent, cls=NumpyEncoder, default=_json_default, *args, **kwargs)
 
 
 def train(training_specs_json, download_dir, force_download, force_extraction, no_save_trainer, no_save_training_specs,
@@ -150,33 +147,44 @@ def predict(saved_trainer, json_file=None, images=None):
             total=labels.num_classes
         )
 
-    print(json.dumps(response, cls=NDArrayEncoder, indent=4))
+    print(json.dumps(response, cls=NumpyEncoder, indent=4))
 
 
 def serve(saved_trainer, host=None, port=None, debug=None):
-    from flask import Flask, request, jsonify
+    import flask
+
     from gymnos.trainer import Trainer
     from gymnos.datasets.dataset import ClassLabel
 
-    app = Flask(__name__)
-    app.json_encoder = NDArrayEncoder
+    class FlaskNumpyEncoder(flask.json.JSONEncoder):
+        """
+        Flask Json Encoder to handle Numpy arrays
+        """
+
+        def default(self, obj):
+            if isinstance(obj, np.ndarray):
+                return obj.tolist()
+            return json.JSONEncoder.default(self, obj)
+
+    app = flask.Flask(__name__)
+    app.json_encoder = FlaskNumpyEncoder
 
     @app.route("/", methods=["GET"])
     def info():
         # FIXME: the trainer should be loaded before every request but there are issues combining tf with flask requests
         trainer = Trainer.load(saved_trainer)
 
-        return jsonify(trainer.to_dict())
+        return flask.jsonify(trainer.to_dict())
 
     @app.route("/", methods=["POST"])
     def predict():
         # FIXME: same as above
         trainer = Trainer.load(saved_trainer)
 
-        response = dict(predictions=trainer.predict(request.json))
+        response = dict(predictions=trainer.predict(flask.request.json))
 
         try:
-            response["probabilities"] = trainer.predict_proba(request.json)
+            response["probabilities"] = trainer.predict_proba(flask.request.json)
         except NotImplementedError:
             pass
 
@@ -187,7 +195,7 @@ def serve(saved_trainer, host=None, port=None, debug=None):
                 total=labels.num_classes
             )
 
-        return response
+        return flask.jsonify(response)
 
     app.run(host=host, port=port, debug=debug)
 
