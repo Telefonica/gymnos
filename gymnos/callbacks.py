@@ -193,7 +193,7 @@ class TimeHistory(Callback):
         self.train_begin_start = time.time()
 
     def on_train_end(self):
-        self.times["train"] = time.time() - self.train_begin_start
+        self.times["total"] = time.time() - self.train_begin_start
 
     def on_download_and_prepare_data_begin(self):
         self.download_and_prepare_start = time.time()
