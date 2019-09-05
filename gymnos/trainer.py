@@ -21,11 +21,11 @@ from . import models, datasets
 from .trackers.history import History
 from .trackers.tracker import TrackerList
 from .services.download_manager import DownloadManager
+from .utils.data import Subset, DataLoader
 from .utils.text_utils import humanize_bytes
 from .utils.archiver import extract_zip, zipdir
 from .callbacks import CallbackList, TimeHistory
 from .core import Model, Dataset, Training, Tracking
-from .utils.data import Subset, DataLoader, get_approximate_nbytes
 
 logger = logging.getLogger(__name__)
 
@@ -222,9 +222,8 @@ class Trainer:
         logger.debug("Dataset Features: {}".format(dataset_info.features))
         logger.debug("Dataset Labels: {}".format(dataset_info.labels))
 
-        nbytes = get_approximate_nbytes(self.dataset.dataset)
         logger.debug("Full Dataset Samples: {}".format(len(self.dataset.dataset)))
-        logger.debug("Full Dataset Memory Usage (approx): {}".format(humanize_bytes(nbytes)))
+        logger.debug("Full Dataset Memory Usage (approx): {}".format(humanize_bytes(self.dataset.dataset.nbytes)))
 
         # SPLIT DATASET INTO TRAIN AND TEST
 

@@ -9,6 +9,7 @@ import pickle
 import numpy as np
 
 from tqdm import tqdm
+from sys import getsizeof
 from abc import ABCMeta, abstractmethod
 
 from ..utils.data import DataLoader
@@ -82,6 +83,26 @@ class Dataset(metaclass=ABCMeta):
         labels = np.array(labels)
 
         return features, labels
+
+    @property
+    def nbytes(self):
+        """
+        The goal is to predict number of bytes without load full dataset in memory
+        """
+        sample = self[0]
+        x, y = sample
+
+        try:
+            x_nbytes = x.nbytes
+        except AttributeError:
+            y_nbytes = getsizeof(x)
+
+        try:
+            y_nbytes = y.nbytes
+        except AttributeError:
+            y_nbytes = getsizeof(y)
+
+        return (x_nbytes + y_nbytes) * len(self)
 
     def to_hdf5(self, file_path, features_key="features", labels_key="labels", info_key="info", chunk_size=None,
                 compression="gzip", compression_opts=None, force=False):
