@@ -29,7 +29,7 @@ To train `dogs_vs_cats_cnn` model with `dogs_vs_cats` dataset using 3 preprocess
 
     {
         "model": {
-            {
+            "model": {
                 "type": "dogs_vs_cats_cnn",
                 "input_shape": [80, 80, 1]
             },
@@ -37,7 +37,7 @@ To train `dogs_vs_cats_cnn` model with `dogs_vs_cats` dataset using 3 preprocess
                 "batch_size": 32,
                 "epochs": 5,
                 "validation_split": 0.25
-            },
+            }
         },
         "dataset": {
             "dataset": {
