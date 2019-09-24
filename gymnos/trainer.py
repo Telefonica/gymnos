@@ -516,6 +516,12 @@ class Trainer:
 
             self._save_dataset(os.path.join(tempdir, "dataset.pkl"))
 
+            with open(os.path.join(tempdir, "features_info.pkl"), "wb") as fp:
+                dill.dump(self.dataset.dataset.features_info, fp)
+
+            with open(os.path.join(tempdir, "labels_info.pkl"), "wb") as fp:
+                dill.dump(self.dataset.dataset.labels_info, fp)
+
             with open(os.path.join(tempdir, "saved_preprocessors.pkl"), "wb") as fp:
                 dill.dump(self.dataset.preprocessors, fp)
 
@@ -549,8 +555,20 @@ class Trainer:
                 dataset = dill.load(fp)
             dataset.dataset = datasets.load(**dataset.dataset_spec)
 
+            with open(os.path.join(tempdir, "features_info.pkl"), "rb") as fp:
+                features_info = dill.load(fp)
+
+            with open(os.path.join(tempdir, "labels_info.pkl"), "rb") as fp:
+                labels_info = dill.load(fp)
+
             with open(os.path.join(tempdir, "saved_preprocessors.pkl"), "rb") as fp:
                 dataset.preprocessors = dill.load(fp)
+
+            cls = type(dataset.dataset)
+            cls = type(cls.__name__, (cls,), {})
+            dataset.dataset.__class__ = cls
+            setattr(cls, "features_info", features_info)
+            setattr(cls, "labels_info", labels_info)
 
             with open(os.path.join(tempdir, "tracking.pkl"), "rb") as fp:
                 tracking = dill.load(fp)
