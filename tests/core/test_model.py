@@ -7,7 +7,7 @@
 import pytest
 import gymnos
 
-from gymnos.core import Model
+from gymnos.core.model import Model
 
 
 def test_model_instance():

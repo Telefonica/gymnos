@@ -7,7 +7,7 @@
 import pytest
 import gymnos
 
-from gymnos.core import Tracking
+from gymnos.core.tracking import Tracking
 
 
 def test_tracker_instance():
