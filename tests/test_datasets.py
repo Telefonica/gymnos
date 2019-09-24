@@ -56,18 +56,19 @@ def test_samples(dataset, session_tmp_path):
 
     assert np_array_samples.shape[0] == 2
 
-    info = dataset.info()
+    features_info = dataset.features_info
+    labels_info = dataset.labels_info
 
     if hasattr(sample[0], "shape"):
-        assert tuple(info.features.shape) == tuple(sample[0].shape)
+        assert tuple(features_info.shape) == tuple(sample[0].shape)
     if hasattr(sample[1], "shape"):
-        assert tuple(info.labels.shape) == tuple(sample[1].shape)
+        assert tuple(labels_info.shape) == tuple(sample[1].shape)
 
     if hasattr(sample[0], "dtype"):
-        assert np.issubdtype(sample[0].dtype, info.features.dtype)
+        assert np.issubdtype(sample[0].dtype, features_info.dtype)
 
-    if isinstance(info.labels, ClassLabel):
-        assert np.issubdtype(info.labels.dtype, np.integer)
+    if isinstance(labels_info, ClassLabel):
+        assert np.issubdtype(labels_info.dtype, np.integer)
         assert isinstance(sample[1], (int, np.integer))
 
     assert len(dataset) > 0
