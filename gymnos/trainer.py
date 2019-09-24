@@ -419,7 +419,7 @@ class Trainer:
         logger.info("Preprocessing samples ({})".format(self.dataset.preprocessors))
         X = self.dataset.preprocessors.transform(X)
 
-        logger.info("Predicting labels using {}".format(self.model.name))
+        logger.info("Predicting labels")
         predictions = self.model.model.predict(X)
 
         return predictions
@@ -441,7 +441,7 @@ class Trainer:
         logger.info("Preprocessing samples ({})".format(self.dataset.preprocessors))
         X = self.dataset.preprocessors.transform(X)
 
-        logger.info("Predicting label probabilities using {}".format(self.model.name))
+        logger.info("Predicting label probabilities")
         probs = self.model.model.predict_proba(X)
 
         return probs
@@ -541,12 +541,13 @@ class Trainer:
 
             with open(os.path.join(tempdir, "model.pkl"), "rb") as fp:
                 model = dill.load(fp)
-            model.model = models.load(model.name, **model.parameters)
+
+            model.model = models.load(**model.model_spec)
             model.model.restore(os.path.join(tempdir, "saved_model"))
 
             with open(os.path.join(tempdir, "dataset.pkl"), "rb") as fp:
                 dataset = dill.load(fp)
-            dataset.dataset = datasets.load(dataset.name)
+            dataset.dataset = datasets.load(**dataset.dataset_spec)
 
             with open(os.path.join(tempdir, "saved_preprocessors.pkl"), "rb") as fp:
                 dataset.preprocessors = dill.load(fp)

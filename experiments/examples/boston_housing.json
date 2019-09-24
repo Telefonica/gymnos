@@ -1,7 +1,7 @@
 {
     "model": {
-        "name": "keras_regressor",
-        "parameters": {
+        "model": {
+            "type": "keras_regressor",
             "sequential": [
                 {"type": "dense", "units": 512, "activation": "relu"},
                 {"type": "dense", "units": 128, "activation": "relu"},
@@ -24,7 +24,9 @@
         }
     },
     "dataset": {
-        "name": "boston_housing",
+        "dataset": {
+            "type": "boston_housing"
+        },
         "samples": {
             "train": 0.8,
             "test": 0.2

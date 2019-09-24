@@ -13,7 +13,6 @@ import numpy as np
 import logging.config
 
 from PIL import Image
-from collections import OrderedDict
 
 
 class NumpyEncoder(json.JSONEncoder):
@@ -74,14 +73,17 @@ def train(training_specs_json, download_dir, force_download, force_extraction, n
     from gymnos.trainer import Trainer
     from gymnos.services.download_manager import DownloadManager
 
-    training_config = read_json(training_specs_json, object_pairs_hook=OrderedDict)
+    training_config = read_json(training_specs_json)
 
     trainer = Trainer.from_dict(training_config)
 
     dl_manager = DownloadManager(download_dir, force_download=force_download,
                                  force_extraction=force_extraction)
 
-    format_kwargs = dict(dataset_name=trainer.dataset.name, model_name=trainer.model.name, uuid=uuid.uuid4().hex)
+    model_type = trainer.model.model_spec["type"]
+    dataset_type = trainer.dataset.dataset_spec["type"]
+
+    format_kwargs = dict(dataset_type=dataset_type, model_type=model_type, uuid=uuid.uuid4().hex)
 
     execution_dir = execution_dir.format(**format_kwargs)
     trackings_dir = trackings_dir.format(**format_kwargs)
@@ -223,11 +225,11 @@ def build_parser():
     train_parser.add_argument("--no-save_results", help="Whether or not save results", action="store_true",
                               default=False)
     train_parser.add_argument("--execution_dir", help="Execution directory to store training outputs. It accepts the" +
-                                                      " following format arguments: dataset_name, model_name, uuid",
-                              type=str, default="trainings/{dataset_name}/executions/{uuid}")
+                                                      " following format arguments: dataset_type, model_type, uuid",
+                              type=str, default="trainings/{dataset_type}/executions/{uuid}")
     train_parser.add_argument("--trackings_dir", help="Execution directory to store tracking outputs. It accepts the" +
-                                                      " following format arguments: dataset_name, model_name, uuid",
-                              type=str, default="trainings/{dataset_name}/trackings")
+                                                      " following format arguments: dataset_type, model_type, uuid",
+                              type=str, default="trainings/{dataset_type}/trackings")
 
     # MARK: Predict parsers
 

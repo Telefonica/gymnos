@@ -1,9 +1,13 @@
 {
     "model": {
-        "name": "data_usage_holt_winters"
+        "model": {
+            "type": "data_usage_holt_winters"
+        }
     },
     "dataset": {
-        "name": "data_usage_test",
+        "dataset": {
+            "type": "data_usage_test"
+        },
         "samples": {
             "train": 0.30,
             "test": 0.70

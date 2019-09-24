@@ -1,7 +1,7 @@
 {
     "model": {
-        "name": "mte_nn",
-        "parameters": {
+        "model": {
+            "type": "mte_nn",
             "input_shape": [20000]
         },
         "training": {
@@ -10,7 +10,9 @@
         }
     },
     "dataset": {
-        "name": "mte",
+        "dataset": {
+            "type": "mte"
+        },
         "samples": {
             "train": 0.8,
             "test": 0.2

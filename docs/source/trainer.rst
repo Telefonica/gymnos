@@ -32,7 +32,9 @@ For example:
     from gymnos.core.dataset import Dataset
 
     dataset = Dataset(
-        name="dogs_vs_cats",
+        dataset={
+            "type": "dogs_vs_cats"
+        },
         samples={
             "train": 0.8,
             "test": 0.2
@@ -70,8 +72,8 @@ For example:
     from gymnos.core.model import Model
 
     model = Model(
-        name="dogs_vs_cats_cnn",
-        parameters={
+        model={
+            "type": "dogs_vs_cats_cnn",
             "input_shape": [100, 100, 3]
         },
         training={

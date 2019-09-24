@@ -4,18 +4,18 @@ import importlib
 
 class ComponentSpec:
     """
-    Component spec with name and entry_point
+    Component spec with type and entry_point
 
     Parameters
     -----------
-    name: str
-        Component name / id
+    type: str
+        Component type / id
     entry_point: str
         Component path, e.g gymnos.datasets.dogs_vs_cats_cnn.DogsVsCatsCNN
     """
 
-    def __init__(self, name, entry_point):
-        self.name = name
+    def __init__(self, type, entry_point):
+        self.type = type
         self.entry_point = entry_point
 
     def load(self, **kwargs):
@@ -35,7 +35,7 @@ class ComponentSpec:
         return cls(**kwargs)
 
     def __repr__(self):
-        return "Spec<name={}, entry_point={}>".format(self.name, self.entry_point)
+        return "Spec<type={}, entry_point={}>".format(self.type, self.entry_point)
 
 
 class ComponentRegistry:
@@ -44,40 +44,40 @@ class ComponentRegistry:
 
     Parameters
     -----------
-    component_name: str, optional
-        Component name to show on error description when exception raises
+    component_type: str, optional
+        Component type to show on error description when exception raises
 
     """
 
-    def __init__(self, component_name="component"):
+    def __init__(self, component_type="component"):
         self.component_specs = {}
-        self.component_name = component_name
+        self.component_type = component_type
 
-    def register(self, name, entry_point):
+    def register(self, type, entry_point):
         """
         Register component
 
         Parameters
         ----------
-        name: str
-            Component name to register. It must be unique
+        type: str
+            Component type to register. It must be unique
         entry_point: str
             Component path, e.g gymnos.datasets.dogs_vs_cats_cnn.DogsVsCatsCNN
 
         """
-        if name in self.component_specs:
-            raise ValueError("Cannot re-register {} with name: {}".format(self.component_name, name))
+        if type in self.component_specs:
+            raise ValueError("Cannot re-register {} with type: {}".format(self.component_type, type))
 
-        self.component_specs[name] = ComponentSpec(name, entry_point)
+        self.component_specs[type] = ComponentSpec(type, entry_point)
 
-    def load(self, name, **kwargs):
+    def load(self, type, **kwargs):
         """
         Load registered component
 
         Parameters
         ----------
-        name: str
-            Component name / id
+        type: str
+            Component type / id
         **kwargs: any
             Constructor arguments for component
 
@@ -87,19 +87,19 @@ class ComponentRegistry:
             Registered component instance
         """
         try:
-            mod_name, name = name.split(":", 1)
-            importlib.import_module(mod_name)  # import it so we can register external components
+            mod_type, type = type.split(":", 1)
+            importlib.import_module(mod_type)  # import it so we can register external components
         except ImportError:
             raise ImportError(("A module ({}) was specified but was not found, make sure the package is installed " +
-                               "with `pip install` before loading {} with name {}").format(mod_name,
-                                                                                           self.component_name, name))
+                               "with `pip install` before loading {} with type {}").format(mod_type,
+                                                                                           self.component_type, type))
         except ValueError:
             pass  # we don't need to import any module
 
         try:
-            component_spec = self.component_specs[name]
+            component_spec = self.component_specs[type]
         except KeyError:
-            raise ValueError("No registered {} with name: {}".format(self.component_name, name))
+            raise ValueError("No registered {} with type: {}".format(self.component_type, type))
 
         return component_spec.load(**kwargs)
 
@@ -114,8 +114,8 @@ class ComponentRegistry:
         """
         return self.component_specs.values()
 
-    def __contains__(self, name):
+    def __contains__(self, type):
         """
         Check if registry contains the component
         """
-        return name in self.component_specs
+        return type in self.component_specs
