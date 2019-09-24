@@ -107,7 +107,7 @@ class Dataset(metaclass=ABCMeta):
         try:
             x_nbytes = x.nbytes
         except AttributeError:
-            y_nbytes = getsizeof(x)
+            x_nbytes = getsizeof(x)
 
         try:
             y_nbytes = y.nbytes
