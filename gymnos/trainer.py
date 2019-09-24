@@ -25,7 +25,9 @@ from .utils.data import Subset, DataLoader
 from .utils.text_utils import humanize_bytes
 from .utils.archiver import extract_zip, zipdir
 from .callbacks import CallbackList, TimeHistory
-from .core import Model, Dataset, Training, Tracking
+from .core.model import Model
+from .core.dataset import Dataset
+from .core.tracking import Tracking
 
 logger = logging.getLogger(__name__)
 
@@ -40,16 +42,13 @@ class Trainer:
         Instance of core model
     dataset: gymnos.core.dataset.Dataset
         Instance of core.dataset
-    training: gymnos.core.training.Training
-        Instance of core.training
     tracking: gymnos.core.tracking.Tracking
         Instance of core.tracking
     """
 
-    def __init__(self, model, dataset, training, tracking):
+    def __init__(self, model, dataset, tracking):
         self.model = model
         self.dataset = dataset
-        self.training = training
         self.tracking = tracking
 
     @staticmethod
@@ -62,10 +61,8 @@ class Trainer:
         spec: dict
             Dictionnary with the following keys:
 
-                - ``"experiment"``
                 - ``"model"``
                 - ``"dataset"``
-                - ``"training"``
                 - ``"tracking"``
 
         Returns
@@ -74,12 +71,10 @@ class Trainer:
         """
         model = spec.get("model", {})
         dataset = spec.get("dataset", {})
-        training = spec.get("training", {})
         tracking = spec.get("tracking", {})
         return Trainer(
             model=Model(**model),
             dataset=Dataset(**dataset),
-            training=Training(**training),
             tracking=Tracking(**tracking)
         )
 
@@ -95,7 +90,6 @@ class Trainer:
         return dict(
             dataset=self.dataset.to_dict(),
             model=self.model.to_dict(),
-            training=self.training.to_dict(),
             tracking=self.tracking.to_dict()
         )
 
@@ -182,11 +176,11 @@ class Trainer:
             self.tracking.trackers.log_params(self.model.parameters)
 
         if self.tracking.log_training_params:
-            self.tracking.trackers.log_params(self.training.parameters)
+            self.tracking.trackers.log_params(self.model.training)
 
         self.tracking.trackers.log_tags(self.tracking.tags)
 
-        for model_param_name, model_param_value in self.training.parameters.items():
+        for model_param_name, model_param_value in self.model.training.items():
             str_model_param_value = str(model_param_value)
             if isinstance(model_param_value, dict):
                 str_model_param_value = ", ".join(name + "=" + val for name, val in model_param_value.items())
@@ -353,9 +347,9 @@ class Trainer:
         logger.info("Fitting model")
 
         if load_data_by_chunks:
-            train_metrics = self.model.model.fit_generator(train_loader, **self.training.parameters)
+            train_metrics = self.model.model.fit_generator(train_loader, **self.model.training)
         else:
-            train_metrics = self.model.model.fit(train_data[0], train_data[1], **self.training.parameters)
+            train_metrics = self.model.model.fit(train_data[0], train_data[1], **self.model.training)
 
         callbacks.on_fit_model_end()
 
@@ -482,18 +476,6 @@ class Trainer:
             dill.dump(self.tracking, fp)
         self.tracking.trackers = tracking_trackers
 
-    def _save_training(self, path):
-        """
-        Save training parameters
-
-        Parameters
-        ----------
-        path: str
-            Path to store pickled training
-        """
-        with open(path, "wb") as fp:
-            dill.dump(self.training, fp)
-
     def _save_dataset(self, path):
         """
         Save dataset without inner dataset and preprocessors instance
@@ -530,8 +512,6 @@ class Trainer:
             os.makedirs(model_store_dir)
             self.model.model.save(model_store_dir)
 
-            self._save_training(os.path.join(tempdir, "training.pkl"))
-
             self._save_tracking(os.path.join(tempdir, "tracking.pkl"))
 
             self._save_dataset(os.path.join(tempdir, "dataset.pkl"))
@@ -559,9 +539,6 @@ class Trainer:
         with tempfile.TemporaryDirectory() as tempdir:
             extract_zip(path, extract_dir=tempdir)
 
-            with open(os.path.join(tempdir, "training.pkl"), "rb") as fp:
-                training = dill.load(fp)
-
             with open(os.path.join(tempdir, "model.pkl"), "rb") as fp:
                 model = dill.load(fp)
             model.model = models.load(model.name, **model.parameters)
@@ -578,4 +555,4 @@ class Trainer:
                 tracking = dill.load(fp)
             tracking.trackers = TrackerList.from_dict(tracking.trackers_spec)
 
-        return Trainer(model, dataset, training, tracking)
+        return Trainer(model, dataset, tracking)

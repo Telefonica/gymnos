@@ -29,11 +29,11 @@
         "parameters": { 
             "input_shape": [100, 100, 1],
             "classes": 2
+        },
+        "training": { 
+            "batch_size": 32,
+            "epochs": 5
         }
-    },
-    "training": { 
-        "batch_size": 32,
-        "epochs": 5
     },
     "tracking": {
         "trackers": [ 

@@ -27,12 +27,12 @@
         "parameters": {
             "input_shape": [100, 100, 1],
             "classes": 3
+        },
+        "training": {
+            "epochs": 5,
+            "batch_size": 32,
+            "validation_split": 0.25
         }
-    },
-    "training": {
-        "epochs": 5,
-        "batch_size": 32,
-        "validation_split": 0.25
     },
     "tracking": {
         "trackers": [

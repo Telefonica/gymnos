@@ -3,6 +3,10 @@
         "name": "mte_nn",
         "parameters": {
             "input_shape": [20000]
+        },
+        "training": {
+            "batch_size": 32,
+            "epochs": 16
         }
     },
     "dataset": {
@@ -33,9 +37,5 @@
                 "k": 20000
             }
         ]
-    },
-    "training": {
-        "batch_size": 32,
-        "epochs": 16
     }
 }

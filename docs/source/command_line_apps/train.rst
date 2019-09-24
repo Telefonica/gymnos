@@ -32,7 +32,12 @@ To train `dogs_vs_cats_cnn` model with `dogs_vs_cats` dataset using 3 preprocess
             "name": "dogs_vs_cats_cnn",
             "parameters": {
                 "input_shape": [80, 80, 1]
-            }
+            },
+            "training": {
+                "batch_size": 32,
+                "epochs": 5,
+                "validation_split": 0.25
+            },
         },
         "dataset": {
             "name": "dogs_vs_cats",
@@ -55,11 +60,6 @@ To train `dogs_vs_cats_cnn` model with `dogs_vs_cats` dataset using 3 preprocess
                     "factor": 255
                 }
             ]
-        },
-        "training": {
-            "batch_size": 32,
-            "epochs": 5,
-            "validation_split": 0.25
         },
         "tracking": {
             "trackers": [
