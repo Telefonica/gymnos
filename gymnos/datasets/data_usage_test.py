@@ -6,7 +6,7 @@
 
 import numpy as np
 
-from .dataset import Dataset, DatasetInfo, Array
+from .dataset import Dataset, Array
 from ..utils.lazy_imports import lazy_imports
 
 
@@ -22,11 +22,13 @@ class DataUsageTest(Dataset):
         - **Features**: xxx
     """
 
-    def info(self):
-        return DatasetInfo(
-            features=Array(shape=[1], dtype=np.int64),
-            labels=Array(shape=[1], dtype=np.float64)
-        )
+    @property
+    def features_info(self):
+        return Array(shape=[1], dtype=np.int64)
+
+    @property
+    def labels_info(self):
+        return Array(shape=[1], dtype=np.float64)
 
     def download_and_prepare(self, dl_manager):
         data = lazy_imports.statsmodels_api.datasets.sunspots.load_pandas().data

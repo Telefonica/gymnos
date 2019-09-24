@@ -11,7 +11,7 @@ from glob import glob
 
 from PIL import Image
 from ..utils.image_utils import img_to_arr
-from .dataset import Dataset, DatasetInfo, ClassLabel, Array
+from .dataset import Dataset, ClassLabel, Array
 
 DATASET_SMB_URI = "smb://10.95.194.112/homes/ruben_salas/rock-paper-scissors.zip"
 
@@ -38,11 +38,13 @@ class RockPaperScissors(Dataset):
         - **Features**: real, between 0 and 255
     """
 
-    def info(self):
-        return DatasetInfo(
-            features=Array(shape=[150, 150, 1], dtype=np.uint8),
-            labels=ClassLabel(names=["rock", "paper", "scissors"])
-        )
+    @property
+    def features_info(self):
+        return Array(shape=[150, 150, 1], dtype=np.uint8)
+
+    @property
+    def labels_info(self):
+        return ClassLabel(names=["rock", "paper", "scissors"])
 
     def download_and_prepare(self, dl_manager):
         path = dl_manager["smb"].download(DATASET_SMB_URI)

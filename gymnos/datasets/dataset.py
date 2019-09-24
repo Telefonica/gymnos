@@ -22,14 +22,26 @@ class Dataset(metaclass=ABCMeta):
 
     You need to implement the following methods: ``download_and_prepare``, ``info``, ``__getitem__`` and ``__len__``.
     """
+    @property
     @abstractmethod
-    def info(self):
+    def features_info(self):
         """
-        Returns info about dataset features and labels
+        Returns info about dataset features
 
         Returns
         -------
-        dataset_info: DatasetInfo
+        Array
+        """
+
+    @property
+    @abstractmethod
+    def labels_info(self):
+        """
+        Returns info about dataset labels
+
+        Returns
+        -------
+        Array
         """
 
     @abstractmethod
@@ -133,16 +145,14 @@ class Dataset(metaclass=ABCMeta):
 
         data_loader = DataLoader(self, batch_size=chunk_size)
 
-        info = self.info()
-
         mode = "w" if force else "x"
 
         with h5py.File(file_path, mode) as h5f:
-            labels_shape = [len(self)] + info.labels.shape
-            features_shape = [len(self)] + info.features.shape
+            labels_shape = [len(self)] + self.labels_info.shape
+            features_shape = [len(self)] + self.features_info.shape
 
-            labels_dtype = info.labels.dtype
-            features_dtype = info.features.dtype
+            labels_dtype = self.labels_info.dtype
+            features_dtype = self.features_info.dtype
 
             if features_dtype == str:
                 features_dtype = h5py.special_dtype(vlen=str)
@@ -152,8 +162,8 @@ class Dataset(metaclass=ABCMeta):
             labels = h5f.create_dataset(labels_key, shape=labels_shape, compression=compression,
                                         dtype=labels_dtype, compression_opts=compression_opts)
 
-            features.attrs[info_key] = np.string_(pickle.dumps(info.features))
-            labels.attrs[info_key] = np.string_(pickle.dumps(info.labels))
+            features.attrs[info_key] = np.string_(pickle.dumps(self.features_info))
+            labels.attrs[info_key] = np.string_(pickle.dumps(self.labels_info))
 
             for index, (X, y) in enumerate(tqdm(data_loader)):
                 start = index * data_loader.batch_size
@@ -185,13 +195,13 @@ class HDF5Dataset(Dataset):
 
         self.data = h5py.File(file_path, mode="r")
 
-    def info(self):
-        features_info = pickle.loads(self.data[self.features_key].attrs[self.info_key])
-        labels_info = pickle.loads(self.data[self.labels_key].attrs[self.info_key])
-        return DatasetInfo(
-            features=features_info,
-            labels=labels_info
-        )
+    @property
+    def features_info(self):
+        return pickle.loads(self.data[self.features_key].attrs[self.info_key])
+
+    @property
+    def labels_info(self):
+        return pickle.loads(self.data[self.labels_key].attrs[self.info_key])
 
     def download_and_prepare(self, dl_manager):
         """
@@ -207,26 +217,6 @@ class HDF5Dataset(Dataset):
 
     def __len__(self):
         return len(self.data[self.features_key])  # len(features) == len(labels)
-
-
-class DatasetInfo:
-    """
-    Dataset info.
-
-    Parameters
-    ----------
-    features: Array
-        Info about features shape and dtype
-    labels: Array
-        Info about labels shape and dtype
-    """
-
-    def __init__(self, features, labels):
-        self.features = features
-        self.labels = labels
-
-    def __repr__(self):
-        return "Features <{}>, Labels <{}>".format(self.features, self.labels)
 
 
 class Array:

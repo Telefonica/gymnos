@@ -10,7 +10,7 @@ import numpy as np
 from glob import glob
 
 from ..utils.image_utils import imread_rgb, imresize
-from .dataset import Dataset, DatasetInfo, ClassLabel, Array
+from .dataset import Dataset, ClassLabel, Array
 
 KAGGLE_DATASET_NAME = "prasunroy/synthetic-digits"
 KAGGLE_DATASET_FILENAME = "data.zip"
@@ -34,11 +34,13 @@ class SyntheticDigits(Dataset):
         - **Features**: real, between 0 and 255
     """
 
-    def info(self):
-        return DatasetInfo(
-            features=Array(shape=[IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_DEPTH], dtype=np.uint8),
-            labels=ClassLabel(num_classes=10)
-        )
+    @property
+    def features_info(self):
+        return Array(shape=[IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_DEPTH], dtype=np.uint8)
+
+    @property
+    def labels_info(self):
+        return ClassLabel(num_classes=10)
 
     def download_and_prepare(self, dl_manager):
         data_path = dl_manager["kaggle"].download(dataset_name=KAGGLE_DATASET_NAME,

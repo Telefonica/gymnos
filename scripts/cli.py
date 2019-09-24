@@ -140,7 +140,7 @@ def predict(saved_trainer, json_file=None, images=None):
     except NotImplementedError:
         pass
 
-    labels = trainer.dataset.dataset.info().labels
+    labels = trainer.dataset.dataset.labels_info
     if isinstance(labels, ClassLabel):
         response["classes"] = dict(
             names=labels.names,
@@ -188,7 +188,7 @@ def serve(saved_trainer, host=None, port=None, debug=None):
         except NotImplementedError:
             pass
 
-        labels = trainer.dataset.dataset.info().labels
+        labels = trainer.dataset.dataset.labels_info
         if isinstance(labels, ClassLabel):
             response["classes"] = dict(
                 names=labels.names,

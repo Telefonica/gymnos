@@ -7,7 +7,7 @@
 import logging
 import numpy as np
 
-from .dataset import Dataset, DatasetInfo, Array
+from .dataset import Dataset, Array
 
 logger = logging.getLogger(__name__)
 
@@ -25,11 +25,13 @@ class BostonHousing(Dataset):
         - **Features**: real
     """
 
-    def info(self):
-        return DatasetInfo(
-            features=Array(shape=[13], dtype=np.float64),
-            labels=Array(shape=[], dtype=np.float32)
-        )
+    @property
+    def features_info(self):
+        return Array(shape=[13], dtype=np.float64)
+
+    @property
+    def labels_info(self):
+        return Array(shape=[], dtype=np.float32)
 
     def download_and_prepare(self, dl_manager):
         data_path = dl_manager["http"].download(DOWNLOAD_URL)

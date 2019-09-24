@@ -9,10 +9,12 @@ Usage
 
     dataset = gymnos.datasets.load("dogs_vs_cats")
 
-    print(dataset.info())  # info about features and labels
-
     dl_manager = gymnos.services.download_manager.DownloadManager()
     dataset.download_and_prepare(dl_manager)   # download data and prepare dataset
+
+    print(dataset.features_info)  # info about features
+
+    print(dataset.labels_info)  # info about labels
 
     print(len(dataset))  # get number samples
 

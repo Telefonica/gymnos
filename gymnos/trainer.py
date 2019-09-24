@@ -217,10 +217,8 @@ class Trainer:
 
         # LOG DATASET PROPERTIES
 
-        dataset_info = self.dataset.dataset.info()
-
-        logger.debug("Dataset Features: {}".format(dataset_info.features))
-        logger.debug("Dataset Labels: {}".format(dataset_info.labels))
+        logger.debug("Dataset Features: {}".format(self.dataset.dataset.features_info))
+        logger.debug("Dataset Labels: {}".format(self.dataset.dataset.labels_info))
 
         logger.debug("Full Dataset Samples: {}".format(len(self.dataset.dataset)))
         logger.debug("Full Dataset Memory Usage (approx): {}".format(humanize_bytes(self.dataset.dataset.nbytes)))
@@ -322,7 +320,7 @@ class Trainer:
             data[0] = self.dataset.preprocessors.transform(data[0])
 
             if self.dataset.one_hot:
-                data[1] = to_categorical(data[1], dataset_info.labels.num_classes)
+                data[1] = to_categorical(data[1], self.dataset.dataset.labels_info.num_classes)
 
             return data
 

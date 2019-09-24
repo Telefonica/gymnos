@@ -7,7 +7,7 @@
 import logging
 import pandas as pd
 
-from .dataset import Dataset, DatasetInfo, ClassLabel, Array
+from .dataset import Dataset, ClassLabel, Array
 
 logger = logging.getLogger(__name__)
 
@@ -35,11 +35,13 @@ class IMDB(Dataset):
         - **Features**: texts
     """
 
-    def info(self):
-        return DatasetInfo(
-            features=Array(shape=[], dtype=str),
-            labels=ClassLabel(names=["negative", "positive"])
-        )
+    @property
+    def features_info(self):
+        return Array(shape=[], dtype=str)
+
+    @property
+    def labels_info(self):
+        return ClassLabel(names=["negative", "positive"])
 
     def download_and_prepare(self, dl_manager):
         csv_path = dl_manager["kaggle"].download(dataset_name=KAGGLE_DATASET_NAME,
