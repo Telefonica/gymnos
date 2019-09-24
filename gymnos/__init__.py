@@ -53,6 +53,11 @@ datasets.register(
     entry_point="gymnos.datasets.rock_paper_scissors.RockPaperScissors"
 )
 
+datasets.register(
+    name="directory_image_classification",
+    entry_point="gymnos.datasets.directory_image_classification.DirectoryImageClassification"
+)
+
 # MARK: Services registration
 
 services.register(

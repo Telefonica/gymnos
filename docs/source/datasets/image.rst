@@ -2,8 +2,10 @@
 Image
 ##################
 
-dogs_vs_cats
-===============
+directory_image_classification
+==================================
+.. autoclass:: gymnos.datasets.directory_image_classification.DirectoryImageClassification
+    :noindex:
 
 tiny_imagenet
 =============================
