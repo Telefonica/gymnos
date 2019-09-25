@@ -40,7 +40,7 @@ To use a package available via lazy imports:
 Add a new lazy dependency
 ===========================
 
-Simply add a property to :class:`gymnos.utils.lazy_imports.LazyImporter` specifying the module to import.
+Simply add a property to :class:`gymnos.utils.lazy_imports.LazyImporter` specifying the module to import and the module to ``setup.py``.
 
 For example, if we want to configure PyTorch:
 
@@ -52,8 +52,7 @@ For example, if we want to configure PyTorch:
         def torch(cls):
             return _try_import("torch")
 
-
-If the module has a different name than the one we will have to install:
+If the import name is different than the one we will have to install:
 
 .. code-block:: python
 

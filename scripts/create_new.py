@@ -107,7 +107,7 @@ DATASET_FILE_STR = """
 #
 #
 
-from .dataset import Dataset, DatasetInfo, Array, ClassLabel
+from .dataset import Dataset, Array, ClassLabel
 
 
 class {name}:
@@ -115,12 +115,13 @@ class {name}:
     {TODO}: Description of my dataset.
     \"""
 
-    def info(self):
-        # {TODO}: Specifies the DatasetInfo object
-        return DatasetInfo(
-            features=...,
-            labels=...
-        )
+    @property
+    def features_info(self):
+        # {TODO}: Specifies the information about the features (shape, dtype, etc...)
+
+    @property
+    def labels_info(self):
+        # {TODO}: Specifies the information about the labels (shape, dtype, etc ...)
 
     def download_and_prepare(self, dl_manager):
         pass  # {TODO}: download any file you will need later in the __getitem__ and __len__ function

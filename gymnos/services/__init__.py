@@ -3,27 +3,27 @@ from ..registration import ComponentRegistry
 registry = ComponentRegistry("service")  # global component registry
 
 
-def register(name, entry_point):
+def register(type, entry_point):
     """
     Register service.
 
     Parameters
     -----------
-    name: str
+    type: str
         Service id to register
     entry_point: str
         Service path
     """
-    return registry.register(name, entry_point)
+    return registry.register(type, entry_point)
 
 
-def load(name, **kwargs):
+def load(type, **kwargs):
     """
     Load registered service
 
     Parameters
     ----------
-    name: str
+    type: str
         Service id to load
     **kwargs: any
         Service constructor arguments
@@ -33,4 +33,4 @@ def load(name, **kwargs):
     service: gymnos.services.service.service
         Service instance
     """
-    return registry.load(name, **kwargs)
+    return registry.load(type, **kwargs)

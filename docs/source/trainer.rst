@@ -11,7 +11,6 @@ Each instance of the Trainer is made up of 4 basic components that define each p
 
 - Dataset
 - Model
-- Training
 - Tracking
 
 .. code-block:: python
@@ -19,7 +18,6 @@ Each instance of the Trainer is made up of 4 basic components that define each p
     trainer = Trainer(
         dataset=dataset,
         model=model,
-        training=training,
         tracking=tracking
     )
 
@@ -34,7 +32,9 @@ For example:
     from gymnos.core.dataset import Dataset
 
     dataset = Dataset(
-        name="dogs_vs_cats",
+        dataset={
+            "type": "dogs_vs_cats"
+        },
         samples={
             "train": 0.8,
             "test": 0.2
@@ -63,7 +63,7 @@ See :class:`gymnos.core.dataset.Dataset` for more details.
 Model
 --------
 
-It defines the supervised learning model and its parameters.
+It defines the supervised learning model, its parameters and their training.
 
 For example:
 
@@ -72,31 +72,17 @@ For example:
     from gymnos.core.model import Model
 
     model = Model(
-        name="dogs_vs_cats_cnn",
-        parameters={
+        model={
+            "type": "dogs_vs_cats_cnn",
             "input_shape": [100, 100, 3]
+        },
+        training={
+            "epochs": 10,
+            "batch_size": 32
         }
     )
 
 See :class:`gymnos.core.model.Model` for more details.
-
-Training
----------
-
-It defines the training parameters for our model, i.e. the model parameters for the ``fit`` or ``fit_generator`` method.
-
-For example:
-
-.. code-block:: python
-
-    from gymnos.core.training import Training
-
-    training = Training(
-        epochs=5,
-        batch_size=32
-    )
-
-See :class:`gymnos.core.training.Training` for more details.
 
 Tracking
 ------------

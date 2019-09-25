@@ -1,6 +1,8 @@
 {
     "dataset": {
-        "name": "rock_paper_scissors",
+        "dataset": {
+            "type": "rock_paper_scissors"
+        },
         "one_hot": true,
         "samples": {
             "train": 0.8,
@@ -23,16 +25,16 @@
         "shuffle": true
     },
     "model": {
-        "name": "dogs_vs_cats_cnn",
-        "parameters": {
+        "model": {
+            "type": "dogs_vs_cats_cnn",
             "input_shape": [100, 100, 1],
             "classes": 3
+        },
+        "training": {
+            "epochs": 5,
+            "batch_size": 32,
+            "validation_split": 0.25
         }
-    },
-    "training": {
-        "epochs": 5,
-        "batch_size": 32,
-        "validation_split": 0.25
     },
     "tracking": {
         "trackers": [

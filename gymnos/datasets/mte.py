@@ -12,7 +12,7 @@ from tqdm import tqdm
 from datetime import datetime
 from sklearn.preprocessing import MultiLabelBinarizer
 
-from .dataset import Dataset, DatasetInfo, ClassLabel, Array
+from .dataset import Dataset, ClassLabel, Array
 
 logger = logging.getLogger(__name__)
 
@@ -202,11 +202,13 @@ class MTE(Dataset):
         - **Features**: texts
     """
 
-    def info(self):
-        return DatasetInfo(
-            features=Array(shape=[], dtype=str),
-            labels=ClassLabel(names=CLASS_NAMES, multilabel=True)
-        )
+    @property
+    def labels_info(self):
+        return ClassLabel(names=CLASS_NAMES, multilabel=True)
+
+    @property
+    def features_info(self):
+        return Array(shape=[17], dtype=str)
 
     def download_and_prepare(self, dl_manager):
         epg_path = dl_manager["http"].download(EPG_URL.format(now=datetime.now().strftime("%Y-%m-%dT%H:%M:%S")))

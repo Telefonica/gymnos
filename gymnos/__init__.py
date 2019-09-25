@@ -9,101 +9,106 @@ from . import data_augmentors
 # MARK: Datasets registration
 
 datasets.register(
-    name="boston_housing",
+    type="boston_housing",
     entry_point="gymnos.datasets.boston_housing.BostonHousing"
 )
 
 datasets.register(
-    name="data_usage_test",
+    type="data_usage_test",
     entry_point="gymnos.datasets.data_usage_test.DataUsageTest"
 )
 
 datasets.register(
-    name="imdb",
+    type="imdb",
     entry_point="gymnos.datasets.imdb.IMDB"
 )
 
 datasets.register(
-    name="tiny_imagenet",
+    type="tiny_imagenet",
     entry_point="gymnos.datasets.tiny_imagenet.TinyImagenet"
 )
 
 datasets.register(
-    name="dogs_vs_cats",
+    type="dogs_vs_cats",
     entry_point="gymnos.datasets.dogs_vs_cats.DogsVsCats"
 )
 
 datasets.register(
-    name="unusual_data_usage_test",
+    type="unusual_data_usage_test",
     entry_point="gymnos.datasets.unusual_data_usage_test.UnusualDataUsageTest"
 )
 
 datasets.register(
-    name="synthetic_digits",
+    type="synthetic_digits",
     entry_point="gymnos.datasets.synthetic_digits.SyntheticDigits"
 )
 
 datasets.register(
-    name="mte",
+    type="mte",
     entry_point="gymnos.datasets.mte.MTE"
 )
 
 datasets.register(
-    name="rock_paper_scissors",
+    type="rock_paper_scissors",
     entry_point="gymnos.datasets.rock_paper_scissors.RockPaperScissors"
+)
+
+datasets.register(
+    type="directory_image_classification",
+    entry_point="gymnos.datasets.directory_image_classification.DirectoryImageClassification"
 )
 
 # MARK: Services registration
 
 services.register(
-    name="http",
+    type="http",
     entry_point="gymnos.services.http.HTTP"
 )
 
 services.register(
-    name="kaggle",
+    type="kaggle",
     entry_point="gymnos.services.kaggle.Kaggle"
 )
 
 services.register(
-    name="smb",
+    type="smb",
     entry_point="gymnos.services.smb.SMB"
 )
 
 # MARK: Models registration
 
 models.register(
-    name="dogs_vs_cats_cnn",
+    type="dogs_vs_cats_cnn",
     entry_point="gymnos.models.dogs_vs_cats_cnn.DogsVsCatsCNN"
 )
 
 models.register(
-    name="data_usage_linear_regression",
+    type="data_usage_linear_regression",
     entry_point="gymnos.models.data_usage_linear_regression.DataUsageLinearRegression"
 )
 
 models.register(
-    name="data_usage_holt_winters",
+    type="data_usage_holt_winters",
     entry_point="gymnos.models.data_usage_holt_winters.DataUsageHoltWinters"
 )
 
 models.register(
-    name="unusual_data_usage_weighted_thresholds",
+    type="unusual_data_usage_weighted_thresholds",
     entry_point="gymnos.models.unusual_data_usage_weighted_thresholds.UnusualDataUsageWT"
 )
 
 models.register(
-    name="keras_classifier",
+    type="keras_classifier",
     entry_point="gymnos.models.keras.KerasClassifier"
 )
 
 models.register(
-    name="keras_regressor",
+    type="keras_regressor",
     entry_point="gymnos.models.keras.KerasRegressor"
 )
 
 models.register(
-    name="mte_nn",
+    type="mte_nn",
     entry_point="gymnos.models.mte_nn.MTENN"
 )
 
@@ -111,160 +116,160 @@ models.register(
 # MARK: Preprocessors registration
 
 preprocessors.register(
-    name="divide",
+    type="divide",
     entry_point="gymnos.preprocessors.divide.Divide"
 )
 
 preprocessors.register(
-    name="grayscale",
+    type="grayscale",
     entry_point="gymnos.preprocessors.images.grayscale.Grayscale"
 )
 
 preprocessors.register(
-    name="image_resize",
+    type="image_resize",
     entry_point="gymnos.preprocessors.images.image_resize.ImageResize"
 )
 
 preprocessors.register(
-    name="replace",
+    type="replace",
     entry_point="gymnos.preprocessors.replace.Replace"
 )
 
 preprocessors.register(
-    name="binary_vectorizer",
+    type="binary_vectorizer",
     entry_point="gymnos.preprocessors.texts.binary_vectorizer.BinaryVectorizer"
 )
 
 preprocessors.register(
-    name="grayscale_to_color",
+    type="grayscale_to_color",
     entry_point="gymnos.preprocessors.images.grayscale_to_color.GrayscaleToColor"
 )
 
 preprocessors.register(
-    name="lemmatization",
+    type="lemmatization",
     entry_point="gymnos.preprocessors.texts.lemmatization.Lemmatization"
 )
 
 preprocessors.register(
-    name="alphanumeric",
+    type="alphanumeric",
     entry_point="gymnos.preprocessors.texts.alphanumeric.Alphanumeric"
 )
 
 preprocessors.register(
-    name="tfidf",
+    type="tfidf",
     entry_point="gymnos.preprocessors.texts.tfidf.Tfidf"
 )
 
 preprocessors.register(
-    name="kbest",
+    type="kbest",
     entry_point="gymnos.preprocessors.kbest.KBest"
 )
 
 preprocessors.register(
-    name="standard_scaler",
+    type="standard_scaler",
     entry_point="gymnos.preprocessors.standard_scaler.StandardScaler"
 )
 
 # MARK: Tracker registration
 
 trackers.register(
-    name="comet_ml",
+    type="comet_ml",
     entry_point="gymnos.trackers.comet_ml.CometML"
 )
 
 trackers.register(
-    name="mlflow",
+    type="mlflow",
     entry_point="gymnos.trackers.mlflow.MLflow"
 )
 
 trackers.register(
-    name="tensorboard",
+    type="tensorboard",
     entry_point="gymnos.trackers.tensorboard.TensorBoard"
 )
 
 # MARK: Data Augmentors registration
 
 data_augmentors.register(
-    name="distort",
+    type="distort",
     entry_point="gymnos.data_augmentors.distort.Distort"
 )
 
 data_augmentors.register(
-    name="flip",
+    type="flip",
     entry_point="gymnos.data_augmentors.flip.Flip"
 )
 
 data_augmentors.register(
-    name="gaussian_distortion",
+    type="gaussian_distortion",
     entry_point="gymnos.data_augmentors.gaussian_distortion.GaussianDistortion"
 )
 
 data_augmentors.register(
-    name="greyscale",
+    type="greyscale",
     entry_point="gymnos.data_augmentors.greyscale.Greyscale"
 )
 
 data_augmentors.register(
-    name="histogram_equalisation",
+    type="histogram_equalisation",
     entry_point="gymnos.data_augmentors.histogram_equalisation.HistogramEqualisation"
 )
 
 data_augmentors.register(
-    name="invert",
+    type="invert",
     entry_point="gymnos.data_augmentors.invert.Invert"
 )
 
 data_augmentors.register(
-    name="random_brightness",
+    type="random_brightness",
     entry_point="gymnos.data_augmentors.random_brightness.RandomBrightness"
 )
 
 data_augmentors.register(
-    name="random_color",
+    type="random_color",
     entry_point="gymnos.data_augmentors.random_color.RandomColor"
 )
 
 data_augmentors.register(
-    name="random_contrast",
+    type="random_contrast",
     entry_point="gymnos.data_augmentors.random_contrast.RandomContrast"
 )
 
 data_augmentors.register(
-    name="random_erasing",
+    type="random_erasing",
     entry_point="gymnos.data_augmentors.random_erasing.RandomErasing"
 )
 
 data_augmentors.register(
-    name="rotate",
+    type="rotate",
     entry_point="gymnos.data_augmentors.rotate.Rotate"
 )
 
 data_augmentors.register(
-    name="rotate_range",
+    type="rotate_range",
     entry_point="gymnos.data_augmentors.rotate_range.RotateRange"
 )
 
 data_augmentors.register(
-    name="shear",
+    type="shear",
     entry_point="gymnos.data_augmentors.shear.Shear"
 )
 
 data_augmentors.register(
-    name="skew",
+    type="skew",
     entry_point="gymnos.data_augmentors.skew.Skew"
 )
 
 data_augmentors.register(
-    name="zoom",
+    type="zoom",
     entry_point="gymnos.data_augmentors.zoom.Zoom"
 )
 
 data_augmentors.register(
-    name="zoom_ground_truth",
+    type="zoom_ground_truth",
     entry_point="gymnos.data_augmentors.zoom_ground_truth.ZoomGroundTruth"
 )
 
 data_augmentors.register(
-    name="zoom_random",
+    type="zoom_random",
     entry_point="gymnos.data_augmentors.zoom_random.ZoomRandom"
 )

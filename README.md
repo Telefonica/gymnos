@@ -24,7 +24,9 @@ import gymnos
 # Instantiate a Gymnos trainer definining ML system configuration
 trainer = gymnos.Trainer(
     dataset={
-        "name": "dogs_vs_cats",
+        "dataset": {
+            "type": "dogs_vs_cats"
+        },
         "preprocessors": [
             {
                 "type": "image_resize",
@@ -46,12 +48,14 @@ trainer = gymnos.Trainer(
         }
     },
     model={
-        "name": "dogs_vs_cats_cnn",
-        "input_shape": [80, 80, 3]
-    },
-    training={
-        "epochs": 5,
-        "validation_split": 0.25
+        "model": {
+            "type": "dogs_vs_cats_cnn",
+            "input_shape": [80, 80, 3]
+        },
+        training={
+            "epochs": 5,
+            "validation_split": 0.25
+        },
     },
     tracking={
         "trackers": [

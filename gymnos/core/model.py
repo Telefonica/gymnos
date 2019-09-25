@@ -22,30 +22,42 @@ class Model:
         Model name.
     parameters: dict, optional
         Parameters associated with the model
+    model: dict, optional
+        Model type and their parameters with the structure ``{"type", **parameters}``
+
     Examples
     --------
 
     .. code-block:: py
 
         Model(
-            name="data_usage_holt_winters",
-            parameters={
-                "beta": 0.029,
-                "alpha": 0.5
+            model={
+                "type": "dogs_vs_cats",
+                "input_shape": [100, 100, 1],
+                "classes": 4
+            },
+            training={
+                "epochs": 10,
+                "batch_size": 32
             }
         )
     """  # noqa: E501
 
-    def __init__(self, name, parameters=None):
+    def __init__(self, model, parameters=None, training=None):
+        model = model or {}
+        training = training or {}
         parameters = parameters or {}
 
-        self.name = name
         self.parameters = parameters
 
-        self.model = models.load(name, **deepcopy(parameters))
+        self.training = training
+
+        self.model_spec = deepcopy(model)
+
+        self.model = models.load(**model)
 
     def to_dict(self):
         return dict(
-            name=self.name,
-            parameters=self.parameters
+            model=self.model_spec,
+            training=self.training
         )

@@ -22,7 +22,7 @@ Writing ``my_dataset.py``
 
 Use the default template
 -------------------------
-If you want to :ref:`contribute to our repo <contributing>` and add a new dataset, the following script will help you get started generating the required python files. To use it, clone the `Gymnos <https://github.com/Telefonica/gymnos>`_ repository and run the following command:
+If you want to :ref:`cofntribute to our repo <contributing>` and add a new dataset, the following script will help you get started generating the required python files. To use it, clone the `Gymnos <https://github.com/Telefonica/gymnos>`_ repository and run the following command:
 
 .. code-block:: console
 
@@ -44,9 +44,9 @@ Go to ``gymnos/datasets/my_dataset.py`` and then search for TODO(my_dataset) in 
 
 Dataset
 --------
-Each dataset is defined as a subclass of :class:`gymnos.datasets.Dataset` implementing the following methods:
+Each dataset is defined as a subclass of :class:`gymnos.datasets.Dataset` implementing the following methods / properties:
 
-* ``info``: builds the :class:`gymnos.datasets.DatasetInfo` object describing the dataset
+* ``features_info`` and ``labels_info``: describes the features and labels of your dataset
 * ``download_and_prepare``: downloads the source data.
 * ``__getitem__``: returns a single row given an index
 * ``__len__``: returns the dataset length
@@ -70,13 +70,11 @@ my_dataset.py
         """
         TODO(my_dataset): Description of my dataset.
         """
+        def features_info(self):
+            # {TODO}: Specifies the information about the features (shape, dtype, etc...)
 
-        def info(self):
-            # TODO(my_dataset): Specifies the DatasetInfo object
-            return DatasetInfo(
-                features=...,
-                labels=...
-            )
+        def labels_info(self):
+            # {TODO}: Specifies the information about the labels (shape, dtype, etc ...)
 
         def download_and_prepare(self, dl_manager):
             pass # TODO(my_dataset): download any file you will need later in the __getitem__ and __len__ function
@@ -87,27 +85,33 @@ my_dataset.py
         def __len__(self):
             pass # TODO(my_dataset): Dataset length. Called after download_and_prepare
 
-Specifying ``DatasetInfo``
-============================
+Specifying ``features_info`` and ``labels_info``
+====================================================
 
 :class:`gymnos.datasets.DatasetInfo` describes the dataset.
 
+You need to specify the shape and dtype for your features and labels using the ``Array`` class.
+If you have class labels, specify them using ``ClassLabel`` type.
+
 .. code-block:: python
 
-    from .dataset import Dataset, DatasetInfo, Array, ClassLabel
+    from .dataset import Dataset, Array, ClassLabel
 
     class MyDataset(Dataset):
 
-        def info(self):
-            return DatasetInfo(
-                features=Array(shape=[80, 80], dtype=np.uint8),
-                labels=ClassLabel(names=["dog", "cat"])
-            )
+        @property
+        def features_info(self):
+            return Array(shape=[80, 80], dtype=np.uint8)
+
+        @property
+        def labels_info(self):
+            return ClassLabel(names=["dog", "cat"])
 
 Downloading and extracting source data
 =======================================
 
-Most datasets need to download data from the web. All downloads and extractions must go through the :class:`gymnos.services.DownloadManager`. ``DownloadManager``currently supports extracting ``.zip``, ``.gz`` and ``.tar`` files.
+Most datasets need to download data from the web. All downloads and extractions must go through the :class:`gymnos.services.DownloadManager`. 
+``DownloadManager``currently supports extracting ``.zip``, ``.gz`` and ``.tar`` files.
 
 For example, one can download URLs with ``download`` and extract files with ``extract`` method:
 
@@ -146,10 +150,13 @@ This methods will typically read source dataset artifacts (e.g a CSV file). In t
 
 Summary
 =============
+1. Create ``MyDataset`` in ``gymnos/dataset/my_dataset.py`` inheriting from :class:`gymnos.datasets.dataset.Dataset` and implement the following properties:
 
-1. Create ``MyDataset`` in ``gymnos/dataset/my_dataset.py`` inheriting from :class:`gymnos.datasets.dataset.Dataset` and implementing the abstract methods:
+* ``features_info``
+* ``labels_info``
 
-* ``info()``
+And the following abstract methods:
+
 * ``download_and_prepare(dl_manager)``
 * ``__getitem__(index)``
 * ``__len__()``

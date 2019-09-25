@@ -11,7 +11,7 @@ import numpy as np
 from glob import glob
 
 from ..utils.image_utils import imread_rgb, imresize
-from .dataset import Dataset, DatasetInfo, Array, ClassLabel
+from .dataset import Dataset, Array, ClassLabel
 
 IMAGE_WIDTH = 150
 IMAGE_HEIGHT = 150
@@ -44,11 +44,13 @@ class DogsVsCats(Dataset):
         - **Features**: real, between 0 and 255
     """
 
-    def info(self):
-        return DatasetInfo(
-            features=Array(shape=[IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_DEPTH], dtype=np.uint8),
-            labels=ClassLabel(names=["cat", "dog"])
-        )
+    @property
+    def features_info(self):
+        return Array(shape=[IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_DEPTH], dtype=np.uint8)
+
+    @property
+    def labels_info(self):
+        return ClassLabel(names=["cat", "dog"])
 
     def download_and_prepare(self, dl_manager):
         train_files = dl_manager["kaggle"].download(competition_name=KAGGLE_COMPETITION_NAME,

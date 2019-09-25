@@ -13,8 +13,8 @@ from gymnos.services.download_manager import DownloadManager
 
 BOSTON_HOUSING_SPEC = {
     "model": {
-        "name": "keras_regressor",
-        "parameters": {
+        "model": {
+            "type": "keras_regressor",
             "sequential": [
                 {"type": "dense", "units": 1, "activation": "linear"}
             ],
@@ -22,26 +22,28 @@ BOSTON_HOUSING_SPEC = {
             "optimizer": "sgd",
             "loss": "mse",
             "metrics": ["mae"]
+        },
+        "training": {
+            "batch_size": 32,
+            "epochs": 1,
+            "callbacks": [
+                {
+                    "type": "early_stopping"
+                }
+            ],
+            "validation_split": 0.2
         }
     },
     "dataset": {
-        "name": "boston_housing",
+        "dataset": {
+            "type": "boston_housing"
+        },
         "preprocessors": [
             {
                 "type": "divide",
                 "factor": 100
             }
         ]
-    },
-    "training": {
-        "batch_size": 32,
-        "epochs": 1,
-        "callbacks": [
-            {
-                "type": "early_stopping"
-            }
-        ],
-        "validation_split": 0.2
     },
     "tracking": {
         "trackers": [
@@ -57,39 +59,54 @@ BOSTON_HOUSING_SPEC = {
 
 DATA_USAGE_HOLT_WINTERS_SPEC = {
     "dataset": {
-        "name": "data_usage_test",
+        "dataset": {
+            "type": "data_usage_test"
+        },
         "samples": {
             "train": 20,
             "test": 20
         }
     },
     "model": {
-        "name": "data_usage_holt_winters"
+        "model": {
+            "type": "data_usage_holt_winters"
+        }
     }
 }
 
 DATA_USAGE_LINEAR_REGRESSION_SPEC = {
     "dataset": {
-        "name": "data_usage_test",
+        "dataset": {
+            "type": "data_usage_test"
+        },
         "samples": {
             "train": 5,
             "test": 5
         }
     },
     "model": {
-        "name": "data_usage_linear_regression"
+        "model": {
+            "type": "data_usage_linear_regression"
+        }
     }
 }
 
 DOGS_VS_CATS_SPEC = {
     "model": {
-        "name": "dogs_vs_cats_cnn",
-        "parameters": {
+        "model": {
+            "type": "dogs_vs_cats_cnn",
             "input_shape": [32, 32, 3]
+        },
+        "training": {
+            "batch_size": 32,
+            "epochs": 1,
+            "validation_split": 0.25
         }
     },
     "dataset": {
-        "name": "dogs_vs_cats",
+        "dataset": {
+            "type": "dogs_vs_cats"
+        },
         "one_hot": True,
         "samples": {
             "train": 5,
@@ -106,17 +123,14 @@ DOGS_VS_CATS_SPEC = {
                 "factor": 255
             }
         ]
-    },
-    "training": {
-        "batch_size": 32,
-        "epochs": 1,
-        "validation_split": 0.25
     }
 }
 
 IMDB_SPEC = {
     "dataset": {
-        "name": "imdb",
+        "dataset": {
+            "type": "imdb"
+        },
         "one_hot": True,
         "samples": {
             "train": 5,
@@ -141,8 +155,8 @@ IMDB_SPEC = {
         ]
     },
     "model": {
-        "name": "keras_classifier",
-        "parameters": {
+        "model": {
+            "type": "keras_classifier",
             "sequential": [
                 {"type": "dense", "units": 2}
             ],
@@ -150,20 +164,25 @@ IMDB_SPEC = {
             "loss": "categorical_crossentropy",
             "optimizer": "adam",
             "metrics": ["acc"]
+        },
+        "training": {
+            "epochs": 1
         }
     }
 }
 
 ROCK_PAPER_SCISSORS_SPEC = {
     "model": {
-        "name": "dogs_vs_cats_cnn",
-        "parameters": {
+        "model": {
+            "type": "dogs_vs_cats_cnn",
             "input_shape": [80, 80, 1],
             "classes": 3
         }
     },
     "dataset": {
-        "name": "rock_paper_scissors",
+        "dataset": {
+            "type": "rock_paper_scissors"
+        },
         "one_hot": True,
         "samples": {
             "train": 10,
@@ -205,14 +224,20 @@ ROCK_PAPER_SCISSORS_SPEC = {
 
 SYNTHETIC_DIGITS = {
     "model": {
-        "name": "dogs_vs_cats_cnn",
-        "parameters": {
+        "model": {
+            "type": "dogs_vs_cats_cnn",
             "input_shape": [50, 50, 3],
             "classes": 10
+        },
+        "training": {
+            "epochs": 2,
+            "validation_split": 0.25
         }
     },
     "dataset": {
-        "name": "synthetic_digits",
+        "dataset": {
+            "type": "synthetic_digits"
+        },
         "one_hot": True,
         "preprocessors": [
             {
@@ -229,17 +254,15 @@ SYNTHETIC_DIGITS = {
             "train": 10,
             "test": 5
         }
-    },
-    "training": {
-        "epochs": 2,
-        "validation_split": 0.25
     }
 }
 
 
 TINY_IMAGENET_SPEC = {
     "dataset": {
-        "name": "tiny_imagenet",
+        "dataset": {
+            "type": "tiny_imagenet"
+        },
         "one_hot": True,
         "samples": {
             "train": 5,
@@ -271,8 +294,8 @@ TINY_IMAGENET_SPEC = {
         ]
     },
     "model": {
-        "name": "keras_classifier",
-        "parameters": {
+        "model": {
+            "type": "keras_classifier",
             "sequential": [
                 {"type": "flatten"},
                 {"type": "dense", "units": 200, "activation": "softmax"}
@@ -287,10 +310,14 @@ TINY_IMAGENET_SPEC = {
 
 UNUSUAL_DATA_USAGE = {
     "model": {
-        "name": "unusual_data_usage_weighted_thresholds"
+        "model": {
+            "type": "unusual_data_usage_weighted_thresholds"
+        }
     },
     "dataset": {
-        "name": "unusual_data_usage_test",
+        "dataset": {
+            "type": "unusual_data_usage_test"
+        },
         "samples": {
             "train": 5,
             "test": 5

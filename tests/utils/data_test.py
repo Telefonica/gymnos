@@ -40,7 +40,12 @@ class NumericDataset(Dataset):
         self.x = x
         self.y = y
 
-    def info(self):
+    @property
+    def features_info(self):
+        pass
+
+    @property
+    def labels_info(self):
         pass
 
     def download_and_prepare(self, dl_manager):

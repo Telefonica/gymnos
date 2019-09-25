@@ -1,12 +1,18 @@
 {
     "model": {
-        "name": "mte_nn",
-        "parameters": {
+        "model": {
+            "type": "mte_nn",
             "input_shape": [20000]
+        },
+        "training": {
+            "batch_size": 32,
+            "epochs": 16
         }
     },
     "dataset": {
-        "name": "mte",
+        "dataset": {
+            "type": "mte"
+        },
         "samples": {
             "train": 0.8,
             "test": 0.2
@@ -33,9 +39,5 @@
                 "k": 20000
             }
         ]
-    },
-    "training": {
-        "batch_size": 32,
-        "epochs": 16
     }
 }

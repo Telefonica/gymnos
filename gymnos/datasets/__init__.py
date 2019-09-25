@@ -10,27 +10,27 @@ from ..registration import ComponentRegistry
 registry = ComponentRegistry("dataset")  # global component registry
 
 
-def register(name, entry_point):
+def register(type, entry_point):
     """
     Register dataset.
 
     Parameters
     -----------
-    name: str
+    type: str
         Dataset id to register
     entry_point: str
         Dataset path
     """
-    return registry.register(name, entry_point)
+    return registry.register(type, entry_point)
 
 
-def load(name, **kwargs):
+def load(type, **kwargs):
     """
     Load registered dataset
 
     Parameters
     ----------
-    name: str
+    type: str
         Dataset id to load
     **kwargs: any
         Dataset constructor arguments
@@ -40,4 +40,4 @@ def load(name, **kwargs):
     dataset: gymnos.datasets.dataset.dataset
         Dataset instance
     """
-    return registry.load(name, **kwargs)
+    return registry.load(type, **kwargs)

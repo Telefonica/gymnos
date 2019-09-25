@@ -10,7 +10,7 @@ import numpy as np
 
 from glob import glob
 
-from .dataset import Dataset, DatasetInfo, Array, ClassLabel
+from .dataset import Dataset, Array, ClassLabel
 from ..utils.image_utils import imread_rgb
 from ..utils.io_utils import read_file_text
 
@@ -35,11 +35,13 @@ class TinyImagenet(Dataset):
         - **Features**: real, between 0 and 255
     """
 
-    def info(self):
-        return DatasetInfo(
-            features=Array(shape=[IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_DEPTH], dtype=np.uint8),
-            labels=ClassLabel(names_file=os.path.join(os.path.dirname(__file__), "tiny_imagenet_labels.txt"))
-        )
+    @property
+    def features_info(self):
+        return Array(shape=[IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_DEPTH], dtype=np.uint8)
+
+    @property
+    def labels_info(self):
+        return ClassLabel(names_file=os.path.join(os.path.dirname(__file__), "tiny_imagenet_labels.txt"))
 
     def download_and_prepare(self, dl_manager):
         path = dl_manager["kaggle"].download(dataset_name=KAGGLE_DATASET_NAME,

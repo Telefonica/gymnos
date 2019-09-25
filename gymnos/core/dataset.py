@@ -6,6 +6,8 @@
 
 import logging
 
+from copy import deepcopy
+
 from .. import datasets
 from ..preprocessors.preprocessor import Pipeline as PreprocessorPipeline
 from ..data_augmentors.data_augmentor import Pipeline as DataAugmentorPipeline
@@ -38,10 +40,8 @@ class Dataset:
     """
     Parameters
     ----------
-    name: str
-        Dataset name.
-    parameters: dict, optional
-        Dataset constructor parameters
+    dataset: dict
+        Dataset type and their parameters with the structure ``{"type", **parameters}``
     samples: dict, optional
         Samples to split dataset into random train and test subsets
 
@@ -94,39 +94,37 @@ class Dataset:
         )
     """  # noqa: E501
 
-    def __init__(self, name, parameters=None, samples=None, preprocessors=None, seed=None, shuffle=True, one_hot=False,
+    def __init__(self, dataset, samples=None, preprocessors=None, seed=None, shuffle=True, one_hot=False,
                  chunk_size=None, data_augmentors=None):
         samples = samples or {}
-        parameters = parameters or {}
         preprocessors = preprocessors or []
         data_augmentors = data_augmentors or []
 
-        self.name = name
         self.seed = seed
         self.one_hot = one_hot
         self.shuffle = shuffle
-        self.parameters = parameters
         self.chunk_size = chunk_size
 
         self.samples = DatasetSamples(**samples)
 
-        self.dataset = datasets.load(name, **parameters)
+        self.dataset_spec = deepcopy(dataset)
+
+        self.dataset = datasets.load(**dataset)
 
         # we save these specs so we can export it via to_dict
-        self.preprocessors_specs = preprocessors
-        self.data_augmentors_specs = data_augmentors
+        self.preprocessors_specs = deepcopy(preprocessors)
+        self.data_augmentors_specs = deepcopy(data_augmentors)
 
         self.preprocessors = PreprocessorPipeline.from_dict(preprocessors)
         self.data_augmentors = DataAugmentorPipeline.from_dict(data_augmentors)
 
     def to_dict(self):
         return dict(
-            name=self.name,
+            dataset=self.dataset_spec,
             seed=self.seed,
             one_hot=self.one_hot,
             shuffle=self.shuffle,
             chunk_size=self.chunk_size,
-            parameters=self.parameters,
             samples=dict(
                 train=self.samples.train,
                 test=self.samples.test

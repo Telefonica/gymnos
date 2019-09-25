@@ -32,6 +32,14 @@ gymnos.datasets.unusual_data_usage_test
 .. automodule:: gymnos.datasets.unusual_data_usage_test
     :members:
 
+
+gymnos.datasets.directory_image_classification
+====================================================
+
+.. automodule:: gymnos.datasets.directory_image_classification
+    :members:
+
+
 gymnos.datasets.dogs_vs_cats
 ===============================
 

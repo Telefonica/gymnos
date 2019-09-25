@@ -29,13 +29,20 @@ To train `dogs_vs_cats_cnn` model with `dogs_vs_cats` dataset using 3 preprocess
 
     {
         "model": {
-            "name": "dogs_vs_cats_cnn",
-            "parameters": {
+            "model": {
+                "type": "dogs_vs_cats_cnn",
                 "input_shape": [80, 80, 1]
+            },
+            "training": {
+                "batch_size": 32,
+                "epochs": 5,
+                "validation_split": 0.25
             }
         },
         "dataset": {
-            "name": "dogs_vs_cats",
+            "dataset": {
+                "type": "dogs_vs_cats"
+            },
             "one_hot": true,
             "samples": {
                 "train": 0.8,
@@ -55,11 +62,6 @@ To train `dogs_vs_cats_cnn` model with `dogs_vs_cats` dataset using 3 preprocess
                     "factor": 255
                 }
             ]
-        },
-        "training": {
-            "batch_size": 32,
-            "epochs": 5,
-            "validation_split": 0.25
         },
         "tracking": {
             "trackers": [
@@ -84,8 +86,8 @@ To define and train a neural network directly into training JSON file:
 
     {
         "model": {
-            "name": "keras_regressor",
-            "parameters": {
+            "model": {
+                "type": "keras_regressor",
                 "sequential": [
                     {"type": "dense", "units": 512, "activation": "relu"},
                     {"type": "dense", "units": 128, "activation": "relu"},
@@ -95,10 +97,22 @@ To define and train a neural network directly into training JSON file:
                 "optimizer": "adam",
                 "loss": "mse",
                 "metrics": ["mae"]
-            }
+            },
+            "training": {
+                "batch_size": 32,
+                "epochs": 25,
+                "callbacks": [
+                    {
+                        "type": "early_stopping"
+                    }
+                ],
+                "validation_split": 0.25
+            },
         },
         "dataset": {
-            "name": "boston_housing",
+            "dataset": {
+                "type": "boston_housing"
+            }
             "samples": {
                 "train": 0.8,
                 "test": 0.2
@@ -109,16 +123,6 @@ To define and train a neural network directly into training JSON file:
                 }
             ],
             "seed": 0
-        },
-        "training": {
-            "batch_size": 32,
-            "epochs": 25,
-            "callbacks": [
-                {
-                    "type": "early_stopping"
-                }
-            ],
-            "validation_split": 0.25
         },
         "tracking": {
             "trackers": [
