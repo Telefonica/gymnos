@@ -43,18 +43,19 @@ class Model:
         )
     """  # noqa: E501
 
-    def __init__(self, model, parameters=None, training=None):
+    def __init__(self, model, training=None):
         model = model or {}
         training = training or {}
-        parameters = parameters or {}
-
-        self.parameters = parameters
 
         self.training = training
 
         self.model_spec = deepcopy(model)
 
         self.model = models.load(**model)
+
+    @property
+    def parameters(self):
+        return {key: val for key, val in self.model_spec.items() if key != "type"}
 
     def to_dict(self):
         return dict(

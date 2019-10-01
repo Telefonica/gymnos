@@ -75,7 +75,9 @@ class Dataset:
     .. code-block:: py
 
         Dataset(
-            name= "tiny_imagenet",
+            dataset={
+                "type": "tiny_imagenet"
+            },
             one_hot=True,
             samples={
                 "train": 0.8,
