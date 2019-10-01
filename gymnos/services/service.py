@@ -18,7 +18,7 @@ def _load_config(path):
     return config
 
 
-class RequiredValuesMissing(Exception):
+class RequiredValuesMissing(ValueError):
     """
     Exception when a required value is missing, i.e the config variable is not in an environment
     variable or in a configuration file.
