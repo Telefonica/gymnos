@@ -17,9 +17,7 @@ import numpy as np
 from collections import OrderedDict
 from tensorflow.keras.utils import to_categorical
 
-from . import models, datasets
 from .trackers.history import History
-from .trackers.tracker import TrackerList
 from .services.download_manager import DownloadManager
 from .utils.data import Subset, DataLoader
 from .utils.text_utils import humanize_bytes
@@ -508,13 +506,14 @@ class Trainer:
         with tempfile.TemporaryDirectory() as tempdir:
             self._save_model(os.path.join(tempdir, "model.pkl"))
 
-            model_store_dir = os.path.join(tempdir, "saved_model")
-            os.makedirs(model_store_dir)
-            self.model.model.save(model_store_dir)
+            with open(os.path.join(tempdir, "model.pkl"), "wb") as fp:
+                dill.dump(self.model.to_dict(), fp)
 
-            self._save_tracking(os.path.join(tempdir, "tracking.pkl"))
+            with open(os.path.join(tempdir, "tracking.pkl"), "wb") as fp:
+                dill.dump(self.tracking.to_dict(), fp)
 
-            self._save_dataset(os.path.join(tempdir, "dataset.pkl"))
+            with open(os.path.join(tempdir, "dataset.pkl"), "wb") as fp:
+                dill.dump(self.dataset.to_dict(), fp)
 
             with open(os.path.join(tempdir, "features_info.pkl"), "wb") as fp:
                 dill.dump(self.dataset.dataset.features_info, fp)
@@ -524,6 +523,10 @@ class Trainer:
 
             with open(os.path.join(tempdir, "saved_preprocessors.pkl"), "wb") as fp:
                 dill.dump(self.dataset.preprocessors, fp)
+
+            model_store_dir = os.path.join(tempdir, "saved_model")
+            os.makedirs(model_store_dir)
+            self.model.model.save(model_store_dir)
 
             zipdir(tempdir, path)
 
@@ -546,14 +549,15 @@ class Trainer:
             extract_zip(path, extract_dir=tempdir)
 
             with open(os.path.join(tempdir, "model.pkl"), "rb") as fp:
-                model = dill.load(fp)
-
-            model.model = models.load(**model.model_spec)
-            model.model.restore(os.path.join(tempdir, "saved_model"))
+                model = Model(**dill.load(fp))
 
             with open(os.path.join(tempdir, "dataset.pkl"), "rb") as fp:
-                dataset = dill.load(fp)
-            dataset.dataset = datasets.load(**dataset.dataset_spec)
+                dataset = Dataset(**dill.load(fp))
+
+            with open(os.path.join(tempdir, "tracking.pkl"), "rb") as fp:
+                tracking = Tracking(**dill.load(fp))
+
+            model.model.restore(os.path.join(tempdir, "saved_model"))
 
             with open(os.path.join(tempdir, "features_info.pkl"), "rb") as fp:
                 features_info = dill.load(fp)
@@ -569,9 +573,5 @@ class Trainer:
             dataset.dataset.__class__ = cls
             setattr(cls, "features_info", features_info)
             setattr(cls, "labels_info", labels_info)
-
-            with open(os.path.join(tempdir, "tracking.pkl"), "rb") as fp:
-                tracking = dill.load(fp)
-            tracking.trackers = TrackerList.from_dict(tracking.trackers_spec)
 
         return Trainer(model, dataset, tracking)
