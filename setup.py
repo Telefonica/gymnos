@@ -80,8 +80,8 @@ EXTRAS_REQUIRE["serve"] = ["flask"]
 
 EXTRAS_REQUIRE["complete"] = sorted(set(sum(EXTRAS_REQUIRE.values(), [])))
 
-EXTRAS_REQUIRE["tensorflow"] = ["tensorflow>1.8.0"]
-EXTRAS_REQUIRE["tensorflow_gpu"] = ["tensorflow-gpu>=1.8.0"]
+EXTRAS_REQUIRE["tensorflow"] = ["tensorflow>1.8.0,<2.0.0"]
+EXTRAS_REQUIRE["tensorflow_gpu"] = ["tensorflow-gpu>=1.8.0,<2.0.0"]
 
 setuptools.setup(
     name="gymnos",
