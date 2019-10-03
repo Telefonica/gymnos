@@ -67,6 +67,10 @@ class DirectoryImageClassification(Dataset):
     ===========
     path: str
         Directory or compressed file path where each subdirectory contains the images for the class.
+        The path does not need to be local, it can also be from one of the following Gymnos services:
+            - :class:`gymnos.services.http.HTTP`, e.g http://fakeaddress.com/images
+            - :class:`gymnos.services.smb.SMB`, e.g smb://1.2.3.4.5/fake/images
+            - :class:`gymnos.services.sofia.SOFIA`, e.g sofia://datasets/1
     size: 2-tuple, optional
         The requested size in pixels, as a 2-tuple: `(width, height)`. By default, (256, 256).
     color_mode: str, optional
@@ -103,6 +107,8 @@ class DirectoryImageClassification(Dataset):
             local_path = dl_manager["smb"].download(self.path)
         elif parsed_path.scheme == "sofia":
             local_path = dl_manager["sofia"].download(self.path)
+        elif parsed_path.scheme == "http" or parsed_path.scheme == "https":
+            local_path = dl_manager["http"].download(self.path)
         else:
             local_path = self.path
 
