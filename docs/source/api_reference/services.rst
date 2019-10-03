@@ -35,3 +35,9 @@ gymnos.services.kaggle
 
 .. automodule:: gymnos.services.kaggle
     :members:
+
+gymnos.services.sofia
+==================================
+
+.. automodule:: gymnos.services.sofia
+    :members:

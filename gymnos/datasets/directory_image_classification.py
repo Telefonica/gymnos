@@ -101,6 +101,8 @@ class DirectoryImageClassification(Dataset):
 
         if parsed_path.scheme == "smb":
             local_path = dl_manager["smb"].download(self.path)
+        elif parsed_path.scheme == "sofia":
+            local_path = dl_manager["sofia"].download(self.path)
         else:
             local_path = self.path
 

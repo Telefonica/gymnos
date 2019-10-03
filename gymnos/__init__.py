@@ -75,6 +75,11 @@ services.register(
     entry_point="gymnos.services.smb.SMB"
 )
 
+services.register(
+    type="sofia",
+    entry_point="gymnos.services.sofia.SOFIA"
+)
+
 # MARK: Models registration
 
 models.register(

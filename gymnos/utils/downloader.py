@@ -18,7 +18,17 @@ from smb.SMBConnection import SMBConnection
 logger = logging.getLogger(__name__)
 
 
-def download_file_from_url(url, file_path, force=False, verbose=True):
+def urljoin(*args):
+    """
+    Joins given arguments into an url. Trailing but not leading slashes are
+    stripped for each argument.
+    """
+
+    return "/".join(s.strip("/") for s in args)
+
+
+def download_file_from_url(url, file_path, force=False, verbose=True, headers=None, raise_for_status=True,
+                           chunk_size=1024):
     """
     Download url to local file.
 
@@ -32,6 +42,10 @@ def download_file_from_url(url, file_path, force=False, verbose=True):
         Whether or not force download. By default downloads are cached
     verbose: bool, optional
         Whether or not show progress bar
+    raise_for_status: bool, optional
+        Whether or not raise error if status code is not success
+    chunk_size: int, optional
+        Chunk size to read stream.
 
     Returns
     -------
@@ -41,8 +55,8 @@ def download_file_from_url(url, file_path, force=False, verbose=True):
     if os.path.isfile(file_path) and not force:
         return
 
-    response = requests.get(url, stream=True)
-    chunk_size = 1024
+    response = requests.get(url, stream=True, headers=headers)
+    response.raise_for_status()
 
     iterator = response.iter_content(chunk_size=chunk_size)
 

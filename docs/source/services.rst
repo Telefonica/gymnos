@@ -78,3 +78,12 @@ kaggle
 
     .. autoclass:: gymnos.services.kaggle.Kaggle.Config
         :noindex:
+
+SOFIA
+=============
+.. autoclass:: gymnos.services.sofia.SOFIA
+    :noindex:
+
+    .. autoclass:: gymnos.services.sofia.SOFIA.Config
+        :noindex:
+        :members:
