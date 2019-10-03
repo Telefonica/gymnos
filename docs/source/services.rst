@@ -62,6 +62,7 @@ http
 ========================
 .. autoclass:: gymnos.services.http.HTTP
     :noindex:
+    :members:
 
 smb
 ========================
@@ -70,6 +71,7 @@ smb
 
     .. autoclass:: gymnos.services.smb.SMB.Config
         :noindex:
+        :members:
 
 kaggle
 ========================
@@ -78,6 +80,7 @@ kaggle
 
     .. autoclass:: gymnos.services.kaggle.Kaggle.Config
         :noindex:
+        :members:
 
 SOFIA
 =============
