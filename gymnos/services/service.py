@@ -24,26 +24,6 @@ class RequiredValuesMissing(ValueError):
     variable or in a configuration file.
     """
 
-    def __init__(self, var_names_with_help, files_to_look=None):
-        files_to_look = files_to_look or []
-
-        message = inspect.cleandoc("""
-            To use this service, you need to provide the following required variables: {}
-            You can place this variable with their value in one of the following file paths: {}.
-            For your security, ensure that other users of your computer do not have read access to your credentials.
-            On unix-based systems you can do this with the following command:
-                $ chmod 600 <file_path>
-            You can also choose to export them to the environment, e.g:
-                $ export VAR_NAME=xxxxxxxxxx
-        """)
-        list_vars_msg = ""
-        for var_name, var_help in var_names_with_help:
-            list_vars_msg += "\n - {}".format(var_name)
-            if var_help:
-                list_vars_msg += " ({})".format(var_help)
-        message = message.format(list_vars_msg, ", ".join(files_to_look))
-        super().__init__(message)
-
 
 class Value():
     """
@@ -103,6 +83,27 @@ class ServiceConfig:
             return not callable(var_value) and isinstance(var_value, Value) and not var_name.startswith("__")
         return list(filter(is_config_value, vars(self.__class__)))
 
+    def _build_required_values_missing_error(self, var_names_with_help, files_to_look=None):
+        files_to_look = files_to_look or []
+
+        message = inspect.cleandoc("""
+            To use this service, you need to provide the following required variables: {}
+            You can place this variable with their value in one of the following file paths: {}.
+            For your security, ensure that other users of your computer do not have read access to your credentials.
+            On unix-based systems you can do this with the following command:
+                $ chmod 600 <file_path>
+            You can also choose to export them to the environment, e.g:
+                $ export VAR_NAME=xxxxxxxxxx
+        """)
+        list_vars_msg = ""
+        for var_name, var_help in var_names_with_help:
+            list_vars_msg += "\n - {}".format(var_name)
+            if var_help:
+                list_vars_msg += " ({})".format(var_help)
+        message = message.format(list_vars_msg, ", ".join(files_to_look))
+
+        return message
+
     def load(self):
         """
         Load values from configuration files or environment variables.
@@ -134,7 +135,9 @@ class ServiceConfig:
                 missing_required_vars.append((config_var_name, value.help))
 
         if missing_required_vars:
-            raise RequiredValuesMissing(var_names_with_help=missing_required_vars, files_to_look=self.files)
+            error_message = self._build_required_values_missing_error(var_names_with_help=missing_required_vars,
+                                                                      files_to_look=self.files)
+            raise RequiredValuesMissing(error_message)
 
 
 class Service:
