@@ -12,9 +12,12 @@ import inspect
 logger = logging.getLogger(__name__)
 
 
-def _load_config(path):
-    with open(path) as fp:
-        config = json.load(fp)
+def _load_config(path_or_file_like):
+    if hasattr(path_or_file_like, "read"):
+        config = json.load(path_or_file_like)
+    else:
+        with open(path) as fp:
+            config = json.load(fp)
     return config
 
 
@@ -113,7 +116,7 @@ class ServiceConfig:
         RequiredValueMissing
             If a required value is not found.
         """
-        existing_config_files = [path for path in self.files if os.path.isfile(path)]
+        existing_config_files = [path for path in self.files if hasattr(path, "read") or os.path.isfile(path)]
 
         if not existing_config_files:
             config = {}
