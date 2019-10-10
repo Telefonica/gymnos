@@ -101,8 +101,8 @@ class Kaggle(Service):
                     logger.debug("Download for {}/{} found. Skipping".format(resource_name, file_or_files))
                 return real_file_path
 
-            tmp_download_dir = os.path.join(self.download_dir, resource_name + "_" + file_or_files + ".tmp." +
-                                            uuid.uuid4().hex)
+            tmp_download_dir = os.path.join(self.download_dir, "kaggle" + "_" + resource_name + "_" + file_or_files +
+                                            ".tmp." + uuid.uuid4().hex)
 
             self._download(dataset_name=dataset_name, competition_name=competition_name, files=[file_or_files],
                            download_dir=tmp_download_dir)
