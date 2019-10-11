@@ -16,7 +16,7 @@ def _load_config(path_or_file_like):
     if hasattr(path_or_file_like, "read"):
         config = json.load(path_or_file_like)
     else:
-        with open(path) as fp:
+        with open(path_or_file_like) as fp:
             config = json.load(fp)
     return config
 
