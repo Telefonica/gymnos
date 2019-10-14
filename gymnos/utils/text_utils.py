@@ -92,3 +92,39 @@ def humanize_bytes(num_bytes, suffix='B'):
             return "%3.1f%s%s" % (num_bytes, unit, suffix)
         num_bytes /= 1024.0
     return "%.1f%s%s" % (num_bytes, 'Yi', suffix)
+
+
+def print_table(items, fields, nrows=None):
+    """
+    Print a table of items, for a set of fields defined
+
+    Parameters
+    ------------
+    items: a list of items to print
+    fields: a list of fields to select from items
+    """
+    if not items:
+        return
+
+    formats = []
+    borders = []
+    for f in fields:
+        length = max(len(f),
+                     max([len(str(getattr(i, f))) for i in items]))
+        justify = ">" if isinstance(getattr(
+            items[0], f), int) or f == "size" or f == "reward" else "<"
+        formats.append("{:" + justify + str(length + 2) + "}")
+        borders.append("-" * length + "  ")
+    row_format = u"".join(formats)
+    headers = [f + "  " for f in fields]
+    print(row_format.format(*headers))
+    print(row_format.format(*borders))
+    for i in items[:nrows]:
+        i_fields = [str(getattr(i, f)) + "  " for f in fields]
+        try:
+            print(row_format.format(*i_fields))
+        except UnicodeEncodeError:
+            print(row_format.format(*i_fields).encode("utf-8"))
+
+    if nrows is not None and nrows < len(items):
+        print("...")

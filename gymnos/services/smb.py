@@ -14,8 +14,8 @@ from collections import Iterable
 
 from ..utils.hashing import sha1_text
 from ..utils.text_utils import filenamify_url
-from ..utils.downloader import download_file_from_smb
 from .service import Service, ServiceConfig, Value
+from ..utils.downloader import smb_connection, parse_smb_uri
 
 logger = logging.getLogger(__name__)
 
@@ -62,6 +62,8 @@ class SMB(Service):
             raise ValueError(("Url {} is not a SAMBA uri. It must have the following format: "
                               "smb://<ip>:[<port>]/<drive>/<path>").format(url))
 
+        uri_components = parse_smb_uri(url)
+
         sha1_url_hash = sha1_text(url)
         slug_url = filenamify_url(url)
 
@@ -72,18 +74,24 @@ class SMB(Service):
 
         real_file_path = os.path.join(self.download_dir, filename)
 
-        if os.path.isfile(real_file_path) and not self.force_download:
-            if verbose:
-                logger.info("Download for SAMBA uri {} found. Skipping".format(url))
-            return real_file_path
+        smb_conn_params = dict(username=self.config.SMB_USERNAME,
+                               password=self.config.SMB_PASSWORD,
+                               ip=uri_components["ip"],
+                               port=uri_components["port"])
 
-        tmp_download_dir = os.path.join(self.download_dir, filename + ".tmp." + uuid.uuid4().hex)
-        tmp_file_path = os.path.join(tmp_download_dir, filename)
+        with smb_connection(**smb_conn_params) as conn:
+            if os.path.isfile(real_file_path) and not self.force_download:
+                if verbose:
+                    logger.info("Download for SAMBA uri {} found. Skipping".format(url))
+                return real_file_path
 
-        os.makedirs(tmp_download_dir)
+            tmp_download_dir = os.path.join(self.download_dir, filename + ".tmp." + uuid.uuid4().hex)
+            tmp_file_path = os.path.join(tmp_download_dir, filename)
 
-        download_file_from_smb(url, file_path=tmp_file_path, username=self.config.SMB_USERNAME,
-                               password=self.config.SMB_PASSWORD, verbose=verbose, force=self.force_download)
+            os.makedirs(tmp_download_dir)
+
+            with open(tmp_file_path, "wb") as fp:
+                conn.retrieveFile(uri_components["drive"], uri_components["path"], fp)
 
         logger.info("Removing download temporary directory and moving files")
         shutil.move(tmp_file_path, real_file_path)
