@@ -68,7 +68,7 @@ class SOFIA(Service):
 
     def _token_has_expired(self):
         elapsed_since_last_login = time.time() - self._last_time_token_fetched
-        return elapsed_since_last_login > self.token_expiration
+        return elapsed_since_last_login > self._token_expiration
 
     def _login_if_needed(self):
         never_logged = self._auth_headers is None
