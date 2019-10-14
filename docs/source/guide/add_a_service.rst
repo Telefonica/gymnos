@@ -98,7 +98,7 @@ Any service inherits from :class:`gymnos.services.service.Service` so you have a
 
 .. note::
 
-    If the file to download already exists, a download is not needed so you should return the path from downloads directory.
+    If the file to download already exists, a download is not needed so you should return the path from downloads directory unless ``self.force_download`` is ``True``.
     Note that if your service requires authentication, you should always authenticate user.
 
 Specifying ``Config``
