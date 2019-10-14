@@ -18,8 +18,6 @@ logger = logging.getLogger(__name__)
 
 IMAGE_WHITE_LISTS_FORMATS = ("png", "jpg", "jpeg", "bmp", "ppm", "tif", "tiff")
 
-# MARK: Helpers
-
 
 def _iter_valid_files(directory, white_list_formats):
     """
@@ -68,6 +66,7 @@ class DirectoryImageClassification(Dataset):
     path: str
         Directory or compressed file path where each subdirectory contains the images for the class.
         The path does not need to be local, it can also be from one of the following Gymnos services:
+
             - :class:`gymnos.services.http.HTTP`, e.g http://fakeaddress.com/images
             - :class:`gymnos.services.smb.SMB`, e.g smb://1.2.3.4.5/fake/images
             - :class:`gymnos.services.sofia.SOFIA`, e.g sofia://datasets/1

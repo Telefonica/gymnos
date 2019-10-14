@@ -13,6 +13,7 @@ import logging
 from tqdm import tqdm
 from urllib.error import URLError
 from urllib.parse import urlparse
+from contextlib import contextmanager
 from smb.SMBConnection import SMBConnection
 
 logger = logging.getLogger(__name__)
@@ -74,12 +75,7 @@ def download_file_from_url(url, file_path, force=False, verbose=True, headers=No
     return response
 
 
-def download_file_from_smb(smb_uri, file_path, username, password, force=False, verbose=False):
-    if os.path.isfile(file_path) and not force:
-        if verbose:
-            logger.debug("File for SMB uri {} already exists in {}. Skipping".format(smb_uri, file_path))
-        return
-
+def parse_smb_uri(smb_uri):
     uri_parsed = urlparse(smb_uri)
 
     smb_server_port = uri_parsed.port or 445
@@ -90,11 +86,21 @@ def download_file_from_smb(smb_uri, file_path, username, password, force=False, 
     shared_drive, *smb_file_path = smb_file_path.parts[1:]
     smb_file_path = os.path.join(*smb_file_path)
 
-    smb_server_name = socket.gethostbyaddr(smb_server_ip)
-    if smb_server_name:
-        smb_server_name = smb_server_name[0]
+    return dict(
+        ip=smb_server_ip,
+        port=smb_server_port,
+        drive=shared_drive,
+        path=smb_file_path
+    )
+
+
+@contextmanager
+def smb_connection(ip, port=445, username=None, password=None):
+    server_name = socket.gethostbyaddr(ip)
+    if server_name:
+        server_name = server_name[0]
     else:
-        raise URLError('SMB error: Hostname with ip {} does not reply back with its machine name'.format(smb_server_ip))
+        raise URLError('Hostname with ip {} does not reply back with its machine name'.format(ip))
 
     client_name = socket.gethostname()
     if client_name:
@@ -102,10 +108,9 @@ def download_file_from_smb(smb_uri, file_path, username, password, force=False, 
     else:
         client_name = 'SMB%d' % os.getpid()
 
-    with SMBConnection(username, password, client_name, smb_server_name, use_ntlm_v2=True, is_direct_tcp=True) as conn:
-        success = conn.connect(smb_server_ip, smb_server_port)
+    with SMBConnection(username, password, client_name, server_name, use_ntlm_v2=True, is_direct_tcp=True) as conn:
+        success = conn.connect(ip, port)
         if not success:
-            raise ValueError("Authentication to {} failed. Check your credentials".format(smb_server_ip))
+            raise ValueError("Authentication to {} failed. Check your credentials".format(ip))
 
-        with open(file_path, "wb") as fp:
-            conn.retrieveFile(shared_drive, smb_file_path, fp)
+        yield conn

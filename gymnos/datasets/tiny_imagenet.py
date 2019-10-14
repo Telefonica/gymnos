@@ -17,7 +17,6 @@ from ..utils.io_utils import read_file_text
 logger = logging.getLogger(__name__)
 
 KAGGLE_DATASET_NAME = "akash2sharma/tiny-imagenet"
-KAGGLE_DATASET_FILENAME = "tiny-imagenet-200.zip"
 
 IMAGE_WIDTH = 64
 IMAGE_HEIGHT = 64
@@ -44,9 +43,7 @@ class TinyImagenet(Dataset):
         return ClassLabel(names_file=os.path.join(os.path.dirname(__file__), "tiny_imagenet_labels.txt"))
 
     def download_and_prepare(self, dl_manager):
-        path = dl_manager["kaggle"].download(dataset_name=KAGGLE_DATASET_NAME,
-                                             file_or_files=KAGGLE_DATASET_FILENAME)
-        path = dl_manager.extract(path)
+        path = dl_manager["kaggle"].download(dataset_name=KAGGLE_DATASET_NAME)
         path = os.path.join(path, "tiny-imagenet-200")
 
         lines = read_file_text(os.path.join(path, "wnids.txt")).splitlines()

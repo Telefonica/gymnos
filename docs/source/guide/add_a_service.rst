@@ -96,6 +96,11 @@ Any service inherits from :class:`gymnos.services.service.Service` so you have a
 - ``self.force_download``: Whether or not force download if file exists.
 - ``self.config``: Values for configuration variables.
 
+.. note::
+
+    If the file to download already exists, a download is not needed so you should return the path from downloads directory unless ``self.force_download`` is ``True``.
+    Note that if your service requires authentication, you should always authenticate user.
+
 Specifying ``Config``
 ========================================
 
