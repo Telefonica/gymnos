@@ -13,7 +13,6 @@ from ..utils.image_utils import imread_rgb, imresize
 from .dataset import Dataset, ClassLabel, Array
 
 KAGGLE_DATASET_NAME = "prasunroy/synthetic-digits"
-KAGGLE_DATASET_FILENAME = "data.zip"
 
 IMAGE_WIDTH = 128
 IMAGE_HEIGHT = 128
@@ -43,9 +42,7 @@ class SyntheticDigits(Dataset):
         return ClassLabel(num_classes=10)
 
     def download_and_prepare(self, dl_manager):
-        data_path = dl_manager["kaggle"].download(dataset_name=KAGGLE_DATASET_NAME,
-                                                  file_or_files=KAGGLE_DATASET_FILENAME)
-        data_path = dl_manager.extract(data_path)
+        data_path = dl_manager["kaggle"].download(dataset_name=KAGGLE_DATASET_NAME)
 
         train_imgs_path = os.path.join(data_path, "synthetic_digits", "imgs_train")
 
