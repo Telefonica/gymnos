@@ -6,7 +6,6 @@
 
 import os
 import dill
-import math
 import GPUtil
 import cpuinfo
 import platform
@@ -17,15 +16,17 @@ import numpy as np
 from collections import OrderedDict
 from tensorflow.keras.utils import to_categorical
 
+from .utils.py_utils import chain
 from .trackers.history import History
-from .services.download_manager import DownloadManager
-from .utils.data import Subset, DataLoader
 from .utils.text_utils import humanize_bytes
 from .utils.archiver import extract_zip, zipdir
 from .callbacks import CallbackList, TimeHistory
+from .services.download_manager import DownloadManager
 from .core.model import Model
 from .core.dataset import Dataset
 from .core.tracking import Tracking
+from .datasets.dataset import IterableDataset
+from .utils.data import DataLoader, IterableDataLoader, split_sequence, split_iterator
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +45,10 @@ class Trainer:
         Instance of core.tracking
     """
 
-    def __init__(self, model, dataset, tracking):
+    def __init__(self, model, dataset, tracking=None):
+        if tracking is None:
+            tracking = Tracking()
+
         self.model = model
         self.dataset = dataset
         self.tracking = tracking
@@ -57,19 +61,22 @@ class Trainer:
         Parameters
         ----------
         spec: dict
-            Dictionnary with the following keys:
+            Dictionnary with the following required keys:
 
                 - ``"model"``
                 - ``"dataset"``
+
+            And optionally the following keys:
+
                 - ``"tracking"``
 
         Returns
         -------
         trainer: Trainer
         """
-        model = spec.get("model", {})
-        dataset = spec.get("dataset", {})
-        tracking = spec.get("tracking", {})
+        model = spec["model"]
+        dataset = spec["dataset"]
+        tracking = spec.get("tracking", {})  # optional property
         return Trainer(
             model=Model(**model),
             dataset=Dataset(**dataset),
@@ -178,24 +185,6 @@ class Trainer:
 
         self.tracking.trackers.log_tags(self.tracking.tags)
 
-        for model_param_name, model_param_value in self.model.training.items():
-            str_model_param_value = str(model_param_value)
-            if isinstance(model_param_value, dict):
-                str_model_param_value = ", ".join(name + "=" + val for name, val in model_param_value.items())
-
-            max_line_length = 50
-
-            if len(str_model_param_value) < max_line_length:
-                logger.debug("Training with defined parameter {}: {}".format(model_param_name, str_model_param_value))
-            else:
-                if isinstance(model_param_value, (list, tuple)):
-                    logger.debug("Training with defined parameter {} of length {}".format(model_param_name,
-                                                                                          len(model_param_value)))
-                else:
-                    str_model_param_value = str_model_param_value[:max_line_length]
-                    logger.debug("Training with defined parameter {}: {} ...".format(model_param_name,
-                                                                                     str_model_param_value))
-
         # DOWNLOAD DATA
 
         callbacks.on_download_and_prepare_data_begin()
@@ -215,63 +204,38 @@ class Trainer:
         logger.debug("Full Dataset Samples: {}".format(len(self.dataset.dataset)))
         logger.debug("Full Dataset Memory Usage (approx): {}".format(humanize_bytes(self.dataset.dataset.nbytes)))
 
-        # SPLIT DATASET INTO TRAIN AND TEST
-
-        callbacks.on_train_test_split_begin()
-
-        logger.info("Spliting dataset into train and test")
-
-        train_samples = self.dataset.samples.train
-        test_samples = self.dataset.samples.test
-
-        if 0.0 < train_samples < 1.0:
-            train_samples = math.floor(train_samples * len(self.dataset.dataset))
-        if 0.0 < test_samples < 1.0:
-            test_samples = math.floor(test_samples * len(self.dataset.dataset))
-
-        logger.debug("Using {} samples for training".format(train_samples))
-        logger.debug("Using {} samples for testing".format(test_samples))
-
-        train_indices = np.arange(train_samples)
-        test_indices  = np.arange(train_samples, train_samples + test_samples)
-
-        indices = np.arange(len(self.dataset.dataset))
-
-        logger.info("Shuffling dataset")
-
-        if self.dataset.shuffle:
-            indices = np.random.permutation(indices)
-
-        train_indices = indices[:train_samples]
-        test_indices = indices[train_samples:(train_samples + test_samples)]
-
-        train_subset = Subset(self.dataset.dataset, train_indices)
-        test_subset  = Subset(self.dataset.dataset, test_indices)
-
-        callbacks.on_train_test_split_end()
-
-        logger.debug("Train/test splitting took {:.2f}".format(time_history.times["train_test_split"]))
-
-        # LOAD DATA
+        # SPLIT DATASET INTO TRAIN AND TEST AND PREPARE / LOAD DATA
 
         callbacks.on_load_data_begin()
 
-        logger.info("Loading data")
+        should_load_data_by_chunks = self.dataset.chunk_size is not None
+        is_iterable_dataset = isinstance(self.dataset.dataset, IterableDataset)
 
-        load_data_by_chunks = self.dataset.chunk_size is not None
-
-        if load_data_by_chunks:
-            train_loader = DataLoader(train_subset, batch_size=self.dataset.chunk_size, drop_last=False)
-            test_loader  = DataLoader(test_subset, batch_size=self.dataset.chunk_size, drop_last=False)
+        if should_load_data_by_chunks:
+            logger.info("Preparing generator to load data")
         else:
-            train_data = DataLoader(train_subset, batch_size=len(self.dataset.dataset), drop_last=False,
-                                    verbose=True)[0]
-            test_data = DataLoader(test_subset, batch_size=len(self.dataset.dataset), drop_last=False,
-                                   verbose=True)[0]
+            logger.info("Loading data into memory")
+
+        split_func = split_iterator if is_iterable_dataset else split_sequence
+
+        train_dataset, test_dataset = split_func(self.dataset.dataset, (self.dataset.samples.train,
+                                                                        self.dataset.samples.test),
+                                                 shuffle=self.dataset.shuffle)
+
+        data_loader_cls = IterableDataLoader if is_iterable_dataset else DataLoader
+
+        if should_load_data_by_chunks:
+            train_dataset = data_loader_cls(train_dataset, batch_size=self.dataset.chunk_size, drop_last=False)
+            test_dataset = data_loader_cls(test_dataset, batch_size=self.dataset.chunk_size, drop_last=False)
+        else:
+            train_dataset = next(iter(data_loader_cls(train_dataset, batch_size=len(train_dataset),
+                                                      drop_last=False, verbose=True)))
+            test_dataset = next(iter(data_loader_cls(test_dataset, batch_size=len(test_dataset),
+                                                     drop_last=False, verbose=True)))
 
         callbacks.on_load_data_end()
 
-        logger.debug("Loading data took {:.2f}s".format(time_history.times["load_data"]))
+        logger.debug("Preparing / loading data took {:.2f}s".format(time_history.times["load_data"]))
 
         # PREPROCESS DATA
 
@@ -279,10 +243,10 @@ class Trainer:
 
         logger.info("Fitting preprocessors using training data ({})".format(self.dataset.preprocessors))
 
-        if load_data_by_chunks:
-            self.dataset.preprocessors.fit_generator(train_loader)
+        if should_load_data_by_chunks:
+            self.dataset.preprocessors.fit_generator(train_dataset)
         else:
-            self.dataset.preprocessors.fit(train_data[0], train_data[1])
+            self.dataset.preprocessors.fit(*train_dataset)
 
         callbacks.on_fit_preprocessors_end()
 
@@ -305,6 +269,11 @@ class Trainer:
             Preprocess batch of data (X, y):
                 1. Preprocessing
                 2. Convert to one-hot encoding if needed
+
+            Parameters
+            -----------
+            data: tuple or list
+                Tuple of X, y
             """
             # make sure data is a list and not a tuple (can't modify tuples)
             data = list(data)
@@ -316,27 +285,20 @@ class Trainer:
 
             return data
 
-        def augment_and_preprocess(data):
-            data = augment(data)
-            data = preprocess(data)
-            return data
-
         callbacks.on_preprocess_begin()
 
         logger.info("Preprocessing")
 
-        if load_data_by_chunks:
-            train_loader.transform_func = augment_and_preprocess
-            test_loader.transform_func = preprocess
+        if should_load_data_by_chunks:
+            train_dataset.transform_func = chain(augment, preprocess)
+            test_dataset.transform_func = preprocess
         else:
-            train_data = augment_and_preprocess(train_data)
-            test_data = preprocess(test_data)
+            train_dataset = chain(augment, preprocess)(train_dataset)
+            test_dataset = preprocess(test_dataset)
 
         callbacks.on_preprocess_end()
 
         logger.debug("Preprocessing took {:.2f}s".format(time_history.times["preprocess"]))
-
-        callbacks.on_preprocess_end()
 
         # FIT MODEL
 
@@ -344,10 +306,10 @@ class Trainer:
 
         logger.info("Fitting model")
 
-        if load_data_by_chunks:
-            train_metrics = self.model.model.fit_generator(train_loader, **self.model.training)
+        if should_load_data_by_chunks:
+            train_metrics = self.model.model.fit_generator(train_dataset, **self.model.training)
         else:
-            train_metrics = self.model.model.fit(train_data[0], train_data[1], **self.model.training)
+            train_metrics = self.model.model.fit(*train_dataset, **self.model.training)
 
         callbacks.on_fit_model_end()
 
@@ -367,10 +329,10 @@ class Trainer:
 
         logger.info("Evaluating model using test data")
 
-        if load_data_by_chunks:
-            test_metrics = self.model.model.evaluate_generator(test_loader)
+        if should_load_data_by_chunks:
+            test_metrics = self.model.model.evaluate_generator(test_dataset)
         else:
-            test_metrics = self.model.model.evaluate(test_data[0], test_data[1])
+            test_metrics = self.model.model.evaluate(*test_dataset)
 
         callbacks.on_evaluate_model_end()
 
@@ -444,56 +406,6 @@ class Trainer:
 
         return probs
 
-    def _save_model(self, path):
-        """
-        Save model without inner model instance
-
-        Parameters
-        ----------
-        path: str
-            Path to store pickled model
-        """
-        model_model = self.model.model
-        self.model.model = None
-        with open(path, "wb") as fp:
-            dill.dump(self.model, fp)
-        self.model.model = model_model
-
-    def _save_tracking(self, path):
-        """
-        Save tracking without trackers
-
-        Parameters
-        ----------
-        path: str
-            Path to store pickled tracking
-        """
-        tracking_trackers = self.tracking.trackers
-        self.tracking.trackers = None
-        with open(path, "wb") as fp:
-            dill.dump(self.tracking, fp)
-        self.tracking.trackers = tracking_trackers
-
-    def _save_dataset(self, path):
-        """
-        Save dataset without inner dataset and preprocessors instance
-
-        Parameters
-        ----------
-        path: str
-            Path to store pickled dataset
-        """
-        dataset_preprocessors = self.dataset.preprocessors
-        self.dataset.preprocessors = None
-        dataset_dataset = self.dataset.dataset
-        self.dataset.dataset = None
-
-        with open(path, "wb") as fp:
-            dill.dump(self.dataset, fp)
-
-        self.dataset.preprocessors = dataset_preprocessors
-        self.dataset.dataset = dataset_dataset
-
     def save(self, path):
         """
         Save trainer instance.
@@ -504,8 +416,6 @@ class Trainer:
             Path to store trainer (zipped file)
         """
         with tempfile.TemporaryDirectory() as tempdir:
-            self._save_model(os.path.join(tempdir, "model.pkl"))
-
             with open(os.path.join(tempdir, "model.pkl"), "wb") as fp:
                 dill.dump(self.model.to_dict(), fp)
 
@@ -568,6 +478,7 @@ class Trainer:
             with open(os.path.join(tempdir, "saved_preprocessors.pkl"), "rb") as fp:
                 dataset.preprocessors = dill.load(fp)
 
+            # assign saved @property
             cls = type(dataset.dataset)
             cls = type(cls.__name__, (cls,), {})
             dataset.dataset.__class__ = cls
