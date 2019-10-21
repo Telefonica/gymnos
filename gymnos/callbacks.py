@@ -37,16 +37,6 @@ class Callback:
         Called when loading data ends.
         """
 
-    def on_train_test_split_begin(self):
-        """
-        Called when data split into train and test begins.
-        """
-
-    def on_train_test_split_end(self):
-        """
-        Called when data split into train and test ends.
-        """
-
     def on_fit_preprocessors_begin(self):
         """
         Called when fit preprocessors begin.
@@ -137,14 +127,6 @@ class CallbackList:
         for callback in self.callbacks:
             callback.on_load_data_end()
 
-    def on_train_test_split_begin(self):
-        for callback in self.callbacks:
-            callback.on_train_test_split_begin()
-
-    def on_train_test_split_end(self):
-        for callback in self.callbacks:
-            callback.on_train_test_split_end()
-
     def on_fit_preprocessors_begin(self):
         for callback in self.callbacks:
             callback.on_fit_preprocessors_begin()
@@ -206,12 +188,6 @@ class TimeHistory(Callback):
 
     def on_load_data_end(self):
         self.times["load_data"] = time.time() - self.load_data_start
-
-    def on_train_test_split_begin(self):
-        self.train_test_split_start = time.time()
-
-    def on_train_test_split_end(self):
-        self.times["train_test_split"] = time.time() - self.train_test_split_start
 
     def on_fit_preprocessors_begin(self):
         self.fit_preprocessors_start = time.time()
