@@ -18,9 +18,10 @@ Usage
 
     print(len(dataset))  # get number samples
 
-    print(dataset[0])  # get first sample
+    for x, y in dataset:  # iterate over dataset
+      print(x, y)
 
-    data = dataset.as_numpy()   # load full dataset into memory
+    features, labels = dataset.load()  # load full dataset into memory
 
     dataset.to_hdf5("dogs_vs_cats.h5")  # guardar el dataset en un formato numericamente muy eficiente
 
