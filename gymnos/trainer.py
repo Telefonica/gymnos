@@ -14,10 +14,10 @@ import tempfile
 import numpy as np
 
 from collections import OrderedDict
-from tensorflow.keras.utils import to_categorical
 
 from .utils.py_utils import chain
 from .trackers.history import History
+from .utils.np_utils import to_categorical
 from .utils.text_utils import humanize_bytes
 from .utils.archiver import extract_zip, zipdir
 from .callbacks import CallbackList, TimeHistory
