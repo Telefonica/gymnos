@@ -58,6 +58,11 @@ datasets.register(
     entry_point="gymnos.datasets.directory_image_classification.DirectoryImageClassification"
 )
 
+datasets.register(
+    type="reddit_self_post_classification",
+    entry_point="gymnos.datasets.reddit_self_post_classification.RedditSelfPostClassification"
+)
+
 # MARK: Services registration
 
 services.register(
