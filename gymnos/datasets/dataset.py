@@ -268,7 +268,8 @@ class ClassLabel(Array):
         if dtype is None:
             dtype = int
 
-        self._name_to_idx = dict(zip(self.names, range(self.num_classes)))
+        if self.names is not None:
+            self._name_to_idx = dict(zip(self.names, range(self.num_classes)))
 
         super().__init__(shape=shape, dtype=dtype)
 
@@ -286,6 +287,9 @@ class ClassLabel(Array):
         index: int
             Class index
         """
+        if self.names is None:
+            return None
+
         return self._name_to_idx[str_value]
 
     def int2str(self, int_value):
@@ -301,6 +305,9 @@ class ClassLabel(Array):
         --------
             Class name
         """
+        if self.names is None:
+            return None
+
         return self.names[int_value]
 
     def __repr__(self):
