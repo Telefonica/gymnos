@@ -69,6 +69,5 @@ def test_samples(dataset, session_tmp_path):
 
     if isinstance(labels_info, ClassLabel):
         assert np.issubdtype(labels_info.dtype, np.integer)
-        assert isinstance(sample[1], (int, np.integer))
 
     assert len(dataset) > 0
