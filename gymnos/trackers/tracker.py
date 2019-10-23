@@ -4,12 +4,9 @@
 #
 #
 
-import numbers
-
 from . import load
 
 from copy import deepcopy
-from tensorflow.keras import callbacks
 from collections.abc import Iterable
 from abc import ABCMeta, abstractmethod
 
@@ -136,9 +133,6 @@ class Tracker(metaclass=ABCMeta):
         for (name, value) in dic.items():
             self.log_param(prefix + name, value, step)
 
-    def get_keras_callback(self, log_params=True, log_metrics=True):
-        return KerasCallback(self)  # default callback
-
     @abstractmethod
     def end(self):
         """
@@ -148,32 +142,6 @@ class Tracker(metaclass=ABCMeta):
         -----
         Useful to release/write artifacts.
         """
-
-
-class KerasCallback(callbacks.Callback):
-
-    def __init__(self, tracker, log_params=True, log_metrics=True):
-        self.tracker = tracker
-        self.log_params = log_params
-        self.log_metrics = log_metrics
-
-    def on_epoch_end(self, epoch, logs=None):
-        logs = logs or {}
-        if self.log_metrics:
-            metrics = {k: v for k, v in logs.items() if isinstance(v, numbers.Number)}
-            self.tracker.log_metrics(metrics, step=epoch)
-
-    def on_train_begin(self, logs=None):
-        if not self.log_params:
-            return
-
-        self.tracker.log_params(logs or {})
-
-        params_to_ignore = ["verbose", "do_validation", "validation_steps"]
-
-        if hasattr(self, "params") and self.params:
-            params = {k: v for k, v in self.params.items() if k != "metrics" and k not in params_to_ignore}
-            self.tracker.log_params(params)
 
 
 class TrackerList:
