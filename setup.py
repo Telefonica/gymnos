@@ -30,7 +30,6 @@ REQUIRED_DEPENDENCIES = [
     "tqdm",
     "gputil",
     "py-cpuinfo",
-    "gputil",
     "h5py"
 ]
 
