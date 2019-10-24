@@ -27,7 +27,7 @@ Usage
 
     del dataset
 
-    dataset = gymnos.datasets.dataset.HDF5Dataset("dogs_vs_cats.h5")   # restaurar dataset desde un archivo HDF5
+    dataset = gymnos.datasets.load("hdf5", file_path="dogs_vs_cats.h5")  # restaurar dataset desde un archivo HDF5
 
 
 All Datasets
