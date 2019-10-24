@@ -11,6 +11,19 @@ from .dataset import IterableDataset, Array, ClassLabel
 
 
 class RedditSelfPostClassification(IterableDataset):
+    """
+    Dataset to classify self-posts from reddit.com into the subreddit into which they were posted.
+
+    Characteristics
+        - **Classes**: 1013
+        - **Features**: text
+        - **Multilabel**: no
+
+    Parameters
+    ==========
+    blocksize: int
+        Chunk size for iteration.
+    """
 
     def __init__(self, blocksize=512):
         self.blocksize = blocksize

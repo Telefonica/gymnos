@@ -10,7 +10,7 @@
         "chunk_size": null,
         "one_hot": true,
         "preprocessors": [
-          {
+            {
                 "type": "alphanumeric"
             },
             {
