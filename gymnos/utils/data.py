@@ -6,6 +6,8 @@
 
 import time
 import math
+import warnings
+import pandas as pd
 import numpy as np
 
 from tqdm import tqdm
@@ -61,7 +63,53 @@ def default_collate_func(samples):
     -------
     np.ndarray
     """
-    return np.array(samples)
+    assert len(samples) > 0
+
+    if isinstance(samples[0], (pd.Series, pd.DataFrame)):
+        return pd.concat(samples, axis=1).T
+    else:
+        return np.array(samples)
+
+
+def safe_indexing(X, indices):
+    """
+    Return items or rows from X using indices.
+    Allows simple indexing of lists or arrays.
+    Parameters
+    ----------
+    X : array-like, sparse-matrix, list, pandas.DataFrame, pandas.Series.
+        Data from which to sample rows or items.
+    indices : array-like of int
+        Indices according to which X will be subsampled.
+    Returns
+    -------
+    subset
+        Subset of X on first axis
+    Notes
+    -----
+    CSR, CSC, and LIL sparse matrices are supported. COO sparse matrices are
+    not supported.
+    """
+    if hasattr(X, "iloc"):
+        # Work-around for indexing with read-only indices in pandas
+        # indices = indices if indices.flags.writeable else indices.copy()
+        # Pandas Dataframes and Series
+        try:
+            return X.iloc[indices]
+        except ValueError:
+            # Cython typed memoryviews internally used in pandas do not support
+            # readonly buffers.
+            warnings.warn("Copying input dataframe for slicing.")
+            return X.copy().iloc[indices]
+    elif hasattr(X, "shape"):
+        if hasattr(X, 'take') and (hasattr(indices, 'dtype') and
+                                   indices.dtype.kind == 'i'):
+            # This is often substantially faster than X[indices]
+            return X.take(indices, axis=0)
+        else:
+            return X[indices]
+    else:
+        return [X[idx] for idx in indices]
 
 
 class Subset:
@@ -135,25 +183,18 @@ class DataLoader:
 
             batch_index_end = len(self.dataset)
 
-        features = []
-        labels = []
-
         iterator = range(batch_index_start, batch_index_end)
 
         if self.verbose:
             iterator = tqdm(iterator)
 
-        for index in iterator:
-            x, y = self.dataset[index]
-            features.append(x)
-            labels.append(y)
+        batch_samples = [self.dataset[index] for index in iterator]
+        batch_samples = [self.collate_func(samples) for samples in zip(*batch_samples)]
 
-        features_batch = self.collate_func(features)
-        labels_batch = self.collate_func(labels)
         if self.transform_func:
-            features_batch, labels_batch = self.transform_func([features_batch, labels_batch])
+            batch_samples = self.transform_func(batch_samples)
 
-        return features_batch, labels_batch
+        return batch_samples
 
     def __iter__(self):
         """
@@ -211,36 +252,29 @@ class IterableDataLoader:
         batch: np.ndarray
             Batch of samples.
         """
-        def prepare_batch(features, labels):
-            features_batch = self.collate_func(features)
-            labels_batch = self.collate_func(labels)
-
+        def prepare_batch(batch):
+            batch = [self.collate_func(samples) for samples in zip(*batch)]
             if self.transform_func is not None:
-                features_batch, labels_batch = self.transform_func([features_batch, labels_batch])
-
-            return features_batch, labels_batch
-
-        features_batch, labels_batch = [], []
+                batch = self.transform_func(batch)
+            return batch
 
         iterator = self.dataset
 
         if self.verbose:
             iterator = tqdm(iterator, total=len(iterator))
 
-        for x, y in iterator:
-            features_batch.append(x)
-            labels_batch.append(y)
+        batch_samples = []
 
-            if len(features_batch) == self.batch_size:
-                features_collated_batch, labels_collated_batch = prepare_batch(features_batch, labels_batch)
+        for row in iterator:
+            batch_samples.append(row)
 
-                yield features_collated_batch, labels_collated_batch
+            if len(batch_samples) >= self.batch_size:
+                yield prepare_batch(batch_samples)
 
-                features_batch, labels_batch = [], []
+                batch_samples = []
 
-        if not self.drop_last and (len(features_batch) > 0):
-            features_collated_batch, labels_collated_batch = prepare_batch(features_batch, labels_batch)
-            yield features_collated_batch, labels_collated_batch
+        if not self.drop_last and (len(batch_samples) > 0):
+            yield prepare_batch(batch_samples)
 
     def __len__(self):
         """
@@ -257,9 +291,9 @@ class SplitIterator(Iterable):
     iterable: Iterable
         Iterable implementing ``__iter__`` and ``__len__``.
     start: float
-
+        Fraction to start splitting
     end: float
-
+        Fraction to end splitting
     shuffle: bool
         Whether or not shuffle iterator
     random_state: int
@@ -275,7 +309,7 @@ class SplitIterator(Iterable):
 
         self.cache_count = None
 
-    def count_random_iterator(self):
+    def _count_random_iterator(self):
         """
         """
         count = 0
@@ -287,7 +321,7 @@ class SplitIterator(Iterable):
 
         return count
 
-    def random_iterator(self):
+    def _random_iterator(self):
         """
         """
         count = 0
@@ -301,7 +335,7 @@ class SplitIterator(Iterable):
 
         self.cache_count = count
 
-    def sequential_iterator(self):
+    def _sequential_iterator(self):
         """
         """
         iterable_length = len(self.iterable)
@@ -316,9 +350,9 @@ class SplitIterator(Iterable):
         """
         """
         if self.shuffle:
-            yield from self.random_iterator()
+            yield from self._random_iterator()
         else:
-            yield from self.sequential_iterator()
+            yield from self._sequential_iterator()
 
     def __len__(self):
         """
@@ -329,7 +363,7 @@ class SplitIterator(Iterable):
         if self.cache_count is not None:
             return self.cache_count
 
-        self.cache_count = self.count_random_iterator()
+        self.cache_count = self._count_random_iterator()
 
         return self.cache_count
 
