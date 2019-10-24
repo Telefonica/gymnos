@@ -65,8 +65,10 @@ def default_collate_func(samples):
     """
     assert len(samples) > 0
 
-    if isinstance(samples[0], (pd.Series, pd.DataFrame)):
+    if isinstance(samples[0], pd.Series):
         return pd.concat(samples, axis=1).T
+    elif isinstance(samples[0], pd.DataFrame):
+        return pd.concat(samples)
     else:
         return np.array(samples)
 
