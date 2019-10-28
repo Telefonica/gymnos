@@ -1,0 +1,54 @@
+{
+    "dataset": {
+        "dataset": {
+            "type": "reddit_self_post_classification"
+        },
+        "samples": {
+            "train": 1000,
+            "test": 200
+        },
+        "chunk_size": null,
+        "one_hot": true,
+        "preprocessors": [
+            {
+                "type": "alphanumeric"
+            },
+            {
+                "type": "lemmatization",
+                "language": "spanish"
+            },
+            {
+                "type": "tfidf",
+                "lowercase": true,
+                "language": "spanish",
+                "sublinear_tf": true,
+                "ngram_range": [1, 2],
+                "min_df": 5
+            },
+            {
+                "type": "kbest",
+                "scorer": "chi2",
+                "k": 5000
+            }
+        ],
+        "shuffle": true
+    },
+    "model": {
+        "model": {
+            "type": "keras_classifier",
+            "input_shape": [5000],
+            "sequential": [
+                {"type": "dense", "units": 512, "activation": "relu"},
+                {"type": "dense", "units": 256, "activation": "relu"},
+                {"type": "dense", "units": 256, "activation": "relu"},
+                {"type": "dense", "units": 1013, "activation": "softmax"}
+            ],
+            "optimizer": "adam",
+            "metrics": ["accuracy"],
+            "loss": "categorical_crossentropy"
+        },
+        "training": {
+            "epochs": 5
+        }
+    }
+}

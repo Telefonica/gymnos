@@ -7,7 +7,7 @@
 from ..registration import ComponentRegistry
 
 
-registry = ComponentRegistry("dataset")  # global component registry
+registry = ComponentRegistry("model")  # global component registry
 
 
 def register(type, entry_point):

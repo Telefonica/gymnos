@@ -9,7 +9,8 @@ def prefix_dict(dict_to_prefix, prefix):
 
 
 DATASET_FILES = [
-    "datasets/tiny_imagenet_labels.txt"
+    "datasets/tiny_imagenet_labels.txt",
+    "datasets/reddit_self_post_classification_labels.txt"
 ]
 
 VAR_FILES = [
@@ -29,7 +30,6 @@ REQUIRED_DEPENDENCIES = [
     "tqdm",
     "gputil",
     "py-cpuinfo",
-    "gputil",
     "h5py"
 ]
 

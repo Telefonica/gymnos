@@ -14,6 +14,7 @@ import tensorflow as tf
 from collections.abc import Iterable
 from tensorflow.keras.models import load_model
 
+from ..utils.data import forever_generator
 from .utils.keras_modules import import_keras_module
 
 
@@ -96,16 +97,34 @@ class BaseKerasMixin:
 
         return callbacks
 
-    def fit_generator(self, generator, steps_per_epoch=None, epochs=1, verbose=1, callbacks=None,
+    def fit_generator(self, generator, epochs=1, verbose=1, callbacks=None,
                       class_weight=None, max_queue_size=10, workers=1, use_multiprocessing=False, shuffle=False,
                       initial_epoch=0):
 
         if callbacks is not None:
             callbacks = self.__instantiate_callbacks(callbacks)
 
-        history = self.model.fit_generator(generator, steps_per_epoch=steps_per_epoch, epochs=epochs, verbose=verbose,
-                                           callbacks=callbacks, class_weight=class_weight, workers=workers,
-                                           use_multiprocessing=use_multiprocessing, shuffle=shuffle,
+        class IterableKerasSequence(tf.keras.utils.Sequence):
+
+            def __init__(self, sequence):
+                self.sequence = sequence
+
+            def __getitem__(self, index):
+                return self.sequence[index]
+
+            def __len__(self):
+                return len(self.sequence)
+
+        if hasattr(generator, "__getitem__") and hasattr(generator, "__len__"):
+            # To train with sequences, Keras requires to inherit from utils.Sequence
+            keras_generator = IterableKerasSequence(generator)
+        else:
+            # we need to convert the iterator to an infinite generator
+            keras_generator = forever_generator(generator)
+
+        history = self.model.fit_generator(keras_generator, steps_per_epoch=len(generator), epochs=epochs,
+                                           verbose=verbose, callbacks=callbacks, class_weight=class_weight,
+                                           workers=workers, use_multiprocessing=use_multiprocessing, shuffle=shuffle,
                                            initial_epoch=initial_epoch, max_queue_size=max_queue_size)
 
         return history.history

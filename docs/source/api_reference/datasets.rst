@@ -12,6 +12,12 @@ gymnos.datasets.dataset
     :members:
 
 
+gymnos.datasets.hdf5
+=========================
+
+.. automodule:: gymnos.datasets.hdf5
+    :members:
+
 gymnos.datasets.boston_housing
 ===============================
 
@@ -74,4 +80,10 @@ gymnos.datasets.synthetic_digits
 ===============================================
 
 .. automodule:: gymnos.datasets.synthetic_digits
+    :members:
+
+gymnos.datasets.reddit_self_post_classification
+====================================================
+
+.. automodule:: gymnos.datasets.reddit_self_post_classification
     :members:

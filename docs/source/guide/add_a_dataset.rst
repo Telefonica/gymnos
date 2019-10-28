@@ -48,7 +48,7 @@ Each dataset is defined as a subclass of :class:`gymnos.datasets.Dataset` implem
 
 * ``features_info`` and ``labels_info``: describes the features and labels of your dataset
 * ``download_and_prepare``: downloads the source data.
-* ``__getitem__``: returns a single row given an index
+* ``__getitem__`` or ``__iter__``: returns a single row of data
 * ``__len__``: returns the dataset length
 
 my_dataset.py
@@ -70,9 +70,11 @@ my_dataset.py
         """
         TODO(my_dataset): Description of my dataset.
         """
+        @property
         def features_info(self):
             # {TODO}: Specifies the information about the features (shape, dtype, etc...)
 
+        @property
         def labels_info(self):
             # {TODO}: Specifies the information about the labels (shape, dtype, etc ...)
 
@@ -84,6 +86,27 @@ my_dataset.py
 
         def __len__(self):
             pass # TODO(my_dataset): Dataset length. Called after download_and_prepare
+
+
+Downloading and extracting source data
+=======================================
+
+Most datasets need to download data from the web. All downloads and extractions must go through the :class:`gymnos.services.DownloadManager`. 
+``DownloadManager``currently supports extracting ``.zip``, ``.gz`` and ``.tar`` files.
+
+For example, one can download URLs with ``download`` and extract files with ``extract`` method:
+
+.. code-block:: python
+
+    def download_and_prepare(self, dl_manager):
+        dl_paths = dl_manager.download({
+            "foo": "https://example.com/foo.zip",
+            "bar": "https://example.com/bar.zip",
+        })
+
+        self.edl_paths = dl_manager.extract(dl_paths)
+
+        self.edl_paths["foo"], self.edl_paths["bar"]
 
 Specifying ``features_info`` and ``labels_info``
 ====================================================
@@ -107,59 +130,82 @@ If you have class labels, specify them using ``ClassLabel`` type.
         def labels_info(self):
             return ClassLabel(names=["dog", "cat"])
 
-Downloading and extracting source data
-=======================================
 
-Most datasets need to download data from the web. All downloads and extractions must go through the :class:`gymnos.services.DownloadManager`. 
-``DownloadManager``currently supports extracting ``.zip``, ``.gz`` and ``.tar`` files.
+Specifying length of your dataset
+===================================
 
-For example, one can download URLs with ``download`` and extract files with ``extract`` method:
+To specify the number of samples of your dataset. Implement the ``__len__`` method. This method will always be called after ``download_and_prepare``.
 
 .. code-block:: python
 
-    def download_and_prepare(self, dl_manager):
-        dl_paths = dl_manager.download({
-            "foo": "https://example.com/foo.zip",
-            "bar": "https://example.com/bar.zip",
-        })
+    def __len__(self):
+        return len(self.edl_paths["foo"])
 
-        edl_paths = dl_manager.extract(dl_paths)
-
-        edl_paths["foo"], edl_paths["bar"]
-
-
-Writing an example sequence
+Returning rows of data
 ============================
 
-``__getitem__`` returns the rows for each index and ``__len__`` returns the dataset length. This methods will always be called after ``download_and_prepare``.
+You can return rows of data in two different ways:
+
+- Mapping indices to rows
+- Iterating over rows
+
+.. note::
+
+    **Which one should I use?**
+    Training datasets that maps indices to rows will always be more performant due to the possibility of multiprocessing and how the splitting works. If your dataset allows it, map indices to rows.
+
+The dataset must return two values: the features or ``X`` and the labels or ``y`` for each row of data.
+The allowed data types for your features are the following:
+
+- A string or a number
+- An array-like e.g a list, a tuple or a set.
+- A NumPy array
+- A Pandas Series
+
+The allowed data types for your labels depends on the problem you're trying to solve. For classification tasks, you must return the class indices, e.g for 2 classes return 0 or 1. For regression tasks, you can return a number or an array of numbers.
+
+Mapping Dataset
+------------------
+This dataset maps indices to rows. Just implement the ``__getitem__`` returning the corresponding row to the given index.
 
 .. code-block:: python
 
     def __getitem__(self, index):
-        image_path = self.images_paths_[index]
+        image_path = self.image_path_[index]
         ...
         return img_arr, label
 
 
-    def __len__(self):
-        return len(self.image_paths_)
+Iterating Dataset
+-------------------
+Some datasets does not allow to retrieve rows by index without fully loading dataset into memory. To solve this issue, you can iterate over rows of your dataset.
+Instead of inheriting from ``Dataset``, you must inherit from ``IterableDataset`` class, and implement the ``__iter__`` yielding rows of data.
 
+.. code-block:: python
 
-This methods will typically read source dataset artifacts (e.g a CSV file). In the previous example, we have downloaded dataset images and save their paths into the ``self.image_paths_`` variable.
-
+    def __iter__(self):
+        for row in iterate_data():
+            yield row
 
 Summary
 =============
-1. Create ``MyDataset`` in ``gymnos/dataset/my_dataset.py`` inheriting from :class:`gymnos.datasets.dataset.Dataset` and implement the following properties:
+1. Create ``MyDataset`` in ``gymnos/dataset/my_dataset.py`` inheriting from :class:`gymnos.datasets.dataset.Dataset` if your dataset can map indices to rows or :class:`gymnos.datasets.dataset.IterableDataset` if your dataset iterates over rows of data and implement the following properties:
 
 * ``features_info``
 * ``labels_info``
 
-And the following abstract methods:
+With the following abstract methods:
 
 * ``download_and_prepare(dl_manager)``
-* ``__getitem__(index)``
 * ``__len__()``
+
+If your dataset inherits from :class:`gymnos.datasets.dataset.Dataset`, write the following method:
+
+* ``__getitem__(index)``
+
+Otherwise, if your dataset inherits from :class:`gymnos.datasets.dataset.IterableDataset`, write the following method:
+
+* ``__iter__()``
 
 2. Register the dataset in ``gymnos/__init__.py`` by adding:
 
@@ -192,7 +238,7 @@ Execute the following command to run automated tests:
 
 .. code-block:: console
 
-    $ spytest
+    $ pytest
 
 4. Check your code style
 --------------------------

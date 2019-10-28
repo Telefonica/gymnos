@@ -12,16 +12,12 @@ from tqdm import tqdm
 from sys import getsizeof
 from abc import ABCMeta, abstractmethod
 
-from ..utils.data import DataLoader
 from ..utils.io_utils import read_lines
+from ..utils.data import IterableDataLoader
 
 
-class Dataset(metaclass=ABCMeta):
-    """
-    Base class for all Gymnos datasets.
+class BaseDataset(metaclass=ABCMeta):
 
-    You need to implement the following methods: ``download_and_prepare``, ``info``, ``__getitem__`` and ``__len__``.
-    """
     @property
     @abstractmethod
     def features_info(self):
@@ -56,65 +52,23 @@ class Dataset(metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def __getitem__(self, index):
+    def __iter__(self):
         """
-        Returns single row of data
+        Iterates over rows of data.
+        """
 
-        Parameters
-        ----------
-        index: int
-            Row index to retrieve
-
+    def load(self):
+        """
+        Load features and labels into memory
 
         Returns
-        -------
-        row: np.array or pd.Series
-            Single row of data
+        ---------
+        features: list
+            List of rows of features
+        labels: list
+            List of rows of labels
         """
-
-    @abstractmethod
-    def __len__(self):
-        """
-        Returns number of rows
-
-        Returns
-        -------
-        int
-            Number of samples
-        """
-
-    def as_numpy(self):
-        features = []
-        labels = []
-        for index in range(len(self)):
-            X, y = self[index]
-            features.append(X)
-            labels.append(y)
-
-        features = np.array(features)
-        labels = np.array(labels)
-
-        return features, labels
-
-    @property
-    def nbytes(self):
-        """
-        The goal is to predict number of bytes without load full dataset in memory
-        """
-        sample = self[0]
-        x, y = sample
-
-        try:
-            x_nbytes = x.nbytes
-        except AttributeError:
-            x_nbytes = getsizeof(x)
-
-        try:
-            y_nbytes = y.nbytes
-        except AttributeError:
-            y_nbytes = getsizeof(y)
-
-        return (x_nbytes + y_nbytes) * len(self)
+        return zip(*self)
 
     def to_hdf5(self, file_path, features_key="features", labels_key="labels", info_key="info", chunk_size=None,
                 compression="gzip", compression_opts=None, force=False):
@@ -143,7 +97,9 @@ class Dataset(metaclass=ABCMeta):
         if chunk_size is None:
             chunk_size = len(self)
 
-        data_loader = DataLoader(self, batch_size=chunk_size)
+        # sequence is also an iterable so to support both datasets we load samples with
+        # IterableDataLoader
+        data_loader = IterableDataLoader(self, batch_size=chunk_size)
 
         mode = "w" if force else "x"
 
@@ -171,52 +127,81 @@ class Dataset(metaclass=ABCMeta):
                 features[start:end] = X
                 labels[start:end] = y
 
-
-class HDF5Dataset(Dataset):
-    """
-    Create dataset from HDF5 file.
-
-    Parameters
-    ----------
-    file_path: str
-        HDF5 dataset file path.
-    features_key: str
-        Key to load features.
-    labels_key: str
-        Key to load labels
-    info_key: str
-        Key to load info
-    """
-
-    def __init__(self, file_path, features_key="features", labels_key="labels", info_key="info"):
-        self.features_key = features_key
-        self.labels_key = labels_key
-        self.info_key = info_key
-
-        self.data = h5py.File(file_path, mode="r")
-
     @property
-    def features_info(self):
-        return pickle.loads(self.data[self.features_key].attrs[self.info_key])
-
-    @property
-    def labels_info(self):
-        return pickle.loads(self.data[self.labels_key].attrs[self.info_key])
-
-    def download_and_prepare(self, dl_manager):
+    def nbytes(self):
         """
-        It does nothing.
+        The goal is to predict number of bytes without load full dataset in memory
         """
-        pass
+        x, y = next(iter(self))
 
+        try:
+            x_nbytes = x.nbytes
+        except AttributeError:
+            x_nbytes = getsizeof(x)
+
+        try:
+            y_nbytes = y.nbytes
+        except AttributeError:
+            y_nbytes = getsizeof(y)
+
+        return (x_nbytes + y_nbytes) * len(self)
+
+
+class Dataset(BaseDataset):
+
+    @abstractmethod
     def __getitem__(self, index):
-        return (
-            self.data[self.features_key][index],
-            self.data[self.labels_key][index]
-        )
+        """
+        Returns row of data.
 
+        Returns
+        --------
+        row: string, number or array-like
+        """
+
+    def __iter__(self):
+        """
+        Create a generator that iterate over the sequence.
+
+        Yields
+        -------
+        row: string, number or array-like
+        """
+        for item in (self[i] for i in range(len(self))):
+            yield item
+
+    @abstractmethod
     def __len__(self):
-        return len(self.data[self.features_key])  # len(features) == len(labels)
+        """
+        Returns number of samples.
+
+        Returns
+        --------
+        int
+        """
+
+
+class IterableDataset(BaseDataset):
+
+    @abstractmethod
+    def __iter__(self):
+        """
+        Iterates over samples.
+
+        Yields
+        --------
+        row: string, number or array-like
+        """
+
+    @abstractmethod
+    def __len__(self):
+        """
+        Returns number of samples.
+
+        Returns
+        -------
+        int
+        """
 
 
 class Array:
@@ -283,6 +268,9 @@ class ClassLabel(Array):
         if dtype is None:
             dtype = int
 
+        if self.names is not None:
+            self._name_to_idx = dict(zip(self.names, range(self.num_classes)))
+
         super().__init__(shape=shape, dtype=dtype)
 
     def str2int(self, str_value):
@@ -299,7 +287,10 @@ class ClassLabel(Array):
         index: int
             Class index
         """
-        return self.names.index(str_value)
+        if self.names is None:
+            return None
+
+        return self._name_to_idx[str_value]
 
     def int2str(self, int_value):
         """
@@ -314,6 +305,9 @@ class ClassLabel(Array):
         --------
             Class name
         """
+        if self.names is None:
+            return None
+
         return self.names[int_value]
 
     def __repr__(self):
