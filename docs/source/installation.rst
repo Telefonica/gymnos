@@ -38,7 +38,7 @@ To get started, let's run Gymnos CLI to check if installation was successful. We
 
 .. code-block:: console
 
-  $ gymnos train experiments/examples/boston_housing.json
+  $ gymnos train examples/experiments/boston_housing.json
 
 Extra dependencies
 -----------------------
@@ -185,4 +185,4 @@ To get started let's run Gymnos CLI to check if installation was successful. We 
 
 .. code-block:: console
 
-  $ gymnos train experiments/examples/boston_housing.json
+  $ gymnos train examples/experiments/boston_housing.json
