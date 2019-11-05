@@ -68,25 +68,25 @@ smb
 ========================
 .. autoclass:: gymnos.services.smb.SMB
     :noindex:
+    :members: download
 
     .. autoclass:: gymnos.services.smb.SMB.Config
         :noindex:
-        :members:
 
 kaggle
 ========================
 .. autoclass:: gymnos.services.kaggle.Kaggle
     :noindex:
+    :members: download
 
     .. autoclass:: gymnos.services.kaggle.Kaggle.Config
         :noindex:
-        :members:
 
 SOFIA
 =============
 .. autoclass:: gymnos.services.sofia.SOFIA
     :noindex:
+    :members: download
 
     .. autoclass:: gymnos.services.sofia.SOFIA.Config
         :noindex:
-        :members:
