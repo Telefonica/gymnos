@@ -21,6 +21,14 @@
                 "factor": 255.0
             }
         ],
+        "data_augmentors": [
+            {
+                "type": "zoom",
+                "probability": 0.3,
+                "min_factor": 0.1,
+                "max_factor": 0.5
+            }
+        ],
         "seed": null, 
         "shuffle": true, 
         "one_hot": true,
