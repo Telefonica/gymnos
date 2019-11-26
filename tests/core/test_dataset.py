@@ -18,9 +18,6 @@ def test_dataset_instance():
     dataset = Dataset({"type": DATASET_NAME})
     assert isinstance(dataset.dataset, BostonHousing)
 
-    with pytest.raises(ValueError):
-        Dataset({"type": "dummy"})
-
 
 def test_dataset_samples():
     samples = dict(train=0.3, test=0.7)
@@ -66,14 +63,6 @@ def test_dataset_preprocessors():
 
     assert len(dataset.preprocessors) == 0
 
-    preprocessor_spec = dict(
-        type="dummy",
-        arg="hello"
-    )
-
-    with pytest.raises(ValueError):
-        dataset = Dataset({"type": DATASET_NAME}, preprocessors=[preprocessor_spec])
-
 
 def test_dataset_data_augmentors():
     data_augmentor_spec_1 = dict(
@@ -100,10 +89,3 @@ def test_dataset_data_augmentors():
     assert isinstance(dataset.data_augmentors, gymnos.data_augmentors.data_augmentor.Pipeline)
 
     assert len(dataset.data_augmentors) == 0
-
-    dummy = dict(
-        type="dummy",
-        arg="hello"
-    )
-    with pytest.raises(ValueError):
-        dataset = Dataset({"type": DATASET_NAME}, data_augmentors=[dummy])
