@@ -17,6 +17,16 @@ logger = logging.getLogger(__name__)
 
 
 def zipdir(dir_to_compress, zip_file_path):
+    """
+    Compress directory with ZIP algorithm.
+
+    Parameters
+    ----------
+    dir_to_compress: str
+        Path of directory to compress
+    zip_file_path: str
+        Path for output zip file
+    """
     with zipfile.ZipFile(zip_file_path, "w", zipfile.ZIP_DEFLATED) as zip_file:
         for root, dirs, files in os.walk(dir_to_compress):
             for file_or_dir in files + dirs:
