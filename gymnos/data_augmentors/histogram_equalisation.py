@@ -8,6 +8,7 @@ import warnings
 
 from PIL import ImageOps
 
+from ..utils.iterator_utils import apply
 from ..utils.image_utils import arr_to_img, img_to_arr
 from .data_augmentor import DataAugmentor
 
@@ -28,7 +29,7 @@ class HistogramEqualisation(DataAugmentor):
     def __init__(self, probability):
         super().__init__(probability)
 
-    def transform(self, image):
+    def transform(self, images):
         """
         Performs histogram equalisation on the images passed as an argument
         and returns the equalised images. There are no user definable
@@ -43,9 +44,12 @@ class HistogramEqualisation(DataAugmentor):
         # will be computed on the flattened image, which fires
         # a warning.
         # We may want to apply this instead to each colour channel.
-        image = arr_to_img(image)
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            image = ImageOps.equalize(image)
+        def operation(image):
+            image = arr_to_img(image)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                image = ImageOps.equalize(image)
 
-        return img_to_arr(image)
+            return img_to_arr(image)
+
+        return apply(images, operation)

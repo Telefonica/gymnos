@@ -9,6 +9,7 @@ import random
 
 from PIL import Image
 
+from ..utils.iterator_utils import apply
 from .data_augmentor import DataAugmentor
 from ..utils.image_utils import arr_to_img, img_to_arr
 
@@ -40,7 +41,7 @@ class Zoom(DataAugmentor):
         self.min_factor = min_factor
         self.max_factor = max_factor
 
-    def transform(self, image):
+    def transform(self, images):
         """
         Zooms/scales the passed image(s) and returns the new image.
 
@@ -48,19 +49,22 @@ class Zoom(DataAugmentor):
         :type image: np.array
         :return: The transformed image
         """
-        image = arr_to_img(image)
-        factor = round(random.uniform(self.min_factor, self.max_factor), 2)
+        def operation(image):
+            image = arr_to_img(image)
+            factor = round(random.uniform(self.min_factor, self.max_factor), 2)
 
-        w, h = image.size
+            w, h = image.size
 
-        image_zoomed = image.resize((int(round(image.size[0] * factor)),
-                                     int(round(image.size[1] * factor))),
-                                    resample=Image.BICUBIC)
-        w_zoomed, h_zoomed = image_zoomed.size
+            image_zoomed = image.resize((int(round(image.size[0] * factor)),
+                                         int(round(image.size[1] * factor))),
+                                        resample=Image.BICUBIC)
+            w_zoomed, h_zoomed = image_zoomed.size
 
-        image = image_zoomed.crop((math.floor((float(w_zoomed) / 2) - (float(w) / 2)),
-                                   math.floor((float(h_zoomed) / 2) - (float(h) / 2)),
-                                   math.floor((float(w_zoomed) / 2) + (float(w) / 2)),
-                                   math.floor((float(h_zoomed) / 2) + (float(h) / 2))))
+            image = image_zoomed.crop((math.floor((float(w_zoomed) / 2) - (float(w) / 2)),
+                                       math.floor((float(h_zoomed) / 2) - (float(h) / 2)),
+                                       math.floor((float(w_zoomed) / 2) + (float(w) / 2)),
+                                       math.floor((float(h_zoomed) / 2) + (float(h) / 2))))
 
-        return img_to_arr(image)
+            return img_to_arr(image)
+
+        return apply(images, operation)
