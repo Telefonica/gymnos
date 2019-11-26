@@ -6,6 +6,16 @@
 
 
 class classproperty:
+    """"
+    Decorator to build class properties
+
+    Example
+    -------
+    >>> class MyClass:
+            @classproperty
+            def my_computed_class_property(cls):
+                return 2.0
+    """
 
     def __init__(self, getter):
         self.getter = getter
