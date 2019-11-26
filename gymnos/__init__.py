@@ -74,6 +74,11 @@ datasets.register(
     entry_point="gymnos.datasets.hdf5.HDF5Dataset"
 )
 
+datasets.register(
+    type="titanic",
+    entry_point="gymnos.datasets.titanic.Titanic"
+)
+
 # MARK: Services registration
 
 services.register(
@@ -131,6 +136,11 @@ models.register(
 models.register(
     type="mte_nn",
     entry_point="gymnos.models.mte_nn.MTENN"
+)
+
+models.register(
+    type="titanic",
+    entry_point="gymnos.models.titanic.Titanic"
 )
 
 
