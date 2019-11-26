@@ -5,6 +5,11 @@ from . import trackers
 from . import preprocessors
 from . import data_augmentors
 
+# MARK: Public API
+from . import callbacks    # noqa: F401
+from . import config    # noqa: F401
+from . import trainer    # noqa: F401
+from . import registration    # noqa: F401
 
 # MARK: Datasets registration
 
