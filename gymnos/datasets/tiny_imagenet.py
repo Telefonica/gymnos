@@ -47,7 +47,7 @@ class TinyImagenet(Dataset):
         path = os.path.join(path, "tiny-imagenet-200")
 
         lines = read_file_text(os.path.join(path, "wnids.txt")).splitlines()
-        name2num  = {name: idx for idx, name in enumerate(lines)}
+        name2num = {name: idx for idx, name in enumerate(lines)}
 
         logger.info("Parsing train image files")
         train_images_paths = glob(os.path.join(path, "train", "**", "images", "*.JPEG"))
