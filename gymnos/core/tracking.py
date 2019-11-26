@@ -7,7 +7,10 @@
 import uuid
 import logging
 
+from copy import deepcopy
+
 from ..trackers.tracker import TrackerList
+from ..utils.py_utils import cached_property
 
 logger = logging.getLogger(__name__)
 
@@ -20,9 +23,9 @@ class Tracking:
         ID of the run to log under. If not provided, it will be a random UUID
     tags: dict, optional
         Tags for current run. The keys will be the tag names and the values will be the tag values.
-    log_model_params: bool, optional
+    log_params: bool, optional
         Whether or not log model parameters
-    log_model_metrics: bool, optional
+    log_metrics: bool, optional
         Whether or not log train/test model metrics
     log_training_params: bool, optional
         Whether or not log training params.
@@ -38,8 +41,8 @@ class Tracking:
             tags={
                 "user": "John Doe"
             },
-            log_model_params=True,
-            log_model_metrics=True,
+            log_params=True,
+            log_metrics=True,
             log_training_metrics=False,
             trackers=[
                 {
@@ -53,7 +56,7 @@ class Tracking:
         )
     """  # noqa: E501
 
-    def __init__(self, run_id=None, tags=None, log_model_params=True, log_model_metrics=True, log_training_params=True,
+    def __init__(self, run_id=None, tags=None, log_params=True, log_metrics=True, log_training_params=True,
                  trackers=None):
         trackers = trackers or []
 
@@ -62,20 +65,22 @@ class Tracking:
 
         self.tags = tags or {}
         self.run_id = run_id
-        self.log_model_params = log_model_params
-        self.log_model_metrics = log_model_metrics
+        self.log_params = log_params
+        self.log_metrics = log_metrics
         self.log_training_params = log_training_params
 
-        self.trackers_spec = trackers
+        self._trackers_spec = deepcopy(trackers)
 
-        self.trackers = TrackerList.from_dict(trackers)
+    @cached_property
+    def trackers(self):
+        return TrackerList.from_dict(self._trackers_spec)
 
     def to_dict(self):
         return dict(
             run_id=self.run_id,
             tags=self.tags,
-            log_model_params=self.log_model_params,
-            log_model_metrics=self.log_model_metrics,
+            log_params=self.log_params,
+            log_metrics=self.log_metrics,
             log_training_params=self.log_training_params,
-            trackers=self.trackers_spec
+            trackers=self._trackers_spec
         )

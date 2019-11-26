@@ -153,3 +153,98 @@ class Model(metaclass=ABCMeta):
         save_dir: str
             Path (Directory) where the model is saved.
         """
+
+
+class SparkModel(metaclass=ABCMeta):
+    """
+    Base class for all Gymnos Spark models.
+    You need to implement the following methods: fit, predict, evaluate, save and restore
+
+    Parameters
+    ------------
+    features_col: str
+        Column name for your features
+    labels_col: str
+        Column name for your labels
+    predictions_col: str
+        Column name for your predictions
+    probabilities_col: str
+        Column name for your probabilities
+    """
+
+    def __init__(self, features_col, labels_col, predictions_col="predictions",
+                 probabilities_col="probabilities"):
+        self.features_col = features_col
+        self.labels_col = labels_col
+        self.predictions_col = predictions_col
+        self.probabilities_col = probabilities_col
+
+    @abstractmethod
+    def fit(self, dataset, **kwargs):
+        """
+        Returns dictionnary with metrics
+
+        Parameters
+        -----------
+        dataset: pyspark.sql.DataFrame
+            Dataset to fit.
+        """
+
+    @abstractmethod
+    def predict(self, dataset):
+        """
+        Returns dataframe with predictions in ``self.predictions_col`` column.
+
+        Parameters
+        -----------
+        dataset: pyspark.sql.DataFrame
+            Dataset to fit.
+        """
+
+    def predict_proba(self, dataset):
+        """
+        Returns dataframe with probabilities in ``self.probabilities_col`` column.
+
+        Parameters
+        -----------
+        dataset: pyspark.sql.DataFrame
+            Dataset to fit.
+        """
+
+    @abstractmethod
+    def evaluate(self, dataset):
+        """
+        Returns dictionnary with metrics
+
+        Parameters
+        -----------
+        dataset: pyspark.sql.DataFrame
+            Dataset to fit.
+
+        Returns
+        ---------
+        metrics: dict
+            Dictionnary with metrics
+        """
+
+    @abstractmethod
+    def save(self, save_dir):
+        """
+        Save model to ``save_dir``.
+
+        Parameters
+        ----------
+        save_dir: str
+            Path (Directory) to save model.
+        """
+
+    @abstractmethod
+    def restore(self, save_dir):
+        """
+        Restore model from ``save_dir``.
+
+        Parameters
+        ----------
+        save_dir: str
+            Path (Directory) where the model is saved.
+        """
