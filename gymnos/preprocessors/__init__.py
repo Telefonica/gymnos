@@ -6,6 +6,9 @@
 
 from ..registration import ComponentRegistry
 
+# MARK: Public API
+from .preprocessor import Preprocessor, Pipeline  # noqa: F401
+
 
 registry = ComponentRegistry("preprocessor")  # global component registry
 

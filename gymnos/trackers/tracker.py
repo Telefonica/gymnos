@@ -4,11 +4,11 @@
 #
 #
 
-from . import load
-
 from copy import deepcopy
 from collections.abc import Iterable
 from abc import ABCMeta, abstractmethod
+
+from ..utils.py_utils import drop
 
 
 class Tracker(metaclass=ABCMeta):
@@ -211,11 +211,13 @@ class TrackerList:
 
     @staticmethod
     def from_dict(specs):
+        from . import load
+
         trackers = []
         for tracker_spec in specs:
             tracker_spec = deepcopy(tracker_spec)
-            tracker_type = tracker_spec.pop("type")
-            tracker = load(tracker_type, **tracker_spec)
+            tracker_type = tracker_spec["type"]
+            tracker = load(tracker_type, **drop(tracker_spec, "type"))
             trackers.append(tracker)
 
         return TrackerList(trackers)

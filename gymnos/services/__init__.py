@@ -1,3 +1,7 @@
+# MARK: Public API
+from .service import Service  # noqa: F401
+from .download_manager import DownloadManager  # noqa: F401
+
 from ..registration import ComponentRegistry
 
 registry = ComponentRegistry("service")  # global component registry

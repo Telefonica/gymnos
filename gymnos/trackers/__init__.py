@@ -4,6 +4,9 @@
 #
 #
 
+# MARK: Public API
+from .tracker import Tracker    # noqa: F401
+
 from ..registration import ComponentRegistry
 
 
