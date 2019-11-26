@@ -525,6 +525,14 @@ class Trainer:
 
         callbacks.on_load_data_end()
 
+        # MARK: Data-augment dataset
+
+        callbacks.on_augment_data_begin()
+
+        train_dataset = runner.augment_dataset(train_dataset)
+
+        callbacks.on_augment_data_end()
+
         # MARK: Fit preprocessors using train data
 
         callbacks.on_fit_preprocessors_begin()
@@ -547,14 +555,6 @@ class Trainer:
         if self.dataset.one_hot:
             train_dataset = runner.one_hot_encode(train_dataset)
             test_dataset = runner.one_hot_encode(test_dataset)
-
-        # MARK: Data-augment dataset
-
-        callbacks.on_augment_data_begin()
-
-        train_dataset = runner.augment_dataset(train_dataset)
-
-        callbacks.on_augment_data_end()
 
         # MARK: Fit model using train data
 
