@@ -4,6 +4,7 @@ from . import datasets
 from . import trackers
 from . import preprocessors
 from . import data_augmentors
+from . import execution_environments
 
 # MARK: Public API
 from . import callbacks    # noqa: F401

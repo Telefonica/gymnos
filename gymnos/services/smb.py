@@ -10,11 +10,13 @@ import shutil
 import logging
 
 from urllib.parse import urlparse
-from collections import Iterable
+from collections.abc import Iterable
 
+from .. import config
+
+from .service import Service
 from ..utils.hashing import sha1_text
 from ..utils.text_utils import filenamify_url
-from .service import Service, ServiceConfig, Value
 from ..utils.downloader import smb_connection, parse_smb_uri
 
 logger = logging.getLogger(__name__)
@@ -25,7 +27,7 @@ class SMB(Service):
     Download files from SAMBA servers.
     """
 
-    class Config(ServiceConfig):
+    class Config(config.Config):
         """
         You need credentials to access SAMBA servers.
 
@@ -37,8 +39,8 @@ class SMB(Service):
             Your password for SAMBA server
         """
 
-        SMB_USERNAME = Value(required=True, help="SAMBA server username")
-        SMB_PASSWORD = Value(required=True, help="SAMBA server password")
+        SMB_USERNAME = config.Value(required=True, help="SAMBA server username")
+        SMB_PASSWORD = config.Value(required=True, help="SAMBA server password")
 
     def _download_url(self, url, verbose=True):
         """
