@@ -5,7 +5,7 @@ import numpy as np
 from gymnos.data_augmentors.distort import Distort
 from gymnos.data_augmentors.flip import Flip
 from gymnos.data_augmentors.gaussian_distortion import GaussianDistortion
-from gymnos.data_augmentors.greyscale import Greyscale
+from gymnos.data_augmentors.grayscale import Grayscale
 from gymnos.data_augmentors.histogram_equalisation import HistogramEqualisation
 from gymnos.data_augmentors.invert import Invert
 from gymnos.data_augmentors.random_brightness import RandomBrightness
@@ -34,7 +34,7 @@ def test_load():
     Flip(probability=1, top_bottom_left_right="LEFT_RIGHT"),
     GaussianDistortion(probability=1, grid_width=30, grid_height=50, magnitude=10,
                        corner="bell", method="in", mex=2.0, mey=0.5, sdx=5.2, sdy=3.5),
-    Greyscale(probability=1),
+    Grayscale(probability=1),
     HistogramEqualisation(probability=1),
     Invert(probability=1),
     RandomBrightness(probability=1, min_factor=2.5, max_factor=5.6),
@@ -49,13 +49,13 @@ def test_load():
     ZoomRandom(probability=1, percentage_area=0.5, randomise=True)
 ])
 def test_transform(da_instance):
-    for size in [(50, 50, 3), (50, 50, 1)]:
-        image = np.random.randint(0, 255, size, dtype=np.uint8)
-        new_image = da_instance.transform(image)
+    for size in [(1, 50, 50, 3), (1, 50, 50, 1)]:
+        images = np.random.randint(0, 255, size, dtype=np.uint8)
+        new_images = da_instance.transform(images)
 
-        assert new_image.shape == size
+        assert new_images.shape == size
 
-        if da_instance.__class__.__name__ in ("Greyscale", "RandomColor") and size == (50, 50, 1):
-            assert np.array_equal(image, new_image)
+        if da_instance.__class__.__name__ in ("Grayscale", "RandomColor") and size == (1, 50, 50, 1):
+            assert np.array_equal(images, new_images)
         else:
-            assert not np.array_equal(image, new_image)
+            assert not np.array_equal(images, new_images)
