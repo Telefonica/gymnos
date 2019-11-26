@@ -294,3 +294,10 @@ data_augmentors.register(
     type="zoom_random",
     entry_point="gymnos.data_augmentors.zoom_random.ZoomRandom"
 )
+
+# MARK: Execution environments
+
+execution_environments.register(
+    type="fourth_platform",
+    entry_point="gymnos.execution_environments.fourth_platform.FourthPlatform"
+)
