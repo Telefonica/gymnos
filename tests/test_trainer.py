@@ -265,10 +265,10 @@ TINY_IMAGENET_SPEC = {
         },
         "one_hot": True,
         "samples": {
-            "train": 5,
-            "test": 5
+            "train": 10,
+            "test": 10
         },
-        "chunk_size": 2,
+        "chunk_size": 3,
         "data_augmentors": [
             {
                 "type": "zoom",
@@ -328,9 +328,9 @@ UNUSUAL_DATA_USAGE = {
 
 
 @pytest.mark.integration
-@pytest.mark.parametrize("spec", [UNUSUAL_DATA_USAGE, TINY_IMAGENET_SPEC, SYNTHETIC_DIGITS, ROCK_PAPER_SCISSORS_SPEC,
+@pytest.mark.parametrize("spec", [UNUSUAL_DATA_USAGE, TINY_IMAGENET_SPEC, SYNTHETIC_DIGITS,
                                   IMDB_SPEC, DOGS_VS_CATS_SPEC, BOSTON_HOUSING_SPEC, DATA_USAGE_HOLT_WINTERS_SPEC,
-                                  DATA_USAGE_LINEAR_REGRESSION_SPEC])
+                                  DATA_USAGE_LINEAR_REGRESSION_SPEC, ROCK_PAPER_SCISSORS_SPEC])
 def test_training(spec, tmp_path, session_tmp_path):
     trainer = Trainer.from_dict(spec)
 

@@ -32,8 +32,6 @@ def test_load():
 
 @pytest.mark.integration
 @pytest.mark.parametrize("dataset", [
-    MTE(),
-    RockPaperScissors(),
     BostonHousing(),
     DogsVsCats(),
     IMDB(),
