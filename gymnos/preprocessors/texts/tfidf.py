@@ -4,6 +4,9 @@
 #
 #
 
+import os
+import dill
+
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 from ..utils.spacy import get_spacy_nlp
@@ -73,3 +76,11 @@ class Tfidf(Preprocessor):
     def transform(self, X):
         X_t = self.tfidf.transform(X)
         return X_t.toarray()  # convert sparse to dense
+
+    def save(self, save_dir):
+        with open(os.path.join(save_dir, "tfidf.pkl"), "wb") as fp:
+            dill.dump(self.tfidf, fp)
+
+    def restore(self, save_dir):
+        with open(os.path.join(save_dir, "tfidf.pkl"), "rb") as fp:
+            self.tfidf = dill.load(fp)

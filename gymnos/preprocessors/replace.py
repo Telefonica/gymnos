@@ -34,3 +34,9 @@ class Replace(Preprocessor):
 
     def transform(self, X):
         return np.where(X == self.from_val, self.to_val, X)
+
+    def save(self, save_dir):
+        pass
+
+    def restore(self, save_dir):
+        pass

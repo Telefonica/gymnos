@@ -37,9 +37,15 @@ class Lemmatization(Preprocessor):
     def fit_generator(self, generator):
         return self
 
-    def __transform_sample(self, x):
+    def _transform_sample(self, x):
         doc = self.nlp(str(x))
         return " ".join([token.lemma_ for token in doc])
 
     def transform(self, X):
-        return apply(X, self.__transform_sample)
+        return apply(X, self._transform_sample)
+
+    def save(self, save_dir):
+        pass
+
+    def restore(self, save_dir):
+        pass
