@@ -36,14 +36,14 @@ Usage
 
     tracker.end()  # end tracker run
 
-If you want to use multiple trackers, take a look to TrackerList:
+If you want to use multiple trackers, take a look at :class:`~gymnos.trackers.tracker.TrackerList`:
 
 .. code-block:: python
 
     tracker_1 = gymnos.trackers.load("mlflow")
     tracker_2 = gymnos.trackers.load("tensorboard")
 
-    tracker_list = TrackerList(
+    tracker_list = gymnos.trackers.TrackerList(
         tracker_1,
         tracker_2
     )

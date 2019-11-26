@@ -12,4 +12,5 @@ In the following sections we will see how to build new Gymnos components:
     add_a_preprocessor
     add_a_data_augmentor
     add_a_tracker
+    add_an_execution_environment
     lazy_imports
