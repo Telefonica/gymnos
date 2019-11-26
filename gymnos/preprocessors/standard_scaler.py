@@ -4,6 +4,8 @@
 #
 #
 
+import os
+import dill
 import sklearn.preprocessing
 
 from .preprocessor import Preprocessor
@@ -38,3 +40,11 @@ class StandardScaler(Preprocessor):
 
     def transform(self, X):
         return self.std_scaler.transform(X)
+
+    def save(self, save_dir):
+        with open(os.path.join(save_dir, "std_scaler.pkl"), "wb") as fp:
+            dill.dump(self.std_scaler, fp)
+
+    def restore(self, save_dir):
+        with open(os.path.join(save_dir, "std_scaler.pkl"), "rb") as fp:
+            self.std_scaler = dill.load(fp)

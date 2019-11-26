@@ -4,7 +4,7 @@
 #
 #
 
-from . import load
+import os
 
 from tqdm import tqdm
 from copy import deepcopy
@@ -17,7 +17,8 @@ class Preprocessor(metaclass=ABCMeta):
     """
     Base class for all Gymnos preprocessors.
 
-    You need to implement the following methods: ``fit`` and optionally ``transform``.
+    You need to implement the following methods: ``fit``, ``transform``, ``save`` and ``restore``.
+    If you want to support generators, you need to implement the method ``fit_generator``.
     """
 
     @abstractmethod
@@ -71,6 +72,14 @@ class Preprocessor(metaclass=ABCMeta):
             Transformed features
         """
 
+    @abstractmethod
+    def save(self, save_dir):
+        pass
+
+    @abstractmethod
+    def restore(self, save_dir):
+        pass
+
 
 class SparkPreprocessor(metaclass=ABCMeta):
     """
@@ -113,6 +122,19 @@ class SparkPreprocessor(metaclass=ABCMeta):
         dataset: pyspark.sql.DataFrame
             Transform Spark DataFrame. Transformed column will be``self.outputs_col``.
         """
+
+    @abstractmethod
+    def save(self, save_dir):
+        """
+        Save Spark preprocessor to directory.
+        """
+
+    @abstractmethod
+    def restore(self, save_dir):
+        """
+        Restore Spark preprocessor from directory.
+        """
+
 
 class Pipeline:
     """
@@ -229,4 +251,23 @@ class Pipeline:
         """
         return len(self.preprocessors)
 
+    def save(self, save_dir):
+        """
+        Save preprocessor to ``save_dir``
 
+        Parameters
+        ----------
+        save_dir: str
+            Path (Directory) to save model
+        """
+        for index, preprocessor in enumerate(self.preprocessors):
+            save_dir = os.path.join(save_dir, "stage_{}".format(index))
+            os.makedirs(save_dir)
+            preprocessor.save(save_dir)
+
+    def restore(self, save_dir):
+        """
+        Restore preprocessors from ``save_dir``
+        """
+        for index, preprocessor in enumerate(self.preprocessors):
+            preprocessor.restore(os.path.join(save_dir, "stage_{}".format(index)))
