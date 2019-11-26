@@ -10,6 +10,8 @@ from copy import deepcopy
 
 from .. import models
 
+from ..utils.py_utils import cached_property, drop
+
 logger = logging.getLogger(__name__)
 
 
@@ -17,13 +19,10 @@ class Model:
     """
     Parameters
     ----------
-
-    name: str
-        Model name.
-    parameters: dict, optional
-        Parameters associated with the model
-    model: dict, optional
+    model: dict
         Model type and their parameters with the structure ``{"type", **parameters}``
+    training: dict, optional
+        Dictionnary with training parameters (``fit`` or ``fit_generator`` arguments)
 
     Examples
     --------
@@ -49,16 +48,18 @@ class Model:
 
         self.training = training
 
-        self.model_spec = deepcopy(model)
-
-        self.model = models.load(**model)
+        self._model_spec = deepcopy(model)
 
     @property
     def parameters(self):
-        return {key: val for key, val in self.model_spec.items() if key != "type"}
+        return drop(self._model_spec, "type")
+
+    @cached_property
+    def model(self):
+        return models.load(**self._model_spec)
 
     def to_dict(self):
         return dict(
-            model=self.model_spec,
+            model=self._model_spec,
             training=self.training
         )
