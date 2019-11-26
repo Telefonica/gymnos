@@ -9,6 +9,7 @@ import logging
 from copy import deepcopy
 
 from .. import datasets
+from ..utils.py_utils import cached_property
 from ..preprocessors.preprocessor import Pipeline as PreprocessorPipeline
 from ..data_augmentors.data_augmentor import Pipeline as DataAugmentorPipeline
 
@@ -33,7 +34,7 @@ class DatasetSamples:
         self.train = train
 
         if (self.test + self.train < 1.0):
-            logger.warning("Using only {:.2f}% of total data".format(self.train + self.test))
+            logger.warning("Using only {:.2f}% of total data".format(100 * (self.train + self.test)))
 
 
 class Dataset:
@@ -111,14 +112,20 @@ class Dataset:
 
         self.dataset_spec = deepcopy(dataset)
 
-        self.dataset = datasets.load(**dataset)
-
-        # we save these specs so we can export it via to_dict
         self.preprocessors_specs = deepcopy(preprocessors)
         self.data_augmentors_specs = deepcopy(data_augmentors)
 
-        self.preprocessors = PreprocessorPipeline.from_dict(preprocessors)
-        self.data_augmentors = DataAugmentorPipeline.from_dict(data_augmentors)
+    @cached_property
+    def dataset(self):
+        return datasets.load(**self.dataset_spec)
+
+    @cached_property
+    def preprocessors(self):
+        return PreprocessorPipeline.from_dict(self.preprocessors_specs)
+
+    @cached_property
+    def data_augmentors(self):
+        return DataAugmentorPipeline.from_dict(self.data_augmentors_specs)
 
     def to_dict(self):
         return dict(

@@ -4,76 +4,82 @@
 #
 #
 
-import h5py
 import pickle
 import numpy as np
 
 from tqdm import tqdm
-from sys import getsizeof
+from functools import lru_cache
 from abc import ABCMeta, abstractmethod
 
 from ..utils.io_utils import read_lines
-from ..utils.data import IterableDataLoader
+from ..utils.data import IterableDataLoader, collate
 
 
 class BaseDataset(metaclass=ABCMeta):
+    """
+    Common methods to Gymnos datasets.
+
+    All Gymnos datasets have the following properties:
+        - ``features_info``: information about features
+        - ``labels_info``: information about labels
+    All Gymnos datasets have the following methods:
+        - ``download_and_prepare``: download files associated with dataset.
+        - ``load``: load full dataset
+        - ``to_hdf5``: convert dataset to HDF5
+        - ``__iter__``: iterate over rows of dataset
+        - ``__len__``: get number of rows of dataset
+    """
 
     @property
     @abstractmethod
     def features_info(self):
         """
-        Returns info about dataset features
-
-        Returns
-        -------
-        Array
+        Returns information about your features.
         """
 
     @property
     @abstractmethod
     def labels_info(self):
         """
-        Returns info about dataset labels
+        Returns information about your labels.
 
         Returns
-        -------
+        --------
         Array
         """
 
     @abstractmethod
-    def download_and_prepare(self, dl_manager):
+    def load(self):
         """
-        Download files and prepare instance for future calls to ``__getitem__`` and ``__len__``.
-
-        Parameters
-        ----------
-        dl_manager: DownloadManager
-            Download Manager to download files.
+        Load dataset dataset into memory
         """
 
     @abstractmethod
     def __iter__(self):
         """
-        Iterates over rows of data.
+        Iterate over rows of dataset
         """
 
-    def load(self):
+    @abstractmethod
+    def __len__(self):
         """
-        Load features and labels into memory
+        Returns length of dataset
+        """
 
-        Returns
-        ---------
-        features: list
-            List of rows of features
-        labels: list
-            List of rows of labels
+    def download_and_prepare(self, dl_manager):
         """
-        return zip(*self)
+        Optional method to download external data if needed.
+
+        Parameters
+        ------------
+        dl_manager: gymnos.services.DownloadManager
+            Download Manager
+        """
 
     def to_hdf5(self, file_path, features_key="features", labels_key="labels", info_key="info", chunk_size=None,
                 compression="gzip", compression_opts=None, force=False):
         """
-        Export dataset to HDF5 file.
+        Export dataset to HDF5 file
 
         Parameters
         ----------
@@ -94,6 +100,8 @@ class BaseDataset(metaclass=ABCMeta):
         force: bool, optional
             Whether or not overwrite file if it already exists
         """
+        import h5py
+
         if chunk_size is None:
             chunk_size = len(self)
 
@@ -127,81 +135,161 @@ class BaseDataset(metaclass=ABCMeta):
                 features[start:end] = X
                 labels[start:end] = y
 
-    @property
-    def nbytes(self):
-        """
-        The goal is to predict number of bytes without load full dataset in memory
-        """
-        x, y = next(iter(self))
-
-        try:
-            x_nbytes = x.nbytes
-        except AttributeError:
-            x_nbytes = getsizeof(x)
-
-        try:
-            y_nbytes = y.nbytes
-        except AttributeError:
-            y_nbytes = getsizeof(y)
-
-        return (x_nbytes + y_nbytes) * len(self)
-
 
 class Dataset(BaseDataset):
+    """
+    Base methods that all datasets must implement.
+    This will be the common API all datasets will support.
+    """
 
     @abstractmethod
     def __getitem__(self, index):
         """
-        Returns row of data.
+        Get row by index
+
+        Parameters
+        ----------
+        index: int
+            Index
 
         Returns
         --------
-        row: string, number or array-like
+        features: array-like
+            Features for row
+        labels: array-like
+            Labels for row
+        """
+
+    @abstractmethod
+    def __len__(self, index):
+        """
+        Returns number of rows
         """
 
     def __iter__(self):
         """
-        Create a generator that iterate over the sequence.
+        Iterate over rows.
 
         Yields
-        -------
-        row: string, number or array-like
+        ------
+        features: array-like
+            Features for yielded row
+        labels: array-like
+            Labels for yielded row
         """
         for item in (self[i] for i in range(len(self))):
             yield item
 
-    @abstractmethod
-    def __len__(self):
+    def load(self):
         """
-        Returns number of samples.
+        Load features and labels.
 
         Returns
         --------
-        int
+        features: array-like
+            Features
+        labels: array-like
+            Labels
         """
+        X, y = zip(*self)
+        return collate(X), collate(y)
 
 
 class IterableDataset(BaseDataset):
+    """
+    Iterable dataset
+    """
 
     @abstractmethod
     def __iter__(self):
         """
-        Iterates over samples.
+        Iterate over rows.
 
         Yields
-        --------
-        row: string, number or array-like
+        ------
+        features: array-like
+            Features for yielded row
+        labels: array-like
+            Labels for yielded row
         """
 
     @abstractmethod
     def __len__(self):
         """
-        Returns number of samples.
+        Returns number of rows.
+        """
+
+    def load(self):
+        """
+        Load dataset into memory
 
         Returns
-        -------
-        int
+        --------
+        features: array-like
+            Dataset features
+        labels: array-like
+            Dataset labels
         """
+        X, y = zip(*self)
+        return collate(X), collate(y)
+
+
+class SparkDataset(BaseDataset):
+    """
+    Dataset for Spark DataFrames.
+
+    Parameters
+    ------------
+    features_col: str
+        Name of the column with the features
+    labels_col: str
+        Name of the column with the labels
+    """
+
+    def __init__(self, features_col="features", labels_col="labels"):
+        self.features_col = features_col
+        self.labels_col = labels_col
+
+    @abstractmethod
+    def load(self):
+        """
+        Load Spark DataFrame
+
+        Returns
+        --------
+        df: pyspark.sql.DataFrame
+            DataFrame
+        """
+
+    @property
+    def spark(self):
+        """
+        Returns default Spark session
+        """
+        from pyspark.sql import SparkSession
+        return SparkSession.builder.getOrCreate()
+
+    def __iter__(self):
+        """
+        Iterate over rows
+
+        Yields
+        -------
+        features: array-like
+            Features for yielded row
+        labels: array-like
+            Labels for yielded row
+        """
+        df = self.load()
+        for row in df.select(self.features_col, self.labels_col).rdd.toLocalIterator():
+            yield row[self.features_col], row[self.labels_col]
+
+    @lru_cache()  # dataset length never changes so we can cache it
+    def __len__(self):
+        """
+        Returns number of rows.
+        """
+        return self.load().count()
 
 
 class Array:

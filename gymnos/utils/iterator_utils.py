@@ -10,7 +10,7 @@ import pandas as pd
 from tqdm import tqdm
 
 
-def apply(data, func, verbose=True):
+def apply(data, func, verbose=False):
     """
     Apply function to data, optionally showing a progress bar. Function is applied to rows.
 
@@ -36,8 +36,11 @@ def apply(data, func, verbose=True):
         return data.apply(func)
     elif isinstance(data, np.ndarray):
         if verbose:
-            return np.array([func(row) for row in tqdm(data)])
+            data = tqdm(data)
 
-        return np.apply_along_axis(func, axis=0, arr=data)
+        return np.array([func(row) for row in data])
     else:
+        if verbose:
+            data = tqdm(data)
+
         return [func(row) for row in data]
