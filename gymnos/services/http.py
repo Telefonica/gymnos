@@ -9,7 +9,7 @@ import uuid
 import shutil
 import logging
 
-from collections import Iterable
+from collections.abc import Iterable
 
 from .service import Service
 from ..utils.downloader import download_file_from_url

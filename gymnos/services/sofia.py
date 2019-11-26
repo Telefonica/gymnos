@@ -11,12 +11,14 @@ import shutil
 import logging
 import requests
 
-from collections import Iterable
 from urllib.parse import urlparse
+from collections.abc import Iterable
 from mimetypes import guess_extension
 
+from .. import config
+
+from .service import Service
 from ..utils.text_utils import filenamify_url
-from .service import Value, Service, ServiceConfig
 from ..utils.downloader import download_file_from_url, urljoin
 
 
@@ -30,7 +32,7 @@ class SOFIA(Service):
 
     SERVER_URL = "http://skywalker:8989"
 
-    class Config(ServiceConfig):
+    class Config(config.Config):
         """
         You need credentials to access SOFIA.
 
@@ -41,8 +43,8 @@ class SOFIA(Service):
         SOFIA_PASSWORD: str
             Your password for your account
         """
-        SOFIA_EMAIL = Value(required=True, help="SOFIA username")
-        SOFIA_PASSWORD = Value(required=True, help="SOFIA password")
+        SOFIA_EMAIL = config.Value(required=True, help="SOFIA username")
+        SOFIA_PASSWORD = config.Value(required=True, help="SOFIA password")
 
     def __init__(self, download_dir="downloads", force_download=False, config_files=None):
         super().__init__(download_dir=download_dir, force_download=force_download, config_files=config_files)

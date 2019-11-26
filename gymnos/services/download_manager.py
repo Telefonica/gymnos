@@ -9,7 +9,6 @@ import logging
 
 from collections.abc import Iterable
 
-from . import load
 from ..utils.archiver import extract_zip, extract_tar, extract_gz
 
 logger = logging.getLogger(__name__)
@@ -31,11 +30,13 @@ class DownloadManager:
         Whether or not force extraction if file exists
     """
 
-    def __init__(self, download_dir="downloads", extract_dir=None, force_download=False, force_extraction=False):
+    def __init__(self, download_dir="downloads", extract_dir=None, force_download=False, force_extraction=False,
+                 config_files=None):
         self.download_dir = os.path.expanduser(download_dir)
         self.extract_dir = os.path.expanduser(extract_dir or os.path.join(download_dir, "extracted"))
         self.force_download = force_download
         self.force_extraction = force_extraction
+        self.config_files = config_files
 
         os.makedirs(self.download_dir, exist_ok=True)
         os.makedirs(self.extract_dir, exist_ok=True)
@@ -56,9 +57,9 @@ class DownloadManager:
         str
             Extracted file path.
         """
+        gz_extensions = (".gz",)
         zip_extensions = (".zip",)
         tar_extensions = (".tar", ".tar.bz2", ".tbz2", ".tbz", ".tb2", ".tar.gz")
-        gz_extensions  = (".gz",)
 
         logger.info("Extracting {}".format(path))
 
@@ -120,8 +121,8 @@ class DownloadManager:
             raise ValueError("path_or_paths must be a str, an iterable or a dict. Got {}".format(type(path_or_paths)))
 
     def __getitem__(self, service_name):
-        config_dir = os.environ.get("GYMNOS_CONFIG_DIR") or os.path.join(os.path.expanduser("~"), ".gymnos")
-        config_file = os.path.join(config_dir, "gymnos.json")
+        from gymnos.services import load
+
         return load(service_name, download_dir=self.download_dir,
                                   force_download=self.force_download,
-                                  config_files=[config_file])  # noqa: E127
+                                  config_files=self.config_files)  # noqa: E127
