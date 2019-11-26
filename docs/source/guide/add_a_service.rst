@@ -22,7 +22,7 @@ If you want to :ref:`contribute to our repo <contributing>` and add a new servic
 
   $ python3 -m scripts.create_new service --name my_service
 
-  This command will create ``gymnos/services/my_service.py``, and modify ``gymnos/__init__.py`` to register service so we can load it using ``gymnos.load``.
+This command will create ``gymnos/services/my_service.py``, and modify ``gymnos/__init__.py`` to register service so we can load it using ``gymnos.load``.
 
 The service registration process is done by associating the service name with their path:
 
@@ -53,14 +53,15 @@ my_service.py
     #
     #
 
-    from .service import Service, ServiceConfig, Value
+    from .. import config
+    from .service import Service
 
     class MyService(Service):
         """
         TODO(my_service): Description of my service.
         """
 
-        class Config(ServiceConfig):
+        class Config(config.Config):
             """
             OPTIONAL(my_service): Define your required and optional configuration variables.
             """
@@ -105,19 +106,19 @@ Specifying ``Config``
 ========================================
 
 Use the ``Config`` class to define your required and optional variables. The user will specify these values using environment variables or using 
-a configuration located at ~/.gymnos/.gymnos.json.
+a configuration located at ~/.gymnos/gymnos.json.
 
 .. code-block:: python
 
     class MyService(Service):
 
-        class Config(ServiceConfig):
+        class Config(config.Config):
 
-            MY_SERVICE_SECRET_KEY = Value(required=True, help="Secret Key for my_service.com")  # required variable
-            MY_SERVICE_PROXY = Value(default="proxy.com", help="Proxy for my_service.com")  # optional variable with default
-            MY_SERVICE_TIME = Value(default=lambda: datetime.now(), help="Current time")  # optional variable with callable default
+            MY_SERVICE_SECRET_KEY = config.Value(required=True, help="Secret Key for my_service.com")  # required variable
+            MY_SERVICE_PROXY = config.Value(default="proxy.com", help="Proxy for my_service.com")  # optional variable with default
+            MY_SERVICE_TIME = config.Value(default=lambda: datetime.now(), help="Current time")  # optional variable with callable default
 
-Then, you can use the values for this variables in your methods using ``self.config``. If the user has not provided any required variable, an exception is thrown:
+Then, you can use the values for this variables in your methods using ``self.config``. If the user has not provided all required variable, an exception is thrown:
 
 .. code-block:: python
 
@@ -160,7 +161,7 @@ You can lint files running ``flake8`` command:
 Adding the service from other repository
 =================================================
 
-You can also add a service from other repository in a very simple way by converting your repository in a Python library.
+You can also add a service from other repository in a very simple way by converting your repository into a Python library.
 
 Once you have defined your ``setup.py``, create and register your Gymnos services in the same way we have shown.
 
