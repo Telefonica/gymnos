@@ -20,9 +20,15 @@ class Grayscale(Preprocessor):
     def fit_generator(self, generator):
         return self
 
-    def __transform_sample(self, x):
+    def _transform_sample(self, x):
         gray_img = imgray(x)
         return gray_img
 
     def transform(self, X):
-        return apply(X, self.__transform_sample)
+        return apply(X, self._transform_sample)
+
+    def save(self, save_dir):
+        pass
+
+    def restore(self, save_dir):
+        pass
