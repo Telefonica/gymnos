@@ -192,21 +192,28 @@ def serve(saved_trainer, host=None, port=None, debug=None):
     @app.route("/", methods=["GET"])
     def info():
         # FIXME: the trainer should be loaded before every request but there are issues combining tf with flask requests
+        #           because tf session is not on the same thread as the request
         trainer = Trainer.load(saved_trainer)
-
         return flask.jsonify(trainer.to_dict())
 
     @app.route("/", methods=["POST"])
     def predict():
-        # FIXME: same as above
+        if not flask.request.is_json:
+            return flask.jsonify(error="Request body must be JSON"), 400
+
         trainer = Trainer.load(saved_trainer)
 
-        response = dict(predictions=trainer.predict(flask.request.json))
+        try:
+            response = dict(predictions=trainer.predict(flask.request.get_json()))
+        except Exception as e:
+            return flask.jsonify(error="Prediction failed: {}".format(e)), 400
 
         try:
             response["probabilities"] = trainer.predict_proba(flask.request.json)
         except NotImplementedError:
             pass
+        except Exception as e:
+            return flask.jsonify(error="Prediction for probabilities failed: {}".format(e)), 400
 
         labels = trainer.dataset.dataset.labels_info
         if isinstance(labels, ClassLabel):
