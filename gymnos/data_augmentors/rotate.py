@@ -6,8 +6,9 @@
 
 import random
 
-from ..utils.image_utils import arr_to_img, img_to_arr
+from ..utils.iterator_utils import apply
 from .data_augmentor import DataAugmentor
+from ..utils.image_utils import arr_to_img, img_to_arr
 
 
 class Rotate(DataAugmentor):
@@ -38,7 +39,7 @@ class Rotate(DataAugmentor):
     def __str__(self):
         return "Rotate " + str(self.rotation)
 
-    def transform(self, image):
+    def transform(self, images):
         """
         Rotate an image by either 90, 180, or 270 degrees, or randomly from
         any of these.
@@ -47,12 +48,15 @@ class Rotate(DataAugmentor):
         :type image: np.array
         :return: The transformed image
         """
-        image = arr_to_img(image)
-        random_factor = random.randint(1, 3)
+        def operation(image):
+            image = arr_to_img(image)
+            random_factor = random.randint(1, 3)
 
-        if self.rotation == -1:
-            image = image.rotate(90 * random_factor, expand=True)
-        else:
-            image = image.rotate(self.rotation, expand=True)
+            if self.rotation == -1:
+                image = image.rotate(90 * random_factor, expand=True)
+            else:
+                image = image.rotate(self.rotation, expand=True)
 
-        return img_to_arr(image)
+            return img_to_arr(image)
+
+        return apply(images, operation)

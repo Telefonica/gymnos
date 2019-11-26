@@ -220,8 +220,8 @@ data_augmentors.register(
 )
 
 data_augmentors.register(
-    type="greyscale",
-    entry_point="gymnos.data_augmentors.greyscale.Greyscale"
+    type="grayscale",
+    entry_point="gymnos.data_augmentors.grayscale.Grayscale"
 )
 
 data_augmentors.register(

@@ -9,6 +9,7 @@ import random
 
 from PIL import Image
 
+from ..utils.iterator_utils import apply
 from .data_augmentor import DataAugmentor
 from ..utils.image_utils import arr_to_img, img_to_arr
 
@@ -46,7 +47,7 @@ class Shear(DataAugmentor):
         self.max_shear_left = max_shear_left
         self.max_shear_right = max_shear_right
 
-    def transform(self, image):
+    def transform(self, images):
         """
         Shears the passed image according to the parameters defined during
         instantiation, and returns the sheared image.
@@ -71,94 +72,97 @@ class Shear(DataAugmentor):
         #     warnings.simplefilter("ignore")
         #     return Image.fromarray(img_as_ubyte(image_sheared))
         ######################################################################
-        image = arr_to_img(image)
-        width, height = image.size
+        def operation(image):
+            image = arr_to_img(image)
+            width, height = image.size
 
-        # For testing.
-        # max_shear_left = 20
-        # max_shear_right = 20
+            # For testing.
+            # max_shear_left = 20
+            # max_shear_right = 20
 
-        angle_to_shear = int(random.uniform((abs(self.max_shear_left) * -1) - 1, self.max_shear_right + 1))
-        if angle_to_shear != -1:
-            angle_to_shear += 1
+            angle_to_shear = int(random.uniform((abs(self.max_shear_left) * -1) - 1, self.max_shear_right + 1))
+            if angle_to_shear != -1:
+                angle_to_shear += 1
 
-        # Alternative method
-        # Calculate our offset when cropping
-        # We know one angle, phi (angle_to_shear)
-        # We known theta = 180-90-phi
-        # We know one side, opposite (height of image)
-        # Adjacent is therefore:
-        # tan(theta) = opposite / adjacent
-        # A = opposite / tan(theta)
-        # theta = math.radians(180-90-angle_to_shear)
-        # A = height / math.tan(theta)
+            # Alternative method
+            # Calculate our offset when cropping
+            # We know one angle, phi (angle_to_shear)
+            # We known theta = 180-90-phi
+            # We know one side, opposite (height of image)
+            # Adjacent is therefore:
+            # tan(theta) = opposite / adjacent
+            # A = opposite / tan(theta)
+            # theta = math.radians(180-90-angle_to_shear)
+            # A = height / math.tan(theta)
 
-        # Transformation matrices can be found here:
-        # https://en.wikipedia.org/wiki/Transformation_matrix
-        # The PIL affine transform expects the first two rows of
-        # any of the affine transformation matrices, seen here:
-        # https://en.wikipedia.org/wiki/Transformation_matrix#/media/File:2D_affine_transformation_matrix.svg
+            # Transformation matrices can be found here:
+            # https://en.wikipedia.org/wiki/Transformation_matrix
+            # The PIL affine transform expects the first two rows of
+            # any of the affine transformation matrices, seen here:
+            # https://en.wikipedia.org/wiki/Transformation_matrix#/media/File:2D_affine_transformation_matrix.svg
 
-        directions = ["x", "y"]
-        direction = random.choice(directions)
+            directions = ["x", "y"]
+            direction = random.choice(directions)
 
-        # We use the angle phi in radians later
-        phi = math.tan(math.radians(angle_to_shear))
+            # We use the angle phi in radians later
+            phi = math.tan(math.radians(angle_to_shear))
 
-        if direction == "x":
-            # Here we need the unknown b, where a is
-            # the height of the image and phi is the
-            # angle we want to shear (our knowns):
-            # b = tan(phi) * a
-            shift_in_pixels = phi * height
+            if direction == "x":
+                # Here we need the unknown b, where a is
+                # the height of the image and phi is the
+                # angle we want to shear (our knowns):
+                # b = tan(phi) * a
+                shift_in_pixels = phi * height
 
-            if shift_in_pixels > 0:
-                shift_in_pixels = math.ceil(shift_in_pixels)
-            else:
-                shift_in_pixels = math.floor(shift_in_pixels)
+                if shift_in_pixels > 0:
+                    shift_in_pixels = math.ceil(shift_in_pixels)
+                else:
+                    shift_in_pixels = math.floor(shift_in_pixels)
 
-            # For negative tilts, we reverse phi and set offset to 0
-            # Also matrix offset differs from pixel shift for neg
-            # but not for pos so we will copy this value in case
-            # we need to change it
-            matrix_offset = shift_in_pixels
-            if angle_to_shear <= 0:
-                shift_in_pixels = abs(shift_in_pixels)
-                matrix_offset = 0
-                phi = abs(phi) * -1
+                # For negative tilts, we reverse phi and set offset to 0
+                # Also matrix offset differs from pixel shift for neg
+                # but not for pos so we will copy this value in case
+                # we need to change it
+                matrix_offset = shift_in_pixels
+                if angle_to_shear <= 0:
+                    shift_in_pixels = abs(shift_in_pixels)
+                    matrix_offset = 0
+                    phi = abs(phi) * -1
 
-            # Note: PIL expects the inverse scale, so 1/scale_factor for example.
-            transform_matrix = (1, phi, -matrix_offset,
-                                0, 1, 0)
+                # Note: PIL expects the inverse scale, so 1/scale_factor for example.
+                transform_matrix = (1, phi, -matrix_offset,
+                                    0, 1, 0)
 
-            image = image.transform((int(round(width + shift_in_pixels)), height),
-                                    Image.AFFINE,
-                                    transform_matrix,
-                                    Image.BICUBIC)
+                image = image.transform((int(round(width + shift_in_pixels)), height),
+                                        Image.AFFINE,
+                                        transform_matrix,
+                                        Image.BICUBIC)
 
-            image = image.crop((abs(shift_in_pixels), 0, width, height))
+                image = image.crop((abs(shift_in_pixels), 0, width, height))
 
-            image = image.resize((width, height), resample=Image.BICUBIC)
+                image = image.resize((width, height), resample=Image.BICUBIC)
 
-        elif direction == "y":
-            shift_in_pixels = phi * width
+            elif direction == "y":
+                shift_in_pixels = phi * width
 
-            matrix_offset = shift_in_pixels
-            if angle_to_shear <= 0:
-                shift_in_pixels = abs(shift_in_pixels)
-                matrix_offset = 0
-                phi = abs(phi) * -1
+                matrix_offset = shift_in_pixels
+                if angle_to_shear <= 0:
+                    shift_in_pixels = abs(shift_in_pixels)
+                    matrix_offset = 0
+                    phi = abs(phi) * -1
 
-            transform_matrix = (1, 0, 0,
-                                phi, 1, -matrix_offset)
+                transform_matrix = (1, 0, 0,
+                                    phi, 1, -matrix_offset)
 
-            image = image.transform((width, int(round(height + shift_in_pixels))),
-                                    Image.AFFINE,
-                                    transform_matrix,
-                                    Image.BICUBIC)
+                image = image.transform((width, int(round(height + shift_in_pixels))),
+                                        Image.AFFINE,
+                                        transform_matrix,
+                                        Image.BICUBIC)
 
-            image = image.crop((0, abs(shift_in_pixels), width, height))
+                image = image.crop((0, abs(shift_in_pixels), width, height))
 
-            image = image.resize((width, height), resample=Image.BICUBIC)
+                image = image.resize((width, height), resample=Image.BICUBIC)
 
-        return img_to_arr(image)
+            return img_to_arr(image)
+
+        return apply(images, operation)
