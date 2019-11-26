@@ -8,12 +8,12 @@ types, and therefore all operations are of type :class:`DataAugmentor`, and
 provide their own implementation of the :func:`~DataAugmentor.transform`
 function.
 """
-import random
-
-from . import load
+import numpy as np
 
 from copy import deepcopy
 from abc import ABCMeta, abstractmethod
+
+from ..utils.py_utils import drop
 
 
 class DataAugmentor(metaclass=ABCMeta):
@@ -99,8 +99,7 @@ class Pipeline:
             Transformed sample according to each data augmentor probability.
         """
         for data_augmentor in self.data_augmentors:
-            r = round(random.uniform(0, 1), 1)
-            if r <= data_augmentor.probability:
+            if np.random.rand() < data_augmentor.probability:
                 item = data_augmentor.transform(item)
         return item
 
@@ -130,16 +129,18 @@ class Pipeline:
                 "top_bottom_left_right": "RANDOM"
             },
             {
-                "type": "greyscale",
+                "type": "grayscale",
                 "probability": 0.2
             }
         ])
         """
+        from . import load
+
         data_augmentors = []
         for data_augmentor_spec in specs:
             data_augmentor_spec = deepcopy(data_augmentor_spec)
-            data_augmentor_type = data_augmentor_spec.pop("type")
-            data_augmentor = load(data_augmentor_type, **data_augmentor_spec)
+            data_augmentor_type = data_augmentor_spec["type"]
+            data_augmentor = load(data_augmentor_type, **drop(data_augmentor_spec, "type"))
             data_augmentors.append(data_augmentor)
 
         return Pipeline(data_augmentors)

@@ -7,6 +7,8 @@
 import random
 
 from PIL import Image
+
+from ..utils.iterator_utils import apply
 from ..utils.image_utils import arr_to_img, img_to_arr
 from .data_augmentor import DataAugmentor
 
@@ -38,7 +40,7 @@ class Flip(DataAugmentor):
         super().__init__(probability)
         self.top_bottom_left_right = top_bottom_left_right
 
-    def transform(self, image):
+    def transform(self, images):
         """
         Mirror the image according to the `attr`:top_bottom_left_right`
         argument passed to the constructor and return the mirrored image.
@@ -47,17 +49,20 @@ class Flip(DataAugmentor):
         :type image: np.ndarray
         :return: The transformed image
         """
-        image = arr_to_img(image)
-        random_axis = random.randint(0, 1)
+        def operation(image):
+            image = arr_to_img(image)
+            random_axis = random.randint(0, 1)
 
-        if self.top_bottom_left_right == "LEFT_RIGHT":
-            image = image.transpose(Image.FLIP_LEFT_RIGHT)
-        elif self.top_bottom_left_right == "TOP_BOTTOM":
-            image = image.transpose(Image.FLIP_TOP_BOTTOM)
-        elif self.top_bottom_left_right == "RANDOM":
-            if random_axis == 0:
+            if self.top_bottom_left_right == "LEFT_RIGHT":
                 image = image.transpose(Image.FLIP_LEFT_RIGHT)
-            elif random_axis == 1:
+            elif self.top_bottom_left_right == "TOP_BOTTOM":
                 image = image.transpose(Image.FLIP_TOP_BOTTOM)
+            elif self.top_bottom_left_right == "RANDOM":
+                if random_axis == 0:
+                    image = image.transpose(Image.FLIP_LEFT_RIGHT)
+                elif random_axis == 1:
+                    image = image.transpose(Image.FLIP_TOP_BOTTOM)
 
-        return img_to_arr(image)
+            return img_to_arr(image)
+
+        return apply(images, operation)
