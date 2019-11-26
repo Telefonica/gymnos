@@ -14,6 +14,7 @@ Gymnos
    data_augmentors
    trackers
    trainer
+   execution_environments
    guide/overview
    api_reference/overview
    command_line_apps/overview

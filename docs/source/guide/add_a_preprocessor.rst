@@ -122,6 +122,32 @@ It returns the preprocessed samples.
         ...
         return X_t
 
+Distributed Preprocessor
+=========================
+
+To create a distributed preprocessor, you need to inherit from :class:`gymnos.preprocessors.preprocessor.SparkPreprocessor` and implement the following the methods:
+
+.. code-block:: python
+
+    class MyDistributedPreprocessor(SparkPreprocessor):
+
+        def __init__(self, features_col, outputs_col="outputs", labels_col="labels"):
+            ...
+
+        def fit(self, dataset, **kwargs):
+            # Fit preprocessor to Spark DataFrame with ``features_col`` as features column
+            # and ``labels_col`` as labels column
+
+        def transform(self, dataset):
+            # Transform dataset
+            # Returns transformed Spark DataFrame with ``outputs_col`` as transformed column.
+
+        def save(self, save_dir):
+            # Save model to ``save_dir``
+
+        def restore(self, save_dir):
+            # Restore model to ``save_dir``
+
 Summary
 =============
 

@@ -25,9 +25,9 @@ gymnos.data_augmentors.gaussian_distortion
 .. automodule:: gymnos.data_augmentors.gaussian_distortion
     :members:
 
-gymnos.data_augmentors.greyscale
+gymnos.data_augmentors.grayscale
 ===================================
-.. automodule:: gymnos.data_augmentors.greyscale
+.. automodule:: gymnos.data_augmentors.grayscale
     :members:
 
 gymnos.data_augmentors.histogram_equalisation

@@ -9,7 +9,7 @@ Usage
 
     dataset = gymnos.datasets.load("dogs_vs_cats")
 
-    dl_manager = gymnos.services.download_manager.DownloadManager()
+    dl_manager = gymnos.services.DownloadManager()
     dataset.download_and_prepare(dl_manager)   # download data and prepare dataset
 
     print(dataset.features_info)  # info about features
