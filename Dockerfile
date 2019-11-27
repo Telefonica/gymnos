@@ -12,7 +12,7 @@ COPY README.md ./
 
 COPY gymnos ./gymnos
 COPY scripts ./scripts
-COPY experiments ./experiments
+COPY examples ./examples
 
 RUN pip3 install --upgrade pip  && \
     pip3 install -e . && \

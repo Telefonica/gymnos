@@ -55,7 +55,7 @@ COPY README.md ./
 
 COPY gymnos ./gymnos
 COPY scripts ./scripts
-COPY experiments ./experiments
+COPY examples ./examples
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
