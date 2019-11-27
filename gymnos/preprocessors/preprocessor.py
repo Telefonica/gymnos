@@ -74,11 +74,25 @@ class Preprocessor(metaclass=ABCMeta):
 
     @abstractmethod
     def save(self, save_dir):
-        pass
+        """
+        Save preprocessor to directory
+
+        Parameters
+        -----------
+        save_dir: str
+            Directory to save preprocessor
+        """
 
     @abstractmethod
     def restore(self, save_dir):
-        pass
+        """
+        Restore preprocessor from directory
+
+        Parameters
+        -----------
+        save_dir: str
+            Directory to restore preprocessor
+        """
 
 
 class SparkPreprocessor(metaclass=ABCMeta):
