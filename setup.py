@@ -30,8 +30,7 @@ REQUIRED_DEPENDENCIES = [
     "tqdm",
     "gputil",
     "py-cpuinfo",
-    "h5py",
-    "pyspark"
+    "h5py"
 ]
 
 DATASET_EXTRAS_DEPENDENCIES = {
