@@ -203,6 +203,12 @@ class {name}(Preprocessor):
 
     def transform(self, X):
         pass  # {TODO}: Preprocess data
+
+    def save(self, save_dir):
+        # TODO(my_preprocessor): Save preprocessor to directory
+
+    def restore(self, save_dir):
+        # TODO(my_preprocessor): Restore preprocessor from directory
 """
 
 TRACKER_FILE_STR = """

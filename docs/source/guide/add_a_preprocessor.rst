@@ -45,6 +45,8 @@ Each preprocessor is defined as a subclass of :class:`gymnos.preprocessors.Prepr
 
 * ``fit``: fits preprocessor to training data
 * ``transform``: performs preprocessing to input samples
+* ``save``: Save preprocessor to restore it later
+* ``restore``: Restore preprocessor from checkpoint
 
 Because of the different nature of each preprocessor, the following methods are not mandatory and you should only implement them if your preprocessor allows it:
 
@@ -83,10 +85,16 @@ my_preprocessor.py
         def transform(self, X):
             # TODO(my_preprocessor): Preprocess data
 
+        def save(self, save_dir):
+            # TODO(my_preprocessor): Save preprocessor to directory
+
+        def restore(self, save_dir):
+            # TODO(my_preprocessor): Restore preprocessor from directory
+
 
 Specifying ``parameters``
 ===========================
-Use the constructor to specify any parameters you need to build your model. These parameters may be required or optional although optional parameters are preferable.
+Use the constructor to specify any parameters you need to build your preprocessor. These parameters may be required or optional although optional parameters are preferable.
 
 .. code-block:: python
 
@@ -99,7 +107,7 @@ Use the constructor to specify any parameters you need to build your model. Thes
 Training preprocessor
 =======================
 
-Fit preprocessor to training data specifying any parameters you need to train your preprocessor. Optional parameters are preferable.
+Fit preprocessor to training data.
 
 It returns ``self`` for chaining purposes.
 
@@ -121,6 +129,26 @@ It returns the preprocessed samples.
     def transform(self, X):
         ...
         return X_t
+
+Saving and restoring
+===========================
+
+Save trained preprocessor.
+
+.. code-block:: python
+
+    def save(self, save_dir):
+        with open(os.path.join(save_dir, "my_preprocessor.pkl")) as fp:
+            dill.dump(self.preprocessor, fp)
+
+
+Restore trained preprocessor
+
+.. code-block:: python
+
+    def restore(self, save_dir):
+        with open(os.path.join(save_dir, "my_preprocessor.pkl")) as fp:
+            self.preprocessor = dill.load(fp)
 
 Distributed Preprocessor
 =========================
@@ -156,6 +184,8 @@ Summary
 - ``fit(X, y=None)``
 - ``fit_generator(generator)`` (optional)
 - ``transform(X)``
+- ``save(save_dir)``
+- ``restore(save_dir)``
 
 2. Register the preprocessor in ``gymnos/__init__.py`` by adding:
 
