@@ -26,5 +26,5 @@ def get_spacy_nlp(language="es"):
     except OSError:
         print("Downloading language model for the spaCy POS tagger\n"
               "(don't worry, this will only happen once)")
-        lazy_imports.spacy.cli.download(language)
+        lazy_imports.spacy.cli.download(language, False, "--user")
         return lazy_imports.spacy.load(language)

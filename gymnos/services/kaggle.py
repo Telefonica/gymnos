@@ -11,9 +11,11 @@ import logging
 
 from pydoc import locate
 
+from .. import config
+
+from .service import Service
 from ..utils.archiver import extract_zip
 from ..utils.text_utils import print_table
-from .service import Value, Service, ServiceConfig
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +25,7 @@ class Kaggle(Service):
     Download datasets/competitions from Kaggle.
     """
 
-    class Config(ServiceConfig):
+    class Config(config.Config):
         """
         You need a Kaggle account to download from this service. If you don't have an account, sign up for a Kaggle account at
         http://www.kaggle.com/. Then go to the "Account" tab of your user profile (https://www.kaggle.com/<username>/account)
@@ -37,8 +39,8 @@ class Kaggle(Service):
             Kaggle API secret key
         """  # noqa: E501
 
-        KAGGLE_USERNAME = Value(required=True, help="Kaggle username")
-        KAGGLE_KEY = Value(required=True, help="Kaggle secret key")
+        KAGGLE_USERNAME = config.Value(required=True, help="Kaggle username")
+        KAGGLE_KEY = config.Value(required=True, help="Kaggle secret key")
 
     @property
     def _kaggle_api(self):
@@ -55,6 +57,29 @@ class Kaggle(Service):
         return locate("kaggle.api")
 
     def download(self, dataset_name=None, competition_name=None, file_or_files=None, verbose=True):
+        """
+        Download file/s from Kaggle.
+
+        Parameters
+        ----------
+        dataset_name: str, optional
+            Dataset name. Optional only if competition_name is None.
+        competition_name: str, optional
+            Competition name. Optional only if dataset_name is None.
+        file_or_files: str or list of str or dict(name: url)
+            File or files to download
+        verbose: bool, optional
+            Whether or not show progress bar and logging info
+
+        Returns
+        -------
+        str, list of str or dict
+            File paths with downloaded Kaggle files.
+            The return type depends on the ``file_or_files`` parameter.
+            If ``file_or_files`` is a str, it returns the file path.
+            If ``file_or_files`` is a list of str, it returns a list with the file paths.
+            If ``file_or_files`` is a dict, the return type is a dict(name: filepath)
+        """
         if dataset_name is not None:
             dataset_or_competition_name = dataset_name
             file_downloader = self._download_dataset_file

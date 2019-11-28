@@ -9,6 +9,7 @@ import random
 
 from PIL import Image
 
+from ..utils.iterator_utils import apply
 from .data_augmentor import DataAugmentor
 from ..utils.image_utils import arr_to_img, img_to_arr
 
@@ -37,7 +38,7 @@ class ZoomRandom(DataAugmentor):
         self.percentage_area = percentage_area
         self.randomise = randomise
 
-    def transform(self, image):
+    def transform(self, images):
         """
         Randomly zoom into the passed :attr:`image` by first cropping the image
         based on the :attr:`percentage_area` argument, and then resizing the
@@ -49,21 +50,24 @@ class ZoomRandom(DataAugmentor):
         :type image: np.array
         :return: The transformed image
         """
-        image = arr_to_img(image)
-        if self.randomise:
-            r_percentage_area = round(random.uniform(0.1, self.percentage_area), 2)
-        else:
-            r_percentage_area = self.percentage_area
+        def operation(image):
+            image = arr_to_img(image)
+            if self.randomise:
+                r_percentage_area = round(random.uniform(0.1, self.percentage_area), 2)
+            else:
+                r_percentage_area = self.percentage_area
 
-        w, h = image.size
-        w_new = int(math.floor(w * r_percentage_area))
-        h_new = int(math.floor(h * r_percentage_area))
+            w, h = image.size
+            w_new = int(math.floor(w * r_percentage_area))
+            h_new = int(math.floor(h * r_percentage_area))
 
-        random_left_shift = random.randint(0, (w - w_new))  # Note: randint() is from uniform distribution.
-        random_down_shift = random.randint(0, (h - h_new))
+            random_left_shift = random.randint(0, (w - w_new))  # Note: randint() is from uniform distribution.
+            random_down_shift = random.randint(0, (h - h_new))
 
-        image = image.crop((random_left_shift, random_down_shift, w_new + random_left_shift,
-                            h_new + random_down_shift))
+            image = image.crop((random_left_shift, random_down_shift, w_new + random_left_shift,
+                                h_new + random_down_shift))
 
-        image = image.resize((w, h), resample=Image.BICUBIC)
-        return img_to_arr(image)
+            image = image.resize((w, h), resample=Image.BICUBIC)
+            return img_to_arr(image)
+
+        return apply(images, operation)

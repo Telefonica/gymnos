@@ -194,6 +194,43 @@ Restore trained model
         self.model.load(os.path.join(save_dir, "session.pkl"))
         self.model.load_weights(os.path.join(save_dir, "weights.h5"))
 
+Distributed Model
+===================
+
+To create a distributed model, you need to inherit from :class:`gymnos.models.model.SparkModel` and implement the following the methods:
+
+.. code-block:: python
+
+    class MyDistributedModel(SparkModel):
+
+        def __init__(self, features_col, labels_col, predictions_col="predictions",
+                     probabilities_col="probabilities"):
+            ...
+
+        def fit(self, dataset, **kwargs):
+            # Fit model to Spark DataFrame
+            # Returns dict with metrics
+
+        def predict(self, dataset):
+            # Predict features.
+            # Returns Spark DataFrame with predictions in ``predictions_col`` column
+
+        def predict_proba(self, dataset):
+            # Predict probabilities using features.
+            # Optional method, only if your model is a probabilistic model
+            # Returns Spark DataFrame with predictions in ``probabilities_col`` column
+
+        def evaluate(self, dataset):
+            # Evaluate model.
+            # Returns dict with metrics
+
+        def save(self, save_dir):
+            # Save model to ``save_dir``
+
+        def restore(self, save_dir):
+            # Restore model to ``save_dir``
+
+
 Summary
 =============
 

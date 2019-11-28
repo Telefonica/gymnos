@@ -8,6 +8,7 @@ import numpy as np
 
 from PIL import ImageEnhance
 
+from ..utils.iterator_utils import apply
 from .data_augmentor import DataAugmentor
 from ..utils.image_utils import arr_to_img, img_to_arr
 
@@ -39,7 +40,7 @@ class RandomBrightness(DataAugmentor):
         self.min_factor = min_factor
         self.max_factor = max_factor
 
-    def transform(self, image):
+    def transform(self, images):
         """
         Random change the passed image brightness.
 
@@ -47,9 +48,12 @@ class RandomBrightness(DataAugmentor):
         :type image: np.array
         :return: The transformed image
         """
-        image = arr_to_img(image)
-        factor = np.random.uniform(self.min_factor, self.max_factor)
+        def operation(image):
+            image = arr_to_img(image)
+            factor = np.random.uniform(self.min_factor, self.max_factor)
 
-        image_enhancer_brightness = ImageEnhance.Brightness(image)
-        image = image_enhancer_brightness.enhance(factor)
-        return img_to_arr(image)
+            image_enhancer_brightness = ImageEnhance.Brightness(image)
+            image = image_enhancer_brightness.enhance(factor)
+            return img_to_arr(image)
+
+        return apply(images, operation)

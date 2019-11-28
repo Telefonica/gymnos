@@ -4,6 +4,9 @@
 #
 #
 
+import os
+import dill
+
 from .preprocessor import Preprocessor
 from sklearn.feature_selection import SelectKBest, chi2
 
@@ -40,3 +43,11 @@ class KBest(Preprocessor):
 
     def transform(self, X):
         return self.kbest.transform(X)
+
+    def save(self, save_dir):
+        with open(os.path.join(save_dir, "kbest.pkl"), "wb") as fp:
+            dill.dump(self.kbest, fp)
+
+    def restore(self, save_dir):
+        with open(os.path.join(save_dir, "kbest.pkl"), "rb") as fp:
+            self.kbest = dill.load(fp)

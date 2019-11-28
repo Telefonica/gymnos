@@ -14,6 +14,8 @@ Gymnos API reference
     data_augmentors
     models
     trackers
+    execution_environments
     registration
     callbacks
+    config
     utils

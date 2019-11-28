@@ -13,23 +13,7 @@ import numpy as np
 import logging.config
 
 from PIL import Image
-
-
-class NumpyEncoder(json.JSONEncoder):
-
-    def default(self, obj):
-        if isinstance(obj, np.ndarray):
-            return obj.tolist()
-        return json.JSONEncoder.default(self, obj)
-
-
-def _json_default(o):
-    # Hack to save numpy number with JSON module
-    if isinstance(o, np.int32) or isinstance(o, np.int64):
-        return int(o)
-    if isinstance(o, np.float32) or isinstance(o, np.float64):
-        return float(o)
-    raise TypeError
+from datetime import datetime
 
 
 def read_json(file_path, *args, **kwargs):
@@ -63,27 +47,57 @@ def save_to_json(path, obj, indent=4, *args, **kwargs):
     indent: int, optional
         Indentation to save file (pretty print JSON)
     """
+    from gymnos.utils.json_utils import NumpyEncoder, default
+
     with open(path, "w") as outfile:
-        json.dump(obj, outfile, indent=indent, cls=NumpyEncoder, default=_json_default, *args, **kwargs)
+        json.dump(obj, outfile, indent=indent, cls=NumpyEncoder, default=default, *args, **kwargs)
+
+
+def setup_basic_log_config():
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        handlers=[
+            logging.StreamHandler()
+        ]
+    )
 
 
 def train(training_specs_json, download_dir, force_download, force_extraction, no_save_trainer, no_save_training_specs,
-          no_save_results, execution_dir, trackings_dir):
+          no_save_results, execution_dir, trackings_dir, environment, monitor):
 
     from gymnos.trainer import Trainer
+    from gymnos import execution_environments
     from gymnos.services.download_manager import DownloadManager
 
     training_config = read_json(training_specs_json)
 
     trainer = Trainer.from_dict(training_config)
 
-    dl_manager = DownloadManager(download_dir, force_download=force_download,
-                                 force_extraction=force_extraction)
+    if environment is not None:
+        setup_basic_log_config()
 
-    model_type = trainer.model.model_spec["type"]
-    dataset_type = trainer.dataset.dataset_spec["type"]
+        logger = logging.getLogger(__name__)
 
-    format_kwargs = dict(dataset_type=dataset_type, model_type=model_type, uuid=uuid.uuid4().hex)
+        logger.info("Training will be executed in external environment")
+
+        environment_instance = execution_environments.load(environment)
+        train_kwargs = environment_instance.train(trainer)
+
+        logger.info("Training outputs: {}".format(train_kwargs))
+
+        if monitor:
+            logger.info("Monitoring will begin")
+            environment_instance.monitor(**train_kwargs)
+
+        return train_kwargs
+
+    format_kwargs = dict(
+        dataset_type=training_config["dataset"]["dataset"]["type"],
+        model_type=training_config["model"]["model"]["type"],
+        uuid=uuid.uuid4().hex,
+        now=datetime.now()
+    )
 
     execution_dir = execution_dir.format(**format_kwargs)
     trackings_dir = trackings_dir.format(**format_kwargs)
@@ -100,6 +114,9 @@ def train(training_specs_json, download_dir, force_download, force_extraction, n
 
     logger.info("Execution directory will be located at {}".format(execution_dir))
     logger.info("Trackings directory will be located at {}".format(trackings_dir))
+
+    dl_manager = DownloadManager(download_dir, force_download=force_download,
+                                 force_extraction=force_extraction)
 
     try:
         training_results = trainer.train(dl_manager, trackings_dir=trackings_dir)
@@ -126,6 +143,7 @@ def train(training_specs_json, download_dir, force_download, force_extraction, n
 def predict(saved_trainer, json_file=None, images=None):
     from gymnos.trainer import Trainer
     from gymnos.datasets.dataset import ClassLabel
+    from gymnos.utils.json_utils import NumpyEncoder
 
     if images is None:
         samples = np.array(read_json(json_file))
@@ -174,21 +192,28 @@ def serve(saved_trainer, host=None, port=None, debug=None):
     @app.route("/", methods=["GET"])
     def info():
         # FIXME: the trainer should be loaded before every request but there are issues combining tf with flask requests
+        #           because tf session is not on the same thread as the request
         trainer = Trainer.load(saved_trainer)
-
         return flask.jsonify(trainer.to_dict())
 
     @app.route("/", methods=["POST"])
     def predict():
-        # FIXME: same as above
+        if not flask.request.is_json:
+            return flask.jsonify(error="Request body must be JSON"), 400
+
         trainer = Trainer.load(saved_trainer)
 
-        response = dict(predictions=trainer.predict(flask.request.json))
+        try:
+            response = dict(predictions=trainer.predict(flask.request.get_json()))
+        except Exception as e:
+            return flask.jsonify(error="Prediction failed: {}".format(e)), 400
 
         try:
             response["probabilities"] = trainer.predict_proba(flask.request.json)
         except NotImplementedError:
             pass
+        except Exception as e:
+            return flask.jsonify(error="Prediction for probabilities failed: {}".format(e)), 400
 
         labels = trainer.dataset.dataset.labels_info
         if isinstance(labels, ClassLabel):
@@ -224,12 +249,15 @@ def build_parser():
                               action="store_true", default=False)
     train_parser.add_argument("--no-save_results", help="Whether or not save results", action="store_true",
                               default=False)
-    train_parser.add_argument("--execution_dir", help="Execution directory to store training outputs. It accepts the" +
-                                                      " following format arguments: dataset_type, model_type, uuid",
-                              type=str, default="trainings/{dataset_type}/executions/{uuid}")
+    train_parser.add_argument("--execution_dir", help="Execution directory to store training outputs. It accepts the " +
+                                                      "following format arguments: dataset_type, model_type, uuid, now",
+                              type=str, default="trainings/{dataset_type}/executions/{now:%Y-%m-%d_%H-%M-%S}")
     train_parser.add_argument("--trackings_dir", help="Execution directory to store tracking outputs. It accepts the" +
                                                       " following format arguments: dataset_type, model_type, uuid",
                               type=str, default="trainings/{dataset_type}/trackings")
+    train_parser.add_argument("--environment", help="Execution environment to run experiment", type=str, default=None)
+    train_parser.add_argument("--monitor", help="Whether or not monitor training from execution environment",
+                              action="store_true", default=False)
 
     # MARK: Predict parsers
 
@@ -262,7 +290,8 @@ def main():
         train(args.training_specs_json, download_dir=args.download_dir, force_download=args.force_download,
               force_extraction=args.force_extraction, no_save_trainer=args.no_save_trainer,
               no_save_training_specs=args.no_save_training_specs, no_save_results=args.no_save_results,
-              execution_dir=args.execution_dir, trackings_dir=args.trackings_dir)
+              execution_dir=args.execution_dir, trackings_dir=args.trackings_dir, environment=args.environment,
+              monitor=args.monitor)
     elif args.command == "predict":
         predict(args.saved_trainer, args.json, args.image)
     elif args.command == "serve":

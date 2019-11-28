@@ -4,7 +4,13 @@ from . import datasets
 from . import trackers
 from . import preprocessors
 from . import data_augmentors
+from . import execution_environments
 
+# MARK: Public API
+from . import callbacks    # noqa: F401
+from . import config    # noqa: F401
+from . import trainer    # noqa: F401
+from . import registration    # noqa: F401
 
 # MARK: Datasets registration
 
@@ -68,6 +74,11 @@ datasets.register(
     entry_point="gymnos.datasets.hdf5.HDF5Dataset"
 )
 
+datasets.register(
+    type="titanic",
+    entry_point="gymnos.datasets.titanic.Titanic"
+)
+
 # MARK: Services registration
 
 services.register(
@@ -125,6 +136,11 @@ models.register(
 models.register(
     type="mte_nn",
     entry_point="gymnos.models.mte_nn.MTENN"
+)
+
+models.register(
+    type="titanic",
+    entry_point="gymnos.models.titanic.Titanic"
 )
 
 
@@ -220,8 +236,8 @@ data_augmentors.register(
 )
 
 data_augmentors.register(
-    type="greyscale",
-    entry_point="gymnos.data_augmentors.greyscale.Greyscale"
+    type="grayscale",
+    entry_point="gymnos.data_augmentors.grayscale.Grayscale"
 )
 
 data_augmentors.register(
@@ -287,4 +303,11 @@ data_augmentors.register(
 data_augmentors.register(
     type="zoom_random",
     entry_point="gymnos.data_augmentors.zoom_random.ZoomRandom"
+)
+
+# MARK: Execution environments
+
+execution_environments.register(
+    type="fourth_platform",
+    entry_point="gymnos.execution_environments.fourth_platform.FourthPlatform"
 )

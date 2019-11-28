@@ -9,6 +9,7 @@ import numpy as np
 
 from PIL import Image
 
+from ..utils.iterator_utils import apply
 from ..utils.image_utils import arr_to_img, img_to_arr
 from .data_augmentor import DataAugmentor
 
@@ -78,7 +79,7 @@ class GaussianDistortion(DataAugmentor):
         self.sdx = sdx
         self.sdy = sdy
 
-    def transform(self, image):
+    def transform(self, images):
         """
         Distorts the passed image(s) according to the parameters supplied
         during instantiation, returning the newly distorted image.
@@ -87,125 +88,128 @@ class GaussianDistortion(DataAugmentor):
         :type image: np.ndarray
         :return: The transformed image
         """
-        image = arr_to_img(image)
-        w, h = image.size
+        def operation(image):
+            image = arr_to_img(image)
+            w, h = image.size
 
-        horizontal_tiles = self.grid_width
-        vertical_tiles = self.grid_height
+            horizontal_tiles = self.grid_width
+            vertical_tiles = self.grid_height
 
-        width_of_square = int(math.floor(w / float(horizontal_tiles)))
-        height_of_square = int(math.floor(h / float(vertical_tiles)))
+            width_of_square = int(math.floor(w / float(horizontal_tiles)))
+            height_of_square = int(math.floor(h / float(vertical_tiles)))
 
-        width_of_last_square = w - (width_of_square * (horizontal_tiles - 1))
-        height_of_last_square = h - (height_of_square * (vertical_tiles - 1))
+            width_of_last_square = w - (width_of_square * (horizontal_tiles - 1))
+            height_of_last_square = h - (height_of_square * (vertical_tiles - 1))
 
-        dimensions = []
+            dimensions = []
 
-        for vertical_tile in range(vertical_tiles):
-            for horizontal_tile in range(horizontal_tiles):
-                if vertical_tile == (vertical_tiles - 1) and horizontal_tile == (horizontal_tiles - 1):
-                    dimensions.append([horizontal_tile * width_of_square,
-                                       vertical_tile * height_of_square,
-                                       width_of_last_square + (horizontal_tile * width_of_square),
-                                       height_of_last_square + (height_of_square * vertical_tile)])
-                elif vertical_tile == (vertical_tiles - 1):
-                    dimensions.append([horizontal_tile * width_of_square,
-                                       vertical_tile * height_of_square,
-                                       width_of_square + (horizontal_tile * width_of_square),
-                                       height_of_last_square + (height_of_square * vertical_tile)])
-                elif horizontal_tile == (horizontal_tiles - 1):
-                    dimensions.append([horizontal_tile * width_of_square,
-                                       vertical_tile * height_of_square,
-                                       width_of_last_square + (horizontal_tile * width_of_square),
-                                       height_of_square + (height_of_square * vertical_tile)])
-                else:
-                    dimensions.append([horizontal_tile * width_of_square,
-                                       vertical_tile * height_of_square,
-                                       width_of_square + (horizontal_tile * width_of_square),
-                                       height_of_square + (height_of_square * vertical_tile)])
+            for vertical_tile in range(vertical_tiles):
+                for horizontal_tile in range(horizontal_tiles):
+                    if vertical_tile == (vertical_tiles - 1) and horizontal_tile == (horizontal_tiles - 1):
+                        dimensions.append([horizontal_tile * width_of_square,
+                                           vertical_tile * height_of_square,
+                                           width_of_last_square + (horizontal_tile * width_of_square),
+                                           height_of_last_square + (height_of_square * vertical_tile)])
+                    elif vertical_tile == (vertical_tiles - 1):
+                        dimensions.append([horizontal_tile * width_of_square,
+                                           vertical_tile * height_of_square,
+                                           width_of_square + (horizontal_tile * width_of_square),
+                                           height_of_last_square + (height_of_square * vertical_tile)])
+                    elif horizontal_tile == (horizontal_tiles - 1):
+                        dimensions.append([horizontal_tile * width_of_square,
+                                           vertical_tile * height_of_square,
+                                           width_of_last_square + (horizontal_tile * width_of_square),
+                                           height_of_square + (height_of_square * vertical_tile)])
+                    else:
+                        dimensions.append([horizontal_tile * width_of_square,
+                                           vertical_tile * height_of_square,
+                                           width_of_square + (horizontal_tile * width_of_square),
+                                           height_of_square + (height_of_square * vertical_tile)])
 
-        last_column = []
-        for i in range(vertical_tiles):
-            last_column.append((horizontal_tiles - 1) + horizontal_tiles * i)
+            last_column = []
+            for i in range(vertical_tiles):
+                last_column.append((horizontal_tiles - 1) + horizontal_tiles * i)
 
-        last_row = range((horizontal_tiles * vertical_tiles) - horizontal_tiles, horizontal_tiles * vertical_tiles)
+            last_row = range((horizontal_tiles * vertical_tiles) - horizontal_tiles, horizontal_tiles * vertical_tiles)
 
-        polygons = []
-        for x1, y1, x2, y2 in dimensions:
-            polygons.append([x1, y1, x1, y2, x2, y2, x2, y1])
+            polygons = []
+            for x1, y1, x2, y2 in dimensions:
+                polygons.append([x1, y1, x1, y2, x2, y2, x2, y1])
 
-        polygon_indices = []
-        for i in range((vertical_tiles * horizontal_tiles) - 1):
-            if i not in last_row and i not in last_column:
-                polygon_indices.append([i, i + 1, i + horizontal_tiles, i + 1 + horizontal_tiles])
+            polygon_indices = []
+            for i in range((vertical_tiles * horizontal_tiles) - 1):
+                if i not in last_row and i not in last_column:
+                    polygon_indices.append([i, i + 1, i + horizontal_tiles, i + 1 + horizontal_tiles])
 
-        def sigmoidf(x, y, sdx=0.05, sdy=0.05, mex=0.5, mey=0.5, const=1):
-            def sigmoid(x1, y1):
-                return (const * (math.exp(-(((x1 - mex)**2) / sdx + ((y1 - mey)**2) / sdy))) + max(0, -const) -
-                        max(0, const))
+            def sigmoidf(x, y, sdx=0.05, sdy=0.05, mex=0.5, mey=0.5, const=1):
+                def sigmoid(x1, y1):
+                    return (const * (math.exp(-(((x1 - mex)**2) / sdx + ((y1 - mey)**2) / sdy))) + max(0, -const) -
+                            max(0, const))
 
-            xl = np.linspace(0, 1)
-            yl = np.linspace(0, 1)
-            X, Y = np.meshgrid(xl, yl)
+                xl = np.linspace(0, 1)
+                yl = np.linspace(0, 1)
+                X, Y = np.meshgrid(xl, yl)
 
-            Z = np.vectorize(sigmoid)(X, Y)
-            mino = np.amin(Z)
-            maxo = np.amax(Z)
-            res = sigmoid(x, y)
-            res = max(((((res - mino) * (1 - 0)) / (maxo - mino)) + 0), 0.01) * self.magnitude
-            return res
+                Z = np.vectorize(sigmoid)(X, Y)
+                mino = np.amin(Z)
+                maxo = np.amax(Z)
+                res = sigmoid(x, y)
+                res = max(((((res - mino) * (1 - 0)) / (maxo - mino)) + 0), 0.01) * self.magnitude
+                return res
 
-        def corner(x, y, corner="ul", method="out", sdx=0.05, sdy=0.05, mex=0.5, mey=0.5):
-            ll = {'dr': (0, 0.5, 0, 0.5), 'dl': (0.5, 1, 0, 0.5), 'ur': (0, 0.5, 0.5, 1), 'ul': (0.5, 1, 0.5, 1),
-                  'bell': (0, 1, 0, 1)}
-            new_c = ll[corner]
-            new_x = (((x - 0) * (new_c[1] - new_c[0])) / (1 - 0)) + new_c[0]
-            new_y = (((y - 0) * (new_c[3] - new_c[2])) / (1 - 0)) + new_c[2]
-            if method == "in":
-                const = 1
-            else:
-                if method == "out":
-                    const = -1
-                else:
+            def corner(x, y, corner="ul", method="out", sdx=0.05, sdy=0.05, mex=0.5, mey=0.5):
+                ll = {'dr': (0, 0.5, 0, 0.5), 'dl': (0.5, 1, 0, 0.5), 'ur': (0, 0.5, 0.5, 1), 'ul': (0.5, 1, 0.5, 1),
+                      'bell': (0, 1, 0, 1)}
+                new_c = ll[corner]
+                new_x = (((x - 0) * (new_c[1] - new_c[0])) / (1 - 0)) + new_c[0]
+                new_y = (((y - 0) * (new_c[3] - new_c[2])) / (1 - 0)) + new_c[2]
+                if method == "in":
                     const = 1
-            res = sigmoidf(x=new_x, y=new_y, sdx=sdx, sdy=sdy, mex=mex, mey=mey, const=const)
+                else:
+                    if method == "out":
+                        const = -1
+                    else:
+                        const = 1
+                res = sigmoidf(x=new_x, y=new_y, sdx=sdx, sdy=sdy, mex=mex, mey=mey, const=const)
 
-            return res
+                return res
 
-        for a, b, c, d in polygon_indices:
-            x1, y1, x2, y2, x3, y3, x4, y4 = polygons[a]
+            for a, b, c, d in polygon_indices:
+                x1, y1, x2, y2, x3, y3, x4, y4 = polygons[a]
 
-            sigmax = corner(x=x3 / w, y=y3 / h, corner=self.corner, method=self.method, sdx=self.sdx, sdy=self.sdy,
-                            mex=self.mex, mey=self.mey)
-            dx = np.random.normal(0, sigmax, 1)[0]
-            dy = np.random.normal(0, sigmax, 1)[0]
-            polygons[a] = [x1, y1,
-                           x2, y2,
-                           x3 + dx, y3 + dy,
-                           x4, y4]
+                sigmax = corner(x=x3 / w, y=y3 / h, corner=self.corner, method=self.method, sdx=self.sdx, sdy=self.sdy,
+                                mex=self.mex, mey=self.mey)
+                dx = np.random.normal(0, sigmax, 1)[0]
+                dy = np.random.normal(0, sigmax, 1)[0]
+                polygons[a] = [x1, y1,
+                               x2, y2,
+                               x3 + dx, y3 + dy,
+                               x4, y4]
 
-            x1, y1, x2, y2, x3, y3, x4, y4 = polygons[b]
-            polygons[b] = [x1, y1,
-                           x2 + dx, y2 + dy,
-                           x3, y3,
-                           x4, y4]
+                x1, y1, x2, y2, x3, y3, x4, y4 = polygons[b]
+                polygons[b] = [x1, y1,
+                               x2 + dx, y2 + dy,
+                               x3, y3,
+                               x4, y4]
 
-            x1, y1, x2, y2, x3, y3, x4, y4 = polygons[c]
-            polygons[c] = [x1, y1,
-                           x2, y2,
-                           x3, y3,
-                           x4 + dx, y4 + dy]
+                x1, y1, x2, y2, x3, y3, x4, y4 = polygons[c]
+                polygons[c] = [x1, y1,
+                               x2, y2,
+                               x3, y3,
+                               x4 + dx, y4 + dy]
 
-            x1, y1, x2, y2, x3, y3, x4, y4 = polygons[d]
-            polygons[d] = [x1 + dx, y1 + dy,
-                           x2, y2,
-                           x3, y3,
-                           x4, y4]
+                x1, y1, x2, y2, x3, y3, x4, y4 = polygons[d]
+                polygons[d] = [x1 + dx, y1 + dy,
+                               x2, y2,
+                               x3, y3,
+                               x4, y4]
 
-        generated_mesh = []
-        for i in range(len(dimensions)):
-            generated_mesh.append([dimensions[i], polygons[i]])
+            generated_mesh = []
+            for i in range(len(dimensions)):
+                generated_mesh.append([dimensions[i], polygons[i]])
 
-        image = image.transform(image.size, Image.MESH, generated_mesh, resample=Image.BICUBIC)
+            image = image.transform(image.size, Image.MESH, generated_mesh, resample=Image.BICUBIC)
 
-        return img_to_arr(image)
+            return img_to_arr(image)
+
+        return apply(images, operation)

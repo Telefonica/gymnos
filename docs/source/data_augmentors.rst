@@ -19,7 +19,7 @@ If you want to use multiple data augmentors or transform according to a probabil
     data_augmentor_1 = gymnos.data_augmentors.load("histogram_equalisation", probability=0.3)
     data_augmentor_2 = gymnos.data_augmentors.load("invert", probability=0.4)
 
-    pipeline = gymnos.data_augmentors.data_augmentor.Pipeline(
+    pipeline = gymnos.data_augmentors.Pipeline(
         data_augmentor_1,
         data_augmentor_2
     )
@@ -48,9 +48,9 @@ gaussian_distortion
 .. autoclass:: gymnos.data_augmentors.gaussian_distortion.GaussianDistortion
     :noindex:
 
-greyscale
+grayscale
 ==================================
-.. autoclass:: gymnos.data_augmentors.greyscale.Greyscale
+.. autoclass:: gymnos.data_augmentors.grayscale.Grayscale
     :noindex:
 
 histogram_equalisation

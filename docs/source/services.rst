@@ -31,15 +31,15 @@ Usage
 
 .. code-block:: python
 
-    kaggle = gymnos.services.load("kaggle", download_dir="downloads", config_files=["credentials.json"])  # look for configuration variables in credentials.json
+    kaggle = gymnos.services.load("kaggle", download_dir="./downloads")
 
-    kaggle.download(dataset_name="mlg-ulb/creditcardfraud", files=None)  # download full dataset to download_dir
+    path = kaggle.download(dataset_name="mlg-ulb/creditcardfraud", files=None)  # download full dataset to download_dir
 
-You can use them in combination with :class:`gymnos.services.download_manager.DownloadManager`:
+You can use them in combination with :class:`~gymnos.services.download_manager.DownloadManager`:
 
 .. code-block:: python
 
-    dl_manager = DownloadManager(download_dir="downloads")
+    dl_manager = gymnos.services.DownloadManager(download_dir="downloads")
     file_paths = dl_manager["http"].download({  # download HTTP files and return dict with their paths
         "file_1": "http://example.com/1",
         "file_2": "http://anotherexample.com/2"
@@ -68,7 +68,8 @@ smb
 ========================
 .. autoclass:: gymnos.services.smb.SMB
     :noindex:
-    :members: download
+    :members:
+    :exclude-members: Config
 
     .. autoclass:: gymnos.services.smb.SMB.Config
         :noindex:
@@ -77,7 +78,8 @@ kaggle
 ========================
 .. autoclass:: gymnos.services.kaggle.Kaggle
     :noindex:
-    :members: download
+    :members:
+    :exclude-members: Config
 
     .. autoclass:: gymnos.services.kaggle.Kaggle.Config
         :noindex:
@@ -86,7 +88,8 @@ SOFIA
 =============
 .. autoclass:: gymnos.services.sofia.SOFIA
     :noindex:
-    :members: download
+    :members:
+    :exclude-members: Config
 
     .. autoclass:: gymnos.services.sofia.SOFIA.Config
         :noindex:

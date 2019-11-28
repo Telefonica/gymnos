@@ -32,6 +32,8 @@ class ComponentSpec:
         Instance from entry point with kwargs as constructor arguments
         """
         cls = pydoc.locate(self.entry_point)
+        if cls is None:
+            raise ValueError("Entry-point {} cannot be imported".format(self.entry_point))
         return cls(**kwargs)
 
     def __repr__(self):
@@ -98,8 +100,8 @@ class ComponentRegistry:
 
         try:
             component_spec = self.component_specs[type]
-        except KeyError:
-            raise ValueError("No registered {} with type: {}".format(self.component_type, type))
+        except KeyError as e:
+            raise ValueError("No registered {} with type: {}".format(self.component_type, type)) from e
 
         return component_spec.load(**kwargs)
 
