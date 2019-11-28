@@ -127,6 +127,35 @@ models.register(
     entry_point="gymnos.models.mte_nn.MTENN"
 )
 
+models.register(
+    type="repetition_ada_boost",
+    entry_point="gymnos.models.repetition_ada_boost.RepetitionAdaBoost"
+)
+
+models.register(
+    type="repetition_knn",
+    entry_point="gymnos.models.repetition_knn.RepetitionKNN"
+)
+
+models.register(
+    type="repetition_light_gbm",
+    entry_point="gymnos.models.repetition_light_gbm.RepetitionLightGBM"
+)
+
+models.register(
+    type="repetition_random_forest",
+    entry_point="gymnos.models.repetition_random_forest.RepetitionRandomForest"
+)
+
+models.register(
+    type="repetition_svm",
+    entry_point="gymnos.models.repetition_svm.RepetitionSVM"
+)
+
+models.register(
+    type="repetition_xgboost",
+    entry_point="gymnos.models.repetition_xgboost.RepetitionXGBoost"
+)
 
 # MARK: Preprocessors registration
 
@@ -183,6 +212,16 @@ preprocessors.register(
 preprocessors.register(
     type="standard_scaler",
     entry_point="gymnos.preprocessors.standard_scaler.StandardScaler"
+)
+
+preprocessors.register(
+    type="utterances_aura_embeddings",
+    entry_point="gymnos.preprocessors.utterances_aura_embeddings.UtterancesAuraEmbeddings"
+)
+
+preprocessors.register(
+    type="utterances_embedding_pooling",
+    entry_point="gymnos.preprocessors.utterances_embedding_pooling.UtterancesEmbeddingPooling"
 )
 
 # MARK: Tracker registration
