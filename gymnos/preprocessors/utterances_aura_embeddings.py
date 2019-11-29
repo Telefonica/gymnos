@@ -38,8 +38,8 @@ class UtterancesAuraEmbeddings(Preprocessor):
         for sequence in X:
             sequence = eval(sequence.replace(' ', ','))
             prep_sequence = UtterancesAuraEmbeddings._sequence_simple_preprocess(sequence)
-            l = self.embeddings.transform(prep_sequence)
-            result.append(l)
+            list_embeddings = self.embeddings.transform(prep_sequence)
+            result.append(list_embeddings)
         return result
 
     @staticmethod

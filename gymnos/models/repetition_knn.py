@@ -36,7 +36,6 @@ class RepetitionKNN(SklearnMixin, Model):
 
     def fit(self, X, y):
         model_search = self.model
-        n_HP_points_to_test = 100
 
         if self.search == "grid_search":
             model_search = GridSearchCV(estimator=model_search, param_grid=KNN_GRID,
