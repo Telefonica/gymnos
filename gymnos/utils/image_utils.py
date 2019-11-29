@@ -24,11 +24,11 @@ def imread_rgb(image_path):
         Array of pixels.
     """
     img = Image.open(image_path)
-    return img_to_arr(img)
+    return img_to_arr(img.convert("RGB"))
 
 
 def arr_to_img(arr):
-    return Image.fromarray(arr.squeeze())
+    return Image.fromarray(arr.squeeze().astype(np.uint8))
 
 
 def img_to_arr(img):

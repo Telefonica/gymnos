@@ -148,6 +148,7 @@ You can return rows of data in two different ways:
 
 - Mapping indices to rows
 - Iterating over rows
+- Loading Spark DataFrame
 
 .. note::
 
@@ -187,6 +188,30 @@ Instead of inheriting from ``Dataset``, you must inherit from ``IterableDataset`
         for row in iterate_data():
             yield row
 
+Spark Dataset
+-----------------
+To create a distributed Spark dataset, instead of inheriting from ``Dataset``, you must inherit from ``SparkDataset`` class and implement the ``load`` returning the DataFrame.
+
+The constructor for this dataset will be the column name for features and the column name for labels:
+
+.. code-block:: python
+
+    class MySparkDataset(SparkDataset):
+
+        def __init__(self, features_col="features", labels_col="labels"):
+            self.features = features_col
+            self.labels_col = labels_col
+
+To load the DataFrame, implement the ``load`` method:
+
+.. code-block:: python
+
+    def load(self):
+        df = self.spark.read.csv("mydata.csv", header=True, inferSchema=True)  # you can access SparkSession using self.spark
+        ...  # do any basic preprocessing to clean your data
+        return df
+
+
 Summary
 =============
 1. Create ``MyDataset`` in ``gymnos/dataset/my_dataset.py`` inheriting from :class:`gymnos.datasets.dataset.Dataset` if your dataset can map indices to rows or :class:`gymnos.datasets.dataset.IterableDataset` if your dataset iterates over rows of data and implement the following properties:
@@ -203,9 +228,13 @@ If your dataset inherits from :class:`gymnos.datasets.dataset.Dataset`, write th
 
 * ``__getitem__(index)``
 
-Otherwise, if your dataset inherits from :class:`gymnos.datasets.dataset.IterableDataset`, write the following method:
+If your dataset inherits from :class:`gymnos.datasets.dataset.IterableDataset`, write the following method:
 
 * ``__iter__()``
+
+If your dataset inherits from :class:`gymnos.datasets.dataset.SparkDataset`, write the following method:
+
+* ``load()``
 
 2. Register the dataset in ``gymnos/__init__.py`` by adding:
 
@@ -254,7 +283,7 @@ You can lint files running ``flake8`` command:
 Adding the dataset from other repository
 =================================================
 
-You can also add a dataset from other repository in a very simple way by converting your repository in a Python library.
+You can also add a dataset from other repository in a very simple way by converting your repository into a Python library.
 
 Once you have defined your ``setup.py``, create and register your Gymnos datasets in the same way we have shown.
 

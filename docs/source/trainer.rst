@@ -7,7 +7,7 @@ This module brings the other components (datasets, models, preprocessors, data a
 Components
 ============
 
-Each instance of the Trainer is made up of 4 basic components that define each part of the Machine Learning system:
+Each instance of the Trainer is made up of 3 basic components that define each part of the Machine Learning system:
 
 - Dataset
 - Model
@@ -15,7 +15,7 @@ Each instance of the Trainer is made up of 4 basic components that define each p
 
 .. code-block:: python
 
-    trainer = Trainer(
+    trainer = gymnos.trainer.Trainer(
         dataset=dataset,
         model=model,
         tracking=tracking
@@ -125,6 +125,12 @@ Below we can see a flow diagram for the actions that will be performed when this
 .. figure:: images/trainer.train.png
     :align: center
     :width: 100%
+
+The return value will be a dictionnary with the following keys:
+
+    - ``"elapsed"``: dictionnary with elapsed times for each step
+    - ``"metrics"``: dictionnary with metrics from model training and model evaluation
+    - ``"hardware_info"``: dictionnary with information about your hardware like cpu, gpus or platform
 
 Callbacks
 ----------

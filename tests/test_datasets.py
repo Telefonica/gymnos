@@ -4,7 +4,6 @@ import numbers
 import numpy as np
 import pandas as pd
 
-from gymnos.datasets.mte import MTE
 from gymnos.datasets.boston_housing import BostonHousing
 from gymnos.datasets.dogs_vs_cats import DogsVsCats
 from gymnos.datasets.imdb import IMDB
@@ -32,7 +31,6 @@ def test_load():
 
 @pytest.mark.integration
 @pytest.mark.parametrize("dataset", [
-    MTE(),
     RockPaperScissors(),
     BostonHousing(),
     DogsVsCats(),

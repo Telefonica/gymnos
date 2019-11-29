@@ -28,3 +28,9 @@ class Divide(Preprocessor):
 
     def transform(self, X):
         return X / self.factor
+
+    def save(self, save_dir):
+        pass
+
+    def restore(self, save_dir):
+        pass

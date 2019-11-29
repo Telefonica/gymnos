@@ -6,6 +6,9 @@
 
 from ..registration import ComponentRegistry
 
+# MARK: Public API
+from .data_augmentor import DataAugmentor, Pipeline  # noqa: F401
+
 
 registry = ComponentRegistry("data augmentor")  # global component registry
 

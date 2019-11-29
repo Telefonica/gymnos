@@ -4,8 +4,10 @@
 #
 #
 
-from ..registration import ComponentRegistry
+# MARK: Public API
+from .dataset import Dataset  # noqa: F401
 
+from ..registration import ComponentRegistry
 
 registry = ComponentRegistry("dataset")  # global component registry
 

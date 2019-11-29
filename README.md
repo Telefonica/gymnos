@@ -18,69 +18,98 @@ See the documentation for building from source.
 
 ## Quick Start Guide and Usage
 To begin, instantiate a `Trainer` object and define the components of your supervised learning system:
+
 ```py
 import gymnos
 
 # Instantiate a Gymnos trainer definining ML system configuration
-trainer = gymnos.Trainer(
-    dataset={
-        "dataset": {
-            "type": "dogs_vs_cats"
-        },
-        "preprocessors": [
-            {
-                "type": "image_resize",
-                "width": 80,
-                "height": 80
-            }
-        ],
-        "data_augmentors": [
-            {
-                "type": "zoom",
-                "probability": 0.3,
-                "min_factor": 0.1,
-                "max_factor": 0.5
-            }
-        ]
-        "samples": {
-            "train": 0.8,
-            "test": 0.2
-        }
-    },
-    model={
-        "model": {
-            "type": "dogs_vs_cats_cnn",
-            "input_shape": [80, 80, 3]
-        },
-        training={
-            "epochs": 5,
-            "validation_split": 0.25
-        },
-    },
-    tracking={
-        "trackers": [
-            {
-                "type": "tensorboard"
-            },
-            {
-                "type": "mlflow"
-            }
-        ]
-    }
+
+dataset = gymnos.core.Dataset(
+    dataset=dict(
+        type="dogs_vs_cats"
+    ),
+    one_hot=True,
+    preprocessors=[
+        dict(
+            type="image_resize",
+            width=80,
+            height=80
+        ),
+        dict(
+            type="grayscale"
+        ),
+        dict(
+            type="divide",
+            factor=255.0
+        )
+    ],
+    data_augmentors=[
+        dict(
+            type="zoom",
+            probability=0.3,
+            min_factor=0.1,
+            max_factor=0.5
+        )
+    ],
+    samples=dict(
+        train=0.8,
+        test=0.2
+    )
 )
+
+model = gymnos.core.Model(
+    model=dict(
+        type="dogs_vs_cats_cnn",
+        input_shape=[80, 80, 1],
+        classes=2
+    ),
+    training=dict(
+        epochs=10,
+        batch_size=32,
+        validation_split=0.25
+    )
+)
+
+tracking = gymnos.core.Tracking(
+    trackers=[
+        dict(
+            type="mlflow",
+        ),
+        dict(
+            type="tensorboard"
+        )
+    ]
+)
+
+trainer = gymnos.trainer.Trainer(model, dataset, tracking)
 
 # Start training
 trainer.train()
 
-# Predict values and probabilities
-predictions = trainer.predict(samples)
-probabilities = trainer.predict_proba(samples)
-
 # Save trainer
 trainer.save("saved_trainer.zip")
+```
+
+Now you can easily make predictions with your trained ML system:
+```py
+import gymnos
 
 # Load saved trainer
-trainer = gymnos.Trainer.load("saved_trainer.zip")
+trainer = gymnos.trainer.Trainer.load("saved_trainer.zip")
+
+# Load dataset
+dogs_vs_cats = gymnos.datasets.load("dogs_vs_cats")
+
+# Download dataset files to downloads directory
+dl_manager = gymnos.services.DownloadManager("downloads")
+dogs_vs_cats.download_and_prepare(dl_manager)
+
+# Load samples into memory
+X, y = dogs_vs_cats.load()
+
+# Predict values and probabilities
+predictions = trainer.predict(X)
+probabilities = trainer.predict_proba(X)
 ```
 
 ### Command Line
@@ -103,11 +132,11 @@ $ gymnos serve saved_trainer.zip
 
 ## Examples and documentation
 
-Gymnos comes with a range of example [Jupyter notebooks](examples/) and [configurations](experiments/examples/) for different experiments.
+Gymnos comes with a range of example [Jupyter notebooks](examples/notebooks) and [configurations](examples/experiments) for different experiments.
 
 For instance, to run a configuration for [Dogs vs. Cats dataset](https://www.kaggle.com/c/dogs-vs-cats), execute the following line:
 ```sh
-$ gymnos train experiments/examples/dogs_vs_cats.json
+$ gymnos train examples/experiments/dogs_vs_cats.json
 ```
 
 For more information check out [Gymnos documentation](http://dev-aura-comp-01:8081).

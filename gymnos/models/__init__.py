@@ -4,6 +4,9 @@
 #
 #
 
+# MARK: Public API
+from .model import Model   # noqa: F401
+
 from ..registration import ComponentRegistry
 
 

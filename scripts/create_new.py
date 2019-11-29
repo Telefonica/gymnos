@@ -99,6 +99,7 @@ PREPROCESSOR_TYPE = "preprocessor"
 TRACKER_TYPE = "tracker"
 DATA_AUGMENTOR_TYPE = "data_augmentor"
 SERVICE_TYPE = "service"
+EXECUTION_ENVIRONMENT_TYPE = "execution_environment"
 
 DATASET_FILE_STR = """
 #
@@ -202,6 +203,12 @@ class {name}(Preprocessor):
 
     def transform(self, X):
         pass  # {TODO}: Preprocess data
+
+    def save(self, save_dir):
+        # TODO(my_preprocessor): Save preprocessor to directory
+
+    def restore(self, save_dir):
+        # TODO(my_preprocessor): Restore preprocessor from directory
 """
 
 TRACKER_FILE_STR = """
@@ -292,7 +299,8 @@ SERVICE_FILE_STR = """
 #
 #
 
-from .service import Service, ServiceConfig, Value
+from .. import config
+from .service import Service
 
 
 class {name}(Service):
@@ -300,11 +308,37 @@ class {name}(Service):
     {TODO}: Description of my service.
     \"""
 
-    class Config(ServiceConfig):
+    class Config(config.Config):
         pass  # {OPTIONAL}: Define your required and optional configuration variables.
 
     def download(self, *args, **kwargs):
         pass  # {OPTIONAL}: Download file.
+"""
+
+EXECUTION_ENVIRONMENT_FILE_STR = """
+#
+#
+#   {name}
+#
+#
+
+from .. import config
+from .execution_environment import ExecutionEnvironment
+
+
+class {name}(ExecutionEnvironment):
+    \"""
+    {TODO}: Description of my execution environment.
+    \"""
+
+    class Config(config.Config):
+        pass  # {OPTIONAL}: Define your required and optional configuration variables.
+
+    def train(self):
+        pass  # {OPTIONAL}: Train experiment with execution environment
+
+    def monitor(self, **train_kwargs):
+        pass  # {OPTIONAL}: Monitor training with kwargs from train() as arguments
 """
 
 
@@ -364,10 +398,15 @@ def create_service(service_name):
                             gymnos.services.registry)
 
 
+def create_execution_environment(execution_environment_name):
+    return create_component(EXECUTION_ENVIRONMENT_FILE_STR, execution_environment_name, "execution_environments",
+                            gymnos.execution_environments.registry)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("type", type=str, choices=[DATASET_TYPE, MODEL_TYPE, PREPROCESSOR_TYPE, TRACKER_TYPE,
-                                                   DATA_AUGMENTOR_TYPE, SERVICE_TYPE])
+                                                   DATA_AUGMENTOR_TYPE, SERVICE_TYPE, EXECUTION_ENVIRONMENT_TYPE])
     parser.add_argument("-n", "--name", type=str, required=True, help="Name to generate files (snake case)")
     args = parser.parse_args()
 
@@ -392,6 +431,8 @@ if __name__ == "__main__":
         modified_files = create_data_augmentor(args.name)
     elif args.type == SERVICE_TYPE:
         modified_files = create_service(args.name)
+    elif args.type == EXECUTION_ENVIRONMENT_TYPE:
+        modified_files = create_execution_environment(args.name)
     else:
         parser.print_help()
 

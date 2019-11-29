@@ -4,6 +4,9 @@
 #
 #
 
+import os
+import dill
+
 from ..preprocessor import Preprocessor
 
 from tensorflow.keras.preprocessing.text import Tokenizer
@@ -37,3 +40,11 @@ class BinaryVectorizer(Preprocessor):
 
     def transform(self, X):
         return self.tokenizer.texts_to_matrix(X, mode="binary")
+
+    def save(self, save_dir):
+        with open(os.path.join(save_dir, "tokenizer.pkl"), "wb") as fp:
+            dill.dump(self.tokenizer, fp)
+
+    def restore(self, save_dir):
+        with open(os.path.join(save_dir, "tokenizer.pkl"), "rb") as fp:
+            self.tokenizer = dill.load(fp)

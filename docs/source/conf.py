@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.abspath(os.path.join("..", "..")))
 autodoc_mock_imports = ["keras", "cv2", "tqdm", "kaggle", "numpy", "pandas", "tables", "sklearn",
                         "spacy", "mlflow", "joblib", "statsmodels", "comet_ml",
                         "h5py", "cpuinfo", "GPUtil", "tensorflow", "scipy", "dill",
-                        "commentjson", "PIL", "smb"]
+                        "commentjson", "PIL", "smb", "pyspark"]
 
 # -- Project information -----------------------------------------------------
 
@@ -57,7 +57,7 @@ extensions = [
     'sphinxarg.ext'
 ]
 
-add_module_names = True
+add_module_names = False
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

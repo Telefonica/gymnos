@@ -21,7 +21,7 @@ If you want to use multiple preprocessors, take a look to Pipeline:
     preprocessor_1 = gymnos.preprocessors.load("divide", factor=255)
     preprocessor_2 = gymnos.preprocessors.load("grayscale")
 
-    pipeline = gymnos.preprocessors.preprocessor.Pipeline(
+    pipeline = gymnos.preprocessors.Pipeline(
         preprocessor_1, 
         preprocessor_2
     )

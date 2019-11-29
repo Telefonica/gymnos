@@ -1,18 +1,19 @@
 #
 #
-#   GreyScale
+#   GrayScale
 #
 #
 
 from PIL import ImageOps
 
+from ..utils.iterator_utils import apply
 from ..utils.image_utils import arr_to_img, img_to_arr
 from .data_augmentor import DataAugmentor
 
 
-class Greyscale(DataAugmentor):
+class Grayscale(DataAugmentor):
     """
-    This class is used to convert images into greyscale. That is, it converts
+    This class is used to convert images into grayscale. That is, it converts
     images into having only shades of grey (pixel value intensities)
     varying from 0 to 255 which represent black and white respectively.
 
@@ -27,16 +28,19 @@ class Greyscale(DataAugmentor):
     def __init__(self, probability):
         super().__init__(probability)
 
-    def transform(self, image):
+    def transform(self, images):
         """
-        Converts the passed image to greyscale and returns the transformed
+        Converts the passed image to grayscale and returns the transformed
         image. There are no user definable parameters for this method.
 
-        :param image: The image to convert to greyscale.
+        :param image: The image to convert to grayscale.
         :type image: np.ndarray
         :return: The transformed image
         """
-        image = arr_to_img(image)
-        new_image = ImageOps.grayscale(image)
-        new_image = new_image.convert(image.mode)
-        return img_to_arr(new_image)
+        def operation(image):
+            image = arr_to_img(image)
+            new_image = ImageOps.grayscale(image)
+            new_image = new_image.convert(image.mode)
+            return img_to_arr(new_image)
+
+        return apply(images, operation)

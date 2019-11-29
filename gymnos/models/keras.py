@@ -10,6 +10,8 @@ from .model import Model
 from .utils.keras_modules import import_keras_module
 from .mixins import KerasClassifierMixin, KerasRegressorMixin
 
+from ..utils.py_utils import drop
+
 
 class BaseKeras(Model):
     """
@@ -37,8 +39,8 @@ class BaseKeras(Model):
 
     def __build_optimizer_from_config(self, optimizer):
         if isinstance(optimizer, dict):
-            cls = import_keras_module(optimizer.pop("type"), "optimizers")
-            optimizer = cls(**optimizer)
+            cls = import_keras_module(optimizer["type"], "optimizers")
+            optimizer = cls(**drop(optimizer, "type"))
 
         return optimizer
 
@@ -59,13 +61,12 @@ class BaseKeras(Model):
 
         output_layer = input_layer
         for layer_config in sequential_config:
-            layer_type = layer_config.pop("type")
-            if layer_type == "application":
-                cls = import_keras_module(layer_config.pop("application"), "applications")
-                layer = cls(**layer_config)
+            if layer_config["type"] == "application":
+                cls = import_keras_module(layer_config["application"], "applications")
+                layer = cls(**drop(layer_config, "application"))
             else:
-                cls = import_keras_module(layer_type, "layers")
-                layer = cls(**layer_config)
+                cls = import_keras_module(layer_config["type"], "layers")
+                layer = cls(**drop(layer_config, "type"))
 
             output_layer = layer(output_layer)
 

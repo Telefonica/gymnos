@@ -6,6 +6,7 @@
 
 import numpy as np
 
+from ..utils.iterator_utils import apply
 from .data_augmentor import DataAugmentor
 from ..utils.image_utils import arr_to_img, img_to_arr
 
@@ -37,7 +38,7 @@ class RandomContrast(DataAugmentor):
         self.min_factor = min_factor
         self.max_factor = max_factor
 
-    def transform(self, image):
+    def transform(self, images):
         """
         Random change the passed image contrast.
 
@@ -45,9 +46,12 @@ class RandomContrast(DataAugmentor):
         :type image: np.array
         :return: The transformed image
         """
-        image = arr_to_img(image)
-        factor = np.random.uniform(self.min_factor, self.max_factor)
+        def operation(image):
+            image = arr_to_img(image)
+            factor = np.random.uniform(self.min_factor, self.max_factor)
 
-        image_enhancer_contrast = ImageEnhance.Contrast(image)
-        image = image_enhancer_contrast.enhance(factor)
-        return img_to_arr(image)
+            image_enhancer_contrast = ImageEnhance.Contrast(image)
+            image = image_enhancer_contrast.enhance(factor)
+            return img_to_arr(image)
+
+        return apply(images, operation)

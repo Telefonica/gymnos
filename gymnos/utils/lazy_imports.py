@@ -25,7 +25,7 @@ def _install_module_with_pip_module(module_name):
 
 
 def _install_module_with_subprocess(module_name):
-    pip_args = ["--no-cache-dir"]
+    pip_args = ["--no-cache-dir", "--user"]
     cmd = [sys.executable, "-m", "pip", "install"] + pip_args + [module_name]
     return subprocess.call(cmd, env=os.environ.copy())
 

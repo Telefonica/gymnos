@@ -6,12 +6,20 @@
 
 import time
 import math
+import logging
 import warnings
 import pandas as pd
 import numpy as np
 
 from tqdm import tqdm
 from collections.abc import Iterable
+
+
+logger = logging.getLogger(__name__)
+
+
+def is_sequence(obj):
+    return hasattr(obj, "__getitem__") and hasattr(obj, "__len__")
 
 
 def gen_intervals(*splits):
@@ -21,7 +29,7 @@ def gen_intervals(*splits):
     Examples
     ---------
     >>> gen_intervals(0.8, 0.2)
-    [[0.0, 0.8], 0.8, 1.0]
+    [[0.0, 0.8], [0.8, 1.0]]
     >>> gen_intervals(0.3, 0.2, 0.5)
     [[0.0, 0.3], [0.3, 0.5], [0.5, 1.0]]
 
@@ -51,7 +59,7 @@ def gen_random_seed():
     return ((t & 0xff000000) >> 24) + ((t & 0x00ff0000) >> 8) + ((t & 0x0000ff00) << 8) + ((t & 0x000000ff) << 24)
 
 
-def default_collate_func(samples):
+def collate(samples):
     """
     Merge list of samples to form a mini-batch.
 
@@ -61,16 +69,20 @@ def default_collate_func(samples):
 
     Returns
     -------
-    np.ndarray
+    np.ndarray or pd.DataFrame
     """
     assert len(samples) > 0
 
     if isinstance(samples[0], pd.Series):
         return pd.concat(samples, axis=1).T
-    elif isinstance(samples[0], pd.DataFrame):
+
+    if isinstance(samples[0], pd.DataFrame):
         return pd.concat(samples)
-    else:
-        return np.array(samples)
+
+    if isinstance(samples[0], str):
+        return pd.Series(samples)  # prefer pandas over numpy for array of strings
+
+    return np.array(samples)
 
 
 def safe_indexing(X, indices):
@@ -158,15 +170,14 @@ class DataLoader:
     """
 
     def __init__(self, dataset, batch_size=1, drop_last=False, collate_func=None, transform_func=None, verbose=False):
+        if collate_func is None:
+            collate_func = collate
+
         self.dataset = dataset
         self.drop_last = drop_last
         self.batch_size = batch_size
         self.transform_func = transform_func
         self.verbose = verbose
-
-        if collate_func is None:
-            collate_func = default_collate_func
-
         self.collate_func = collate_func
 
     def __getitem__(self, index):
@@ -178,7 +189,7 @@ class DataLoader:
         batch: np.ndarray
         """
         batch_index_start = index * self.batch_size
-        batch_index_end   = batch_index_start + self.batch_size
+        batch_index_end = batch_index_start + self.batch_size
         if batch_index_end > len(self.dataset):
             if self.drop_last:
                 raise IndexError()
@@ -193,7 +204,7 @@ class DataLoader:
         batch_samples = [self.dataset[index] for index in iterator]
         batch_samples = [self.collate_func(samples) for samples in zip(*batch_samples)]
 
-        if self.transform_func:
+        if self.transform_func is not None:
             batch_samples = self.transform_func(batch_samples)
 
         return batch_samples
@@ -241,7 +252,7 @@ class IterableDataLoader:
         self.verbose = verbose
 
         if collate_func is None:
-            collate_func = default_collate_func
+            collate_func = collate
 
         self.collate_func = collate_func
 
@@ -263,7 +274,7 @@ class IterableDataLoader:
         iterator = self.dataset
 
         if self.verbose:
-            iterator = tqdm(iterator, total=len(iterator))
+            iterator = tqdm(iterator)
 
         batch_samples = []
 
@@ -288,6 +299,8 @@ class IterableDataLoader:
 
 class SplitIterator(Iterable):
     """
+    Iterator for split datasets.
+
     Parameters
     ------------
     iterable: Iterable
@@ -302,8 +315,8 @@ class SplitIterator(Iterable):
         Random seed
     """
 
-    def __init__(self, iterable, start, end, shuffle=False, random_state=0):
-        self.iterable = iterable
+    def __init__(self, dataset, start, end, shuffle=False, random_state=0):
+        self.dataset = dataset
         self.start = start
         self.end = end
         self.shuffle = shuffle
@@ -317,7 +330,7 @@ class SplitIterator(Iterable):
         count = 0
 
         random_generator = np.random.RandomState(self.random_state)
-        for _ in range(len(self.iterable)):
+        for _ in range(len(self.dataset)):
             if self.start <= random_generator.rand() < self.end:
                 count += 1
 
@@ -329,7 +342,7 @@ class SplitIterator(Iterable):
         count = 0
 
         random_generator = np.random.RandomState(self.random_state)
-        for row in self.iterable:
+        for row in self.dataset:
             if self.start <= random_generator.rand() < self.end:
                 yield row
 
@@ -340,11 +353,11 @@ class SplitIterator(Iterable):
     def _sequential_iterator(self):
         """
         """
-        iterable_length = len(self.iterable)
+        iterable_length = len(self.dataset)
         start_idx = int(iterable_length * self.start)
         end_idx = int(iterable_length * self.end)
 
-        for idx, row in enumerate(self.iterable):
+        for idx, row in enumerate(self.dataset):
             if start_idx <= idx < end_idx:
                 yield row
 
@@ -401,6 +414,9 @@ def split_iterator(iterable, splits, shuffle=True, random_state=None):
     ---------
     list of SplitIterator
     """
+    logger.warning("Splits for iterable datasets will be just a probability so we can't guarantee "
+                   "the precision for each split")
+
     if random_state is None:
         random_state = gen_random_seed()
 
@@ -425,6 +441,8 @@ def split_iterator(iterable, splits, shuffle=True, random_state=None):
 
 def split_sequence(sequence, splits, shuffle=True, random_state=None):
     """
+    Split a sequence into multiple splits
+
     Parameters
     -----------
     sequence: Sequence
@@ -457,6 +475,27 @@ def split_sequence(sequence, splits, shuffle=True, random_state=None):
         start = end
 
     return subsets
+
+
+def split_spark_dataframe(dataframe, splits, shuffle=True, random_state=None):
+    """
+    Split Spark DataFrame
+
+    Parameters
+    ------------
+    dataframe: pyspark.sql.DataFrame
+        Spark DataFrame
+    splits: list of floats
+        List of probabilities (between 0 and 1)
+    shuffle: bool
+        Whether or not shuffle dataset. Not shuffling is currently not implemented
+    random_state: int, optional
+        Seed for splitting
+    """
+    if shuffle:
+        return dataframe.randomSplit(splits, seed=random_state)  # FIXME: handle non probabilities
+    else:
+        raise NotImplementedError()
 
 
 def forever_generator(iterator):

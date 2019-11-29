@@ -4,7 +4,6 @@
 #
 #
 
-import pytest
 import gymnos
 
 from gymnos.core.tracking import Tracking
@@ -28,10 +27,3 @@ def test_tracker_instance():
     assert isinstance(tracking.trackers, gymnos.trackers.tracker.TrackerList)
 
     assert len(tracking.trackers) == 0
-
-    tracker = dict(
-        type="dummy"
-    )
-
-    with pytest.raises(ValueError):
-        Tracking(trackers=[tracker])
