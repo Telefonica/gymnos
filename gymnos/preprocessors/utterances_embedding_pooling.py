@@ -95,3 +95,9 @@ class UtterancesEmbeddingPooling(Preprocessor):
         elif type_pooling == "complete":
             result = np.concatenate((np.mean(element, axis=0), np.max(element, axis=0), np.min(element, axis=0)))
         return result
+
+    def save(self, save_dir):
+        pass
+
+    def restore(self, save_dir):
+        pass

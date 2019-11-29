@@ -8,6 +8,7 @@ import string
 
 import unidecode
 from auracog_embeddings.embeddings import Embeddings
+
 from gymnos.preprocessors.preprocessor import Preprocessor
 
 
@@ -51,3 +52,9 @@ class UtterancesAuraEmbeddings(Preprocessor):
         for phrase in sequence:
             total.append([unidecode.unidecode(str(sent).lower().translate(table)) for sent in phrase.split(",")])
         return total
+
+    def save(self, save_dir):
+        pass
+
+    def restore(self, save_dir):
+        pass
