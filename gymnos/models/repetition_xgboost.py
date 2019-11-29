@@ -5,7 +5,7 @@
 #
 
 import xgboost as xgb
-from sklearn.metrics import classification_report, roc_auc_score, roc_curve
+from sklearn.metrics import classification_report, roc_auc_score
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 
 from .mixins import SklearnMixin
@@ -60,6 +60,5 @@ class RepetitionXGBoost(SklearnMixin, Model):
         result = self.predict(X)
         cr = classification_report(y, result, output_dict=True)
         probs = self.model.predict_proba(X)[:, 1]
-        fpr, tpr, _ = roc_curve(y, probs)
         auc = roc_auc_score(y, probs)
         return auc, cr, y, probs
