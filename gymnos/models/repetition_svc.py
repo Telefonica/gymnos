@@ -4,6 +4,7 @@
 #
 #
 
+import numpy as np
 from sklearn.metrics import classification_report, roc_auc_score
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.svm import SVC
