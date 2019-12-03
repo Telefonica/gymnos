@@ -164,8 +164,8 @@ models.register(
 )
 
 models.register(
-    type="repetition_svm",
-    entry_point="gymnos.models.repetition_svm.RepetitionSVM"
+    type="repetition_svc",
+    entry_point="gymnos.models.repetition_svc.RepetitionSVC"
 )
 
 models.register(

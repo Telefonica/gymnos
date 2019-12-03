@@ -4,11 +4,11 @@
 #
 #
 
-import os
-import sys
-import subprocess
-import logging
 import importlib
+import logging
+import os
+import subprocess
+import sys
 
 from .py_utils import classproperty
 
@@ -97,6 +97,19 @@ class LazyImporter:
     @classproperty
     def mlflow(cls):
         return _try_import("mlflow")
+
+    @classproperty
+    def lightgbm(cls):
+        return _try_import("lightgbm")
+
+    @classproperty
+    def xgboost(cls):
+        return _try_import("xgboost")
+
+    @classproperty
+    def auracog_embeddings(cls):
+        _try_import("auracog_embeddings")
+        return importlib.import_module("auracog_embeddings.embeddings")
 
     @classproperty
     def dummy(cls):

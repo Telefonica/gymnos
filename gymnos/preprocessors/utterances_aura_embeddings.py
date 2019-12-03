@@ -7,9 +7,9 @@
 import string
 
 import unidecode
-from auracog_embeddings.embeddings import Embeddings
 
-from gymnos.preprocessors.preprocessor import Preprocessor
+from .preprocessor import Preprocessor
+from ..utils.lazy_imports import lazy_imports
 
 
 class UtterancesAuraEmbeddings(Preprocessor):
@@ -25,8 +25,7 @@ class UtterancesAuraEmbeddings(Preprocessor):
     """
 
     def __init__(self, model_path):
-        # Instantiate Embeddings class object
-        self.embeddings = Embeddings(model_path=model_path, padding=False)
+        self.embeddings = lazy_imports.auracog_embeddings.Embeddings(model_path=model_path, padding=False)
 
     def fit(self, X, y=None):
         return self

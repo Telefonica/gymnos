@@ -6,7 +6,7 @@
 
 import numpy as np
 
-from gymnos.preprocessors.preprocessor import Preprocessor
+from .preprocessor import Preprocessor
 
 
 class UtterancesEmbeddingPooling(Preprocessor):
@@ -17,10 +17,17 @@ class UtterancesEmbeddingPooling(Preprocessor):
     -----------
     type_pooling: str,
                 Type of pooling (flatten_sequence, two_steps_complete_mean, two_steps_complete_mean_max
-                or two_steps_complete_complete)
+                two_steps_complete_mean_min, two_steps_complete_complete or two_steps_complete_median)
     """
 
-    def __init__(self, type_pooling):
+    def __init__(self, type_pooling="flatten_sequence"):
+        POOLINGS = ["flatten_sequence", "two_steps_complete_mean", "two_steps_complete_mean_max",
+                    "two_steps_complete_mean_min", "two_steps_complete_complete", "two_steps_complete_median"]
+        try:
+            assert type_pooling in POOLINGS
+        except AssertionError as e:
+            e.args += (type_pooling, "is not in list of valid poolings values:", POOLINGS)
+            raise
         self.type_pooling = type_pooling
 
     def fit(self, X, y=None):
@@ -39,9 +46,17 @@ class UtterancesEmbeddingPooling(Preprocessor):
         elif self.type_pooling == "two_steps_complete_mean_max":
             X = UtterancesEmbeddingPooling.__apply_pooling(list_of_list=X, type_pooling_sequence="complete",
                                                            type_pooling_phrase="mean_max")
+        elif self.type_pooling == "two_steps_complete_mean_min":
+            X = UtterancesEmbeddingPooling.__apply_pooling(list_of_list=X, type_pooling_sequence="complete",
+                                                           type_pooling_phrase="mean_min")
         elif self.type_pooling == "two_steps_complete_complete":
             X = UtterancesEmbeddingPooling.__apply_pooling(list_of_list=X, type_pooling_sequence="complete",
                                                            type_pooling_phrase="complete")
+        elif self.type_pooling == "two_steps_complete_median":
+            X = UtterancesEmbeddingPooling.__apply_pooling(list_of_list=X, type_pooling_sequence="complete",
+                                                           type_pooling_phrase="median")
+        else:
+            pass
         return X
 
     @staticmethod
@@ -67,13 +82,13 @@ class UtterancesEmbeddingPooling(Preprocessor):
                     total_phrase = [item for sublist in sequence for item in sublist]
                 else:
                     total_phrase.append(
-                        UtterancesEmbeddingPooling.pooling(element=phrase, type_pooling=type_pooling_phrase))
+                        UtterancesEmbeddingPooling.__pooling(element=phrase, type_pooling=type_pooling_phrase))
             total_sequence.append(
-                UtterancesEmbeddingPooling.pooling(element=total_phrase, type_pooling=type_pooling_sequence))
+                UtterancesEmbeddingPooling.__pooling(element=total_phrase, type_pooling=type_pooling_sequence))
         return total_sequence
 
     @staticmethod
-    def pooling(element, type_pooling):
+    def __pooling(element, type_pooling):
         """
         Makes a pooling to a list of arrays concatenating diferent statitics depending on type_pooling parameter.
 
@@ -84,16 +99,25 @@ class UtterancesEmbeddingPooling(Preprocessor):
         type_pooling: str
             type of pooling applied.
             if type_pooling=mean, concatenates: mean.
+            if type_pooling=median, concatenates: mean.
             if type_pooling=mean_max, concatenates: mean and max.
+            if type_pooling=mean_min, concatenates: mean and max.
             if type_pooling=complete, concatenates: mean and max and min.
+
         """
         result = None
         if type_pooling == "mean":
             result = np.mean(element, axis=0)
+        elif type_pooling == "median":
+            result = np.median(element, axis=0)
         elif type_pooling == "mean_max":
             result = np.concatenate((np.mean(element, axis=0), np.max(element, axis=0)))
+        elif type_pooling == "mean_min":
+            result = np.concatenate((np.mean(element, axis=0), np.min(element, axis=0)))
         elif type_pooling == "complete":
             result = np.concatenate((np.mean(element, axis=0), np.max(element, axis=0), np.min(element, axis=0)))
+        else:
+            pass
         return result
 
     def save(self, save_dir):
