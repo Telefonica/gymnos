@@ -15,8 +15,15 @@ from .utils.temporal_series_utils import mad_mean_error, nrmsd_error_norm, resid
 
 class DataUsageHoltWinters(Model):
     """
+    Task: **Regression**
+
     Holt Winters algorithm developed to solve Data Usage time series regression
     task (:class:`gymnos.datasets.data_usage_test.DataUsageTest`).
+
+    Can I use?
+        - Generators: ❌
+        - Probability predictions: ❌
+        - Distributed datasets: ❌
 
     Parameters
     ----------

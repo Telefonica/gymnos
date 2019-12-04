@@ -13,7 +13,18 @@ from .utils.keras_metrics import accuracy_multilabel, precision
 
 class MTENN(KerasClassifierMixin, Model):
     """
+    Task: **Multi-label classification**
+
     Neural network developed to solve MTE subscription classification task (:class:`gymnos.datasets.mte.MTE`).
+
+    Can I use?
+        - Generators: ✔️
+        - Probability predictions: ✔️
+        - Distributed datasets: ❌
+
+    Warnings
+    ------------
+    This model requires labels with multi-label format e.g ``[[0, 0, 0, 1, 1, 0, 1]]``
 
     Parameters
     ----------
@@ -22,10 +33,6 @@ class MTENN(KerasClassifierMixin, Model):
     classes: int, 17
         Number of classes to classify images into. This is useful if
         you want to train this model with another dataset.
-
-    Note
-    ----
-    This model requires labels with multi-label format.
     """
 
     def __init__(self, input_shape, classes=17):

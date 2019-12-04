@@ -54,7 +54,11 @@ class BaseKerasMixin:
         verbose: int, optional
             Verbosity mode. 0 = silent, 1 = progress bar, 2 = one line per epoch.
         callbacks: list of dict, optional
-            TODO
+            List with specs for Keras callbacks in the following format ``{"type": "<id>", **kwargs}``. The following callbacks are available:
+                - ``early_stopping``: tensorflow.keras.callbacks.EarlyStopping
+                - ``model_checkpoint``: tensorflow.keras.callbacks.ModelCheckpoint
+                - ``reduce_learning``: tensorflow.keras.callbacks.ReduceLROnPlateau
+                - ``tensorboard``: tensorflow.keras.callbacks.TensorBoard
         validation_split: float, optional
             Fraction of the training data to be used as validation data.
         shuffle: bool, optional
@@ -76,7 +80,7 @@ class BaseKerasMixin:
         -------
         dict
             Training metrics
-        """
+        """  # noqa: E510
 
         if callbacks is not None:
             callbacks = self.__instantiate_callbacks(callbacks)
