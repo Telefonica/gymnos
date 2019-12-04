@@ -62,12 +62,9 @@ class RepetitionRandomForest(SklearnMixin, Model):
                                               random_state=42, n_jobs=-1)
         else:
             pass
-        self.fitted_model_ = model_search.fit(X, y)
+        self.model = model_search.fit(X, y)
         if self.search in ["grid_search", "random_search"]:
-            self.fitted_model_ = model_search.best_estimator_
-
-    def predict(self, X):
-        return self.model.predict(X)
+            self.model = model_search.best_estimator_
 
     def evaluate(self, X, y):
         result = self.predict(X)
@@ -77,4 +74,4 @@ class RepetitionRandomForest(SklearnMixin, Model):
         return auc, cr
 
     def predict_proba(self, X):
-        return self.fitted_model_.predict_proba(X)[:, 1]
+        return self.model.predict_proba(X)[:, 1]

@@ -4,10 +4,6 @@
 #
 #
 
-import string
-
-import unidecode
-
 from .preprocessor import Preprocessor
 from ..utils.lazy_imports import lazy_imports
 
@@ -25,7 +21,8 @@ class UtterancesAuraEmbeddings(Preprocessor):
     """
 
     def __init__(self, model_path):
-        self.embeddings = lazy_imports.auracog_embeddings.Embeddings(model_path=model_path, padding=False)
+        self.embeddings = lazy_imports.auracog_embeddings_embeddings.Embeddings(model_path=model_path, padding=False)
+        self.normalizer = lazy_imports.auracog_utils_text.TextNormalizer('es_ES')
 
     def fit(self, X, y=None):
         return self
@@ -37,19 +34,16 @@ class UtterancesAuraEmbeddings(Preprocessor):
         result = []
         for sequence in X:
             sequence = eval(sequence.replace(' ', ','))
-            prep_sequence = UtterancesAuraEmbeddings._sequence_simple_preprocess(sequence)
-            list_embeddings = self.embeddings.transform(prep_sequence)
+            normalized_sequence = self.__sequence_normalizer(sequence)
+            list_embeddings = self.embeddings.transform(normalized_sequence)
             result.append(list_embeddings)
         return result
 
-    @staticmethod
-    def _sequence_simple_preprocess(sequence):
+    def __sequence_normalizer(self, sequence):
         """ Simple pre-processing: lowercasing, remove punctuation and special characters and acents """
         total = []
-        string.punctuation += '“”«»¿¡‘’'
-        table = str.maketrans({key: None for key in string.punctuation})
         for phrase in sequence:
-            total.append([unidecode.unidecode(str(sent).lower().translate(table)) for sent in phrase.split(",")])
+            total.append([val for val in self.normalizer.to_tkn(phrase).norm])
         return total
 
     def save(self, save_dir):

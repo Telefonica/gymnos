@@ -107,9 +107,14 @@ class LazyImporter:
         return _try_import("xgboost")
 
     @classproperty
-    def auracog_embeddings(cls):
+    def auracog_embeddings_embeddings(cls):
         _try_import("auracog_embeddings")
         return importlib.import_module("auracog_embeddings.embeddings")
+
+    @classproperty
+    def auracog_utils_text(cls):
+        _try_import("auracog_utils")
+        return importlib.import_module("auracog_utils.text")
 
     @classproperty
     def dummy(cls):
