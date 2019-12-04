@@ -154,6 +154,8 @@ CLASS_NAMES = ["Deportes", "Salud y Belleza", "Humor", "Hogar", "Cine", "Cultura
 
 class MTE(Dataset):
     """
+    Services: :class:`~gymnos.services.http.HTTP`
+
     Dataset to predict topics of video contents from M+ based on the title and the description of the content.
 
     The class labels are:

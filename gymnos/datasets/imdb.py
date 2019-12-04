@@ -17,6 +17,8 @@ KAGGLE_DATASET_FILENAME = "dataset.csv"
 
 class IMDB(Dataset):
     """
+    Services: :class:`~gymnos.services.kaggle.Kaggle`
+
     Dataset with movie reviews for binary sentiment classification.
 
     The class labels are:

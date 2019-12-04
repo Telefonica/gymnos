@@ -12,6 +12,8 @@ from .dataset import IterableDataset, Array, ClassLabel
 
 class RedditSelfPostClassification(IterableDataset):
     """
+    Services: :class:`~gymnos.services.kaggle.Kaggle`
+
     Dataset to classify self-posts from reddit.com into the subreddit into which they were posted.
 
     Characteristics

@@ -25,6 +25,8 @@ IMAGE_DEPTH = 3
 
 class TinyImagenet(Dataset):
     """
+    Services: :class:`~gymnos.services.kaggle.Kaggle`
+
     Dataset to classify images. Small version of Imagenet dataset.
 
     Characteristics

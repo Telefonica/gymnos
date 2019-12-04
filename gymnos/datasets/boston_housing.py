@@ -16,6 +16,8 @@ DOWNLOAD_URL = "https://s3.amazonaws.com/keras-datasets/boston_housing.npz"
 
 class BostonHousing(Dataset):
     """
+    Services: :class:`~gymnos.services.http.HTTP`
+
     Samples contain 13 attributes of houses at different locations around the Boston suburbs in the late 1970s.
     Targets are the median values of the houses at a location (in k$).
 

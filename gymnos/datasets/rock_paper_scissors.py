@@ -18,6 +18,8 @@ DATASET_SMB_URI = "smb://10.95.194.112/homes/ruben_salas/rock-paper-scissors.zip
 
 class RockPaperScissors(Dataset):
     """
+    Services: :class:`~gymnos.services.smb.SMB`
+
     The goal is to predict from grayscale images whether the hand gesture is rock, paper or scissors.
     The class labels are the following:
 

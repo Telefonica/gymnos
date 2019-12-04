@@ -21,6 +21,8 @@ IMAGE_DEPTH = 3
 
 class SyntheticDigits(Dataset):
     """
+    Services: :class:`~gymnos.services.kaggle.Kaggle`
+
     Synthetic digits with noisy backgrounds for testing robustness of classification algorithms.
     This dataset contains 12,000 synthetically generated images of English digits embedded on random backgrounds.
     The images are generated with varying fonts, colors, scales and rotations.
