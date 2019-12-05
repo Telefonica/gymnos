@@ -24,15 +24,15 @@ class UtterancesAuraEmbeddings(Preprocessor):
         self.embeddings = lazy_imports.auracog_embeddings_embeddings.Embeddings(model_path=model_path, padding=False)
         self.normalizer = lazy_imports.auracog_utils_text.TextNormalizer('es_ES')
 
-    def fit(self, X, y=None):
+    def fit(self, x, y=None):
         return self
 
     def fit_generator(self, generator):
         return self
 
-    def transform(self, X):
+    def transform(self, x):
         result = []
-        for sequence in X:
+        for sequence in x:
             sequence = eval(sequence.replace(' ', ','))
             normalized_sequence = self.__sequence_normalizer(sequence)
             list_embeddings = self.embeddings.transform(normalized_sequence)

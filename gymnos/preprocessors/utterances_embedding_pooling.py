@@ -21,43 +21,43 @@ class UtterancesEmbeddingPooling(Preprocessor):
     """
 
     def __init__(self, type_pooling="flatten_sequence"):
-        POOLINGS = ["flatten_sequence", "two_steps_complete_mean", "two_steps_complete_mean_max",
+        poolings = ["flatten_sequence", "two_steps_complete_mean", "two_steps_complete_mean_max",
                     "two_steps_complete_mean_min", "two_steps_complete_complete", "two_steps_complete_median"]
         try:
-            assert type_pooling in POOLINGS
+            assert type_pooling in poolings
         except AssertionError as e:
-            e.args += (type_pooling, "is not in list of valid poolings values:", POOLINGS)
+            e.args += (type_pooling, "is not in list of valid poolings values:", poolings)
             raise
         self.type_pooling = type_pooling
 
-    def fit(self, X, y=None):
+    def fit(self, x, y=None):
         return self
 
     def fit_generator(self, generator):
         return self
 
-    def transform(self, X):
+    def transform(self, x):
         if self.type_pooling == "flatten_sequence":
-            X = UtterancesEmbeddingPooling.__apply_pooling(list_of_list=X, type_pooling_sequence="complete",
+            x = UtterancesEmbeddingPooling.__apply_pooling(list_of_list=x, type_pooling_sequence="complete",
                                                            type_pooling_phrase="flatten_sequence")
         elif self.type_pooling == "two_steps_complete_mean":
-            X = UtterancesEmbeddingPooling.__apply_pooling(list_of_list=X, type_pooling_sequence="complete",
+            x = UtterancesEmbeddingPooling.__apply_pooling(list_of_list=x, type_pooling_sequence="complete",
                                                            type_pooling_phrase="mean")
         elif self.type_pooling == "two_steps_complete_mean_max":
-            X = UtterancesEmbeddingPooling.__apply_pooling(list_of_list=X, type_pooling_sequence="complete",
+            x = UtterancesEmbeddingPooling.__apply_pooling(list_of_list=x, type_pooling_sequence="complete",
                                                            type_pooling_phrase="mean_max")
         elif self.type_pooling == "two_steps_complete_mean_min":
-            X = UtterancesEmbeddingPooling.__apply_pooling(list_of_list=X, type_pooling_sequence="complete",
+            x = UtterancesEmbeddingPooling.__apply_pooling(list_of_list=x, type_pooling_sequence="complete",
                                                            type_pooling_phrase="mean_min")
         elif self.type_pooling == "two_steps_complete_complete":
-            X = UtterancesEmbeddingPooling.__apply_pooling(list_of_list=X, type_pooling_sequence="complete",
+            x = UtterancesEmbeddingPooling.__apply_pooling(list_of_list=x, type_pooling_sequence="complete",
                                                            type_pooling_phrase="complete")
         elif self.type_pooling == "two_steps_complete_median":
-            X = UtterancesEmbeddingPooling.__apply_pooling(list_of_list=X, type_pooling_sequence="complete",
+            x = UtterancesEmbeddingPooling.__apply_pooling(list_of_list=x, type_pooling_sequence="complete",
                                                            type_pooling_phrase="median")
         else:
             pass
-        return X
+        return x
 
     @staticmethod
     def __apply_pooling(list_of_list, type_pooling_sequence, type_pooling_phrase):

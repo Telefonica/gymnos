@@ -30,7 +30,7 @@ class RepetitionXGBoost(SklearnMixin, Model):
     This model requires binary labels.
     """
 
-    def __init__(self, cv=5, search=None, scoring='auc'):
+    def __init__(self, cv=5, search=None, scoring='roc_auc'):
         self.model = lazy_imports.xgboost.XGBClassifier(objective="binary:logistic", random_state=42, max_depth=3,
                                                         n_estimators=100)
         self.cv = cv
@@ -57,5 +57,5 @@ class RepetitionXGBoost(SklearnMixin, Model):
         self.model = model_search.fit(x, y)
         if self.search in ["grid_search", "random_search"]:
             self.model = model_search.best_estimator_
-        metrics[self.scoring] = model_search.best_score_
+            metrics[self.scoring] = model_search.best_score_
         return metrics

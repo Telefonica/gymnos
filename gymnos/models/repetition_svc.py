@@ -30,7 +30,7 @@ class RepetitionSVC(SklearnMixin, Model):
     This model requires binary labels.
     """
 
-    def __init__(self, cv=5, search=None, scoring='auc'):
+    def __init__(self, cv=5, search=None, scoring='roc_auc'):
         self.model = SVC(probability=True)
         self.cv = cv
         self.search = search
@@ -62,5 +62,5 @@ class RepetitionSVC(SklearnMixin, Model):
         self.model = model_search.fit(x, y)
         if self.search in ["grid_search", "random_search"]:
             self.model = model_search.best_estimator_
-        metrics[self.scoring] = model_search.best_score_
+            metrics[self.scoring] = model_search.best_score_
         return metrics
