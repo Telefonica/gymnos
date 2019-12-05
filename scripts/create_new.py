@@ -362,7 +362,7 @@ def create_component(raw_string, name, dirname, registry):
         fp.write("\n")
         fp.write(cleandoc("""
             {}.register(
-                name="{}",
+                type="{}",
                 entry_point="{}"
             )
         """.format(dirname, name, ".".join(["gymnos", dirname, name, camel_name]))))
