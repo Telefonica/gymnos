@@ -114,7 +114,8 @@ class Config:
             list_vars_msg += "\n - {}".format(var_name)
             if var_help:
                 list_vars_msg += " ({})".format(var_help)
-        message = message.format(list_vars_msg, ", ".join(files_to_look))
+
+        message = message.format(list_vars_msg, ", ".join([str(file) for file in files_to_look]))
 
         return message
 
