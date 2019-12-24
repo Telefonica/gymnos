@@ -15,6 +15,11 @@ from .py_utils import classproperty
 logger = logging.getLogger(__name__)
 
 
+def _is_venv():
+    return (hasattr(sys, 'real_prefix') or
+            (hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix))
+
+
 def _install_module_with_pip_module(module_name):
     try:
         from pip import main as pipmain
@@ -25,7 +30,9 @@ def _install_module_with_pip_module(module_name):
 
 
 def _install_module_with_subprocess(module_name):
-    pip_args = ["--no-cache-dir", "--user"]
+    pip_args = ["--no-cache-dir"]
+    if not _is_venv():
+        pip_args.append("--user")
     cmd = [sys.executable, "-m", "pip", "install"] + pip_args + [module_name]
     return subprocess.call(cmd, env=os.environ.copy())
 
