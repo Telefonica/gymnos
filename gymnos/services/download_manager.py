@@ -59,7 +59,7 @@ class DownloadManager:
         """
         gz_extensions = (".gz",)
         zip_extensions = (".zip",)
-        tar_extensions = (".tar", ".tar.bz2", ".tbz2", ".tbz", ".tb2", ".tar.gz")
+        tar_extensions = (".tar", ".tar.bz2", ".tbz2", ".tbz", ".tb2", ".tar.gz", ".tgz")
 
         logger.info("Extracting {}".format(path))
 
