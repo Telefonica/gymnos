@@ -91,15 +91,14 @@ my_dataset.py
 Downloading and extracting source data
 =======================================
 
-Most datasets need to download data from the web. All downloads and extractions must go through the :class:`gymnos.services.DownloadManager`. 
-``DownloadManager``currently supports extracting ``.zip``, ``.gz`` and ``.tar`` files.
+Most datasets need to download data from the web. All downloads and extractions must go through the :class:`~gymnos.services.download_manager.DownloadManager`. 
 
-For example, one can download URLs with ``download`` and extract files with ``extract`` method:
+For example, one can download URLs with ``http`` service using their :class:`~gymnos.services.download_manager.DownloadManager.download` method and extract files with :class:`~gymnos.services.download_manager.DownloadManager.extract` method:
 
 .. code-block:: python
 
     def download_and_prepare(self, dl_manager):
-        dl_paths = dl_manager.download({
+        dl_paths = dl_manager["http"].download({
             "foo": "https://example.com/foo.zip",
             "bar": "https://example.com/bar.zip",
         })
