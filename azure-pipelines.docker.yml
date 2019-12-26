@@ -59,15 +59,18 @@ steps:
     docker build -t $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName) -f Dockerfile .
     docker build -t $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName):gpu-latest -f Dockerfile.gpu .
   displayName: 'Generate docker images'
+  condition: ne(variables['Build.Reason'], 'PullRequest')
 - script: |
     echo Push images to Telefonica artifactory
     docker login -u $(dockerId) -p $(dockerPassword) $(telefonicaDockerHubDomain)
     docker push $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName)
     docker push $(telefonicaDockerHubFullPath)/$(auraPrototypesRepo)/$(imageName):gpu-latest
   displayName: 'Push images to Telefonica artifactory'
+  condition: ne(variables['Build.Reason'], 'PullRequest')
 - script: |
     echo Clean docker images from agent
     docker stop $(docker ps -a | grep gymnos | tr -s ' ' | cut -d ' ' -f 1)
     docker rm $(docker ps -a | grep gymnos | tr -s ' ' | cut -d ' ' -f 1)
     docker rmi $(docker images | grep gymnos | tr -s ' ' | cut -d ' ' -f 3)
   displayName: 'Agent cleaning'
+  condition: ne(variables['Build.Reason'], 'PullRequest')
