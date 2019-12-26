@@ -25,13 +25,13 @@ If you want to :ref:`contribute to our repo <contributing>` and add a new data_a
 
 This command will create ``gymnos/data_augmentors/my_data_augmentor.py``, and modify ``gymnos/__init__.py`` to register data augmentor so we can load it using ``gymnos.load``.
 
-The data augmentor registration process is done by associating the data augmentor name with their path:
+The data augmentor registration process is done by associating the data augmentor id with their path:
 
 .. code-block:: python
     :caption: gymnos/__init__.py
 
     data_augmentors.register(
-        name="my_data_augmentor",
+        type="my_data_augmentor",
         entry_point="gymnos.data_augmentors.my_data_augmentor.MyDataAugmentor"
     )
 
@@ -158,7 +158,7 @@ Once you have defined your ``setup.py``, create and register your Gymnos data au
 Here is a minimal example. Say we have our library named ``gymnos_my_data_augmentors`` and we want to add the data augmentor ``my_data_augmentor``. You have to:
 
 1. Create ``MyDataAugmentor`` in ``gymnos_my_data_augmentors/my_data_augmentor.py`` inheriting from :class:`gymnos.data_augmentors.data_augmentor.DataAugmentor` and implementing the abstract methods
-2. Register data augmentor in your module ``__init__.py`` referencing the name and the path:
+2. Register data augmentor in your module ``__init__.py`` referencing the id and the path:
 
 .. code-block:: python
     :caption: gymnos_my_data_augmentors/__init__.py
@@ -166,7 +166,7 @@ Here is a minimal example. Say we have our library named ``gymnos_my_data_augmen
     import gymnos
 
     gymnos.data_augmentors.register(
-        name="my_data_augmentor",
+        type="my_data_augmentor",
         entry_point="gymnos_my_data_augmentors.my_data_augmentor.MyDataAugmentor"
     )
 

@@ -24,13 +24,13 @@ If you want to :ref:`contribute to our repo <contributing>` and add a new execut
 
 This command will create ``gymnos/execution_environments/my_execution_environment.py`` and modify ``gymnos/__init__.py`` to register execution environment so we can load it using ``gymnos.load``.
 
-The execution environment registration process is done by associating the execution environement name with their path:
+The execution environment registration process is done by associating the execution environement id with their path:
 
 .. code-block:: python
     :caption: gymnos/__init__.py
 
     execution_environments.register(
-        name="my_execution_environment",
+        type="my_execution_environment",
         entry_point="gymnos.execution_environments.my_execution_environment.MyExecutionEnvironment"
     )
 
@@ -176,7 +176,7 @@ Once you have defined your ``setup.py``, create and register your Gymnos executi
 Here is a minimal example. Say we have our library named ``gymnos_my_execution_environments`` and we want to add the execution environment ``my_execution_environment``. You have to:
 
 1. Create ``MyExecutionEnvironment`` in ``gymnos_my_execution_environments/my_execution_environment.py`` inheriting from :class:`gymnos.execution_environments.execution_environment.ExecutionEnvironment` and implementing the abstract methods.
-2. Register your execution environment in your module ``__init__.py`` referencing the name and the path:
+2. Register your execution environment in your module ``__init__.py`` referencing the type and the path:
 
 .. code-block:: python
     :caption: gymnos_my_execution_environments/__init__.py
@@ -184,7 +184,7 @@ Here is a minimal example. Say we have our library named ``gymnos_my_execution_e
     import gymnos
 
     gymnos.execution_environments.register(
-        name="my_execution_environment",
+        type="my_execution_environment",
         entry_point="gymnos_my_execution_environments.my_execution_environment.MyExecutionEnvironment"
     )
 

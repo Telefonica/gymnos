@@ -30,13 +30,13 @@ If you want to :ref:`cofntribute to our repo <contributing>` and add a new datas
 
 This command will create ``gymnos/datasets/my_dataset.py``, and modify ``gymnos/__init__.py`` to register dataset so we can load it using ``gymnos.load``.
 
-The dataset registration process is done by associating the dataset name with their path:
+The dataset registration process is done by associating the dataset id with their path:
 
 .. code-block:: python
     :caption: gymnos/__init__.py
 
     datasets.register(
-        name="my_dataset",
+        type="my_dataset",
         entry_point="gymnos.datasets.my_dataset.MyDataset"
     )
 
@@ -240,7 +240,7 @@ If your dataset inherits from :class:`gymnos.datasets.dataset.SparkDataset`, wri
 .. code-block:: python
 
     datasets.register(
-        name="my_dataset",
+        type="my_dataset",
         entry_point="gymnos.datasets.my_dataset.MyDataset"
     )
 
@@ -289,7 +289,7 @@ Once you have defined your ``setup.py``, create and register your Gymnos dataset
 Here is a minimal example. Say we have our library named ``gymnos_my_datasets`` and we want to add the dataset ``my_dataset``. You have to:
 
 1. Create ``MyDataset`` in ``gymnos_my_datasets/my_dataset.py`` inheriting from :class:`gymnos.datasets.dataset.Dataset` and implementing the abstract methods
-2. Register dataset in your module ``__init__.py`` referencing the name and the path:
+2. Register dataset in your module ``__init__.py`` referencing the id and the path:
 
 .. code-block:: python
     :caption: gymnos_my_datasets/__init__.py
@@ -297,7 +297,7 @@ Here is a minimal example. Say we have our library named ``gymnos_my_datasets`` 
     import gymnos
 
     gymnos.datasets.register(
-        name="my_dataset",
+        type="my_dataset",
         entry_point="gymnos_my_datasets.my_dataset.MyDataset"
     )
 

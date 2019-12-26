@@ -27,13 +27,13 @@ If you want to :ref:`contribute to our repo <contributing>` and add a new prepro
 
 This command will create ``gymnos/preprocessors/my_preprocessor.py``, and modify ``gymnos/__init__.py`` to register preprocessor so we can load it using ``gymnos.load``.
 
-The preprocessor registration process is done by associating the preprocessor name with their path:
+The preprocessor registration process is done by associating the preprocessor id with their path:
 
 .. code-block:: python
     :caption: gymnos/__init__.py
 
     preprocessors.register(
-        name="my_preprocessor",
+        type="my_preprocessor",
         entry_point="gymnos.preprocessors.my_preprocessor.MyPreprocessor"
     )
 
@@ -232,7 +232,7 @@ Once you have defined your ``setup.py``, create and register your Gymnos preproc
 Here is a minimal example. Say we have our library named ``gymnos_my_preprocessors`` and we want to add the preprocessor ``my_preprocessor``. You have to:
 
 1. Create ``MyPreprocessor`` in ``gymnos_my_preprocessors/my_preprocessor.py`` inheriting from :class:`gymnos.preprocessors.preprocessor.preprocessor` and implementing the abstract methods
-2. Register preprocessor in your module ``__init__.py`` referencing the name and the path:
+2. Register preprocessor in your module ``__init__.py`` referencing the type and the path:
 
 .. code-block:: python
     :caption: gymnos_my_preprocessors/__init__.py
@@ -240,7 +240,7 @@ Here is a minimal example. Say we have our library named ``gymnos_my_preprocesso
     import gymnos
 
     gymnos.preprocessors.register(
-        name="my_preprocessor",
+        type="my_preprocessor",
         entry_point="gymnos_my_preprocessors.my_preprocessor.MyPreprocessor"
     )
 
