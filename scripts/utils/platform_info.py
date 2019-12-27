@@ -1,8 +1,10 @@
 #
 #
-#   Hardware info
+#   Platform info
 #
 #
+
+import subprocess
 
 
 def get_cpu_info():
@@ -18,3 +20,7 @@ def get_gpus_info():
     def retrieve_gpu_info(gpu):
         return dict(name=gpu.name, memory=gpu.memoryTotal)
     return [retrieve_gpu_info(gpu) for gpu in GPUtil.getGPUs()]
+
+
+def get_git_revision_hash():
+    return subprocess.check_output(['git', 'rev-parse', 'HEAD'], universal_newlines=True).strip()

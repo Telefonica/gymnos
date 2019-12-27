@@ -8,12 +8,14 @@
 import os
 import uuid
 import gymnos
+import platform
 import logging
 import logging.config
 
 from datetime import datetime
 
 from ..utils.io_utils import save_to_json, read_json
+from ..utils.platform_info import get_cpu_info, get_gpus_info, get_git_revision_hash
 
 
 # MARK: Public methods
@@ -31,8 +33,10 @@ def add_arguments(parser):
                         action="store_true", default=False)
     parser.add_argument("--no-save_training_specs", help="Whether or not save JSON training configuration file",
                         action="store_true", default=False)
-    parser.add_argument("--no-save_results", help="Whether or not save results", action="store_true",
+    parser.add_argument("--no-save_metrics", help="Whether or not save results", action="store_true",
                         default=False)
+    parser.add_argument("--no-save_platform_info", help="Whether or not save current platform information",
+                        action="store_true", default=False)
     parser.add_argument("--execution_dir", help="Execution directory to store training outputs. It accepts the " +
                                                 "following format arguments: dataset_type, model_type, uuid, now",
                         type=str, default="trainings/{dataset_type}/executions/{now:%Y-%m-%d_%H-%M-%S}")
@@ -49,10 +53,10 @@ def run_command(args):
 
     trainer = gymnos.trainer.Trainer.from_dict(training_config)
 
+    logger = logging.getLogger(__name__)
+
     if args.environment is not None:
         setup_basic_log_config()
-
-        logger = logging.getLogger(__name__)
 
         logger.info("Training will be executed in external environment")
 
@@ -109,10 +113,15 @@ def run_command(args):
         logger.info("Saving training specs to {}".format(path))
         save_to_json(path, training_config)
 
-    if not args.no_save_results:
-        path = os.path.join(execution_dir, "results.json")
-        logger.info("Saving results to {}".format(path))
+    if not args.no_save_metrics:
+        path = os.path.join(execution_dir, "metrics.json")
+        logger.info("Saving metrics to {}".format(path))
         save_to_json(path, training_results)
+
+    if not args.no_save_platform_info:
+        path = os.path.join(execution_dir, "platform_info.json")
+        logger.info("Saving platform info to {}".format(path))
+        save_to_json(path, get_platform_info())
 
 
 # MARK: Helpers
@@ -125,3 +134,26 @@ def setup_basic_log_config():
             logging.StreamHandler()
         ]
     )
+
+
+def get_platform_info():
+    logger = logging.getLogger(__name__)
+
+    info = dict(platform=platform.platform())
+
+    try:
+        info["cpu"] = get_cpu_info()
+    except Exception:
+        logger.exception("Error retrieving CPU information")
+
+    try:
+        info["gpu"] = get_gpus_info()
+    except Exception:
+        logger.exception("Error retrieving GPU information")
+
+    try:
+        info["gymnos"] = dict(git_hash=get_git_revision_hash())
+    except Exception:
+        logger.exception("Error retrieving git revision hash")
+
+    return info
