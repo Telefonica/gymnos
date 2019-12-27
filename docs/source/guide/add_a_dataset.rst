@@ -93,7 +93,7 @@ Downloading and extracting source data
 
 Most datasets need to download data from the web. All downloads and extractions must go through the :class:`~gymnos.services.download_manager.DownloadManager`. 
 
-For example, one can download URLs with ``http`` service using their :class:`~gymnos.services.download_manager.DownloadManager.download` method and extract files with :class:`~gymnos.services.download_manager.DownloadManager.extract` method:
+For example, one can download URLs with :class:`~gymnos.services.http.HTTP` service using their :class:`~gymnos.services.http.HTTP.download` method and extract files with :class:`~gymnos.services.download_manager.DownloadManager.extract` method:
 
 .. code-block:: python
 
