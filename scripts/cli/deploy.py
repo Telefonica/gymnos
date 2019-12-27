@@ -1,0 +1,66 @@
+#
+#
+#   Deploy CLI app
+#
+#
+
+import os
+
+from ..utils import ask
+from ..utils.io_utils import read_json
+
+from gymnos import config
+from gymnos.services.sofia import SOFIA
+from pprint import pprint
+
+
+class Config(config.Config):
+    SOFIA_EMAIL = config.Value(required=True, help="SOFIA account email")
+    SOFIA_PASSWORD = config.Value(required=True, help="SOFIA account password")
+
+
+def add_arguments(parser):
+    parser.add_argument("saved_trainer", help="Saved trainer file path", type=str)
+    parser.add_argument("--metadata", help="JSON file containing metadata", type=str, required=False)
+
+
+def run_command(args):
+    import requests
+
+    if not os.path.isfile(args.saved_trainer):
+        raise FileNotFoundError(args.saved_trainer)
+
+    config = Config()
+    config.load()
+
+    session = requests.Session()
+    session.hooks = {
+        "response": lambda r, *args, **kwargs: r.raise_for_status()
+    }
+
+    res = session.post(SOFIA.SERVER_URL + "/api/login", data=dict(
+        email=config.SOFIA_EMAIL,
+        password=config.SOFIA_PASSWORD
+    ))
+
+    auth_headers = {
+        "Authorization": "Bearer " + res.json()["token"]
+    }
+
+    if args.metadata:
+        metadata = read_json(args.metadata)
+    else:
+        metadata = dict(
+            title=ask.text("Title", required=True),
+            description=ask.text("Description"),
+            license=ask.text("License"),
+            acknowledgements=ask.text("Acknowledgements"),
+            public=ask.confirm("Is it public?", default=True)
+        )
+
+    with open(args.saved_trainer, "rb") as fp:
+        res = session.post(SOFIA.SERVER_URL + "/api/models", data=metadata, files=dict(model=fp), headers=auth_headers)
+
+    print("Saved trainer uploaded successfully")
+
+    pprint(res.json())
