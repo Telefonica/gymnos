@@ -80,7 +80,7 @@ class BaseKerasMixin:
         -------
         dict
             Training metrics
-        """  # noqa: E510
+        """  # noqa: E501
 
         if callbacks is not None:
             callbacks = self.__instantiate_callbacks(callbacks)
