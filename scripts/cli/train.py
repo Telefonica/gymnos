@@ -89,8 +89,6 @@ def run_command(args):
                                                                   logging_config["handlers"]["file"]["filename"])
     logging.config.dictConfig(logging_config)
 
-    logger = logging.getLogger(__name__)
-
     logger.info("Execution directory will be located at {}".format(execution_dir))
     logger.info("Trackings directory will be located at {}".format(trackings_dir))
 
