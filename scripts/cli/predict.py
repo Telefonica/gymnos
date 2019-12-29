@@ -7,6 +7,7 @@
 import json
 import itertools
 import numpy as np
+import pandas as pd
 
 from ..utils.io_utils import read_json
 
@@ -23,14 +24,19 @@ def add_arguments(parser):
     parser_group.add_argument("--json", help="JSON file path with list of samples to predict", type=str)
     parser_group.add_argument("--image", help="Image file path to predict", nargs="*", type=str,
                               action="append")
+    parser_group.add_argument("--csv", help="CSV path without header to predict", type=str)
 
 
 def run_command(args):
-    if args.image is None:
+    if args.json is not None:
         samples = np.array(read_json(args.json))
-    else:
+    elif args.csv is not None:
+        samples = pd.read_csv(args.csv, header=None)
+    elif args.image is not None:
         # images can be a nested list so we flatten the list
         samples = np.array([np.array(imread_rgb(image)) for image in itertools.chain(*args.image)])
+    else:
+        raise ValueError("Unrecognized argument")
 
     trainer = Trainer.load(args.saved_trainer)
 

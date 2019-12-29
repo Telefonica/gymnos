@@ -37,7 +37,7 @@ def main():
     if args.command == "train":
         train.run_command(args)
     elif args.command == "predict":
-        train.run_command(args)
+        predict.run_command(args)
     elif args.command == "serve":
         serve.run_command(args)
     elif args.command == "deploy":
