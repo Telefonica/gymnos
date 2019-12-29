@@ -9,7 +9,6 @@ import numpy as np
 
 from gymnos.trainer import Trainer
 from gymnos.datasets.dataset import ClassLabel
-from gymnos.utils.lazy_imports import lazy_imports as lazy
 
 
 def add_arguments(parser):
@@ -21,7 +20,9 @@ def add_arguments(parser):
 
 
 def run_command(args):
-    class FlaskNumpyEncoder(lazy.flask.json.JSONEncoder):
+    import flask
+
+    class FlaskNumpyEncoder(flask.json.JSONEncoder):
         """
         Flask Json Encoder to handle Numpy arrays
         """
@@ -31,7 +32,7 @@ def run_command(args):
                 return obj.tolist()
             return json.JSONEncoder.default(self, obj)
 
-    app = lazy.flask.Flask(__name__)
+    app = flask.Flask(__name__)
     app.json_encoder = FlaskNumpyEncoder
 
     @app.route("/", methods=["GET"])
@@ -39,26 +40,26 @@ def run_command(args):
         # FIXME: the trainer should be loaded before every request but there are issues combining tf with flask requests
         #           because tf session is not on the same thread as the request
         trainer = Trainer.load(args.saved_trainer)
-        return lazy.flask.jsonify(trainer.to_dict())
+        return flask.jsonify(trainer.to_dict())
 
     @app.route("/", methods=["POST"])
     def predict():
-        if not lazy.flask.request.is_json:
-            return lazy.flask.jsonify(error="Request body must be JSON"), 400
+        if not flask.request.is_json:
+            return flask.jsonify(error="Request body must be JSON"), 400
 
         trainer = Trainer.load(args.saved_trainer)
 
         try:
-            response = dict(predictions=trainer.predict(lazy.flask.request.get_json()))
+            response = dict(predictions=trainer.predict(flask.request.get_json()))
         except Exception as e:
-            return lazy.flask.jsonify(error="Prediction failed: {}".format(e)), 400
+            return flask.jsonify(error="Prediction failed: {}".format(e)), 400
 
         try:
-            response["probabilities"] = trainer.predict_proba(lazy.flask.request.json)
+            response["probabilities"] = trainer.predict_proba(flask.request.json)
         except NotImplementedError:
             pass
         except Exception as e:
-            return lazy.flask.jsonify(error="Prediction for probabilities failed: {}".format(e)), 400
+            return flask.jsonify(error="Prediction for probabilities failed: {}".format(e)), 400
 
         labels = trainer.dataset.dataset.labels_info
         if isinstance(labels, ClassLabel):
@@ -67,6 +68,6 @@ def run_command(args):
                 total=labels.num_classes
             )
 
-        return lazy.flask.jsonify(response)
+        return flask.jsonify(response)
 
     app.run(host=args.host, port=args.port, debug=args.debug)
