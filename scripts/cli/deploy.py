@@ -21,7 +21,10 @@ class Config(config.Config):
 
 def add_arguments(parser):
     parser.add_argument("saved_trainer", help="Saved trainer file path", type=str)
-    parser.add_argument("--metadata", help="JSON file containing metadata", type=str, required=False)
+    parser.add_argument("--metadata", help=("JSON file containing metadata. The required keys are the following: title."
+                                            "The optional keys are the following: description, license, "
+                                            "acknowledgements, public"),
+                        type=str, required=False)
 
 
 def run_command(args):
