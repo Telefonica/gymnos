@@ -10,7 +10,7 @@ Usage
 
     data_augmentor = gymnos.data_augmentors.load("flip", probability=0.2, top_bottom_left_right="LEFT_RIGHT")
 
-    new_image = data_augmentor.transform(image)  # transform image
+    new_image = data_augmentor.transform(images)  # transform images
 
 If you want to use multiple data augmentors or transform according to a probability, take a look to Pipeline:
 
@@ -24,7 +24,7 @@ If you want to use multiple data augmentors or transform according to a probabil
         data_augmentor_2
     )
 
-    new_image = pipeline.transform(image)  # transform image with the data augmentors, according to probability
+    new_image = pipeline.transform(images)  # transform images with data augmentors, according to probability
 
 All Data Augmentors
 ********************

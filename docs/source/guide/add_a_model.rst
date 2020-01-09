@@ -26,13 +26,13 @@ If you want to :ref:`contribute to our repo <contributing>` and add a new model,
 
 This command will create ``gymnos/models/my_model.py``, and modify ``gymnos/__init__.py`` to register model so we can load it using ``gymnos.load``.
 
-The model registration process is done by associating the model name with their path:
+The model registration process is done by associating the model id with their path:
 
 .. code-block:: python
     :caption: gymnos/__init__.py
 
     models.register(
-        name="my_model",
+        type="my_model",
         entry_point="gymnos.models.my_model.MyModel"
     )
 
@@ -441,7 +441,7 @@ Once you have defined your ``setup.py``, create and register your Gymnos models 
 Here is a minimal example. Say we have our library named ``gymnos_my_models`` and we want to add the model ``my_model``. You have to:
 
 1. Create ``MyModel`` in ``gymnos_my_models/my_model.py`` inheriting from :class:`gymnos.models.model.Model` and implementing the abstract methods
-2. Register model in your module ``__init__.py`` referencing the name and the path:
+2. Register model in your module ``__init__.py`` referencing the id and the path:
 
 .. code-block:: python
     :caption: gymnos_my_models/__init__.py
@@ -449,7 +449,7 @@ Here is a minimal example. Say we have our library named ``gymnos_my_models`` an
     import gymnos
 
     gymnos.models.register(
-        name="my_model",
+        type="my_model",
         entry_point="gymnos_my_models.my_model.MyModel"
     )
 

@@ -11,7 +11,14 @@ from pyspark.ml.classification import LogisticRegression, LogisticRegressionMode
 
 class Titanic(SparkModel):
     """
+    Task: **Classification**
+
     Logistic regression to solve Titanic. This model can be useful as example to see how to implement a Gymnos SparkModel.
+
+    Can I use?
+        - Generators: ❌
+        - Probability predictions: ✔️
+        - Distributed datasets: ✔️
 
     Parameters
     ------------
@@ -23,6 +30,10 @@ class Titanic(SparkModel):
         Column name for predictions
     probabilities_col: str
         Column name for probabilities.
+
+    Warnings
+    ---------
+    This model requires a Spark environment.
     """  # noqa: E501
 
     def __init__(self, features_col, labels_col, predictions_col="predictions", probabilities_col="probabilities"):

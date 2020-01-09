@@ -194,8 +194,6 @@ class FourthPlatform(ExecutionEnvironment):
 
     Parameters
     ------------
-    trainer: gymnos.trainer.Trainer
-        Trainer instance
     config_files: list of str, optional
         List of JSON paths to look for configuration values.
     """
@@ -230,6 +228,11 @@ class FourthPlatform(ExecutionEnvironment):
     def train(self, trainer):
         """
         Train experiment
+
+        Parameters
+        -----------
+        trainer: gymnos.trainer.Trainer
+            Trainer instance
 
         Returns
         ---------

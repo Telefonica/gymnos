@@ -29,13 +29,13 @@ If you want to :ref:`contribute to our repo <contributing>` and add a new tracke
 
 This command will create ``gymnos/trackers/my_tracker.py``, and modify ``gymnos/__init__.py`` to register tracker so we can load it using ``gymnos.load``.
 
-The tracker registration process is done by associating the tracker name with their path:
+The tracker registration process is done by associating the tracker id with their path:
 
 .. code-block:: python
     :caption: gymnos/__init__.py
 
     trackers.register(
-        name="my_tracker",
+        type="my_tracker",
         entry_point="gymnos.trackers.my_tracker.MyTracker"
     )
 
@@ -163,7 +163,7 @@ Once you have defined your ``setup.py``, create and register your Gymnos tracker
 Here is a minimal example. Say we have our library named ``gymnos_my_trackers`` and we want to add the tracker ``my_tracker``. You have to:
 
 1. Create ``MyTracker`` in ``gymnos_my_trackers/my_tracker.py`` inheriting from :class:`gymnos.trackers.tracker.Tracker` and implementing the abstract methods
-2. Register tracker in your module ``__init__.py`` referencing the name and the path:
+2. Register tracker in your module ``__init__.py`` referencing the type and the path:
 
 .. code-block:: python
     :caption: gymnos_my_trackers/__init__.py
@@ -171,7 +171,7 @@ Here is a minimal example. Say we have our library named ``gymnos_my_trackers`` 
     import gymnos
 
     gymnos.trackers.register(
-        name="my_tracker",
+        type="my_tracker",
         entry_point="gymnos_my_trackers.my_tracker.MyTracker"
     )
 

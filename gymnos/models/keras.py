@@ -17,6 +17,15 @@ class BaseKeras(Model):
     """
     Model to build Keras sequentials from a dictionnary that defines the network architecture.
 
+    Can I use?
+    - Generators: ✔️
+    - Probability predictions: ✔️
+    - Distributed datasets: ❌
+
+    Warnings
+    ---------
+    This model may require one-hot encoded labels.
+
     Parameters
     ----------
     sequential: list of dict

@@ -25,6 +25,8 @@ logger = logging.getLogger(__name__)
 
 class DogsVsCats(Dataset):
     """
+    Services: :class:`~gymnos.services.kaggle.Kaggle`
+
     Dataset to classify whether images contain either a dog or a cat.
 
     The class labels are:

@@ -87,6 +87,15 @@ class DownloadManager:
     def extract(self, path_or_paths, ignore_not_compressed=True):
         """
         Extract file/s.
+        The currently supported file extensions are the following:
+
+        - ``.gz``
+        - ``.zip``
+        - ``.tar``
+        - ``.tar.bz2``
+        - ``.tbz``
+        - ``.tb2``
+        - ``.tar.gz``
 
         Parameters
         ----------

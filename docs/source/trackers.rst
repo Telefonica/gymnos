@@ -36,7 +36,7 @@ Usage
 
     tracker.end()  # end tracker run
 
-If you want to use multiple trackers, take a look at :class:`~gymnos.trackers.tracker.TrackerList`:
+If you want to use multiple trackers, take a look to :class:`~gymnos.trackers.tracker.TrackerList`:
 
 .. code-block:: python
 

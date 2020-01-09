@@ -12,6 +12,8 @@ from .model import Model
 
 class UnusualDataUsageWT(Model):
     """
+    Task: **Regression**
+
     This model labels consumptions associated as anomalous using an algorithm. It was developed to solve Unusual
     Data Usage dataset.
 
@@ -30,6 +32,11 @@ class UnusualDataUsageWT(Model):
        3.1 The prediction at the end of cycle is upper than sum of mean of step 2 and standard deviation of step 3.
 
        3.2 The prediction value is upper than the most recent consumption.
+
+    Can I use?
+        - Generators: ❌
+        - Probability predictions: ❌
+        - Distributed datasets: ❌
 
     Parameters
     ----------

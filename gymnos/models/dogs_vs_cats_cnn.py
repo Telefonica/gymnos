@@ -12,8 +12,15 @@ from .mixins import KerasClassifierMixin
 
 class DogsVsCatsCNN(KerasClassifierMixin, Model):
     """
+    Task: **Classification**
+
     Convolutional neuronal network developed to solve Dogs vs Cats image classification
-    task (:class:`gymnos.datasets.dogs_vs_cats.DogsVsCats`).
+    task (:class:`gymnos.datasets.dogs_vs_cats.DogsVsCats`)
+
+    Can I use?
+        - Generators: ✔️
+        - Probability predictions: ✔️
+        - Distributed datasets: ❌
 
     Parameters
     ----------
@@ -23,8 +30,8 @@ class DogsVsCatsCNN(KerasClassifierMixin, Model):
         Optional number of classes to classify images into. This is useful if
         you want to train this model with another dataset.
 
-    Note
-    ----
+    Warnings
+    ----------------
     This model requires one-hot encoded labels.
 
     Examples

@@ -24,13 +24,13 @@ If you want to :ref:`contribute to our repo <contributing>` and add a new servic
 
 This command will create ``gymnos/services/my_service.py``, and modify ``gymnos/__init__.py`` to register service so we can load it using ``gymnos.load``.
 
-The service registration process is done by associating the service name with their path:
+The service registration process is done by associating the service id with their path:
 
 .. code-block:: python
     :caption: gymnos/__init__.py
 
     services.register(
-        name="my_service",
+        type="my_service",
         entry_point="gymnos.services.my_service.MyService"
     )
 
@@ -168,7 +168,7 @@ Once you have defined your ``setup.py``, create and register your Gymnos service
 Here is a minimal example. Say we have our library named ``gymnos_my_services`` and we want to add the service ``my_service``. You have to:
 
 1. Create ``MyService`` in ``gymnos_my_services/my_service.py`` inheriting from :class:`gymnos.services.service.Service` and implementing the abstract methods
-2. Register service in your module ``__init__.py`` referencing the name and the path:
+2. Register service in your module ``__init__.py`` referencing the type and the path:
 
 .. code-block:: python
     :caption: gymnos_my_services/__init__.py
@@ -176,7 +176,7 @@ Here is a minimal example. Say we have our library named ``gymnos_my_services`` 
     import gymnos
 
     gymnos.services.register(
-        name="my_service",
+        type="my_service",
         entry_point="gymnos_my_services.my_service.MyService"
     )
 
