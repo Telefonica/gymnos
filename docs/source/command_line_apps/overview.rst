@@ -29,4 +29,5 @@ All Command-Line Apps
     gymnos train <train>
     gymnos predict <predict>
     gymnos serve <serve>
+    gymnos deploy <deploy>
 

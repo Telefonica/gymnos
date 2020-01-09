@@ -8,7 +8,6 @@ import os
 import dill
 import logging
 import warnings
-import platform
 import tempfile
 
 from abc import ABCMeta, abstractmethod
@@ -23,7 +22,6 @@ from .utils.np_utils import label_binarize
 from .utils.archiver import zipdir, extract_zip
 from .services.download_manager import DownloadManager
 from .callbacks import CallbackList, TimeHistory, Logger
-from .utils.hardware_info import get_cpu_info, get_gpus_info
 from .utils.data import (split_spark_dataframe, split_iterator, split_sequence,
                          IterableDataLoader, DataLoader, is_sequence)
 
@@ -460,20 +458,6 @@ class Trainer:
 
         callbacks.on_train_begin()
 
-        # MARK: Retrieve hardware info
-
-        hardware_info = dict(platform=platform.platform())
-
-        try:
-            hardware_info["cpu"] = get_cpu_info()
-        except Exception:
-            logger.exception("Error retrieving CPU information")
-
-        try:
-            hardware_info["gpu"] = get_gpus_info()
-        except Exception:
-            logger.exception("Error retrieving GPU information")
-
         # MARK: Start tracking
 
         os.makedirs(trackings_dir, exist_ok=True)
@@ -580,7 +564,6 @@ class Trainer:
 
         return dict(
             elapsed=time_history.times,
-            hardware_info=hardware_info,
             metrics=tracking_history.metrics
         )
 
