@@ -65,11 +65,11 @@ class DownloadManager:
 
         basename, extension = os.path.splitext(os.path.basename(path))
 
-        if extension in zip_extensions:
+        if path.endswith(zip_extensions):
             extract_func = extract_zip
-        elif extension in tar_extensions:
+        elif path.endswith(tar_extensions):
             extract_func = extract_tar
-        elif extension in gz_extensions:
+        elif path.endswith(gz_extensions):
             extract_func = extract_gz
         else:
             if ignore_not_compressed:
@@ -96,6 +96,7 @@ class DownloadManager:
         - ``.tbz``
         - ``.tb2``
         - ``.tar.gz``
+        - ``.tgz``
 
         Parameters
         ----------
