@@ -111,6 +111,10 @@ class LazyImporter:
         return __import__("{}.Image".format(PIL.__name__))  # import common module
 
     @classproperty
+    def requests(cls):
+        return _try_import("requests")
+
+    @classproperty
     def dummy(cls):
         """
         Only for testing purposes

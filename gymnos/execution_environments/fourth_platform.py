@@ -8,12 +8,12 @@ import json
 import time
 import base64
 import logging
-import requests
 
 from .. import config
 
 from ..utils.cli_colors import color
 from ..utils.json_utils import NumpyEncoder, default
+from ..utils.lazy_imports import lazy_imports as lazy
 from .execution_environment import ExecutionEnvironment
 
 from dateutil.parser import parse
@@ -85,7 +85,7 @@ class FourthPlatformAPI:
             "Authorization": "Bearer " + self._current_token
         }
 
-        res = requests.request(method, baikal_api_host + path, headers=auth_headers, **kwargs)
+        res = lazy.requests.request(method, baikal_api_host + path, headers=auth_headers, **kwargs)
 
         res.raise_for_status()
 
@@ -103,7 +103,7 @@ class FourthPlatformAPI:
 
         url = baikal_auth_host + self.LOGIN_PATH
 
-        res = requests.post(url, auth=(self.client_id, self.password), data=data)
+        res = lazy.requests.post(url, auth=(self.client_id, self.password), data=data)
         res.raise_for_status()
 
         return res.json()

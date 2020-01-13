@@ -7,19 +7,65 @@
 import os
 import uuid
 import shutil
+import socket
 import logging
+import pathlib
 
+from urllib.error import URLError
 from urllib.parse import urlparse
 from collections.abc import Iterable
+from contextlib import contextmanager
+from smb.SMBConnection import SMBConnection
 
 from .. import config
 
 from .service import Service
 from ..utils.hashing import sha1_text
 from ..utils.text_utils import filenamify_url
-from ..utils.downloader import smb_connection, parse_smb_uri
+
 
 logger = logging.getLogger(__name__)
+
+
+def parse_smb_uri(smb_uri):
+    uri_parsed = urlparse(smb_uri)
+
+    smb_server_port = uri_parsed.port or 445
+    smb_server_ip = uri_parsed.hostname
+
+    smb_file_path = pathlib.Path(uri_parsed.path)
+
+    shared_drive, *smb_file_path = smb_file_path.parts[1:]
+    smb_file_path = os.path.join(*smb_file_path)
+
+    return dict(
+        ip=smb_server_ip,
+        port=smb_server_port,
+        drive=shared_drive,
+        path=smb_file_path
+    )
+
+
+@contextmanager
+def smb_connection(ip, port=445, username=None, password=None):
+    server_name = socket.gethostbyaddr(ip)
+    if server_name:
+        server_name = server_name[0]
+    else:
+        raise URLError('Hostname with ip {} does not reply back with its machine name'.format(ip))
+
+    client_name = socket.gethostname()
+    if client_name:
+        client_name = client_name.split('.')[0]
+    else:
+        client_name = 'SMB%d' % os.getpid()
+
+    with SMBConnection(username, password, client_name, server_name, use_ntlm_v2=True, is_direct_tcp=True) as conn:
+        success = conn.connect(ip, port)
+        if not success:
+            raise ValueError("Authentication to {} failed. Check your credentials".format(ip))
+
+        yield conn
 
 
 class SMB(Service):

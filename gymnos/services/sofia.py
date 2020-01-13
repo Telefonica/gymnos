@@ -9,7 +9,6 @@ import uuid
 import time
 import shutil
 import logging
-import requests
 
 from urllib.parse import urlparse
 from collections.abc import Iterable
@@ -19,7 +18,8 @@ from .. import config
 
 from .service import Service
 from ..utils.text_utils import filenamify_url
-from ..utils.downloader import download_file_from_url, urljoin
+from .http import download_file_from_url, urljoin
+from ..utils.lazy_imports import lazy_imports as lazy
 
 
 logger = logging.getLogger(__name__)
@@ -54,8 +54,8 @@ class SOFIA(Service):
     def _login(self):
         login_url = self.SERVER_URL + "/api/login"
 
-        res = requests.post(login_url, data=dict(email=self.config.SOFIA_EMAIL,
-                                                 password=self.config.SOFIA_PASSWORD))
+        res = lazy.requests.post(login_url, data=dict(email=self.config.SOFIA_EMAIL,
+                                                      password=self.config.SOFIA_PASSWORD))
 
         res.raise_for_status()
 
@@ -125,7 +125,7 @@ class SOFIA(Service):
 
         self._login_if_needed()
 
-        res = requests.get(sofia_info_url, headers=self._auth_headers)
+        res = lazy.requests.get(sofia_info_url, headers=self._auth_headers)
         res.raise_for_status()
 
         slug_url = filenamify_url(url)

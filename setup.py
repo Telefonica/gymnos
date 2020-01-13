@@ -19,7 +19,6 @@ VAR_FILES = [
 
 REQUIRED_DEPENDENCIES = [
     "kaggle",
-    "requests",
     "pysmb",
     "numpy",
     "pandas",
@@ -76,7 +75,6 @@ EXTRAS_REQUIRE["preprocessors"] = sorted(set(sum(PREPROCESSORS_EXTRAS_DEPENDENCI
 EXTRAS_REQUIRE["trackers"] = sorted(set(sum(TRACKERS_EXTRAS_DEPENDENCIES.values(), [])))
 
 EXTRAS_REQUIRE["serve"] = ["flask"]
-EXTRAS_REQUIRE["deploy"] = ["requests"]
 
 EXTRAS_REQUIRE["complete"] = sorted(set(sum(EXTRAS_REQUIRE.values(), [])))
 
