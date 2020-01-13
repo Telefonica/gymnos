@@ -119,6 +119,10 @@ class LazyImporter:
         return _try_import("kaggle")
 
     @classproperty
+    def smb(cls):
+        return _try_import("smb", module_to_install="pysmb")
+
+    @classproperty
     def dummy(cls):
         """
         Only for testing purposes

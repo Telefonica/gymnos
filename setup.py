@@ -18,7 +18,6 @@ VAR_FILES = [
 ]
 
 REQUIRED_DEPENDENCIES = [
-    "pysmb",
     "numpy",
     "pandas",
     "scikit-learn",

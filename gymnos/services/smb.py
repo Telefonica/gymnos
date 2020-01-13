@@ -15,13 +15,13 @@ from urllib.error import URLError
 from urllib.parse import urlparse
 from collections.abc import Iterable
 from contextlib import contextmanager
-from smb.SMBConnection import SMBConnection
 
 from .. import config
 
 from .service import Service
 from ..utils.hashing import sha1_text
 from ..utils.text_utils import filenamify_url
+from ..utils.lazy_imports import lazy_imports as lazy
 
 
 logger = logging.getLogger(__name__)
@@ -60,7 +60,10 @@ def smb_connection(ip, port=445, username=None, password=None):
     else:
         client_name = 'SMB%d' % os.getpid()
 
-    with SMBConnection(username, password, client_name, server_name, use_ntlm_v2=True, is_direct_tcp=True) as conn:
+    smb = __import__("{}.SMBConnection".format(lazy.smb.__name__))
+
+    with smb.SMBConnection.SMBConnection(username, password, client_name, server_name, use_ntlm_v2=True,
+                                         is_direct_tcp=True) as conn:
         success = conn.connect(ip, port)
         if not success:
             raise ValueError("Authentication to {} failed. Check your credentials".format(ip))
