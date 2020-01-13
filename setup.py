@@ -18,7 +18,6 @@ VAR_FILES = [
 ]
 
 REQUIRED_DEPENDENCIES = [
-    "kaggle",
     "pysmb",
     "numpy",
     "pandas",

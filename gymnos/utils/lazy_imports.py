@@ -115,6 +115,10 @@ class LazyImporter:
         return _try_import("requests")
 
     @classproperty
+    def kaggle(cls):
+        return _try_import("kaggle")
+
+    @classproperty
     def dummy(cls):
         """
         Only for testing purposes
