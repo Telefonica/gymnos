@@ -7,10 +7,9 @@
 import math
 import random
 
-from PIL import Image
-
 from ..utils.iterator_utils import apply
-from ..utils.image_utils import arr_to_img, img_to_arr
+from ..utils.lazy_imports import lazy_imports as lazy
+from ..preprocessors.utils.image_ops import arr_to_img, img_to_arr
 from .data_augmentor import DataAugmentor
 
 
@@ -146,7 +145,7 @@ class Distort(DataAugmentor):
             for i in range(len(dimensions)):
                 generated_mesh.append([dimensions[i], polygons[i]])
 
-            image = image.transform(image.size, Image.MESH, generated_mesh, resample=Image.BICUBIC)
+            image = image.transform(image.size, lazy.PIL.Image.MESH, generated_mesh, resample=lazy.PIL.Image.BICUBIC)
             return img_to_arr(image)
 
         return apply(images, operation)

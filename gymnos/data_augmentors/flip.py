@@ -6,10 +6,9 @@
 
 import random
 
-from PIL import Image
-
 from ..utils.iterator_utils import apply
-from ..utils.image_utils import arr_to_img, img_to_arr
+from ..utils.lazy_imports import lazy_imports as lazy
+from ..preprocessors.utils.image_ops import arr_to_img, img_to_arr
 from .data_augmentor import DataAugmentor
 
 
@@ -54,14 +53,14 @@ class Flip(DataAugmentor):
             random_axis = random.randint(0, 1)
 
             if self.top_bottom_left_right == "LEFT_RIGHT":
-                image = image.transpose(Image.FLIP_LEFT_RIGHT)
+                image = image.transpose(lazy.PIL.Image.FLIP_LEFT_RIGHT)
             elif self.top_bottom_left_right == "TOP_BOTTOM":
-                image = image.transpose(Image.FLIP_TOP_BOTTOM)
+                image = image.transpose(lazy.PIL.Image.FLIP_TOP_BOTTOM)
             elif self.top_bottom_left_right == "RANDOM":
                 if random_axis == 0:
-                    image = image.transpose(Image.FLIP_LEFT_RIGHT)
+                    image = image.transpose(lazy.PIL.Image.FLIP_LEFT_RIGHT)
                 elif random_axis == 1:
-                    image = image.transpose(Image.FLIP_TOP_BOTTOM)
+                    image = image.transpose(lazy.PIL.Image.FLIP_TOP_BOTTOM)
 
             return img_to_arr(image)
 

@@ -1,12 +1,12 @@
 #
 #
-#   Image Utils
+#   Image Operations
 #
 #
 
 import numpy as np
 
-from PIL import Image
+from ...utils.lazy_imports import lazy_imports
 
 
 def imread_rgb(image_path):
@@ -23,15 +23,41 @@ def imread_rgb(image_path):
     image: np.array
         Array of pixels.
     """
-    img = Image.open(image_path)
+    img = lazy_imports.PIL.Image.open(image_path)
     return img_to_arr(img.convert("RGB"))
 
 
 def arr_to_img(arr):
-    return Image.fromarray(arr.squeeze().astype(np.uint8))
+    """
+    Convert NumPy array to PIL.Image
+
+    Parameters
+    ----------
+    arr: np.ndarray
+        Array of pixels
+
+    Returns
+    ---------
+    Pil.Image
+        Pillow image
+    """
+    return lazy_imports.PIL.Image.fromarray(arr.squeeze().astype(np.uint8))
 
 
 def img_to_arr(img):
+    """
+    Convert Pil.Image to NumPy array.
+
+    Parameters
+    -----------
+    img: PIL.Image
+        Image to convert
+
+    Returns
+    ---------
+    np.ndarray
+        Array of pixels
+    """
     arr = np.array(img, dtype=np.uint8)
 
     if arr.ndim < 3:
@@ -77,8 +103,8 @@ def imresize(rgb_arr, size):
     """
     img = arr_to_img(rgb_arr)
     if isinstance(size, (list, tuple)):
-        img = img.resize(size, Image.ANTIALIAS)
+        img = img.resize(size, lazy_imports.PIL.Image.ANTIALIAS)
     else:
-        img = img.resize((size, size), Image.ANTIALIAS)
+        img = img.resize((size, size), lazy_imports.PIL.Image.ANTIALIAS)
 
     return img_to_arr(img)

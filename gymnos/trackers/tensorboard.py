@@ -36,7 +36,7 @@ class TensorBoard(Tracker):
         self.writer.add_summary(summary, step)
 
     def log_image(self, name, file_path):
-        image = lazy_imports.Image.open(file_path)
+        image = lazy_imports.PIL.Image.open(file_path)
 
         with BytesIO() as buffer:
             image.save(buffer, format="JPEG")
@@ -51,7 +51,7 @@ class TensorBoard(Tracker):
         buffer = BytesIO()
         figure.savefig(buffer, format='png')
         buffer.seek(0)
-        img = lazy_imports.Image.open(buffer.getbuffer())
+        img = lazy_imports.PIL.Image.open(buffer.getbuffer())
 
         img_summary = tf.Summary.Image(encoded_image_string=buffer.getvalue(),
                                        height=img.shape[0],

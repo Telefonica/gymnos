@@ -7,7 +7,7 @@
 import numpy as np
 
 from PIL import Image
-from gymnos.utils.image_utils import arr_to_img, img_to_arr, imgray, imresize
+from gymnos.preprocessors.utils.image_ops import arr_to_img, img_to_arr, imgray, imresize
 
 
 def test_arr_to_img():

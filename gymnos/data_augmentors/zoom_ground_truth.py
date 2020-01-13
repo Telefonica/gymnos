@@ -7,11 +7,10 @@
 import math
 import random
 
-from PIL import Image
-
 from ..utils.iterator_utils import apply
 from .data_augmentor import DataAugmentor
-from ..utils.image_utils import arr_to_img, img_to_arr
+from ..utils.lazy_imports import lazy_imports as lazy
+from ..preprocessors.utils.image_ops import arr_to_img, img_to_arr
 
 
 class ZoomGroundTruth(DataAugmentor):
@@ -57,7 +56,7 @@ class ZoomGroundTruth(DataAugmentor):
 
             # TODO: Join these two functions together so that we don't have this image_zoom variable lying around.
             image_zoomed = image.resize((int(round(image.size[0] * factor)), int(round(image.size[1] * factor))),
-                                        resample=Image.BICUBIC)
+                                        resample=lazy.PIL.Image.BICUBIC)
             w_zoomed, h_zoomed = image_zoomed.size
 
             image = image_zoomed.crop((math.floor((float(w_zoomed) / 2) - (float(w) / 2)),

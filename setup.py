@@ -25,7 +25,6 @@ REQUIRED_DEPENDENCIES = [
     "pandas",
     "scikit-learn",
     "scipy",
-    "pillow",
     "dill",
     "tqdm",
     "gputil",

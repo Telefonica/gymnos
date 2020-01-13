@@ -6,10 +6,9 @@
 
 import warnings
 
-from PIL import ImageOps
-
 from ..utils.iterator_utils import apply
-from ..utils.image_utils import arr_to_img, img_to_arr
+from ..utils.lazy_imports import lazy_imports as lazy
+from ..preprocessors.utils.image_ops import arr_to_img, img_to_arr
 from .data_augmentor import DataAugmentor
 
 
@@ -44,11 +43,14 @@ class HistogramEqualisation(DataAugmentor):
         # will be computed on the flattened image, which fires
         # a warning.
         # We may want to apply this instead to each colour channel.
+
+        PIL = __import__("{}.ImageOps".format(lazy.PIL.__name__))
+
         def operation(image):
             image = arr_to_img(image)
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
-                image = ImageOps.equalize(image)
+                image = PIL.ImageOps.equalize(image)
 
             return img_to_arr(image)
 

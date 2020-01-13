@@ -10,9 +10,9 @@ import numpy as np
 
 from glob import glob
 
-from .dataset import Dataset, Array, ClassLabel
-from ..utils.image_utils import imread_rgb
 from ..utils.io_utils import read_file_text
+from .dataset import Dataset, Array, ClassLabel
+from ..preprocessors.utils.image_ops import imread_rgb
 
 logger = logging.getLogger(__name__)
 

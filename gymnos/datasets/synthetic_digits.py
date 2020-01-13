@@ -9,8 +9,8 @@ import numpy as np
 
 from glob import glob
 
-from ..utils.image_utils import imread_rgb, imresize
 from .dataset import Dataset, ClassLabel, Array
+from ..preprocessors.utils.image_ops import imread_rgb, imresize
 
 KAGGLE_DATASET_NAME = "prasunroy/synthetic-digits"
 

@@ -5,7 +5,7 @@
 #
 
 from ..preprocessor import Preprocessor
-from ...utils.image_utils import imresize
+from ..utils.image_ops import imresize
 from ...utils.iterator_utils import apply
 
 

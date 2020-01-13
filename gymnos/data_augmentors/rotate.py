@@ -8,7 +8,7 @@ import random
 
 from ..utils.iterator_utils import apply
 from .data_augmentor import DataAugmentor
-from ..utils.image_utils import arr_to_img, img_to_arr
+from ..preprocessors.utils.image_ops import arr_to_img, img_to_arr
 
 
 class Rotate(DataAugmentor):

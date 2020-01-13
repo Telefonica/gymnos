@@ -8,11 +8,10 @@ import math
 import random
 import numpy as np
 
-from PIL import Image
-
 from ..utils.iterator_utils import apply
 from .data_augmentor import DataAugmentor
-from ..utils.image_utils import arr_to_img, img_to_arr
+from ..utils.lazy_imports import lazy_imports as lazy
+from ..preprocessors.utils.image_ops import arr_to_img, img_to_arr
 
 
 class Skew(DataAugmentor):
@@ -202,9 +201,9 @@ class Skew(DataAugmentor):
             perspective_skew_coefficients_matrix = np.array(perspective_skew_coefficients_matrix).reshape(8)
 
             image = image.transform(image.size,
-                                    Image.PERSPECTIVE,
+                                    lazy.PIL.Image.PERSPECTIVE,
                                     perspective_skew_coefficients_matrix,
-                                    resample=Image.BICUBIC)
+                                    resample=lazy.PIL.Image.BICUBIC)
 
             return img_to_arr(image)
 
