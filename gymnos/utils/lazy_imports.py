@@ -6,9 +6,11 @@
 
 import os
 import sys
-import subprocess
+import GPUtil
 import logging
 import importlib
+import subprocess
+
 
 from .py_utils import classproperty
 
@@ -125,6 +127,14 @@ class LazyImporter:
     @classproperty
     def scipy(cls):
         return _try_import("scipy", module_to_install="scipy")
+
+    @classproperty
+    def tensorflow(cls):
+        has_gpu = bool(GPUtil.getAvailable())
+        if has_gpu:
+            return _try_import("tensorflow", module_to_install="tensorflow-gpu>=1.9.0,<2.0")
+        else:
+            return _try_import("tensorflow", module_to_install="tensorflow>=1.9.0,<2.0")
 
     @classproperty
     def dummy(cls):

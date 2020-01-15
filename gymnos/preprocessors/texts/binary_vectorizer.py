@@ -8,8 +8,7 @@ import os
 import dill
 
 from ..preprocessor import Preprocessor
-
-from tensorflow.keras.preprocessing.text import Tokenizer
+from ...utils.lazy_imports import lazy_imports as lazy
 
 
 class BinaryVectorizer(Preprocessor):
@@ -32,7 +31,8 @@ class BinaryVectorizer(Preprocessor):
     """
 
     def __init__(self, num_words=None, filters='!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~\t\n', lower=True, split=' '):
-        self.tokenizer = Tokenizer(num_words=num_words, filters=filters, lower=lower, split=split)
+        self.tokenizer = lazy.tensorflow.keras.preprocessing.text.Tokenizer(num_words=num_words, filters=filters,
+                                                                            lower=lower, split=split)
 
     def fit(self, X, y=None):
         self.tokenizer.fit_on_texts(X)

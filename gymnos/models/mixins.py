@@ -9,13 +9,12 @@ import joblib
 import numpy as np
 import sklearn.base
 import sklearn.model_selection
-import tensorflow as tf
 
 from collections.abc import Iterable
-from tensorflow.keras.models import load_model
 
 from ..utils.data import forever_generator
 from .utils.keras_modules import import_keras_module
+from ..utils.lazy_imports import lazy_imports as lazy
 
 
 KERAS_MODEL_SAVE_FILENAME = "model.h5"
@@ -108,7 +107,7 @@ class BaseKerasMixin:
         if callbacks is not None:
             callbacks = self.__instantiate_callbacks(callbacks)
 
-        class IterableKerasSequence(tf.keras.utils.Sequence):
+        class IterableKerasSequence(lazy.tensorflow.keras.utils.Sequence):
 
             def __init__(self, sequence):
                 self.sequence = sequence
@@ -169,7 +168,7 @@ class BaseKerasMixin:
         save_dir: str
             Path (Directory) where the model is saved.
         """
-        self.model = load_model(os.path.join(save_dir, KERAS_MODEL_SAVE_FILENAME))
+        self.model = lazy.tensorflow.keras.models.load_model(os.path.join(save_dir, KERAS_MODEL_SAVE_FILENAME))
 
 
 class KerasClassifierMixin(BaseKerasMixin):
@@ -413,7 +412,7 @@ class TensorFlowSaverMixin:
         save_path: str
             Path (Directory) where session is saved.
         """
-        saver = tf.train.Saver()
+        saver = lazy.tensorflow.train.Saver()
         saver.restore(self.sess, os.path.join(save_path, TENSORFLOW_SESSION_FILENAME))
 
     def save(self, save_path):
@@ -425,5 +424,5 @@ class TensorFlowSaverMixin:
         save_path: str
             Path (Directory) to save session.
         """
-        saver = tf.train.Saver()
+        saver = lazy.tensorflow.train.Saver()
         saver.save(self.sess, os.path.join(save_path, TENSORFLOW_SESSION_FILENAME))
