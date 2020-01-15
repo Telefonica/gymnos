@@ -7,6 +7,8 @@
 .coverage
 .ipynb_checkpoints/
 
+dist/
+build/
 htmlcov/
 docs/build
 trainings/
