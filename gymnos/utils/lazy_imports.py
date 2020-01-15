@@ -123,6 +123,10 @@ class LazyImporter:
         return _try_import("smb", module_to_install="pysmb")
 
     @classproperty
+    def scipy(cls):
+        return _try_import("scipy", module_to_install="scipy")
+
+    @classproperty
     def dummy(cls):
         """
         Only for testing purposes

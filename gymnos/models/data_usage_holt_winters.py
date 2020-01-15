@@ -6,9 +6,8 @@
 
 import numpy as np
 
-from scipy.optimize import fmin_l_bfgs_b
-
 from .model import Model
+from ..utils.lazy_imports import lazy_imports as lazy
 from .utils.temporal_series_utils import estimated_window, initial_trend, initial_seasonal_components, rmse_holt_winters
 from .utils.temporal_series_utils import mad_mean_error, nrmsd_error_norm, residual_analysis, rmse_train
 
@@ -70,11 +69,13 @@ class DataUsageHoltWinters(Model):
                 initial_values = np.array([0.3, 0.1, 0.1])
                 boundaries = [(0.0, 1.0), (0.0, 1.0), (0.0, 1.0)]
 
-                parameters = fmin_l_bfgs_b(rmse_holt_winters,
-                                           x0=initial_values,
-                                           args=(X[:], 'additive', self.slen),
-                                           bounds=boundaries,
-                                           approx_grad=True)
+                scipy = __import__("{}.optimize".format(lazy.scipy.__name__))
+
+                parameters = scipy.optimize.fmin_l_bfgs_b(rmse_holt_winters,
+                                                          x0=initial_values,
+                                                          args=(X[:], 'additive', self.slen),
+                                                          bounds=boundaries,
+                                                          approx_grad=True)
 
                 self.alpha, self.beta, self.gamma = parameters[0]
                 self.slen = slen
