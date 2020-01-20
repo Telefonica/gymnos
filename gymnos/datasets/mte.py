@@ -210,7 +210,7 @@ class MTE(Dataset):
 
     @property
     def features_info(self):
-        return Array(shape=[17], dtype=str)
+        return Array(shape=[], dtype=str)
 
     def download_and_prepare(self, dl_manager):
         epg_path = dl_manager["http"].download(EPG_URL.format(now=datetime.now().strftime("%Y-%m-%dT%H:%M:%S")))
