@@ -5,10 +5,8 @@
 #
 
 import os
-import joblib
+import dill
 import numpy as np
-import sklearn.base
-import sklearn.model_selection
 
 from collections.abc import Iterable
 
@@ -251,6 +249,8 @@ class SklearnMixin:
 
     @property
     def metric_name(self):
+        sklearn = __import__("{}.base".format(lazy.sklearn.__name__))
+
         if isinstance(self.model, sklearn.base.ClassifierMixin):
             return "accuracy"
         elif isinstance(self.model, sklearn.base.RegressorMixin):
@@ -288,6 +288,8 @@ class SklearnMixin:
             metrics: dict
                 Training metrics.
         """
+        sklearn = __import__("{}.model_selection".format(lazy.sklearn.__name__))
+
         metrics = {}
         if cross_validation is not None:
             print("Computing cross validation score")
@@ -378,7 +380,8 @@ class SklearnMixin:
         save_dir: str
             Path (Directory) to save model.
         """
-        joblib.dump(self.model, os.path.join(save_dir, SKLEARN_MODEL_SAVE_FILENAME))
+        with open(os.path.join(save_dir, SKLEARN_MODEL_SAVE_FILENAME), "wb") as fp:
+            dill.dump(self.model, fp)
 
     def restore(self, save_dir):
         """
@@ -389,7 +392,8 @@ class SklearnMixin:
         save_dir: str
             Path (Directory) to restore model.
         """
-        self.model = joblib.load(os.path.join(save_dir, SKLEARN_MODEL_SAVE_FILENAME))
+        with open(os.path.join(save_dir, SKLEARN_MODEL_SAVE_FILENAME), "wb") as fp:
+            self.model = dill.load(fp)
 
 
 class TensorFlowSaverMixin:

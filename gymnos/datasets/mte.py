@@ -10,9 +10,9 @@ import pandas as pd
 
 from tqdm import tqdm
 from datetime import datetime
-from sklearn.preprocessing import MultiLabelBinarizer
 
 from .dataset import Dataset, ClassLabel, Array
+from ..utils.lazy_imports import lazy_imports as lazy
 
 logger = logging.getLogger(__name__)
 
@@ -258,7 +258,10 @@ class MTE(Dataset):
         df.dropna(subset=["subscriptions"], inplace=True)
 
         self.features_ = df.title + " " + df.description
-        mlb_binarizer = MultiLabelBinarizer(classes=range(len(CLASS_NAMES)))
+
+        sklearn = __import__("{}.preprocessing".format(lazy.sklearn.__name__))
+
+        mlb_binarizer = sklearn.preprocessing.MultiLabelBinarizer(classes=range(len(CLASS_NAMES)))
         self.labels_ = mlb_binarizer.fit_transform(df.subscriptions)
 
     def __parse_sheet(self, sheet):

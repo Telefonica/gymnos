@@ -7,11 +7,9 @@
 import os
 import dill
 
-from sklearn.feature_extraction.text import TfidfVectorizer
-
 from ..utils.spacy import get_spacy_nlp
-from ...utils.lazy_imports import lazy_imports
 from ..preprocessor import Preprocessor
+from ...utils.lazy_imports import lazy_imports as lazy
 
 
 class Tfidf(Preprocessor):
@@ -34,7 +32,9 @@ class Tfidf(Preprocessor):
         else:
             stop_words = self.stop_words_for_language(language)
 
-        self.tfidf = TfidfVectorizer(
+        sklearn = __import__("{}.feature_extraction.text".format(lazy.sklearn.__name__))
+
+        self.tfidf = sklearn.feature_extraction.text.TfidfVectorizer(
             lowercase=lowercase,
             strip_accents=strip_accents,
             stop_words=stop_words,
@@ -63,9 +63,9 @@ class Tfidf(Preprocessor):
 
     def stop_words_for_language(self, language):
         if language == "english":
-            return lazy_imports.spacy.lang.en.stop_words.STOP_WORDS
+            return lazy.spacy.lang.en.stop_words.STOP_WORDS
         if language == "spanish":
-            return lazy_imports.spacy.lang.es.stop_words.STOP_WORDS
+            return lazy.spacy.lang.es.stop_words.STOP_WORDS
         else:
             return None
 

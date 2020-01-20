@@ -5,9 +5,9 @@
 #
 
 import numpy as np
-from sklearn.metrics import f1_score, precision_score, recall_score
 
 from .model import Model
+from ..utils.lazy_imports import lazy_imports as lazy
 
 
 class UnusualDataUsageWT(Model):
@@ -122,11 +122,13 @@ class UnusualDataUsageWT(Model):
             else:
                 result.append(['1', y_pred])
 
+        metrics = __import__("{}.metrics".format(lazy.sklearn.__name__)).metrics
+
         return {
             "stages": stages,
-            "stages_f1_score": [f1_score([val[0]], [val[1]], average='micro') for val in result],
-            "stages_precision_score": [precision_score([val[0]], [val[1]], average='micro') for val in result],
-            "stages_recall_score": [recall_score([val[0]], [val[1]], average='micro') for val in result]
+            "stages_f1_score": [metrics.f1_score([val[0]], [val[1]], average='micro') for val in result],
+            "stages_precision_score": [metrics.precision_score([val[0]], [val[1]], average='micro') for val in result],
+            "stages_recall_score": [metrics.recall_score([val[0]], [val[1]], average='micro') for val in result]
         }
 
     def restore(self, save_path):

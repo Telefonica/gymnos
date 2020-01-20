@@ -19,7 +19,7 @@ def to_categorical(y, num_classes=None, dtype='int'):
     num_classes: int
         Total number of num_classes.
     dtype: str or type
-        The data type expected by the input. Default: `'float32'`.
+        The data type expected by the output. Default: `'int'`.
     Returns:
         A binary matrix representation of the input. The num_classes axis is placed last.
     """
@@ -44,6 +44,39 @@ def to_categorical(y, num_classes=None, dtype='int'):
     return categorical
 
 
+def to_categorical_multilabel(y, num_classes, dtype="int"):
+    """
+    Converts a class array (list of lists of integers) to binary class matrix
+
+    Parameters
+    --------------
+    y: array-like
+        2D class matrix to be converted into a matrix (list of lists of integers from 0 to num_classes)
+    num_classes: int
+        Total number of num_classes
+    dtype: str or type
+        The data type expected by the output. Default: `'int'`.
+    Returns
+    ---------
+        A binary matrix representation of the input.
+    """
+    nrows = np.shape(y)[0]
+
+    categorical = np.zeros((nrows, num_classes), dtype=dtype)
+
+    rows_to_activate = []
+    cols_to_activate = []
+
+    for row_index in range(len(y)):
+        rows_to_activate.extend([row_index] * len(y[row_index]))
+        cols_to_activate.extend(y[row_index])
+        categorical[row_index, y[row_index]] = 1
+
+    categorical[rows_to_activate, rows_to_activate] = 1
+
+    return categorical
+
+
 def label_binarize(y, num_classes=None, multilabel=False):
     """
     Converts array to one-hot encoded array with support for multilabel categories.
@@ -57,9 +90,6 @@ def label_binarize(y, num_classes=None, multilabel=False):
         Whether or not class vector is multilabel
     """
     if multilabel:
-        from sklearn.preprocessing import MultiLabelBinarizer
-
-        binarizer = MultiLabelBinarizer(range(num_classes))
-        return binarizer.fit_transform(y)
+        return to_categorical_multilabel(y, num_classes=num_classes)
     else:
         return to_categorical(y, num_classes=num_classes)

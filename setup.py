@@ -20,7 +20,6 @@ VAR_FILES = [
 REQUIRED_DEPENDENCIES = [
     "numpy",
     "pandas",
-    "scikit-learn",
     "dill",
     "tqdm",
     "gputil",

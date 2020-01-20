@@ -8,7 +8,7 @@ import os
 import dill
 
 from .preprocessor import Preprocessor
-from sklearn.feature_selection import SelectKBest, chi2
+from ..utils.lazy_imports import lazy_imports as lazy
 
 
 class KBest(Preprocessor):
@@ -27,12 +27,14 @@ class KBest(Preprocessor):
     """  # noqa: E501
 
     def __init__(self, scorer, k=1000):
+        sklearn = __import__("{}.feature_selection".format(lazy.sklearn.__name__))
+
         if scorer == "chi2":
-            score_func = chi2
+            score_func = sklearn.feature_selection.chi2
         else:
             raise ValueError("Scorer {} not supported".format(scorer))
 
-        self.kbest = SelectKBest(
+        self.kbest = sklearn.feature_selection.SelectKBest(
             score_func=score_func,
             k=k
         )

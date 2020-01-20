@@ -137,6 +137,10 @@ class LazyImporter:
             return _try_import("tensorflow", module_to_install="tensorflow>=1.9.0,<2.0")
 
     @classproperty
+    def sklearn(cls):
+        return _try_import("sklearn", module_to_install="scikit-learn")
+
+    @classproperty
     def dummy(cls):
         """
         Only for testing purposes
