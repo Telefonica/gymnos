@@ -4,7 +4,7 @@
 #
 #
 
-from ..utils.lazy_imports import lazy_imports
+from ...utils.lazy_imports import lazy_imports
 
 
 def accuracy_multilabel(y_true, y_pred):

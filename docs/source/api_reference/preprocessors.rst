@@ -62,6 +62,11 @@ gymnos.preprocessors.utils.spacy
 .. automodule:: gymnos.preprocessors.utils.spacy
     :members:
 
+gymnos.preprocessors.utils.image_ops
+-----------------------------------------
+.. automodule:: gymnos.preprocessors.utils.image_ops
+    :members:
+
 gymnos.preprocessors.divide
 ===============================
 

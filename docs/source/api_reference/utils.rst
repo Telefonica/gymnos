@@ -16,25 +16,11 @@ gymnos.utils.data
 .. automodule:: gymnos.utils.data
     :members:
 
-gymnos.utils.downloader
-========================================
-
-
-.. automodule:: gymnos.utils.downloader
-    :members:
-
 gymnos.utils.hashing
 ========================================
 
 
 .. automodule:: gymnos.utils.hashing
-    :members:
-
-gymnos.utils.image_utils
-========================================
-
-
-.. automodule:: gymnos.utils.image_utils
     :members:
 
 
