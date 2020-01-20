@@ -27,50 +27,11 @@ REQUIRED_DEPENDENCIES = [
     "h5py"
 ]
 
-DATASET_EXTRAS_DEPENDENCIES = {
-    "data_usage_test": [
-        "statsmodels"
-    ],
-    "unusual_data_usage_test": [
-        "statsmodels"
+EXTRAS_REQUIRE = {
+    "serve": [
+        "flask"
     ]
 }
-
-PREPROCESSORS_EXTRAS_DEPENDENCIES = {
-    "lemmatization": [
-        "spacy"
-    ],
-    "tfidf": [
-        "spacy"
-    ]
-}
-
-MODELS_EXTRAS_DEPENDENCIES = {
-
-}
-
-TRACKERS_EXTRAS_DEPENDENCIES = {
-    "comet_ml": [
-        "comet-ml"
-    ],
-    "mlflow": [
-        "mlflow"
-    ]
-}
-
-EXTRAS_REQUIRE = {}
-
-EXTRAS_REQUIRE.update(prefix_dict(DATASET_EXTRAS_DEPENDENCIES, "datasets."))
-EXTRAS_REQUIRE.update(prefix_dict(PREPROCESSORS_EXTRAS_DEPENDENCIES, "preprocessors."))
-EXTRAS_REQUIRE.update(prefix_dict(MODELS_EXTRAS_DEPENDENCIES, "models."))
-EXTRAS_REQUIRE.update(prefix_dict(TRACKERS_EXTRAS_DEPENDENCIES, "trackers."))
-
-EXTRAS_REQUIRE["datasets"] = sorted(set(sum(DATASET_EXTRAS_DEPENDENCIES.values(), [])))
-EXTRAS_REQUIRE["models"] = sorted(set(sum(MODELS_EXTRAS_DEPENDENCIES.values(), [])))
-EXTRAS_REQUIRE["preprocessors"] = sorted(set(sum(PREPROCESSORS_EXTRAS_DEPENDENCIES.values(), [])))
-EXTRAS_REQUIRE["trackers"] = sorted(set(sum(TRACKERS_EXTRAS_DEPENDENCIES.values(), [])))
-
-EXTRAS_REQUIRE["serve"] = ["flask"]
 
 EXTRAS_REQUIRE["complete"] = sorted(set(sum(EXTRAS_REQUIRE.values(), [])))
 
