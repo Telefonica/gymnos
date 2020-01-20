@@ -72,7 +72,7 @@ def to_categorical_multilabel(y, num_classes, dtype="int"):
         cols_to_activate.extend(y[row_index])
         categorical[row_index, y[row_index]] = 1
 
-    categorical[rows_to_activate, rows_to_activate] = 1
+    categorical[rows_to_activate, cols_to_activate] = 1
 
     return categorical
 
