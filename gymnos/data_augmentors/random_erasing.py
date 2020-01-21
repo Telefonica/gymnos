@@ -7,11 +7,10 @@
 import random
 import numpy as np
 
-from PIL import Image
-
 from ..utils.iterator_utils import apply
 from .data_augmentor import DataAugmentor
-from ..utils.image_utils import arr_to_img, img_to_arr
+from ..utils.lazy_imports import lazy_imports as lazy
+from ..preprocessors.utils.image_ops import arr_to_img, img_to_arr
 
 
 class RandomErasing(DataAugmentor):
@@ -63,10 +62,10 @@ class RandomErasing(DataAugmentor):
             h_occlusion = random.randint(h_occlusion_min, h_occlusion_max)
 
             if len(image.getbands()) == 1:
-                rectangle = Image.fromarray(np.uint8(np.random.rand(w_occlusion, h_occlusion) * 255))
+                rectangle = lazy.PIL.Image.fromarray(np.uint8(np.random.rand(w_occlusion, h_occlusion) * 255))
             else:
-                rectangle = Image.fromarray(np.uint8(np.random.rand(w_occlusion, h_occlusion,
-                                                                    len(image.getbands())) * 255))
+                rectangle = lazy.PIL.Image.fromarray(np.uint8(np.random.rand(w_occlusion, h_occlusion,
+                                                                             len(image.getbands())) * 255))
 
             random_position_x = random.randint(0, w - w_occlusion)
             random_position_y = random.randint(0, h - h_occlusion)

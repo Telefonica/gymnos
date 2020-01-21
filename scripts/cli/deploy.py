@@ -9,9 +9,10 @@ import os
 from ..utils import ask
 from ..utils.io_utils import read_json
 
+from pprint import pprint
 from gymnos import config
 from gymnos.services.sofia import SOFIA
-from pprint import pprint
+from gymnos.utils.lazy_imports import lazy_imports as lazy
 
 
 class Config(config.Config):
@@ -28,15 +29,13 @@ def add_arguments(parser):
 
 
 def run_command(args):
-    import requests
-
     if not os.path.isfile(args.saved_trainer):
         raise FileNotFoundError(args.saved_trainer)
 
     config = Config()
     config.load()
 
-    session = requests.Session()
+    session = lazy.requests.Session()
     session.hooks = {
         "response": lambda r, *args, **kwargs: r.raise_for_status()
     }

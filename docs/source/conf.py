@@ -17,10 +17,7 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join("..", "..")))
 
-autodoc_mock_imports = ["keras", "cv2", "tqdm", "kaggle", "numpy", "pandas", "tables", "sklearn",
-                        "spacy", "mlflow", "joblib", "statsmodels", "comet_ml",
-                        "h5py", "cpuinfo", "GPUtil", "tensorflow", "scipy", "dill",
-                        "commentjson", "PIL", "smb", "pyspark"]
+autodoc_mock_imports = ["tqdm", "numpy", "pandas", "h5py", "cpuinfo", "GPUtil", "dill", "pyspark"]
 
 # -- Project information -----------------------------------------------------
 

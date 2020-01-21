@@ -4,13 +4,11 @@
 #
 #
 
-from tensorflow.keras import models, layers
-
 from .model import Model
 from .utils.keras_modules import import_keras_module
 from .mixins import KerasClassifierMixin, KerasRegressorMixin
-
 from ..utils.py_utils import drop
+from ..utils.lazy_imports import lazy_imports
 
 
 class BaseKeras(Model):
@@ -66,7 +64,9 @@ class BaseKeras(Model):
         return metrics_funcs
 
     def __build_sequential_from_config(self, input_shape, sequential_config):
-        input_layer = layers.Input(input_shape)
+        keras = lazy_imports.tensorflow.keras
+
+        input_layer = keras.layers.Input(input_shape)
 
         output_layer = input_layer
         for layer_config in sequential_config:
@@ -79,7 +79,7 @@ class BaseKeras(Model):
 
             output_layer = layer(output_layer)
 
-        model = models.Model(inputs=[input_layer], outputs=[output_layer])
+        model = keras.models.Model(inputs=[input_layer], outputs=[output_layer])
 
         return model
 

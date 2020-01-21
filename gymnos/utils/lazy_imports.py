@@ -6,9 +6,11 @@
 
 import os
 import sys
-import subprocess
+import GPUtil
 import logging
 import importlib
+import subprocess
+
 
 from .py_utils import classproperty
 
@@ -104,6 +106,39 @@ class LazyImporter:
     @classproperty
     def mlflow(cls):
         return _try_import("mlflow")
+
+    @classproperty
+    def PIL(cls):
+        PIL = _try_import("PIL", module_to_install="Pillow")
+        return __import__("{}.Image".format(PIL.__name__))  # import common module
+
+    @classproperty
+    def requests(cls):
+        return _try_import("requests")
+
+    @classproperty
+    def kaggle(cls):
+        return _try_import("kaggle")
+
+    @classproperty
+    def smb(cls):
+        return _try_import("smb", module_to_install="pysmb")
+
+    @classproperty
+    def scipy(cls):
+        return _try_import("scipy", module_to_install="scipy")
+
+    @classproperty
+    def tensorflow(cls):
+        has_gpu = bool(GPUtil.getAvailable())
+        if has_gpu:
+            return _try_import("tensorflow", module_to_install="tensorflow-gpu>=1.9.0,<2.0")
+        else:
+            return _try_import("tensorflow", module_to_install="tensorflow>=1.9.0,<2.0")
+
+    @classproperty
+    def sklearn(cls):
+        return _try_import("sklearn", module_to_install="scikit-learn")
 
     @classproperty
     def dummy(cls):

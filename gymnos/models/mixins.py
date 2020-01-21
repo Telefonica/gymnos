@@ -5,17 +5,14 @@
 #
 
 import os
-import joblib
+import dill
 import numpy as np
-import sklearn.base
-import sklearn.model_selection
-import tensorflow as tf
 
 from collections.abc import Iterable
-from tensorflow.keras.models import load_model
 
 from ..utils.data import forever_generator
 from .utils.keras_modules import import_keras_module
+from ..utils.lazy_imports import lazy_imports as lazy
 
 
 KERAS_MODEL_SAVE_FILENAME = "model.h5"
@@ -108,7 +105,7 @@ class BaseKerasMixin:
         if callbacks is not None:
             callbacks = self.__instantiate_callbacks(callbacks)
 
-        class IterableKerasSequence(tf.keras.utils.Sequence):
+        class IterableKerasSequence(lazy.tensorflow.keras.utils.Sequence):
 
             def __init__(self, sequence):
                 self.sequence = sequence
@@ -169,7 +166,7 @@ class BaseKerasMixin:
         save_dir: str
             Path (Directory) where the model is saved.
         """
-        self.model = load_model(os.path.join(save_dir, KERAS_MODEL_SAVE_FILENAME))
+        self.model = lazy.tensorflow.keras.models.load_model(os.path.join(save_dir, KERAS_MODEL_SAVE_FILENAME))
 
 
 class KerasClassifierMixin(BaseKerasMixin):
@@ -252,6 +249,8 @@ class SklearnMixin:
 
     @property
     def metric_name(self):
+        sklearn = __import__("{}.base".format(lazy.sklearn.__name__))
+
         if isinstance(self.model, sklearn.base.ClassifierMixin):
             return "accuracy"
         elif isinstance(self.model, sklearn.base.RegressorMixin):
@@ -289,6 +288,8 @@ class SklearnMixin:
             metrics: dict
                 Training metrics.
         """
+        sklearn = __import__("{}.model_selection".format(lazy.sklearn.__name__))
+
         metrics = {}
         if cross_validation is not None:
             print("Computing cross validation score")
@@ -379,7 +380,8 @@ class SklearnMixin:
         save_dir: str
             Path (Directory) to save model.
         """
-        joblib.dump(self.model, os.path.join(save_dir, SKLEARN_MODEL_SAVE_FILENAME))
+        with open(os.path.join(save_dir, SKLEARN_MODEL_SAVE_FILENAME), "wb") as fp:
+            dill.dump(self.model, fp)
 
     def restore(self, save_dir):
         """
@@ -390,7 +392,8 @@ class SklearnMixin:
         save_dir: str
             Path (Directory) to restore model.
         """
-        self.model = joblib.load(os.path.join(save_dir, SKLEARN_MODEL_SAVE_FILENAME))
+        with open(os.path.join(save_dir, SKLEARN_MODEL_SAVE_FILENAME), "wb") as fp:
+            self.model = dill.load(fp)
 
 
 class TensorFlowSaverMixin:
@@ -413,7 +416,7 @@ class TensorFlowSaverMixin:
         save_path: str
             Path (Directory) where session is saved.
         """
-        saver = tf.train.Saver()
+        saver = lazy.tensorflow.train.Saver()
         saver.restore(self.sess, os.path.join(save_path, TENSORFLOW_SESSION_FILENAME))
 
     def save(self, save_path):
@@ -425,5 +428,5 @@ class TensorFlowSaverMixin:
         save_path: str
             Path (Directory) to save session.
         """
-        saver = tf.train.Saver()
+        saver = lazy.tensorflow.train.Saver()
         saver.save(self.sess, os.path.join(save_path, TENSORFLOW_SESSION_FILENAME))

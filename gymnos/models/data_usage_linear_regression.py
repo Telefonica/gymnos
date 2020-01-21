@@ -4,10 +4,9 @@
 #
 #
 
-from sklearn.linear_model import LinearRegression
-
 from .model import Model
 from .mixins import SklearnMixin
+from ..utils.lazy_imports import lazy_imports as lazy
 from .utils.temporal_series_utils import mad_mean_error, nrmsd_error_norm, residual_analysis, rmse_train
 
 
@@ -30,7 +29,9 @@ class DataUsageLinearRegression(SklearnMixin, Model):
     """
 
     def __init__(self, n_preds=3):
-        self.model = LinearRegression()
+        sklearn = __import__("{}.linear_model".format(lazy.sklearn.__name__))
+
+        self.model = sklearn.linear_model.LinearRegression()
         self.n_preds = n_preds
 
     def evaluate(self, X, y):

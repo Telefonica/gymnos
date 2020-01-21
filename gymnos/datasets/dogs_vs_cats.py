@@ -10,8 +10,8 @@ import numpy as np
 
 from glob import glob
 
-from ..utils.image_utils import imread_rgb, imresize
 from .dataset import Dataset, Array, ClassLabel
+from ..preprocessors.utils.image_ops import imread_rgb, imresize
 
 IMAGE_WIDTH = 150
 IMAGE_HEIGHT = 150

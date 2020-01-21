@@ -74,8 +74,6 @@ RUN ln -s /usr/bin/python3.6 /usr/local/bin/python
 RUN python3.6 -m pip install --no-cache-dir -U pip
 RUN python3.6 -m pip install --no-cache-dir -U setuptools
 
-RUN python3.6 -m pip install -e . && \
-    python3.6 -m pip install .[tensorflow_gpu]
-
+RUN python3.6 -m pip install -e .
 
 ENTRYPOINT /bin/bash

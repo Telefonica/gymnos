@@ -15,7 +15,6 @@ COPY scripts ./scripts
 COPY examples ./examples
 
 RUN pip3 install --upgrade pip  && \
-    pip3 install -e . && \
-    pip3 install .[tensorflow]
+    pip3 install -e .
 
 ENTRYPOINT /bin/bash

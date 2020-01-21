@@ -8,11 +8,11 @@ import os
 import logging
 import numpy as np
 
-from PIL import Image
 from urllib.parse import urlparse
 
 from .dataset import Dataset, Array, ClassLabel
-from ..utils.image_utils import img_to_arr
+from ..utils.lazy_imports import lazy_imports as lazy
+from ..preprocessors.utils.image_ops import img_to_arr
 
 logger = logging.getLogger(__name__)
 
@@ -130,7 +130,7 @@ class DirectoryImageClassification(Dataset):
     def __getitem__(self, index):
         image_path, image_label = self.images_paths_[index], self.images_labels_[index]
 
-        image = Image.open(image_path)
+        image = lazy.PIL.Image.open(image_path)
         image = image.resize(self.size)
 
         if self.color_mode == "grayscale":

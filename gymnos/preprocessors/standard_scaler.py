@@ -6,9 +6,9 @@
 
 import os
 import dill
-import sklearn.preprocessing
 
 from .preprocessor import Preprocessor
+from ..utils.lazy_imports import lazy_imports as lazy
 
 
 class StandardScaler(Preprocessor):
@@ -26,6 +26,8 @@ class StandardScaler(Preprocessor):
     """
 
     def __init__(self, copy=True, with_mean=True, with_std=True):
+        sklearn = __import__("{}.preprocessing".format(lazy.sklearn.__name__))
+
         self.std_scaler = sklearn.preprocessing.StandardScaler(copy=copy, with_std=with_std,
                                                                with_mean=with_mean)
 

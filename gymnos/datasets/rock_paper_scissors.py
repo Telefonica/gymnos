@@ -9,9 +9,9 @@ import os
 import numpy as np
 from glob import glob
 
-from PIL import Image
-from ..utils.image_utils import img_to_arr
 from .dataset import Dataset, ClassLabel, Array
+from ..utils.lazy_imports import lazy_imports as lazy
+from ..preprocessors.utils.image_ops import img_to_arr
 
 DATASET_SMB_URI = "smb://10.95.194.112/homes/ruben_salas/rock-paper-scissors.zip"
 
@@ -63,7 +63,7 @@ class RockPaperScissors(Dataset):
         self.labels_ = np.concatenate([rock_labels, paper_labels, scissors_labels], axis=0)
 
     def __getitem__(self, index):
-        image = Image.open(self.images_paths_[index]).convert("L")
+        image = lazy.PIL.Image.open(self.images_paths_[index]).convert("L")
         image = image.resize((150, 150))
         image = img_to_arr(image)
         return image, self.labels_[index]

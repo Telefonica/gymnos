@@ -16,6 +16,8 @@ from .. import config
 from .service import Service
 from ..utils.archiver import extract_zip
 from ..utils.text_utils import print_table
+from ..utils.lazy_imports import lazy_imports as lazy
+
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +56,7 @@ class Kaggle(Service):
         os.environ["KAGGLE_USERNAME"] = self.config.KAGGLE_USERNAME
         os.environ["KAGGLE_KEY"] = self.config.KAGGLE_KEY
 
-        return locate("kaggle.api")
+        return locate("{}.api".format(lazy.kaggle.__name__))
 
     def download(self, dataset_name=None, competition_name=None, file_or_files=None, verbose=True):
         """

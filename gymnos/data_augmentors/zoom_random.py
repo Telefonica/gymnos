@@ -7,11 +7,10 @@
 import math
 import random
 
-from PIL import Image
-
 from ..utils.iterator_utils import apply
 from .data_augmentor import DataAugmentor
-from ..utils.image_utils import arr_to_img, img_to_arr
+from ..utils.lazy_imports import lazy_imports as lazy
+from ..preprocessors.utils.image_ops import arr_to_img, img_to_arr
 
 
 class ZoomRandom(DataAugmentor):
@@ -67,7 +66,7 @@ class ZoomRandom(DataAugmentor):
             image = image.crop((random_left_shift, random_down_shift, w_new + random_left_shift,
                                 h_new + random_down_shift))
 
-            image = image.resize((w, h), resample=Image.BICUBIC)
+            image = image.resize((w, h), resample=lazy.PIL.Image.BICUBIC)
             return img_to_arr(image)
 
         return apply(images, operation)

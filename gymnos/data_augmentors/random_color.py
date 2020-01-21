@@ -8,10 +8,8 @@ import numpy as np
 
 from ..utils.iterator_utils import apply
 from .data_augmentor import DataAugmentor
-from ..utils.image_utils import arr_to_img, img_to_arr
-
-
-from PIL import ImageEnhance
+from ..utils.lazy_imports import lazy_imports as lazy
+from ..preprocessors.utils.image_ops import arr_to_img, img_to_arr
 
 
 class RandomColor(DataAugmentor):
@@ -49,11 +47,13 @@ class RandomColor(DataAugmentor):
         :type image: np.array
         :return: The transformed image
         """
+        PIL = __import__("{}.ImageEnhance".format(lazy.PIL.__name__))
+
         def operation(image):
             image = arr_to_img(image)
             factor = np.random.uniform(self.min_factor, self.max_factor)
 
-            image_enhancer_color = ImageEnhance.Color(image)
+            image_enhancer_color = PIL.ImageEnhance.Color(image)
             image = image_enhancer_color.enhance(factor)
             return img_to_arr(image)
 

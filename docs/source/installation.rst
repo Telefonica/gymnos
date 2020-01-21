@@ -20,20 +20,6 @@ To install Gymnos:
 
     $ pip3 install -e .
 
-Note that TensorFlow must be installed manually. Either:
-
-.. code-block:: console
-
-  $ pip3 install .[tensorflow]
-
-Or
-
-.. code-block:: console
-
-  $ pip3 install .[tensorflow_gpu]
-
-depending on whether you have an NVIDIA GPU available or not.
-
 To get started, let's run Gymnos CLI to check if installation was successful. We will solve Boston Housing dataset `Boston Housing dataset <https://www.cs.toronto.edu/~delve/data/boston/bostonDetail.html>`_
 
 .. code-block:: console
@@ -43,35 +29,7 @@ To get started, let's run Gymnos CLI to check if installation was successful. We
 Extra dependencies
 -----------------------
 
-To make Gymnos as light as possible and at the same time give flexibility to any developer to write their module with the library they feel most comfortable with, the extra dependencies will not be installed by default when installing Gymnos.
-
-.. tip::
-
-  Most components don't require extra dependencies. Check ``setup.py`` file to see if the component you want to use needs any extra dependency.
-
-Several extra dependencies configurations have been setup so that you can choose the one that best suits your needs:
-
-- ``pip3 install -e .[datasets]``: installs dependencies for all datasets
-- ``pip3 install -e .[models]``: installs dependencies for all models
-- ``pip3 install -e .[trackers]``: installs dependencies for all trackers
-- ``pip3 install -e .[preprocessors]``: installs dependencies for all preprocessors
-
-If you want to install Gymnos with all the dependencies:
-
-.. code-block:: console
-
-    $ pip3 install -e .[complete]
-
-It is also possible to install dependencies for individual components using the following syntax:
-
-- ``pip3 install -e .[datasets.<dataset_name>]``: instala las dependencias para dataset_name
-- ``pip3 install -e .[models.<model_name>]``: instala las dependencias para model_name
-- ``pip3 install -e .[trackers.<tracker_name>]``: instala las dependencias para tracker_name
-- ``pip3 install -e .[preprocessors.<preprocessor_name>]``: instala las dependencias para preprocessor_name
-
-.. note:: 
-
-  By default, if a component needs an extra package and it is not installed, Gymnos will try to install it automatically. If you want to disable this feature, set the environment variable ``GYMNOS_AUTOINSTALL``.
+To make Gymnos as light as possible and at the same time give flexibility to any developer to write their module with the library they feel most comfortable with, the extra dependencies will not be installed by default when installing Gymnos. Instead, if a component needs an extra library and it is not installed, Gymnos will try to install it automatically. If you want to disable this feature, set the environment variable ``GYMNOS_AUTOINSTALL`` to ``0``.
 
 Docker
 ==========

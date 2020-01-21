@@ -4,7 +4,7 @@
 #
 #
 
-from ...utils.image_utils import imgray
+from ..utils.image_ops import imgray
 from ...utils.iterator_utils import apply
 from ..preprocessor import Preprocessor
 

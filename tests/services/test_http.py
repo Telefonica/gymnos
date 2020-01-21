@@ -7,7 +7,7 @@
 import os
 import json
 
-from gymnos.utils.downloader import download_file_from_url
+from gymnos.services.http import download_file_from_url
 
 
 def test_download_file_from_url(requests_mock, tmp_path):

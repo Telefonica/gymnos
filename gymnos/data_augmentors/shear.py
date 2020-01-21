@@ -7,11 +7,10 @@
 import math
 import random
 
-from PIL import Image
-
 from ..utils.iterator_utils import apply
 from .data_augmentor import DataAugmentor
-from ..utils.image_utils import arr_to_img, img_to_arr
+from ..utils.lazy_imports import lazy_imports as lazy
+from ..preprocessors.utils.image_ops import arr_to_img, img_to_arr
 
 
 class Shear(DataAugmentor):
@@ -134,13 +133,11 @@ class Shear(DataAugmentor):
                                     0, 1, 0)
 
                 image = image.transform((int(round(width + shift_in_pixels)), height),
-                                        Image.AFFINE,
-                                        transform_matrix,
-                                        Image.BICUBIC)
+                                        lazy.PIL.Image.AFFINE, transform_matrix, lazy.PIL.Image.BICUBIC)
 
                 image = image.crop((abs(shift_in_pixels), 0, width, height))
 
-                image = image.resize((width, height), resample=Image.BICUBIC)
+                image = image.resize((width, height), resample=lazy.PIL.Image.BICUBIC)
 
             elif direction == "y":
                 shift_in_pixels = phi * width
@@ -155,13 +152,13 @@ class Shear(DataAugmentor):
                                     phi, 1, -matrix_offset)
 
                 image = image.transform((width, int(round(height + shift_in_pixels))),
-                                        Image.AFFINE,
+                                        lazy.PIL.Image.AFFINE,
                                         transform_matrix,
-                                        Image.BICUBIC)
+                                        lazy.PIL.Image.BICUBIC)
 
                 image = image.crop((0, abs(shift_in_pixels), width, height))
 
-                image = image.resize((width, height), resample=Image.BICUBIC)
+                image = image.resize((width, height), resample=lazy.PIL.Image.BICUBIC)
 
             return img_to_arr(image)
 

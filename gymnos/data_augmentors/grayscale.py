@@ -4,10 +4,9 @@
 #
 #
 
-from PIL import ImageOps
-
 from ..utils.iterator_utils import apply
-from ..utils.image_utils import arr_to_img, img_to_arr
+from ..utils.lazy_imports import lazy_imports as lazy
+from ..preprocessors.utils.image_ops import arr_to_img, img_to_arr
 from .data_augmentor import DataAugmentor
 
 
@@ -25,9 +24,6 @@ class Grayscale(DataAugmentor):
     :type probability: Float
     """
 
-    def __init__(self, probability):
-        super().__init__(probability)
-
     def transform(self, images):
         """
         Converts the passed image to grayscale and returns the transformed
@@ -37,9 +33,11 @@ class Grayscale(DataAugmentor):
         :type image: np.ndarray
         :return: The transformed image
         """
+        PIL = __import__("{}.ImageOps".format(lazy.PIL.__name__))
+
         def operation(image):
             image = arr_to_img(image)
-            new_image = ImageOps.grayscale(image)
+            new_image = PIL.ImageOps.grayscale(image)
             new_image = new_image.convert(image.mode)
             return img_to_arr(new_image)
 

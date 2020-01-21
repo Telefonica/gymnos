@@ -13,7 +13,7 @@ from ..utils.io_utils import read_json
 
 from gymnos.trainer import Trainer
 from gymnos.datasets.dataset import ClassLabel
-from gymnos.utils.image_utils import imread_rgb
+from gymnos.preprocessors.utils.image_ops import imread_rgb
 from gymnos.utils.json_utils import NumpyEncoder
 
 
