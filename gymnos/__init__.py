@@ -79,6 +79,11 @@ datasets.register(
     entry_point="gymnos.datasets.titanic.Titanic"
 )
 
+datasets.register(
+    type="synthetic_ok_aura",
+    entry_point="gymnos.datasets.synthetic_ok_aura.SyntheticOkAura"
+)
+
 # MARK: Services registration
 
 services.register(
@@ -143,6 +148,10 @@ models.register(
     entry_point="gymnos.models.titanic.Titanic"
 )
 
+models.register(
+    type="trigger_word_detection",
+    entry_point="gymnos.models.trigger_word_detection.TriggerWordDetection"
+)
 
 # MARK: Preprocessors registration
 
@@ -199,6 +208,11 @@ preprocessors.register(
 preprocessors.register(
     type="standard_scaler",
     entry_point="gymnos.preprocessors.standard_scaler.StandardScaler"
+)
+
+preprocessors.register(
+    type="spectrogram",
+    entry_point="gymnos.preprocessors.audio.spectrogram.Spectrogram"
 )
 
 # MARK: Tracker registration
