@@ -10,7 +10,7 @@ import os
 import csv
 
 from glob import glob
-from ..utils.audio_utils import load_wav_file
+from ..preprocessors.utils.audio_utils import load_wav_file
 from .dataset import Dataset, Array
 
 
