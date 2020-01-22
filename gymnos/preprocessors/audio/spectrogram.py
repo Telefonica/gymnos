@@ -10,10 +10,10 @@ import numpy as np
 from scipy import signal
 from ..preprocessor import Preprocessor
 from ...utils.iterator_utils import apply
-from ...utils.audio_utils import load_wav_file
 
 import logging
 logger = logging.getLogger(__name__)
+
 
 class Spectrogram(Preprocessor):
     """
@@ -21,8 +21,7 @@ class Spectrogram(Preprocessor):
 
     Parameters
     ----------
-
-    nfft: int 
+    nfft: int
         Length of each window segment
     fs: int
         Sampling frequencies
@@ -51,13 +50,15 @@ class Spectrogram(Preprocessor):
     def _transform_sample(self, x):
         nchannels = x.ndim
         if nchannels == 1:
-            freqs, times, Sxx = signal.spectrogram(x, self.fs, noverlap = self.noverlap, nfft = self.nfft, nperseg = self.nfft)
+            freqs, times, Sxx = signal.spectrogram(x, self.fs, noverlap=self.noverlap,
+                                                   nfft=self.nfft, nperseg=self.nfft)
         elif nchannels == 2:
-            freqs, times, Sxx = signal.spectrogram(x[:,0], self.fs, noverlap = self.noverlap, nfft = self.nfft, nperseg = self.nfft)
- 
-        #TODO: Find a better way for swapping. Perhaps another "swapper" preprocessor
+            freqs, times, Sxx = signal.spectrogram(x[:, 0], self.fs, noverlap=self.noverlap,
+                                                   nfft=self.nfft, nperseg=self.nfft)
+
+        # TODO: Find a better way for swapping. Perhaps another "swapper" preprocessor
         Sxx = np.swapaxes(Sxx, 1, 0)
-        
+
         return Sxx
 
     def transform(self, X):

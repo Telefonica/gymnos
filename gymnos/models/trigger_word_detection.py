@@ -14,6 +14,7 @@ from .mixins import KerasClassifierMixin
 
 logger = logging.getLogger(__name__)
 
+
 class TriggerWordDetection(KerasClassifierMixin, Model):
     """
     A keras based model for trigger word detection (sometimes also called keyword detection, or wakeword detection)
@@ -24,7 +25,6 @@ class TriggerWordDetection(KerasClassifierMixin, Model):
     ----------
     input_shape: list
         shape of the model's input data (using Keras conventions).
-    
 
     Examples
     --------
@@ -41,14 +41,14 @@ class TriggerWordDetection(KerasClassifierMixin, Model):
             layers.BatchNormalization(),
             layers.Activation('relu'),
             layers.Dropout(0.8),
-            layers.GRU(units = 128, return_sequences = True),
+            layers.GRU(units=128, return_sequences=True),
             layers.Dropout(0.8),
             layers.BatchNormalization(),
-            layers.GRU(units = 128, return_sequences = True),
+            layers.GRU(units=128, return_sequences=True),
             layers.Dropout(0.8),
             layers.BatchNormalization(),
             layers.Dropout(0.8),
-            layers.TimeDistributed(layers.Dense(1, activation = "sigmoid"))
+            layers.TimeDistributed(layers.Dense(1, activation="sigmoid"))
         ])
         opt = optimizers.Adam(learning_rate=0.001, beta_1=0.9, beta_2=0.999, decay=0.01)
         self.model.compile(optimizer=opt, loss="binary_crossentropy", metrics=["accuracy"])
