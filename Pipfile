@@ -8,19 +8,10 @@ verify_ssl = true
 "sphinx:build"="make -C docs html"
 
 [dev-packages]
-sphinx = "*"
-sphinx-rtd-theme = "*"
-sphinx-autobuild = "*"
-pytest = "*"
-pytest-cov = "*"
-pytest-xdist = "*"
-pytest-mock = "*"
-requests-mock = "*"
-flake8 = "*"
-sphinx-argparse = "*"
+gymnos = {editable = true,extras = ["complete"],path = "."}
 
 [packages]
-gymnos = {editable = true,extras = ["complete"],path = "."}
+gymnos = {editable = true,path = "."}
 
 [requires]
 python_version = "3.6"

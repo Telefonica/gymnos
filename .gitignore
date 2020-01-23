@@ -5,6 +5,7 @@
 .env
 .idea
 .coverage
+.eggs/
 .ipynb_checkpoints/
 
 dist/
