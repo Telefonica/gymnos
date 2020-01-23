@@ -57,8 +57,8 @@ def _try_import_and_autoinstall(module_to_import, module_to_install):
         logger.warning(warning_msg.format(importing=module_to_import, installing=module_to_install))
 
         _install_module_with_subprocess(module_to_install)
-    finally:
-        return importlib.import_module(module_to_import)
+
+    return importlib.import_module(module_to_import)
 
 
 def _try_import_and_customize_error(module_to_import, module_to_install):
