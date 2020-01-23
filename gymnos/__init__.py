@@ -231,13 +231,13 @@ preprocessors.register(
 )
 
 preprocessors.register(
-    type="utterances_aura_embeddings",
-    entry_point="gymnos.preprocessors.utterances_aura_embeddings.UtterancesAuraEmbeddings"
+    type="sequences_aura_embeddings",
+    entry_point="gymnos.preprocessors.sequences_aura_embeddings.SequencesAuraEmbeddings"
 )
 
 preprocessors.register(
-    type="utterances_embedding_pooling",
-    entry_point="gymnos.preprocessors.utterances_embedding_pooling.UtterancesEmbeddingPooling"
+    type="sequences_embedding_pooling",
+    entry_point="gymnos.preprocessors.sequences_embedding_pooling.SequencesEmbeddingPooling"
 )
 
 # MARK: Tracker registration

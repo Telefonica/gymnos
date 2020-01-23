@@ -1,6 +1,6 @@
 #
 #
-#   Utterances Aura Embeddings
+#   Sequences Aura Embeddings
 #
 #
 
@@ -8,16 +8,16 @@ from .preprocessor import Preprocessor
 from ..utils.lazy_imports import lazy_imports
 
 
-class UtterancesAuraEmbeddings(Preprocessor):
+class SequencesAuraEmbeddings(Preprocessor):
     """
-    For a list of sequence of sentences, firstly applies a preprocessing to every sequence
-    (lowercasing, remove punctuation and special characters and acents). After that,
-    transform the text in a embedding appling del model trained defined in model_path parameter.
+    For a list of sequence of sentences, firstly prepossesses to every sequence
+    (lowercase, remove punctuation and special characters and accents). After that,
+    transform the text in a embedding applying del model trained defined in model_path parameter.
 
     Parameters
     -----------
     model_path: str,
-        path to lenguage model (.pkl) trained before.
+        path to language model (.pkl) trained before.
     """
 
     def __init__(self, model_path):
@@ -33,14 +33,14 @@ class UtterancesAuraEmbeddings(Preprocessor):
     def transform(self, x):
         result = []
         for sequence in x:
-            sequence = eval(sequence.replace(' ', ','))
+            sequence = eval(sequence)
             normalized_sequence = self.__sequence_normalizer(sequence)
             list_embeddings = self.embeddings.transform(normalized_sequence)
             result.append(list_embeddings)
         return result
 
     def __sequence_normalizer(self, sequence):
-        """ Simple pre-processing: lowercasing, remove punctuation and special characters and acents """
+        """ Simple pre-processing: lowercase, remove punctuation and special characters and accents """
         total = []
         for phrase in sequence:
             total.append([val for val in self.normalizer.to_tkn(phrase).norm])

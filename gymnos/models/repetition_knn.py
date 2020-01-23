@@ -4,7 +4,7 @@
 #
 #
 
-from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, ShuffleSplit
 from sklearn.neighbors import KNeighborsClassifier
 
 from .mixins import SklearnMixin
@@ -18,42 +18,56 @@ class RepetitionKNN(SklearnMixin, Model):
     Parameters
     ----------
     cv: int
-        Number of chunks in cross validation
+        Number of chunks in cross validation.
     search: str
-        Type of hyperparameters search (grid search or random search)
+        Type of hyperparameters search (grid search or random search).
     scoring: str
-        Type of scoring to do the hyperparameter searching (such as 'auc_roc', 'recall',...)
+        Type of scoring to do the hyperparameters searching (such as 'auc_roc', 'recall',...).
+    n_iter: int,
+        Number of iterations of the searching. Valid only in if search=random search.
 
     Note
     ----
     This model requires binary labels.
     """
 
-    def __init__(self, cv=5, search=None, scoring='roc_auc'):
+    def __init__(self, cv=5, search=None, scoring='roc_auc', n_iter=100):
         self.model = KNeighborsClassifier(n_neighbors=5)
         self.cv = cv
         self.search = search
         self.scoring = scoring
+        self.n_iter = n_iter
+        self.model_search = None
 
     def fit(self, x, y, validation_split=0, cross_validation=None):
-        model_search = self.model
         metrics = {}
+
+        # create cross validation iterator
+        cv = ShuffleSplit(n_splits=self.cv, test_size=0.2, random_state=0)
+
         k_range = list(range(1, 31))
         weight_options = ['uniform', 'distance']
 
         if self.search == "grid_search":
             knn_grid = {'n_neighbors': k_range, 'weights': weight_options}
-            model_search = GridSearchCV(estimator=model_search, param_grid=knn_grid,
-                                        scoring=self.scoring, refit=True, cv=self.cv, verbose=3)
+            self.model_search = GridSearchCV(estimator=self.model, param_grid=knn_grid,
+                                             scoring=self.scoring, refit=True, cv=cv, verbose=3, n_jobs=-1)
+            self.model_search.fit(x, y)
+            self.model = self.model_search.best_estimator_
         elif self.search == "random_search":
             knn_random_grid = {'n_neighbors': k_range, 'weights': weight_options}
-            model_search = RandomizedSearchCV(estimator=model_search, param_distributions=knn_random_grid,
-                                              scoring=self.scoring, cv=self.cv, refit=True,
-                                              random_state=314, verbose=3)
+            self.model_search = RandomizedSearchCV(estimator=self.model, param_distributions=knn_random_grid,
+                                                   scoring=self.scoring, cv=cv, refit=True,
+                                                   random_state=14, verbose=3, n_jobs=-1, n_iter=self.n_iter)
+            self.model_search.fit(x, y)
+            self.model = self.model_search.best_estimator_
         else:
-            pass
-        self.model = model_search.fit(x, y)
+            self.model.fit(x, y)
+            self.model_search = self.model
+
+        metrics['search'] = self.model_search
         if self.search in ["grid_search", "random_search"]:
-            self.model = model_search.best_estimator_
-            metrics[self.scoring] = model_search.best_score_
+            metrics[self.scoring] = self.model_search.best_score_
+            metrics["best_params"] = self.model_search.best_params_
+            metrics['search'] = self.model_search
         return metrics
