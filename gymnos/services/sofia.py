@@ -24,13 +24,13 @@ from ..utils.lazy_imports import lazy_imports as lazy
 
 logger = logging.getLogger(__name__)
 
+DEFAULT_DOMAIN = "http://skywalker:8989"
+
 
 class SOFIA(Service):
     """
     Download components from SOFIA
     """
-
-    SERVER_URL = "http://skywalker:8989"
 
     class Config(config.Config):
         """
@@ -45,6 +45,7 @@ class SOFIA(Service):
         """
         SOFIA_EMAIL = config.Value(required=True, help="SOFIA username")
         SOFIA_PASSWORD = config.Value(required=True, help="SOFIA password")
+        SOFIA_DOMAIN = config.Value(required=False, help="SOFIA domain", default=DEFAULT_DOMAIN)
 
     def __init__(self, download_dir="downloads", force_download=False, config_files=None):
         super().__init__(download_dir=download_dir, force_download=force_download, config_files=config_files)
@@ -52,7 +53,7 @@ class SOFIA(Service):
         self._auth_headers = None
 
     def _login(self):
-        login_url = self.SERVER_URL + "/api/login"
+        login_url = self.config.SOFIA_DOMAIN + "/api/login"
 
         res = lazy.requests.post(login_url, data=dict(email=self.config.SOFIA_EMAIL,
                                                       password=self.config.SOFIA_PASSWORD))
@@ -120,7 +121,7 @@ class SOFIA(Service):
         assert parsed.scheme == "sofia"
         assert parsed.netloc in ("datasets", "models", "experiments")
 
-        sofia_info_url = urljoin(self.SERVER_URL, "api", parsed.netloc, parsed.path)
+        sofia_info_url = urljoin(self.config.SOFIA_DOMAIN, "api", parsed.netloc, parsed.path)
         sofia_download_url = urljoin(sofia_info_url, "files")
 
         self._login_if_needed()
