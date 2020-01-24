@@ -1,0 +1,226 @@
+#
+#
+#   Repetition
+#
+#
+
+import logging
+
+import gymnos
+import numpy as np
+
+from .dataset import Dataset, Array, ClassLabel
+
+logger = logging.getLogger(__name__)
+import gymod_aura_base.register
+
+class Repetition(Dataset):
+    """
+    Firstly, downloads from Artifactory Repo:
+     - text samples contain 1 text attribute consists of list of list of phrases in string format from Aura logs.
+     - embeddings models trained with Aura logs in .pkl format.
+
+    After that, makes parses several characters in utterances column:
+    - Replaces in label column commas by points.
+    - Drops nan rows.
+    - Replaces multiple null spaces in sequences
+    - Parses nan includes in every sequence.
+    - Fills with ones all values upper or equal than label_threshold parameter al with zeros the rest of values
+    - Parses compose entities in sequences with underscores
+    - Remove sequences with only brackets.
+
+    In the end, the class labels will be:
+
+    +----------+--------------+
+    | Label    | Description  |
+    +==========+==============+
+    | 0        | no repetition|
+    +----------+--------------+
+    | 1        | repetition   |
+    +----------+--------------+
+
+    -  Characteristics
+        - **Classes**: 2
+        - **Samples total**: variable
+        - **Features**: texts
+    """
+
+    def __init__(self, input_name, embedding_names, label_threshold, entities="ENTITIES", label_col_name="HAS RETRY",
+                 utterances_col_name="INPUTS"):
+        self.input_name = input_name
+        self.embedding_names = embedding_names
+        self.label_threshold = label_threshold
+        self.entities = entities
+        self.label_col_name = label_col_name
+        self.utterances_col_name = utterances_col_name
+
+    @property
+    def features_info(self):
+        return Array(shape=[1], dtype=str)
+
+    @property
+    def labels_info(self):
+        return ClassLabel(names=["not_repetition", "repetition"])
+
+    def download_and_prepare(self, dl_manager):
+
+        # Downloads  input datasets from Artifactory Repo for this class.
+        # TODO change the dowloading paramerters (and debugging) when the real data will be uploaded to artifactory
+        df = gymnos.datasets.load("aura.generic", name=self.input_name, target='HAS_RETRY', verbose=True)
+        df.download_and_prepare()
+
+        # Downloads embedding pkls from Artifactory Repo for preprocessors.
+        # TODO change the dowloading (and debugging) paramerters when the real data will be uploaded to artifactory
+        for language_model in self.embedding_names:
+            embeddings_pkl = gymnos.datasets.load("aura.generic", name=language_model, target='HAS_RETRY',
+                                                  verbose=True)
+            embeddings_pkl.download_and_prepare()
+
+        # Parses several characters in utterances column
+        df = self.__parsing(df)
+
+        self.data_ = df[[self.utterances_col_name, self.label_col_name]]
+        self.size_ = len(self.data_[self.utterances_col_name])  # x and y have the same length.
+
+    def __parsing(self, df):
+        """
+        Parses a dataframe in high level applying:
+        - Replaces in label column commas by points.
+        - Drops nan rows.
+        - Replaces multiple null spaces in sequences
+        - Parses nan includes in every sequence.
+        - Fills with ones all values upper or equal than label_threshold parameter al with zeros the rest of values
+        - Parses compose entities in sequences with underscores
+        - Remove sequences with only brackets.
+
+        Parameters
+        ----------
+        df: dataframe
+            Features and label
+
+        Returns
+        --------
+        df: dataframe
+            Features and label parsed.
+        """
+
+        # Replaces in label column commas by points.
+        df[self.label_col_name] = [float(str(val).replace(",", ".")) for val in df[self.label_col_name].values]
+
+        # Drops nan
+        df = df.dropna()
+
+        # Replaces multiple null spaces in sequences
+        df[self.utterances_col_name] = df[self.utterances_col_name].str.replace(' ' + str(np.nan) + ' ', '', regex=True)
+
+        # Parses nan include in every sequence
+        df = Repetition.__parsing_expressions(data=df, utterances_col_name=self.utterances_col_name,
+                                              type_parsing="sequence_others")
+
+        # Fills with ones all values upper or equal than label_threshold parameter al with zeros the rest of values
+        df[self.label_col_name][df[self.label_col_name] >= self.label_threshold] = 1.0
+        df[self.label_col_name][df[self.label_col_name] < self.label_threshold] = 0.0
+
+        # Parses compose entities in sequences with underscores
+        total_utterances_col_name = []
+        list_entities = [eval(val) for val in df[self.entities].values]
+        for pos_sequence, sequence in enumerate(df[self.utterances_col_name].values):
+            Repetition.__parsing_composed_entities(sequence, list_entities[pos_sequence])
+            Repetition.__parsing_expressions(data=sequence, utterances_col_name=self.utterances_col_name,
+                                             type_parsing="sequence_others")
+            total_utterances_col_name.append(sequence)
+        df[self.utterances_col_name] = total_utterances_col_name
+
+        # Removes sequences with only brackets
+        df = df[df[self.utterances_col_name].str.len() > 2]
+        return df
+
+    @staticmethod
+    def __parsing_expressions(data, utterances_col_name, type_parsing, iteration_global_nan=8):
+        """
+        Parses a dataframe in high level applying:
+            - If type="global_nan", parses the total column of utterrances erasing nan.
+            - If type="sequence_others", parses a sequence from utterances column with other characters.
+
+        Parameters
+        ----------
+        data: dataframe or string
+            Features and label
+        type_parsing: string,
+            Type of parsing ("global_nan": apply to the whole utterance column to erase nan
+            or "sequence_others": apply to sequences of utterances column to to erase other characters)
+        iteration_global_nan: int, optional
+            Number of iteration of parsing with type="global_nan"
+
+        Returns
+        --------
+        self: Preprocessor
+            Own instance for chain purposes.
+        """
+        # TODO use regular expression to simplify parsing
+        assert type_parsing in ("global_nan", "sequence_others")
+        if type_parsing == "global_nan":
+            dict_strings_to_parse_nan = {'\[' + str(np.nan): '[',
+                                         '\[ ' + str(np.nan): '[',
+                                         str(np.nan) + '\]': ']',
+                                         str(np.nan) + ' \]': ']',
+                                         str(np.nan) + "'": "'",
+                                         "'" + str(np.nan): "'",
+                                         "\n" + str(np.nan): "",
+                                         str(np.nan) + "\n": ""}
+            for k, v in dict_strings_to_parse_nan.items():
+                for cont in range(iteration_global_nan):
+                    data[utterances_col_name] = data[utterances_col_name].str.replace(k, v, regex=True)
+
+        elif type_parsing == "sequence_others":
+            dict_strings_to_parse_sequence = {"\r": "",
+                                              "\n": "",
+                                              "''": "','",
+                                              "' '": "','",
+                                              "[ ]": "[]",
+                                              "[  ]": "[]",
+                                              "[   ]": "[]",
+                                              "[    ]": "[]",
+                                              "[     ]": "[]",
+                                              "[      ]": "[]",
+                                              "[       ]": "[]",
+                                              "[         ]": "[]",
+                                              "[          ]": "[]",
+                                              "[           ]": "[]"}
+            for k, v in dict_strings_to_parse_sequence.items():
+                data = data.replace(k, v)
+        else:
+            pass
+        return data
+
+    @staticmethod
+    def __parsing_composed_entities(sequence, list_entities):
+        """
+        Parses compose entities in sequences with underscores.
+
+        Parameters
+        ----------
+        sequence: string,
+            Input sequence of utterances
+        list_entities: string,
+            Entities detected in sequence.
+
+        Returns
+        --------
+        sequence: string,
+            parsed sequence.
+        """
+        list_entities_sequence = [item for sublist in list_entities for item in sublist]
+        for entity in list_entities_sequence:
+            if sequence.__contains__(entity):
+                if len(entity.split(" ")) >= 2:
+                    sequence = sequence.replace(entity, '_'.join(entity.split(" ")))
+        return sequence
+
+    def __getitem__(self, index):
+        X = self.data_[self.utterances_col_name][index]
+        y = self.data_[self.label_col_name][index]
+        return X, y
+
+    def __len__(self):
+        return self.size_

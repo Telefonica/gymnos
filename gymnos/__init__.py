@@ -79,6 +79,11 @@ datasets.register(
     entry_point="gymnos.datasets.titanic.Titanic"
 )
 
+datasets.register(
+    type="repetition",
+    entry_point="gymnos.datasets.repetition.Repetition"
+)
+
 # MARK: Services registration
 
 services.register(
