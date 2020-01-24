@@ -117,6 +117,11 @@ class LazyImporter:
         return importlib.import_module("auracog_utils.text")
 
     @classproperty
+    def gymod_aura_base_register(cls):
+        _try_import("gymod_aura_base")
+        return importlib.import_module("gymod_aura_base.register")
+
+    @classproperty
     def dummy(cls):
         """
         Only for testing purposes

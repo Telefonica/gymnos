@@ -12,7 +12,11 @@ import numpy as np
 from .dataset import Dataset, Array, ClassLabel
 
 logger = logging.getLogger(__name__)
-import gymod_aura_base.register
+
+from ..utils.lazy_imports import lazy_imports
+
+gymod_aura_base_register = lazy_imports.gymod_aura_base_register
+
 
 class Repetition(Dataset):
     """
