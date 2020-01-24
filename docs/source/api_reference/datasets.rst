@@ -87,3 +87,9 @@ gymnos.datasets.reddit_self_post_classification
 
 .. automodule:: gymnos.datasets.reddit_self_post_classification
     :members:
+
+gymnos.datasets.synthetic_ok_aura
+====================================================
+
+.. automodule:: gymnos.datasets.synthetic_ok_aura
+    :members:
