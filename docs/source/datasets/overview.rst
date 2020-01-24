@@ -35,7 +35,8 @@ All Datasets
 
 .. toctree::
    :maxdepth: 2
-
+    
+   ./audio.rst
    ./image.rst
    ./structured.rst
    ./text.rst
