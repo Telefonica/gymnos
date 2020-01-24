@@ -11,6 +11,14 @@ gymnos.preprocessors.preprocessor
 .. automodule:: gymnos.preprocessors.preprocessor
     :members:
 
+gymnos.preprocessors.audio
+=============================
+
+gymnos.preprocessors.audio.spectrogram
+-----------------------------------------
+.. automodule:: gymnos.preprocessors.audio.spectrogram
+    :members:
+
 gymnos.preprocessors.images
 =============================
 

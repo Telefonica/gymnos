@@ -52,3 +52,10 @@ gymnos.models.unusual_data_usage_weighted_thresholds
 
 .. automodule:: gymnos.models.unusual_data_usage_weighted_thresholds
     :members:
+
+
+gymnos.models.trigger_word_detection
+=======================================================
+
+.. automodule:: gymnos.models.trigger_word_detection
+    :members:

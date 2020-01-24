@@ -36,6 +36,7 @@ All Preprocessors
 .. toctree::
    :maxdepth: 2
 
+   ./audio
    ./standard
    ./image
    ./text

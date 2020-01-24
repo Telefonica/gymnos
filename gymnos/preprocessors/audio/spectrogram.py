@@ -7,9 +7,9 @@
 
 import numpy as np
 
-from scipy import signal
 from ..preprocessor import Preprocessor
 from ...utils.iterator_utils import apply
+from ...utils.lazy_imports import lazy_imports as lazy
 
 import logging
 logger = logging.getLogger(__name__)
@@ -48,13 +48,15 @@ class Spectrogram(Preprocessor):
         return self
 
     def _transform_sample(self, x):
+        scipy = __import__("{}.signal".format(lazy.scipy.__name__))
+
         nchannels = x.ndim
         if nchannels == 1:
-            freqs, times, Sxx = signal.spectrogram(x, self.fs, noverlap=self.noverlap,
-                                                   nfft=self.nfft, nperseg=self.nfft)
+            freqs, times, Sxx = scipy.signal.spectrogram(x, self.fs, noverlap=self.noverlap,
+                                                         nfft=self.nfft, nperseg=self.nfft)
         elif nchannels == 2:
-            freqs, times, Sxx = signal.spectrogram(x[:, 0], self.fs, noverlap=self.noverlap,
-                                                   nfft=self.nfft, nperseg=self.nfft)
+            freqs, times, Sxx = scipy.signal.spectrogram(x[:, 0], self.fs, noverlap=self.noverlap,
+                                                         nfft=self.nfft, nperseg=self.nfft)
 
         # TODO: Find a better way for swapping. Perhaps another "swapper" preprocessor
         Sxx = np.swapaxes(Sxx, 1, 0)

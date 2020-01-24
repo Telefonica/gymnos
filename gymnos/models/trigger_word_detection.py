@@ -7,10 +7,9 @@
 
 import logging
 
-from tensorflow.keras import models, layers, optimizers
-
 from .model import Model
 from .mixins import KerasClassifierMixin
+from ..utils.lazy_imports import lazy_imports
 
 logger = logging.getLogger(__name__)
 
@@ -36,21 +35,23 @@ class TriggerWordDetection(KerasClassifierMixin, Model):
     """
 
     def __init__(self, input_shape):
-        self.model = models.Sequential([
-            layers.Conv1D(196, kernel_size=15, strides=4, input_shape=input_shape),
-            layers.BatchNormalization(),
-            layers.Activation('relu'),
-            layers.Dropout(0.8),
-            layers.GRU(units=128, return_sequences=True),
-            layers.Dropout(0.8),
-            layers.BatchNormalization(),
-            layers.GRU(units=128, return_sequences=True),
-            layers.Dropout(0.8),
-            layers.BatchNormalization(),
-            layers.Dropout(0.8),
-            layers.TimeDistributed(layers.Dense(1, activation="sigmoid"))
+        keras = lazy_imports.tensorflow.keras
+
+        self.model = keras.models.Sequential([
+            keras.layers.Conv1D(196, kernel_size=15, strides=4, input_shape=input_shape),
+            keras.layers.BatchNormalization(),
+            keras.layers.Activation('relu'),
+            keras.layers.Dropout(0.8),
+            keras.layers.GRU(units=128, return_sequences=True),
+            keras.layers.Dropout(0.8),
+            keras.layers.BatchNormalization(),
+            keras.layers.GRU(units=128, return_sequences=True),
+            keras.layers.Dropout(0.8),
+            keras.layers.BatchNormalization(),
+            keras.layers.Dropout(0.8),
+            keras.layers.TimeDistributed(keras.layers.Dense(1, activation="sigmoid"))
         ])
-        opt = optimizers.Adam(learning_rate=0.001, beta_1=0.9, beta_2=0.999, decay=0.01)
+        opt = keras.optimizers.Adam(learning_rate=0.001, beta_1=0.9, beta_2=0.999, decay=0.01)
         self.model.compile(optimizer=opt, loss="binary_crossentropy", metrics=["accuracy"])
 
         logger.info("Model Summary:")
