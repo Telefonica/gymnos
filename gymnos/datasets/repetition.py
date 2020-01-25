@@ -3,23 +3,32 @@
 #   Repetition
 #
 #
+import pandas as pd
 
+pd.options.mode.chained_assignment = None  # default='warn'
 import logging
 
-import gymnos
 import numpy as np
+import pandas as pd
 
 from .dataset import Dataset, Array, ClassLabel
+from ..utils.lazy_imports import lazy_imports
 
 logger = logging.getLogger(__name__)
 
-from ..utils.lazy_imports import lazy_imports
-
 gymod_aura_base_register = lazy_imports.gymod_aura_base_register
+
+ENTITIES = "ENTITIES"
+LABEL_COL_NAME = "HAS_RETRY"
+UTTERANCCES_COL_NAME = "INPUTS"
 
 
 class Repetition(Dataset):
     """
+    This class generates a repetition dataset that consists of dataset with one feature of sequences of phrases
+    of Aura logs in spoken in one session and, as binary class label, if the sequences are a repetition of an implicit
+    action that not was solved by Aura in the session.
+
     Firstly, downloads from Artifactory Repo:
      - text samples contain 1 text attribute consists of list of list of phrases in string format from Aura logs.
      - embeddings models trained with Aura logs in .pkl format.
@@ -47,16 +56,21 @@ class Repetition(Dataset):
         - **Classes**: 2
         - **Samples total**: variable
         - **Features**: texts
+
+    Parameters
+    ===========
+    input_name: str
+        Path to input file
+    embedding_names: list of strings,
+        Trained Embeddings names (.ppkl)
+    label_threshold : float,
+        Threshoold applied to label to determine if upper or equalthan it is a repetition (1) and otherwise not (0).
     """
 
-    def __init__(self, input_name, embedding_names, label_threshold, entities="ENTITIES", label_col_name="HAS RETRY",
-                 utterances_col_name="INPUTS"):
-        self.input_name = input_name
+    def __init__(self, path_input_name, embedding_names, label_threshold):
+        self.path_input_name = path_input_name
         self.embedding_names = embedding_names
         self.label_threshold = label_threshold
-        self.entities = entities
-        self.label_col_name = label_col_name
-        self.utterances_col_name = utterances_col_name
 
     @property
     def features_info(self):
@@ -67,24 +81,29 @@ class Repetition(Dataset):
         return ClassLabel(names=["not_repetition", "repetition"])
 
     def download_and_prepare(self, dl_manager):
+        input_path = "/home/cx02259/Escritorio/Github/rama_pocs_repetitions/aura-cognitive-pocs/repetitions/input/final/retry_manual_labeling_mh.csv"
+        sep = ","
+
+        # TODO change local loading to dowloading from Artifactory Repo
+        df = pd.read_csv(self.path_input_name, sep=sep)
 
         # Downloads  input datasets from Artifactory Repo for this class.
         # TODO change the dowloading paramerters (and debugging) when the real data will be uploaded to artifactory
-        df = gymnos.datasets.load("aura.generic", name=self.input_name, target='HAS_RETRY', verbose=True)
-        df.download_and_prepare()
+        # df = gymnos.datasets.load("aura.generic", name=self.input_name, target='HAS_RETRY', verbose=True)
+        # df.download_and_prepare()
 
         # Downloads embedding pkls from Artifactory Repo for preprocessors.
         # TODO change the dowloading (and debugging) paramerters when the real data will be uploaded to artifactory
-        for language_model in self.embedding_names:
-            embeddings_pkl = gymnos.datasets.load("aura.generic", name=language_model, target='HAS_RETRY',
-                                                  verbose=True)
-            embeddings_pkl.download_and_prepare()
+        # for language_model in self.embedding_names:
+        #    embeddings_pkl = gymnos.datasets.load("aura.generic", name=language_model, target='HAS_RETRY',
+        #                                          verbose=True)
+        #    embeddings_pkl.download_and_prepare()
 
         # Parses several characters in utterances column
         df = self.__parsing(df)
 
-        self.data_ = df[[self.utterances_col_name, self.label_col_name]]
-        self.size_ = len(self.data_[self.utterances_col_name])  # x and y have the same length.
+        self.data_ = df[[UTTERANCCES_COL_NAME, LABEL_COL_NAME]]
+        self.size_ = len(self.data_[UTTERANCCES_COL_NAME])  # x and y have the same length.
 
     def __parsing(self, df):
         """
@@ -109,34 +128,33 @@ class Repetition(Dataset):
         """
 
         # Replaces in label column commas by points.
-        df[self.label_col_name] = [float(str(val).replace(",", ".")) for val in df[self.label_col_name].values]
+        df[LABEL_COL_NAME] = [float(str(val).replace(",", ".")) for val in df[LABEL_COL_NAME].values]
 
         # Drops nan
         df = df.dropna()
 
         # Replaces multiple null spaces in sequences
-        df[self.utterances_col_name] = df[self.utterances_col_name].str.replace(' ' + str(np.nan) + ' ', '', regex=True)
+        df[UTTERANCCES_COL_NAME] = df[UTTERANCCES_COL_NAME].str.replace(' ' + str(np.nan) + ' ', '', regex=True)
 
         # Parses nan include in every sequence
-        df = Repetition.__parsing_expressions(data=df, utterances_col_name=self.utterances_col_name,
-                                              type_parsing="sequence_others")
+        df = Repetition.__parsing_expressions(data=df, utterances_col_name=UTTERANCCES_COL_NAME,
+                                              type_parsing="global_nan")
 
         # Fills with ones all values upper or equal than label_threshold parameter al with zeros the rest of values
-        df[self.label_col_name][df[self.label_col_name] >= self.label_threshold] = 1.0
-        df[self.label_col_name][df[self.label_col_name] < self.label_threshold] = 0.0
+        df[LABEL_COL_NAME] = (np.array(df[LABEL_COL_NAME]) > self.label_threshold).astype(bool).astype(int)
 
         # Parses compose entities in sequences with underscores
         total_utterances_col_name = []
-        list_entities = [eval(val) for val in df[self.entities].values]
-        for pos_sequence, sequence in enumerate(df[self.utterances_col_name].values):
-            Repetition.__parsing_composed_entities(sequence, list_entities[pos_sequence])
-            Repetition.__parsing_expressions(data=sequence, utterances_col_name=self.utterances_col_name,
-                                             type_parsing="sequence_others")
+        list_entities = [eval(val) for val in df[ENTITIES].values]
+        for pos_sequence, sequence in enumerate(df[UTTERANCCES_COL_NAME].values):
+            sequence = Repetition.__parsing_composed_entities(sequence, list_entities[pos_sequence])
+            sequence = Repetition.__parsing_expressions(data=sequence, utterances_col_name=UTTERANCCES_COL_NAME,
+                                                        type_parsing="sequence_others")
             total_utterances_col_name.append(sequence)
-        df[self.utterances_col_name] = total_utterances_col_name
+        df[UTTERANCCES_COL_NAME] = total_utterances_col_name
 
         # Removes sequences with only brackets
-        df = df[df[self.utterances_col_name].str.len() > 2]
+        df = df[df[UTTERANCCES_COL_NAME].str.len() > 2]
         return df
 
     @staticmethod
@@ -222,8 +240,8 @@ class Repetition(Dataset):
         return sequence
 
     def __getitem__(self, index):
-        X = self.data_[self.utterances_col_name][index]
-        y = self.data_[self.label_col_name][index]
+        X = self.data_[UTTERANCCES_COL_NAME].values[index]
+        y = self.data_[LABEL_COL_NAME].values[index]
         return X, y
 
     def __len__(self):
