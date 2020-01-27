@@ -6,6 +6,7 @@
 
 import os
 import sys
+import site
 import GPUtil
 import logging
 import importlib
@@ -33,8 +34,11 @@ def _install_module_with_pip_module(module_name):
 
 def _install_module_with_subprocess(module_name):
     pip_args = ["--no-cache-dir"]
-    if not _is_venv():
+    if not _is_venv() and site.ENABLE_USER_SITE:
         pip_args.append("--user")
+        if not os.path.exists(site.USER_SITE):
+            os.makedirs(site.USER_SITE)
+            site.addsitedir(site.USER_SITE)
     cmd = [sys.executable, "-m", "pip", "install"] + pip_args + [module_name]
     return subprocess.call(cmd, env=os.environ.copy())
 
