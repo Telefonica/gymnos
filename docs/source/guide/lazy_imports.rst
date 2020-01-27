@@ -61,3 +61,34 @@ If the import name is different than the one we will have to install:
         @classproperty
         def dask_array(cls):
             return _try_import("dask.array", module_to_install="dask[array]")
+
+Import submodules
+====================
+
+Some modules require to explicitly import submodules, for example:
+
+If you don't import ``sklearn.linear_model``, this will fail.
+
+.. code-block:: python
+
+    import sklearn
+
+    _ = sklearn.linear_model.LinearRegression()  # AttributeError: module 'sklearn' has no attribute 'linear_model'
+
+You need to explicitly import `linear_model` submodule:
+
+.. code-block:: python
+
+    import sklearn.linear_model
+
+    _ = sklearn.linear_model.LinearRegression()  # ✔️
+
+
+With lazy imports you can also import submodules with python's ``__import__`` function.
+Let's say we want to import ``linear_model`` from ``sklearn``:
+
+.. code-block:: python
+
+    sklearn = __import__(f"{lazy_imports.sklearn}.linear_model")
+
+    _ = sklearn.linear_model.LinearRegression()  # ✔️
