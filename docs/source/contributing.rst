@@ -12,19 +12,7 @@ Install gymnos with development dependencies:
 
   $ pipenv install --dev
 
-This will install complete Gymnos with development dependencies like ``pytest`` or ``sphinx``.
-
-If you have not installed TensorFlow, install it with:
-
-.. code-block:: console
-
-  $ pipenv run pip3 install .[tensorflow]
-
-Or ``tensorflow-gpu`` for GPU environments:
-
-.. code-block:: console
-
-  $ pipenv run pip3 install .[tensorflow-gpu]
+This will install Gymnos with development dependencies like ``pytest`` or ``sphinx``.
 
 Then, enter virtual environment:
 
