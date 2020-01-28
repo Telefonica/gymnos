@@ -12,23 +12,25 @@ from .preprocessor import Preprocessor
 class SequencesEmbeddingPooling(Preprocessor):
     """
     The SequencesEmbeddingPooling class consists of a series of pooling in which different statistics are
-    concatenated to a new component of the embedding array. These pooling are made two levels (phrase and sequence)
-    being the sequence pooling constructed from the phrase pooling.
+    concatenated to a new component of the embedding array.
 
-    The combinations used in the proof of concept are:
+    These pooling are made two levels (phrase and sequence) being the sequence pooling constructed
+    from the phrase pooling.
 
-    'two_steps_flatten_sequence_and_mean_max_min',
-    'two_steps_flatten_sequence_and_max_median',
-    'two_steps_mean_and_mean_max_min',
-    'two_steps_mean_max_and_mean_max_min',
-    'two_steps_max_median_and_mean_max_min',
-    'two_steps_mean_max_min_and_mean_max_min',
-    'two_steps_median_and_mean_max_min',
-    'two_steps_max_median_and_max_median',
-    'two_steps_mean_and_max_median',
-    'two_steps_mean_max_and_max_median',
-    'two_steps_max_median_and_max_median',
-    'two_steps_mean_max_min_and_max_median'
+    The combinations used in the proof of concept are (first step to phrase and then to sequence):
+
+        - 'two_steps_flatten_sequence_and_mean_max_min'
+        - 'two_steps_flatten_sequence_and_max_median'
+        - 'two_steps_mean_and_mean_max_min'
+        - 'two_steps_mean_max_and_mean_max_min'
+        - 'two_steps_max_median_and_mean_max_min'
+        - 'two_steps_mean_max_min_and_mean_max_min'
+        - 'two_steps_median_and_mean_max_min'
+        - 'two_steps_max_median_and_max_median'
+        - 'two_steps_mean_and_max_median'
+        - 'two_steps_mean_max_and_max_median'
+        - 'two_steps_max_median_and_max_median'
+        - 'two_steps_mean_max_min_and_max_median'
 
     Parameters
     -----------
@@ -48,7 +50,9 @@ class SequencesEmbeddingPooling(Preprocessor):
                     'two_steps_mean_and_max_median',
                     'two_steps_mean_max_and_max_median',
                     'two_steps_max_median_and_max_median',
-                    'two_steps_mean_max_min_and_max_median']
+                    'two_steps_mean_max_min_and_max_median',
+                    'two_steps_mean_max_min_and_median'
+                    ]
         try:
             assert type_pooling in poolings
         except AssertionError as e:
@@ -98,6 +102,9 @@ class SequencesEmbeddingPooling(Preprocessor):
                                                           type_pooling_phrase="max_median")
         elif self.type_pooling == "two_steps_mean_max_min_and_max_median":
             x = SequencesEmbeddingPooling.__apply_pooling(list_of_list=x, type_pooling_sequence="max_median",
+                                                          type_pooling_phrase="mean_max_min")
+        elif self.type_pooling == "two_steps_mean_max_min_and_median":
+            x = SequencesEmbeddingPooling.__apply_pooling(list_of_list=x, type_pooling_sequence="median",
                                                           type_pooling_phrase="mean_max_min")
         else:
             pass

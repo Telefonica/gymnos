@@ -3,9 +3,7 @@
 #   Repetition
 #
 #
-import pandas as pd
 
-pd.options.mode.chained_assignment = None  # default='warn'
 import logging
 
 import numpy as np
@@ -15,7 +13,7 @@ from .dataset import Dataset, Array, ClassLabel
 from ..utils.lazy_imports import lazy_imports
 
 logger = logging.getLogger(__name__)
-
+pd.options.mode.chained_assignment = None  # default='warn'
 gymod_aura_base_register = lazy_imports.gymod_aura_base_register
 
 ENTITIES = "ENTITIES"
@@ -81,11 +79,8 @@ class Repetition(Dataset):
         return ClassLabel(names=["not_repetition", "repetition"])
 
     def download_and_prepare(self, dl_manager):
-        input_path = "/home/cx02259/Escritorio/Github/rama_pocs_repetitions/aura-cognitive-pocs/repetitions/input/final/retry_manual_labeling_mh.csv"
-        sep = ","
-
         # TODO change local loading to dowloading from Artifactory Repo
-        df = pd.read_csv(self.path_input_name, sep=sep)
+        df = pd.read_csv(self.path_input_name, sep=",")
 
         # Downloads  input datasets from Artifactory Repo for this class.
         # TODO change the dowloading paramerters (and debugging) when the real data will be uploaded to artifactory
@@ -141,7 +136,8 @@ class Repetition(Dataset):
                                               type_parsing="global_nan")
 
         # Fills with ones all values upper or equal than label_threshold parameter al with zeros the rest of values
-        df[LABEL_COL_NAME] = (np.array(df[LABEL_COL_NAME]) > self.label_threshold).astype(bool).astype(int)
+        df[LABEL_COL_NAME][df[LABEL_COL_NAME] >= self.label_threshold] = 1.0
+        df[LABEL_COL_NAME][df[LABEL_COL_NAME] < self.label_threshold] = 0.0
 
         # Parses compose entities in sequences with underscores
         total_utterances_col_name = []
