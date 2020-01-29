@@ -5,7 +5,7 @@ such as datasets, models, preprocessors or trackers and therefore be able to exe
 of any model in a simple and automatic way.
 """
 
-from .__version__ import __description__, __author__, __version__, __license__, __url__  # noqa: E501
+from .__version__ import __description__, __author__, __version__, __license__, __url__  # noqa: F401
 
 from . import models
 from . import services

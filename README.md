@@ -1,5 +1,5 @@
 # Gymnos
-[![Build Status](https://dev.azure.com/pablolopezcoya/gymnos/_apis/build/status/Telefonica.gymnos)](https://dev.azure.com/pablolopezcoya/gymnos/_build/latest?definitionId=3)
+[![Build Status](https://dev.azure.com/pablolopezcoya/gymnos/_apis/build/status/Telefonica.gymnos?branchName=master)](https://dev.azure.com/pablolopezcoya/gymnos/_build/latest?definitionId=3&branchName=master)
  [![Python Version](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/release/python-369/)
  [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
