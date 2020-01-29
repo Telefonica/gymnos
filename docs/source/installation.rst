@@ -11,7 +11,7 @@ Then, you need to clone the repository:
 
 .. code-block:: console
 
-    $ git clone https://github.com/Telefonica/gymnos/tree/devel
+    $ git clone https://github.com/Telefonica/gymnos.git
     $ cd gymnos
 
 To install Gymnos:
@@ -54,7 +54,7 @@ First, clone repository:
 
 .. code-block:: console
 
-  $ git clone https://github.com/Telefonica/gymnos/tree/devel
+  $ git clone https://github.com/Telefonica/gymnos.git
   $ cd gymnos
 
 Then build Docker container:

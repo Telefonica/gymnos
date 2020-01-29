@@ -1,5 +1,5 @@
 # Gymnos
-[![Build Status](https://dev.azure.com/pablolopezcoya/gymnos/_apis/build/status/Telefonica.gymnos-devel?branchName=devel)](https://dev.azure.com/pablolopezcoya/gymnos/_build/latest?definitionId=3&branchName=devel)
+[![Build Status](https://dev.azure.com/pablolopezcoya/gymnos/_apis/build/status/Telefonica.gymnos)](https://dev.azure.com/pablolopezcoya/gymnos/_build/latest?definitionId=3)
  [![Python Version](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/release/python-369/)
  [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
@@ -11,7 +11,7 @@ Gymnos is written in Python.
 
 Install using `pip` from the command line:
 ```sh
-$ pip install git+https://github.com/Telefonica/gymnos.git@devel#egg=gymnos
+$ pip install git+https://github.com/Telefonica/gymnos.git
 ```
 
 See the documentation for building from source.
