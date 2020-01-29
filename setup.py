@@ -1,8 +1,14 @@
+import os
 import setuptools
+
+here = os.path.abspath(os.path.dirname(__file__))
 
 with open("README.md", "r") as fp:
     long_description = fp.read()
 
+about = {}
+with open(os.path.join(here, "gymnos", "__version__.py"), "r") as f:
+    exec(f.read(), about)
 
 DATASET_FILES = [
     "datasets/tiny_imagenet_labels.txt",
@@ -48,12 +54,13 @@ SETUP_REQUIRES = [
 
 setuptools.setup(
     name="gymnos",
-    version="0.1dev",
-    author="Telefonica",
-    description="A training platform for AI models",
+    version=about["__version__"],
+    author=about["__author__"],
+    description=about["__description__"],
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/Telefonica/gymnos",
+    url=about["__url__"],
+    license=about["__license__"],
     packages=setuptools.find_packages(),
     package_data={
         "gymnos": DATASET_FILES + VAR_FILES,

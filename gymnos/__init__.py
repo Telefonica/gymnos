@@ -1,3 +1,12 @@
+"""
+Gymnos is a model training library in Python for Machine Learning.
+It aims to define conventions in the APIs of the basic components of any supervised learning system
+such as datasets, models, preprocessors or trackers and therefore be able to execute the training
+of any model in a simple and automatic way.
+"""
+
+from .__version__ import __description__, __author__, __version__, __license__, __url__  # noqa: E501
+
 from . import models
 from . import services
 from . import datasets
