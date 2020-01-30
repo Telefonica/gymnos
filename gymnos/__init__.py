@@ -149,6 +149,11 @@ models.register(
 )
 
 models.register(
+    type="trigger_word_detection",
+    entry_point="gymnos.models.trigger_word_detection.TriggerWordDetection"
+)
+
+models.register(
     type="repetition_ada_boost",
     entry_point="gymnos.models.repetition_ada_boost.RepetitionAdaBoost"
 )
@@ -233,6 +238,11 @@ preprocessors.register(
 preprocessors.register(
     type="standard_scaler",
     entry_point="gymnos.preprocessors.standard_scaler.StandardScaler"
+)
+
+preprocessors.register(
+    type="spectrogram",
+    entry_point="gymnos.preprocessors.audio.spectrogram.Spectrogram"
 )
 
 preprocessors.register(
