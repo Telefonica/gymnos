@@ -178,10 +178,10 @@ class Repetition(Dataset):
         # TODO use regular expression to simplify parsing
         assert type_parsing in ("global_nan", "sequence_others")
         if type_parsing == "global_nan":
-            dict_strings_to_parse_nan = {'\[' + str(np.nan): '[',
-                                         '\[ ' + str(np.nan): '[',
-                                         str(np.nan) + '\]': ']',
-                                         str(np.nan) + ' \]': ']',
+            dict_strings_to_parse_nan = {r"\[" + str(np.nan): '[',
+                                         r"\[ " + str(np.nan): '[',
+                                         str(np.nan) + r"\]": ']',
+                                         str(np.nan) + r" \]": ']',
                                          str(np.nan) + "'": "'",
                                          "'" + str(np.nan): "'",
                                          "\n" + str(np.nan): "",
