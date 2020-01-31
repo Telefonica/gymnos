@@ -4,15 +4,23 @@
 #
 #
 
-import importlib
-import logging
 import os
-import subprocess
 import sys
+import site
+import GPUtil
+import logging
+import importlib
+import subprocess
+
 
 from .py_utils import classproperty
 
 logger = logging.getLogger(__name__)
+
+
+def _is_venv():
+    return (hasattr(sys, 'real_prefix') or
+            (hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix))
 
 
 def _install_module_with_pip_module(module_name):
@@ -25,7 +33,12 @@ def _install_module_with_pip_module(module_name):
 
 
 def _install_module_with_subprocess(module_name):
-    pip_args = ["--no-cache-dir", "--user"]
+    pip_args = ["--no-cache-dir"]
+    if not _is_venv() and site.ENABLE_USER_SITE:
+        pip_args.append("--user")
+        if not os.path.exists(site.USER_SITE):
+            os.makedirs(site.USER_SITE)
+            site.addsitedir(site.USER_SITE)
     cmd = [sys.executable, "-m", "pip", "install"] + pip_args + [module_name]
     return subprocess.call(cmd, env=os.environ.copy())
 
@@ -48,8 +61,8 @@ def _try_import_and_autoinstall(module_to_import, module_to_install):
         logger.warning(warning_msg.format(importing=module_to_import, installing=module_to_install))
 
         _install_module_with_subprocess(module_to_install)
-    finally:
-        return importlib.import_module(module_to_import)
+
+    return importlib.import_module(module_to_import)
 
 
 def _try_import_and_customize_error(module_to_import, module_to_install):
@@ -99,27 +112,37 @@ class LazyImporter:
         return _try_import("mlflow")
 
     @classproperty
-    def lightgbm(cls):
-        return _try_import("lightgbm")
+    def PIL(cls):
+        PIL = _try_import("PIL", module_to_install="Pillow")
+        return __import__("{}.Image".format(PIL.__name__))  # import common module
 
     @classproperty
-    def xgboost(cls):
-        return _try_import("xgboost")
+    def requests(cls):
+        return _try_import("requests")
 
     @classproperty
-    def auracog_embeddings_embeddings(cls):
-        _try_import("auracog_embeddings")
-        return importlib.import_module("auracog_embeddings.embeddings")
+    def kaggle(cls):
+        return _try_import("kaggle")
 
     @classproperty
-    def auracog_utils_text(cls):
-        _try_import("auracog_utils")
-        return importlib.import_module("auracog_utils.text")
+    def smb(cls):
+        return _try_import("smb", module_to_install="pysmb")
 
     @classproperty
-    def gymod_aura_base_register(cls):
-        _try_import("gymod_aura_base")
-        return importlib.import_module("gymod_aura_base.register")
+    def scipy(cls):
+        return _try_import("scipy", module_to_install="scipy")
+
+    @classproperty
+    def tensorflow(cls):
+        has_gpu = bool(GPUtil.getAvailable())
+        if has_gpu:
+            return _try_import("tensorflow", module_to_install="tensorflow-gpu>=1.9.0,<2.0")
+        else:
+            return _try_import("tensorflow", module_to_install="tensorflow>=1.9.0,<2.0")
+
+    @classproperty
+    def sklearn(cls):
+        return _try_import("sklearn", module_to_install="scikit-learn")
 
     @classproperty
     def dummy(cls):

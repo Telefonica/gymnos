@@ -1,3 +1,12 @@
+"""
+Gymnos is a model training library in Python for Machine Learning.
+It aims to define conventions in the APIs of the basic components of any supervised learning system
+such as datasets, models, preprocessors or trackers and therefore be able to execute the training
+of any model in a simple and automatic way.
+"""
+
+from .__version__ import __description__, __author__, __version__, __license__, __url__  # noqa: F401
+
 from . import models
 from . import services
 from . import datasets
@@ -80,8 +89,8 @@ datasets.register(
 )
 
 datasets.register(
-    type="repetition",
-    entry_point="gymnos.datasets.repetition.Repetition"
+    type="synthetic_ok_aura",
+    entry_point="gymnos.datasets.synthetic_ok_aura.SyntheticOkAura"
 )
 
 # MARK: Services registration
@@ -149,33 +158,8 @@ models.register(
 )
 
 models.register(
-    type="repetition_ada_boost",
-    entry_point="gymnos.models.repetition_ada_boost.RepetitionAdaBoost"
-)
-
-models.register(
-    type="repetition_knn",
-    entry_point="gymnos.models.repetition_knn.RepetitionKNN"
-)
-
-models.register(
-    type="repetition_light_gbm",
-    entry_point="gymnos.models.repetition_light_gbm.RepetitionLightGBM"
-)
-
-models.register(
-    type="repetition_random_forest",
-    entry_point="gymnos.models.repetition_random_forest.RepetitionRandomForest"
-)
-
-models.register(
-    type="repetition_svc",
-    entry_point="gymnos.models.repetition_svc.RepetitionSVC"
-)
-
-models.register(
-    type="repetition_xgboost",
-    entry_point="gymnos.models.repetition_xgboost.RepetitionXGBoost"
+    type="trigger_word_detection",
+    entry_point="gymnos.models.trigger_word_detection.TriggerWordDetection"
 )
 
 # MARK: Preprocessors registration
@@ -236,13 +220,8 @@ preprocessors.register(
 )
 
 preprocessors.register(
-    type="sequences_aura_embeddings",
-    entry_point="gymnos.preprocessors.sequences_aura_embeddings.SequencesAuraEmbeddings"
-)
-
-preprocessors.register(
-    type="sequences_embedding_pooling",
-    entry_point="gymnos.preprocessors.sequences_embedding_pooling.SequencesEmbeddingPooling"
+    type="spectrogram",
+    entry_point="gymnos.preprocessors.audio.spectrogram.Spectrogram"
 )
 
 # MARK: Tracker registration
