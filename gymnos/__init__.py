@@ -93,6 +93,11 @@ datasets.register(
     entry_point="gymnos.datasets.synthetic_ok_aura.SyntheticOkAura"
 )
 
+datasets.register(
+    type="repetition",
+    entry_point="gymnos.datasets.repetition.Repetition"
+)
+
 # MARK: Services registration
 
 services.register(
@@ -162,6 +167,36 @@ models.register(
     entry_point="gymnos.models.trigger_word_detection.TriggerWordDetection"
 )
 
+models.register(
+    type="repetition_ada_boost",
+    entry_point="gymnos.models.repetition_ada_boost.RepetitionAdaBoost"
+)
+
+models.register(
+    type="repetition_knn",
+    entry_point="gymnos.models.repetition_knn.RepetitionKNN"
+)
+
+models.register(
+    type="repetition_light_gbm",
+    entry_point="gymnos.models.repetition_light_gbm.RepetitionLightGBM"
+)
+
+models.register(
+    type="repetition_random_forest",
+    entry_point="gymnos.models.repetition_random_forest.RepetitionRandomForest"
+)
+
+models.register(
+    type="repetition_svc",
+    entry_point="gymnos.models.repetition_svc.RepetitionSVC"
+)
+
+models.register(
+    type="repetition_xgboost",
+    entry_point="gymnos.models.repetition_xgboost.RepetitionXGBoost"
+)
+
 # MARK: Preprocessors registration
 
 preprocessors.register(
@@ -222,6 +257,16 @@ preprocessors.register(
 preprocessors.register(
     type="spectrogram",
     entry_point="gymnos.preprocessors.audio.spectrogram.Spectrogram"
+)
+
+preprocessors.register(
+    type="sequences_aura_embeddings",
+    entry_point="gymnos.preprocessors.sequences_aura_embeddings.SequencesAuraEmbeddings"
+)
+
+preprocessors.register(
+    type="sequences_embedding_pooling",
+    entry_point="gymnos.preprocessors.sequences_embedding_pooling.SequencesEmbeddingPooling"
 )
 
 # MARK: Tracker registration

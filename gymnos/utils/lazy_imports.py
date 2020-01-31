@@ -145,6 +145,29 @@ class LazyImporter:
         return _try_import("sklearn", module_to_install="scikit-learn")
 
     @classproperty
+    def lightgbm(cls):
+        return _try_import("lightgbm")
+
+    @classproperty
+    def xgboost(cls):
+        return _try_import("xgboost")
+
+    @classproperty
+    def auracog_embeddings_embeddings(cls):
+        _try_import("auracog_embeddings")
+        return importlib.import_module("auracog_embeddings.embeddings")
+
+    @classproperty
+    def auracog_utils_text(cls):
+        _try_import("auracog_utils")
+        return importlib.import_module("auracog_utils.text")
+
+    @classproperty
+    def gymod_aura_base_register(cls):
+        _try_import("gymod_aura_base")
+        return importlib.import_module("gymod_aura_base.register")
+
+    @classproperty
     def dummy(cls):
         """
         Only for testing purposes
