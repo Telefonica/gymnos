@@ -27,7 +27,6 @@ class Repetition(Dataset):
 
     Firstly, loads:
      - text samples contain 1 text attribute consists of list of list of phrases in string format from Aura logs.
-     - embeddings models trained with Aura logs in .pkl format.
 
     After that, makes parses several characters in utterances column:
     - Replaces in label column commas by points.
