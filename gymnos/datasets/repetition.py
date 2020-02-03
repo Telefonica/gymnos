@@ -1,6 +1,6 @@
 #
 #
-#   Repetition
+#  Repetition
 #
 #
 
@@ -57,7 +57,7 @@ class Repetition(Dataset):
 
     Parameters
     ===========
-    input_name: str
+    path_input_name: str
         Path to input file
     embedding_names: list of strings,
         Trained Embeddings names (.ppkl)
@@ -65,7 +65,7 @@ class Repetition(Dataset):
         Threshoold applied to label to determine if upper or equalthan it is a repetition (1) and otherwise not (0).
     """
 
-    def __init__(self, path_input_name, embedding_names, label_threshold):
+    def __init__(self, path_input_name, embedding_names, label_threshold=0.5):
         self.path_input_name = path_input_name
         self.embedding_names = embedding_names
         self.label_threshold = label_threshold
@@ -82,6 +82,13 @@ class Repetition(Dataset):
         # TODO change local loading to dowloading from Artifactory Repo
         df = pd.read_csv(self.path_input_name, sep=",")
 
+        # df = gymnos.datasets.load("aura.generic", name='rep_train_mp',verbose=True)
+        # df.download_and_prepare()  # download data and prepare dataset
+        # print("---ok---")
+
+        # data_loader = DataLoader(dataset, batch_size=2, drop_last=False)
+        # print(data_loader[0])
+
         # Downloads  input datasets from Artifactory Repo for this class.
         # TODO change the dowloading paramerters (and debugging) when the real data will be uploaded to artifactory
         # df = gymnos.datasets.load("aura.generic", name=self.input_name, target='HAS_RETRY', verbose=True)
@@ -97,8 +104,8 @@ class Repetition(Dataset):
         # Parses several characters in utterances column
         df = self.__parsing(df)
 
-        self.data_ = df[[UTTERANCCES_COL_NAME, LABEL_COL_NAME]]
-        self.size_ = len(self.data_[UTTERANCCES_COL_NAME])  # x and y have the same length.
+        self.labels_ = df[LABEL_COL_NAME].values
+        self.features_ = df[UTTERANCCES_COL_NAME].values
 
     def __parsing(self, df):
         """
@@ -151,6 +158,9 @@ class Repetition(Dataset):
 
         # Removes sequences with only brackets
         df = df[df[UTTERANCCES_COL_NAME].str.len() > 2]
+
+        # Drops nan
+        df = df.dropna()
         return df
 
     @staticmethod
@@ -236,9 +246,7 @@ class Repetition(Dataset):
         return sequence
 
     def __getitem__(self, index):
-        X = self.data_[UTTERANCCES_COL_NAME].values[index]
-        y = self.data_[LABEL_COL_NAME].values[index]
-        return X, y
+        return self.features_[index], self.labels_[index]
 
     def __len__(self):
-        return self.size_
+        return len(self.features_)

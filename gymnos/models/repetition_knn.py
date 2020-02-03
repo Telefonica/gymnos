@@ -37,7 +37,6 @@ class RepetitionKNN(SklearnMixin, Model):
         self.search = search
         self.scoring = scoring
         self.n_iter = n_iter
-        self.model_search = None
 
     def fit(self, x, y, validation_split=0, cross_validation=None):
         metrics = {}
@@ -50,24 +49,19 @@ class RepetitionKNN(SklearnMixin, Model):
 
         if self.search == "grid_search":
             knn_grid = {'n_neighbors': k_range, 'weights': weight_options}
-            self.model_search = GridSearchCV(estimator=self.model, param_grid=knn_grid,
-                                             scoring=self.scoring, refit=True, cv=cv, verbose=3, n_jobs=-1)
-            self.model_search.fit(x, y)
-            self.model = self.model_search.best_estimator_
+            self.model = GridSearchCV(estimator=self.model, param_grid=knn_grid,
+                                      scoring=self.scoring, refit=True, cv=cv, verbose=3, n_jobs=-1)
         elif self.search == "random_search":
             knn_random_grid = {'n_neighbors': k_range, 'weights': weight_options}
-            self.model_search = RandomizedSearchCV(estimator=self.model, param_distributions=knn_random_grid,
-                                                   scoring=self.scoring, cv=cv, refit=True,
-                                                   random_state=14, verbose=3, n_jobs=-1, n_iter=self.n_iter)
-            self.model_search.fit(x, y)
-            self.model = self.model_search.best_estimator_
+            self.model = RandomizedSearchCV(estimator=self.model, param_distributions=knn_random_grid,
+                                            scoring=self.scoring, cv=cv, refit=True,
+                                            random_state=14, verbose=3, n_jobs=-1, n_iter=self.n_iter)
         else:
-            self.model.fit(x, y)
-            self.model_search = self.model
+            pass
 
-        metrics['search'] = self.model_search
+        self.model.fit(x, y)
+
         if self.search in ["grid_search", "random_search"]:
-            metrics[self.scoring] = self.model_search.best_score_
-            metrics["best_params"] = self.model_search.best_params_
-            metrics['search'] = self.model_search
+            metrics[self.scoring] = self.model.best_score_
+            metrics["best_params"] = self.model.best_params_
         return metrics

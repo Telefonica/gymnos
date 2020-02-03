@@ -4,6 +4,8 @@
 #
 #
 
+import numpy as np
+
 from .preprocessor import Preprocessor
 from ..utils.lazy_imports import lazy_imports
 
@@ -37,7 +39,7 @@ class SequencesAuraEmbeddings(Preprocessor):
             normalized_sequence = self.__sequence_normalizer(sequence)
             list_embeddings = self.embeddings.transform(normalized_sequence)
             result.append(list_embeddings)
-        return result
+        return np.array(result)
 
     def __sequence_normalizer(self, sequence):
         """ Simple pre-processing: lowercase, remove punctuation and special characters and accents """
