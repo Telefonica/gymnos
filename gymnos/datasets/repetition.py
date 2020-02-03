@@ -25,7 +25,7 @@ class Repetition(Dataset):
     of Aura logs in spoken in one session and, as binary class label, if the sequences are a repetition of an implicit
     action that not was solved by Aura in the session.
 
-    Firstly, downloads from Artifactory Repo:
+    Firstly, loads:
      - text samples contain 1 text attribute consists of list of list of phrases in string format from Aura logs.
      - embeddings models trained with Aura logs in .pkl format.
 
