@@ -25,3 +25,10 @@ titanic
 .. autoclass:: gymnos.datasets.titanic.Titanic
     :noindex:
     :show-inheritance:
+
+repetition
+===========
+.. autoclass:: gymnos.datasets.repetition.Repetition
+    :noindex:
+    :show-inheritance:
+
