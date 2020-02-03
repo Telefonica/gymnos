@@ -63,9 +63,8 @@ class Repetition(Dataset):
         Threshoold applied to label to determine if upper or equalthan it is a repetition (1) and otherwise not (0).
     """
 
-    def __init__(self, path_input_name, embedding_names, label_threshold=0.5):
+    def __init__(self, path_input_name, label_threshold=0.5):
         self.path_input_name = path_input_name
-        self.embedding_names = embedding_names
         self.label_threshold = label_threshold
 
     @property
