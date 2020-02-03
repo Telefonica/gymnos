@@ -4,6 +4,7 @@
 #
 #
 
+import numpy as np
 import scipy.stats as stats
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, ShuffleSplit
 
@@ -41,6 +42,8 @@ class RepetitionLightGBM(SklearnMixin, Model):
 
     def fit(self, x, y, validation_split=0, cross_validation=None):
         metrics = {}
+        x = np.array(x)
+        y = np.array(y)
 
         # create cross validation iterator
         cv = ShuffleSplit(n_splits=self.cv, test_size=0.2, random_state=0)
@@ -73,5 +76,4 @@ class RepetitionLightGBM(SklearnMixin, Model):
 
         if self.search in ["grid_search", "random_search"]:
             metrics[self.scoring] = self.model.best_score_
-            metrics["best_params"] = self.model.best_params_
         return metrics
