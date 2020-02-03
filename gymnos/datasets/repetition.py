@@ -10,11 +10,9 @@ import numpy as np
 import pandas as pd
 
 from .dataset import Dataset, Array, ClassLabel
-from ..utils.lazy_imports import lazy_imports
 
 logger = logging.getLogger(__name__)
 pd.options.mode.chained_assignment = None  # default='warn'
-gymod_aura_base_register = lazy_imports.gymod_aura_base_register
 
 ENTITIES = "ENTITIES"
 LABEL_COL_NAME = "HAS_RETRY"
@@ -79,27 +77,8 @@ class Repetition(Dataset):
         return ClassLabel(names=["not_repetition", "repetition"])
 
     def download_and_prepare(self, dl_manager):
-        # TODO change local loading to dowloading from Artifactory Repo
+        # load data
         df = pd.read_csv(self.path_input_name, sep=",")
-
-        # df = gymnos.datasets.load("aura.generic", name='rep_train_mp',verbose=True)
-        # df.download_and_prepare()  # download data and prepare dataset
-        # print("---ok---")
-
-        # data_loader = DataLoader(dataset, batch_size=2, drop_last=False)
-        # print(data_loader[0])
-
-        # Downloads  input datasets from Artifactory Repo for this class.
-        # TODO change the dowloading paramerters (and debugging) when the real data will be uploaded to artifactory
-        # df = gymnos.datasets.load("aura.generic", name=self.input_name, target='HAS_RETRY', verbose=True)
-        # df.download_and_prepare()
-
-        # Downloads embedding pkls from Artifactory Repo for preprocessors.
-        # TODO change the dowloading (and debugging) paramerters when the real data will be uploaded to artifactory
-        # for language_model in self.embedding_names:
-        #    embeddings_pkl = gymnos.datasets.load("aura.generic", name=language_model, target='HAS_RETRY',
-        #                                          verbose=True)
-        #    embeddings_pkl.download_and_prepare()
 
         # Parses several characters in utterances column
         df = self.__parsing(df)
