@@ -30,6 +30,20 @@ titanic
     :show-inheritance:
     :members: fit
 
+repetition_knn
+======================================================
+.. autoclass:: gymnos.models.repetition_knn.RepetitionKNN
+    :noindex:
+    :show-inheritance:
+    :members: fit
+
+repetition_random_forest
+======================================================
+.. autoclass:: gymnos.models.repetition_random_forest.RepetitionRandomForest
+    :noindex:
+    :show-inheritance:
+    :members: fit
+
 repetition_ada_boost
 ======================================================
 .. autoclass:: gymnos.models.repetition_ada_boost.RepetitionAdaBoost
