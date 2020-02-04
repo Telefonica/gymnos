@@ -68,6 +68,7 @@ class RepetitionSVC(SklearnMixin, Model):
             pass
 
         self.model.fit(x, y)
+
         if self.search in ["grid_search", "random_search"]:
             metrics[self.scoring] = self.model.best_score_
         return metrics

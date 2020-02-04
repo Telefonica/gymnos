@@ -59,9 +59,10 @@ class RepetitionAdaBoost(SklearnMixin, Model):
                                             random_state=14, verbose=3, n_jobs=-1, n_iter=self.n_iter)
 
         else:
-            self.model.fit(x, y)
+            pass
 
-        metrics['search'] = self.model
+        self.model.fit(x, y)
+
         if self.search in ["grid_search", "random_search"]:
             metrics[self.scoring] = self.model.best_score_
         return metrics

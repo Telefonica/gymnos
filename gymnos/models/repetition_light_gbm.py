@@ -72,6 +72,7 @@ class RepetitionLightGBM(SklearnMixin, Model):
 
         else:
             pass
+
         self.model.fit(x, y)
 
         if self.search in ["grid_search", "random_search"]:
