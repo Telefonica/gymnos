@@ -178,16 +178,6 @@ models.register(
 )
 
 models.register(
-    type="repetition_light_gbm",
-    entry_point="gymnos.models.repetition_light_gbm.RepetitionLightGBM"
-)
-
-models.register(
-    type="repetition_random_forest",
-    entry_point="gymnos.models.repetition_random_forest.RepetitionRandomForest"
-)
-
-models.register(
     type="repetition_svc",
     entry_point="gymnos.models.repetition_svc.RepetitionSVC"
 )

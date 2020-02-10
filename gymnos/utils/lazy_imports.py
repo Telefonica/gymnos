@@ -145,6 +145,21 @@ class LazyImporter:
         return _try_import("sklearn", module_to_install="scikit-learn")
 
     @classproperty
+    def sklearn_svm(cls):
+        _try_import("sklearn")
+        return importlib.import_module("sklearn.svm")
+
+    @classproperty
+    def sklearn_neighbors(cls):
+        _try_import("sklearn")
+        return importlib.import_module("sklearn.neighbors")
+
+    @classproperty
+    def sklearn_ensemble(cls):
+        _try_import("sklearn")
+        return importlib.import_module("sklearn.ensemble")
+
+    @classproperty
     def xgboost(cls):
         return _try_import("xgboost")
 

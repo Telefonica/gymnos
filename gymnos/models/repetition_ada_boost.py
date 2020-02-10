@@ -32,7 +32,7 @@ class RepetitionAdaBoost(SklearnMixin, Model):
     """
 
     def __init__(self, cv=5, search=None, scoring='roc_auc', n_iter=100):
-        self.model = lazy_imports.sklearn.AdaBoostClassifier()
+        self.model = lazy_imports.sklearn_ensemble.AdaBoostClassifier()
         self.cv = cv
         self.search = search
         self.scoring = scoring

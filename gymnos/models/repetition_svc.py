@@ -32,7 +32,7 @@ class RepetitionSVC(SklearnMixin, Model):
     """
 
     def __init__(self, cv=5, search=None, scoring='roc_auc', n_iter=100):
-        self.model = lazy_imports.sklearn.SVC(probability=True)
+        self.model = lazy_imports.sklearn_svm.SVC(probability=True)
         self.cv = cv
         self.search = search
         self.scoring = scoring

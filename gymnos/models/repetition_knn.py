@@ -32,7 +32,7 @@ class RepetitionKNN(SklearnMixin, Model):
     """
 
     def __init__(self, cv=5, search=None, scoring='roc_auc', n_iter=100):
-        self.model = lazy_imports.sklearn.KNeighborsClassifier(n_neighbors=5)
+        self.model = lazy_imports.sklearn_neighbors.KNeighborsClassifier(n_neighbors=5)
         self.cv = cv
         self.search = search
         self.scoring = scoring
