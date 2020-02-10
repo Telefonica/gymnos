@@ -44,23 +44,25 @@ class RepetitionKNN(SklearnMixin, Model):
         y = np.array(y)
 
         # create cross validation iterator
-        cv = lazy_imports.sklearn.ShuffleSplit(n_splits=self.cv, test_size=0.2, random_state=0)
+        cv = lazy_imports.sklearn.model_selection.ShuffleSplit(n_splits=self.cv, test_size=0.2, random_state=0)
 
         k_range = list(range(1, 31))
         weight_options = ['uniform', 'distance']
 
         if self.search == "grid_search":
             knn_grid = {'n_neighbors': k_range, 'weights': weight_options}
-            self.model = lazy_imports.sklearn.GridSearchCV(estimator=self.model, param_grid=knn_grid,
-                                                           scoring=self.scoring, refit=True, cv=cv, verbose=3,
-                                                           n_jobs=-1)
+            self.model = lazy_imports.sklearn.model_selection.GridSearchCV(estimator=self.model, param_grid=knn_grid,
+                                                                           scoring=self.scoring, refit=True, cv=cv,
+                                                                           verbose=3,
+                                                                           n_jobs=-1)
         elif self.search == "random_search":
             knn_random_grid = {'n_neighbors': k_range, 'weights': weight_options}
-            self.model = lazy_imports.sklearn.RandomizedSearchCV(estimator=self.model,
-                                                                 param_distributions=knn_random_grid,
-                                                                 scoring=self.scoring, cv=cv, refit=True,
-                                                                 random_state=14, verbose=3, n_jobs=-1,
-                                                                 n_iter=self.n_iter)
+            self.model = lazy_imports.sklearn.model_selection.RandomizedSearchCV(estimator=self.model,
+                                                                                 param_distributions=knn_random_grid,
+                                                                                 scoring=self.scoring, cv=cv,
+                                                                                 refit=True,
+                                                                                 random_state=14, verbose=3, n_jobs=-1,
+                                                                                 n_iter=self.n_iter)
         else:
             pass
 

@@ -44,7 +44,7 @@ class RepetitionSVC(SklearnMixin, Model):
         y = np.array(y)
 
         # create cross validation iterator
-        cv = lazy_imports.sklearn.ShuffleSplit(n_splits=self.cv, test_size=0.2, random_state=0)
+        cv = lazy_imports.sklearn.model_selection.ShuffleSplit(n_splits=self.cv, test_size=0.2, random_state=0)
 
         if self.search == "grid_search":
             svc_grid = {'kernel': ('linear', 'rbf'),
@@ -52,20 +52,22 @@ class RepetitionSVC(SklearnMixin, Model):
                         'gamma': (1, 2, 3, 'auto'),
                         'decision_function_shape': ('ovo', 'ovr'),
                         'shrinking': (True, False)}
-            self.model = lazy_imports.sklearn.GridSearchCV(estimator=self.model, param_grid=svc_grid,
-                                                           scoring=self.scoring, refit=True, cv=cv, verbose=3,
-                                                           n_jobs=-1)
+            self.model = lazy_imports.sklearn.model_selection.GridSearchCV(estimator=self.model, param_grid=svc_grid,
+                                                                           scoring=self.scoring, refit=True, cv=cv,
+                                                                           verbose=3,
+                                                                           n_jobs=-1)
         elif self.search == "random_search":
             svc_random_grid = {'kernel': ('linear', 'rbf'),
                                'C': np.geomspace(0.1, 4, num=8),
                                'gamma': (1, 2, 3, 'auto'),
                                'decision_function_shape': ('ovo', 'ovr'),
                                'shrinking': (True, False)}
-            self.model = lazy_imports.sklearn.RandomizedSearchCV(estimator=self.model,
-                                                                 param_distributions=svc_random_grid,
-                                                                 scoring=self.scoring, cv=cv, refit=True,
-                                                                 random_state=14, verbose=3, n_jobs=-1,
-                                                                 n_iter=self.n_iter)
+            self.model = lazy_imports.sklearn.model_selection.RandomizedSearchCV(estimator=self.model,
+                                                                                 param_distributions=svc_random_grid,
+                                                                                 scoring=self.scoring, cv=cv,
+                                                                                 refit=True,
+                                                                                 random_state=14, verbose=3, n_jobs=-1,
+                                                                                 n_iter=self.n_iter)
         else:
             pass
 
