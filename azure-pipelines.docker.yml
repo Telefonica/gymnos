@@ -17,13 +17,9 @@ pool:
 
 steps:
 - script: |
-    echo Generate documentation
-    python3.6 -m pip install sphinx sphinx-rtd-theme sphinx-argparse flask numpy --user
-    sphinx-build -b html docs/source docs/build
-    sudo systemctl stop gymnos_rtd
-    cp -r docs/build $(gymnosRTDPath)
-    sudo systemctl start gymnos_rtd
-  displayName: 'Generate documentation'
+    echo Update documentation
+    docker exec self-hosted-readthedocs_web_1 python manage.py update_repos --slug gymnos
+  displayName: 'Update documentation'
   condition: ne(variables['Build.Reason'], 'PullRequest')
 - script: |
     echo Validate documentation
