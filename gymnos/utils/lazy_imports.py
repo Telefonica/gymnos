@@ -145,10 +145,6 @@ class LazyImporter:
         return _try_import("sklearn", module_to_install="scikit-learn")
 
     @classproperty
-    def lightgbm(cls):
-        return _try_import("lightgbm")
-
-    @classproperty
     def xgboost(cls):
         return _try_import("xgboost")
 

@@ -27,8 +27,7 @@ titanic
     :show-inheritance:
 
 repetition
-===========
+====================================
 .. autoclass:: gymnos.datasets.repetition.Repetition
     :noindex:
     :show-inheritance:
-

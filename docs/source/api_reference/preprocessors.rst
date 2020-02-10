@@ -99,3 +99,15 @@ gymnos.preprocessors.standard_scaler
 
 .. automodule:: gymnos.preprocessors.standard_scaler
     :members:
+
+gymnos.preprocessors.sequences_aura_embeddings
+==============================================
+
+.. automodule:: gymnos.preprocessors.sequences_aura_embeddings
+    :members:
+
+gymnos.preprocessors.sequences_embedding_pooling
+================================================
+
+.. automodule:: gymnos.preprocessors.sequences_embedding_pooling
+    :members:

@@ -30,20 +30,6 @@ titanic
     :show-inheritance:
     :members: fit
 
-repetition_knn
-======================================================
-.. autoclass:: gymnos.models.repetition_knn.RepetitionKNN
-    :noindex:
-    :show-inheritance:
-    :members: fit
-
-repetition_random_forest
-======================================================
-.. autoclass:: gymnos.models.repetition_random_forest.RepetitionRandomForest
-    :noindex:
-    :show-inheritance:
-    :members: fit
-
 repetition_ada_boost
 ======================================================
 .. autoclass:: gymnos.models.repetition_ada_boost.RepetitionAdaBoost
@@ -51,16 +37,9 @@ repetition_ada_boost
     :show-inheritance:
     :members: fit
 
-repetition_xgboost
+repetition_knn
 ======================================================
-.. autoclass:: gymnos.models.repetition_xgboost.RepetitionXGBoost
-    :noindex:
-    :show-inheritance:
-    :members: fit
-
-repetition_light_gbm
-======================================================
-.. autoclass:: gymnos.models.repetition_light_gbm.RepetitionLightGBM
+.. autoclass:: gymnos.models.repetition_knn.RepetitionKNN
     :noindex:
     :show-inheritance:
     :members: fit
@@ -68,6 +47,13 @@ repetition_light_gbm
 repetition_svc
 ======================================================
 .. autoclass:: gymnos.models.repetition_svc.RepetitionSVC
+    :noindex:
+    :show-inheritance:
+    :members: fit
+
+repetition_xgboost
+======================================================
+.. autoclass:: gymnos.models.repetition_xgboost.RepetitionXGBoost
     :noindex:
     :show-inheritance:
     :members: fit

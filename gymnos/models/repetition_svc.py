@@ -5,11 +5,10 @@
 #
 
 import numpy as np
-from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, ShuffleSplit
-from sklearn.svm import SVC
 
 from .mixins import SklearnMixin
 from .model import Model
+from ..utils.lazy_imports import lazy_imports
 
 
 class RepetitionSVC(SklearnMixin, Model):
@@ -33,7 +32,7 @@ class RepetitionSVC(SklearnMixin, Model):
     """
 
     def __init__(self, cv=5, search=None, scoring='roc_auc', n_iter=100):
-        self.model = SVC(probability=True)
+        self.model = lazy_imports.sklearn.SVC(probability=True)
         self.cv = cv
         self.search = search
         self.scoring = scoring
@@ -45,7 +44,7 @@ class RepetitionSVC(SklearnMixin, Model):
         y = np.array(y)
 
         # create cross validation iterator
-        cv = ShuffleSplit(n_splits=self.cv, test_size=0.2, random_state=0)
+        cv = lazy_imports.sklearn.ShuffleSplit(n_splits=self.cv, test_size=0.2, random_state=0)
 
         if self.search == "grid_search":
             svc_grid = {'kernel': ('linear', 'rbf'),
@@ -53,17 +52,20 @@ class RepetitionSVC(SklearnMixin, Model):
                         'gamma': (1, 2, 3, 'auto'),
                         'decision_function_shape': ('ovo', 'ovr'),
                         'shrinking': (True, False)}
-            self.model = GridSearchCV(estimator=self.model, param_grid=svc_grid,
-                                      scoring=self.scoring, refit=True, cv=cv, verbose=3, n_jobs=-1)
+            self.model = lazy_imports.sklearn.GridSearchCV(estimator=self.model, param_grid=svc_grid,
+                                                           scoring=self.scoring, refit=True, cv=cv, verbose=3,
+                                                           n_jobs=-1)
         elif self.search == "random_search":
             svc_random_grid = {'kernel': ('linear', 'rbf'),
                                'C': np.geomspace(0.1, 4, num=8),
                                'gamma': (1, 2, 3, 'auto'),
                                'decision_function_shape': ('ovo', 'ovr'),
                                'shrinking': (True, False)}
-            self.model = RandomizedSearchCV(estimator=self.model, param_distributions=svc_random_grid,
-                                            scoring=self.scoring, cv=cv, refit=True,
-                                            random_state=14, verbose=3, n_jobs=-1, n_iter=self.n_iter)
+            self.model = lazy_imports.sklearn.RandomizedSearchCV(estimator=self.model,
+                                                                 param_distributions=svc_random_grid,
+                                                                 scoring=self.scoring, cv=cv, refit=True,
+                                                                 random_state=14, verbose=3, n_jobs=-1,
+                                                                 n_iter=self.n_iter)
         else:
             pass
 

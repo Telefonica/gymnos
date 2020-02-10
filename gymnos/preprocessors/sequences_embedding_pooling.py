@@ -19,18 +19,39 @@ class SequencesEmbeddingPooling(Preprocessor):
 
     The combinations used in the proof of concept are (first step to phrase and then to sequence):
 
-        - 'two_steps_flatten_sequence_and_mean_max_min'
-        - 'two_steps_flatten_sequence_and_max_median'
-        - 'two_steps_mean_and_mean_max_min'
-        - 'two_steps_mean_max_and_mean_max_min'
-        - 'two_steps_max_median_and_mean_max_min'
-        - 'two_steps_mean_max_min_and_mean_max_min'
-        - 'two_steps_median_and_mean_max_min'
-        - 'two_steps_max_median_and_max_median'
-        - 'two_steps_mean_and_max_median'
-        - 'two_steps_mean_max_and_max_median'
-        - 'two_steps_max_median_and_max_median'
-        - 'two_steps_mean_max_min_and_max_median'
+        - 'median_and_flatten_sequence',
+        - 'median_max_and_flatten_sequence',
+        - 'median_max_min_and_flatten_sequence',
+
+        - 'mean_and_flatten_sequence',
+        - 'mean_max_and_flatten_sequence',
+        - 'mean_max_min_and_flatten_sequence',
+
+        - 'median_and_median',
+        - 'median_and_median_max',
+        - 'median_and_median_max_min',
+
+        - 'median_max_and_median',
+        - 'median_max_and_median_max',
+        - 'median_max_and_median_max_min',
+
+        - 'median_max_min_and_median',
+        - 'median_max_min_and_median_max',
+        - 'median_max_min_and_median_max_min',
+
+        - 'mean_and_median',
+        - 'mean_and_median_max',
+        - 'mean_and_median_max_min',
+
+        - 'mean_max_and_median',
+        - 'mean_max_and_median_max',
+        - 'mean_max_and_median_max_min',
+
+
+        - 'mean_max_min_and_median',
+        - 'mean_max_min_and_median_max',
+        - 'mean_max_min_and_median_max_min'
+
 
     Parameters
     -----------
@@ -39,20 +60,31 @@ class SequencesEmbeddingPooling(Preprocessor):
     """
 
     def __init__(self, type_pooling="flatten_sequence"):
-        poolings = ['two_steps_flatten_sequence_and_mean_max_min',
-                    'two_steps_flatten_sequence_and_max_median',
-                    'two_steps_mean_and_mean_max_min',
-                    'two_steps_mean_max_and_mean_max_min',
-                    'two_steps_max_median_and_mean_max_min',
-                    'two_steps_mean_max_min_and_mean_max_min',
-                    'two_steps_median_and_mean_max_min',
-                    'two_steps_max_median_and_max_median',
-                    'two_steps_mean_and_max_median',
-                    'two_steps_mean_max_and_max_median',
-                    'two_steps_max_median_and_max_median',
-                    'two_steps_mean_max_min_and_max_median',
-                    'two_steps_mean_max_min_and_median'
-                    ]
+        poolings = ['median_and_flatten_sequence',
+                    'median_max_and_flatten_sequence',
+                    'median_max_min_and_flatten_sequence',
+                    'mean_and_flatten_sequence',
+                    'mean_max_and_flatten_sequence',
+                    'mean_max_min_and_flatten_sequence',
+                    'median_and_median',
+                    'median_and_median_max',
+                    'median_and_median_max_min',
+                    'median_max_and_median',
+                    'median_max_and_median_max',
+                    'median_max_and_median_max_min',
+                    'median_max_min_and_median',
+                    'median_max_min_and_median_max',
+                    'median_max_min_and_median_max_min',
+                    'mean_and_median',
+                    'mean_and_median_max',
+                    'mean_and_median_max_min',
+                    'mean_max_and_median',
+                    'mean_max_and_median_max',
+                    'mean_max_and_median_max_min',
+                    'mean_max_min_and_median',
+                    'mean_max_min_and_median_max',
+                    'mean_max_min_and_median_max_min']
+
         try:
             assert type_pooling in poolings
         except AssertionError as e:
@@ -67,66 +99,28 @@ class SequencesEmbeddingPooling(Preprocessor):
         return self
 
     def transform(self, x):
-        if self.type_pooling == "two_steps_flatten_sequence_and_mean_max_min":
-            x = SequencesEmbeddingPooling.__apply_pooling(array_of_list=x, type_pooling_sequence="mean_max_min",
-                                                          type_pooling_phrase="flatten_sequence")
-        if self.type_pooling == "two_steps_flatten_sequence_and_max_median":
-            x = SequencesEmbeddingPooling.__apply_pooling(array_of_list=x, type_pooling_sequence="max_median",
-                                                          type_pooling_phrase="flatten_sequence")
-        elif self.type_pooling == "two_steps_mean_and_mean_max_min":
-            x = SequencesEmbeddingPooling.__apply_pooling(array_of_list=x, type_pooling_sequence="mean_max_min",
-                                                          type_pooling_phrase="mean")
-        elif self.type_pooling == "two_steps_mean_max_and_mean_max_min":
-            x = SequencesEmbeddingPooling.__apply_pooling(array_of_list=x, type_pooling_sequence="mean_max_min",
-                                                          type_pooling_phrase="mean_max")
-        elif self.type_pooling == "two_steps_max_median_and_mean_max_min":
-            x = SequencesEmbeddingPooling.__apply_pooling(array_of_list=x, type_pooling_sequence="mean_max_min",
-                                                          type_pooling_phrase="max_median")
-        elif self.type_pooling == "two_steps_mean_max_min_and_mean_max_min":
-            x = SequencesEmbeddingPooling.__apply_pooling(array_of_list=x, type_pooling_sequence="mean_max_min",
-                                                          type_pooling_phrase="mean_max_min")
-        elif self.type_pooling == "two_steps_median_and_mean_max_min":
-            x = SequencesEmbeddingPooling.__apply_pooling(array_of_list=x, type_pooling_sequence="mean_max_min",
-                                                          type_pooling_phrase="median")
-        if self.type_pooling == "two_steps_max_median_and_max_median":
-            x = SequencesEmbeddingPooling.__apply_pooling(array_of_list=x, type_pooling_sequence="max_median",
-                                                          type_pooling_phrase="max_median")
-        elif self.type_pooling == "two_steps_mean_and_max_median":
-            x = SequencesEmbeddingPooling.__apply_pooling(array_of_list=x, type_pooling_sequence="max_median",
-                                                          type_pooling_phrase="mean")
-        elif self.type_pooling == "two_steps_mean_max_and_max_median":
-            x = SequencesEmbeddingPooling.__apply_pooling(array_of_list=x, type_pooling_sequence="max_median",
-                                                          type_pooling_phrase="mean_max")
-        elif self.type_pooling == "two_steps_max_median_and_max_median":
-            x = SequencesEmbeddingPooling.__apply_pooling(array_of_list=x, type_pooling_sequence="max_median",
-                                                          type_pooling_phrase="max_median")
-        elif self.type_pooling == "two_steps_mean_max_min_and_max_median":
-            x = SequencesEmbeddingPooling.__apply_pooling(array_of_list=x, type_pooling_sequence="max_median",
-                                                          type_pooling_phrase="mean_max_min")
-        elif self.type_pooling == "two_steps_mean_max_min_and_median":
-            x = SequencesEmbeddingPooling.__apply_pooling(array_of_list=x, type_pooling_sequence="median",
-                                                          type_pooling_phrase="mean_max_min")
-        else:
-            pass
+        type_pooling_sequence, type_pooling_phrase = self.type_pooling.split("_and_")
+        x = SequencesEmbeddingPooling.__apply_pooling(element=x, type_pooling_sequence=type_pooling_sequence,
+                                                      type_pooling_phrase=type_pooling_phrase)
         return x
 
     @staticmethod
-    def __apply_pooling(array_of_list, type_pooling_sequence, type_pooling_phrase):
+    def __apply_pooling(element, type_pooling_sequence, type_pooling_phrase):
         """
         Applies a pooling to a list of arrays concatenating several statistics to a sequences and phrases depending on
         type_pooling parameters.
 
         Parameters
         -----------
-        array_of_list: array,
-            list of arrays.Input data.
+        element: array,
+            input data.
         type_pooling_sequence: str
             type of pooling applied to sequences.
          type_pooling_phrase: str
             type of pooling applied to phrases.
         """
         total_sequence = []
-        for sequence in list(array_of_list):
+        for sequence in list(element):
             total_phrase = []
             for phrase in sequence:
                 if type_pooling_phrase == "flatten_sequence":
@@ -151,33 +145,21 @@ class SequencesEmbeddingPooling(Preprocessor):
 
         """
         result = None
-        if type_pooling == "mean":
-            result = np.mean(element, axis=0)
-        elif type_pooling == "median":
+
+        if type_pooling == "median":
             result = np.median(element, axis=0)
-        elif type_pooling == "mean_max":
-            result = np.concatenate((np.mean(element, axis=0), np.max(element, axis=0)))
-        elif type_pooling == "max_median":
-            result = np.concatenate((np.max(element, axis=0), np.median(element, axis=0)))
-        elif type_pooling == "min_median":
-            result = np.concatenate((np.min(element, axis=0), np.median(element, axis=0)))
-        elif type_pooling == "mean_median":
-            result = np.concatenate((np.mean(element, axis=0), np.median(element, axis=0)))
-        elif type_pooling == "mean_max_median":
-            result = np.concatenate((np.mean(element, axis=0), np.max(element, axis=0), np.median(element, axis=0)))
-        elif type_pooling == "mean_max_min_median":
-            result = np.concatenate((np.mean(element, axis=0), np.max(element, axis=0), np.min(element, axis=0),
-                                     np.median(element, axis=0)))
-        elif type_pooling == "mean_min":
-            result = np.concatenate((np.mean(element, axis=0), np.min(element, axis=0)))
-        elif type_pooling == "mean_max_min":
-            result = np.concatenate((np.mean(element, axis=0), np.max(element, axis=0), np.min(element, axis=0)))
+        elif type_pooling == "median_max":
+            result = np.concatenate((np.median(element, axis=0), np.max(element, axis=0)))
+        elif type_pooling == "median_min":
+            result = np.concatenate((np.median(element, axis=0), np.min(element, axis=0)))
+        elif type_pooling == "median_max_min":
+            result = np.concatenate((np.median(element, axis=0), np.max(element, axis=0), np.min(element, axis=0)))
         elif type_pooling == "mean":
             result = np.mean(element, axis=0)
-        elif type_pooling == "max":
-            result = np.max(element, axis=0)
-        elif type_pooling == "min":
-            result = np.min(element, axis=0)
+        elif type_pooling == "mean_max":
+            result = np.concatenate((np.mean(element, axis=0), np.max(element, axis=0)))
+        elif type_pooling == "mean_max_min":
+            result = np.concatenate((np.mean(element, axis=0), np.max(element, axis=0), np.min(element, axis=0)))
         else:
             pass
         return result

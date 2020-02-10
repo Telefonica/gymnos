@@ -93,3 +93,8 @@ gymnos.datasets.synthetic_ok_aura
 
 .. automodule:: gymnos.datasets.synthetic_ok_aura
     :members:
+
+gymnos.datasets.repetition
+==========================
+.. automodule:: gymnos.datasets.repetition.Repetition
+    :members:

@@ -59,3 +59,27 @@ gymnos.models.trigger_word_detection
 
 .. automodule:: gymnos.models.trigger_word_detection
     :members:
+
+gymnos.models.repetition_ada_boost
+=======================================================
+
+.. automodule:: gymnos.models.repetition_ada_boost
+    :members:
+
+gymnos.models.repetition_knn
+=======================================================
+
+.. automodule:: gymnos.models.repetition_knn
+    :members:
+
+gymnos.models.repetition_svc
+=======================================================
+
+.. automodule:: gymnos.models.repetition_svc
+    :members:
+
+gymnos.models.repetition_xgboost
+=======================================================
+
+.. automodule:: gymnos.models.repetition_xgboost
+    :members:

@@ -59,7 +59,7 @@ class Repetition(Dataset):
     embedding_names: list of strings,
         Trained Embeddings names (.ppkl)
     label_threshold : float,
-        Threshoold applied to label to determine if upper or equalthan it is a repetition (1) and otherwise not (0).
+        Threshold applied to label to determine if upper or equalthan it is a repetition (1) and otherwise not (0).
     """
 
     def __init__(self, path_input_name, label_threshold=0.5):

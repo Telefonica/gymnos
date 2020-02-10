@@ -16,6 +16,11 @@ class SequencesAuraEmbeddings(Preprocessor):
     (lowercase, remove punctuation and special characters and accents). After that,
     transform the text in a embedding applying del model trained defined in model_path parameter.
 
+    NOTE:
+        - This preprocesor requires a module from a private PYPI server:
+
+            auracog_utils==0.10.0 : https://github.com/Telefonica/aura-cognitive2-utils.git
+
     Parameters
     -----------
     model_path: str,
