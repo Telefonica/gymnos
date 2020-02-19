@@ -198,7 +198,7 @@ class FourthPlatform(ExecutionEnvironment):
         List of JSON paths to look for configuration values.
     """
 
-    GYMNOS_ALGORITHM_ID = "haac-test-rs"
+    GYMNOS_ALGORITHM_ID = "gymnos"
 
     class Config(config.Config):
         """
