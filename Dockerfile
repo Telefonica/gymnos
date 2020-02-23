@@ -7,6 +7,8 @@ WORKDIR /home/gymnos
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
+ENV PATH /root/.local/bin:$PATH
+
 COPY setup.py ./
 COPY README.md ./
 
