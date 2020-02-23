@@ -10,7 +10,6 @@ import uuid
 import gymnos
 import logging
 import platform
-import subprocess
 import logging.config
 
 from datetime import datetime
