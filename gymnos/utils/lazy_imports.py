@@ -29,11 +29,11 @@ def _install_module_with_pip_module(module_name):
     except ImportError:
         from pip._internal import main as pipmain
 
-    pipmain(["install", "--no-cache-dir", module_name])
+    pipmain(["install", module_name])
 
 
 def _install_module_with_subprocess(module_name):
-    pip_args = ["--no-cache-dir"]
+    pip_args = []
     if not _is_venv() and site.ENABLE_USER_SITE:
         pip_args.append("--user")
         if not os.path.exists(site.USER_SITE):
