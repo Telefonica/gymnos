@@ -8,8 +8,9 @@
 import os
 import uuid
 import gymnos
-import platform
 import logging
+import platform
+import subprocess
 import logging.config
 
 from datetime import datetime
@@ -142,16 +143,18 @@ def get_platform_info():
     try:
         info["cpu"] = get_cpu_info()
     except Exception:
-        logger.exception("Error retrieving CPU information")
+        logger.error("Error retrieving CPU information")
 
     try:
         info["gpu"] = get_gpus_info()
     except Exception:
-        logger.exception("Error retrieving GPU information")
+        logger.error("Error retrieving GPU information")
+
+    info["gymnos"] = dict(version=gymnos.__version__)
 
     try:
-        info["gymnos"] = dict(git_hash=get_git_revision_hash())
+        info["gymnos"]["git_hash"] = get_git_revision_hash()
     except Exception:
-        logger.exception("Error retrieving git revision hash")
+        logger.error("Error retrieving git revision hash")
 
     return info
