@@ -10,6 +10,8 @@ from .mixins import SklearnMixin
 from .model import Model
 from ..utils.lazy_imports import lazy_imports
 
+xgboost = lazy_imports.xgboost
+
 
 class RepetitionXGBoost(SklearnMixin, Model):
     """
@@ -32,8 +34,8 @@ class RepetitionXGBoost(SklearnMixin, Model):
     """
 
     def __init__(self, cv=5, search=None, scoring='roc_auc', n_iter=100):
-        self.model = lazy_imports.xgboost.XGBClassifier(objective="binary:logistic", random_state=42, max_depth=3,
-                                                        n_estimators=100)
+        self.model = xgboost.XGBClassifier(objective="binary:logistic", random_state=42, max_depth=3,
+                                           n_estimators=100)
         self.cv = cv
         self.search = search
         self.scoring = scoring

@@ -4,10 +4,14 @@
 #
 #
 
+import ast
+
 import numpy as np
 
 from .preprocessor import Preprocessor
 from ..utils.lazy_imports import lazy_imports
+auracog_embeddings = __import__(f"{lazy_imports.auracog_embeddings}.embeddings")
+auracog_utils = __import__(f"{lazy_imports.auracog_utils}.text")
 
 
 class SequencesAuraEmbeddings(Preprocessor):
@@ -28,8 +32,8 @@ class SequencesAuraEmbeddings(Preprocessor):
     """
 
     def __init__(self, model_path):
-        self.embeddings = lazy_imports.auracog_embeddings_embeddings.Embeddings(model_path=model_path, padding=False)
-        self.normalizer = lazy_imports.auracog_utils_text.TextNormalizer('es_ES')
+        self.embeddings = auracog_embeddings.embeddings.Embeddings(model_path=model_path, padding=False)
+        self.normalizer = auracog_utils.text.TextNormalizer('es_ES')
 
     def fit(self, x, y=None):
         return self
@@ -40,7 +44,7 @@ class SequencesAuraEmbeddings(Preprocessor):
     def transform(self, x):
         result = []
         for sequence in x:
-            sequence = eval(sequence)
+            sequence = SequencesAuraEmbeddings.safe_eval(sequence)
             normalized_sequence = self.__sequence_normalizer(sequence)
             list_embeddings = self.embeddings.transform(normalized_sequence)
             result.append(list_embeddings)
@@ -52,6 +56,13 @@ class SequencesAuraEmbeddings(Preprocessor):
         for phrase in sequence:
             total.append([val for val in self.normalizer.to_tkn(phrase).norm])
         return total
+
+    @staticmethod
+    def safe_eval(s):
+        try:
+            return ast.literal_eval(s)
+        except ValueError:
+            return s
 
     def save(self, save_dir):
         pass

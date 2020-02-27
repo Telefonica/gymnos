@@ -10,6 +10,8 @@ from .mixins import SklearnMixin
 from .model import Model
 from ..utils.lazy_imports import lazy_imports
 
+sklearn = __import__(f"{lazy_imports.sklearn}.svm")
+
 
 class RepetitionSVC(SklearnMixin, Model):
     """
@@ -32,7 +34,7 @@ class RepetitionSVC(SklearnMixin, Model):
     """
 
     def __init__(self, cv=5, search=None, scoring='roc_auc', n_iter=100):
-        self.model = lazy_imports.sklearn_svm.SVC(probability=True)
+        self.model = sklearn.svm.SVC(probability=True)
         self.cv = cv
         self.search = search
         self.scoring = scoring

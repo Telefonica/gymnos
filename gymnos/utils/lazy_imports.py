@@ -145,33 +145,16 @@ class LazyImporter:
         return _try_import("sklearn", module_to_install="scikit-learn")
 
     @classproperty
-    def sklearn_svm(cls):
-        _try_import("sklearn")
-        return importlib.import_module("sklearn.svm")
-
-    @classproperty
-    def sklearn_neighbors(cls):
-        _try_import("sklearn")
-        return importlib.import_module("sklearn.neighbors")
-
-    @classproperty
-    def sklearn_ensemble(cls):
-        _try_import("sklearn")
-        return importlib.import_module("sklearn.ensemble")
-
-    @classproperty
     def xgboost(cls):
         return _try_import("xgboost")
 
     @classproperty
-    def auracog_embeddings_embeddings(cls):
-        _try_import("auracog_embeddings")
-        return importlib.import_module("auracog_embeddings.embeddings")
+    def auracog_embeddings(cls):
+        return _try_import("auracog_embeddings", module_to_install="auracog_embeddings")
 
     @classproperty
-    def auracog_utils_text(cls):
-        _try_import("auracog_utils")
-        return importlib.import_module("auracog_utils.text")
+    def auracog_utils(cls):
+        return _try_import("auracog_utils", module_to_install="auracog_utils")
 
     @classproperty
     def dummy(cls):

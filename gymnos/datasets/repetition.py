@@ -62,8 +62,8 @@ class Repetition(Dataset):
         Threshold applied to label to determine if upper or equalthan it is a repetition (1) and otherwise not (0).
     """
 
-    def __init__(self, path_input_name, label_threshold=0.5):
-        self.path_input_name = path_input_name
+    def __init__(self, input_data, label_threshold=0.5):
+        self.input_data = input_data
         self.label_threshold = label_threshold
 
     @property
@@ -76,7 +76,12 @@ class Repetition(Dataset):
 
     def download_and_prepare(self, dl_manager):
         # load data
-        df = pd.read_csv(self.path_input_name, sep=",")
+        if isinstance(self.input_data, str):
+            df = pd.read_csv(self.input_data, sep=",")
+        elif isinstance(self.input_data, pd.DataFrame):
+            df = self.input_data
+        else:
+            raise ValueError('Input data must to be a path to dataset(str) or a dataframe')
 
         # Parses several characters in utterances column
         df = self.__parsing(df)

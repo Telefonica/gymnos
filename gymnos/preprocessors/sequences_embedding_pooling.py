@@ -61,29 +61,31 @@ class SequencesEmbeddingPooling(Preprocessor):
 
     def __init__(self, type_pooling="flatten_sequence"):
         poolings = ['median_and_flatten_sequence',
-                    'median_max_and_flatten_sequence',
-                    'median_max_min_and_flatten_sequence',
+                    'max_median_and_flatten_sequence',
+                    'max_median_min_and_flatten_sequence',
                     'mean_and_flatten_sequence',
                     'mean_max_and_flatten_sequence',
                     'mean_max_min_and_flatten_sequence',
                     'median_and_median',
-                    'median_and_median_max',
-                    'median_and_median_max_min',
-                    'median_max_and_median',
-                    'median_max_and_median_max',
-                    'median_max_and_median_max_min',
-                    'median_max_min_and_median',
-                    'median_max_min_and_median_max',
-                    'median_max_min_and_median_max_min',
+                    'median_and_max_median',
+                    'median_and_max_median_min',
+                    'max_median_and_mean_max',
+                    'max_median_and_median',
+                    'max_median_and_max_median',
+                    'max_median_and_mean_max_min',
+                    'max_median_and_max_median_min',
+                    'max_median_min_and_median',
+                    'max_median_min_and_max_median',
+                    'max_median_min_and_max_median_min',
                     'mean_and_median',
-                    'mean_and_median_max',
-                    'mean_and_median_max_min',
+                    'mean_and_max_median',
+                    'mean_and_max_median_min',
                     'mean_max_and_median',
-                    'mean_max_and_median_max',
-                    'mean_max_and_median_max_min',
+                    'mean_max_and_max_median',
+                    'mean_max_and_max_median_min',
                     'mean_max_min_and_median',
-                    'mean_max_min_and_median_max',
-                    'mean_max_min_and_median_max_min']
+                    'mean_max_min_and_max_median',
+                    'mean_max_min_and_max_median_min']
 
         try:
             assert type_pooling in poolings
@@ -148,12 +150,12 @@ class SequencesEmbeddingPooling(Preprocessor):
 
         if type_pooling == "median":
             result = np.median(element, axis=0)
-        elif type_pooling == "median_max":
-            result = np.concatenate((np.median(element, axis=0), np.max(element, axis=0)))
+        elif type_pooling == "max_median":
+            result = np.concatenate((np.max(element, axis=0), np.median(element, axis=0)))
         elif type_pooling == "median_min":
             result = np.concatenate((np.median(element, axis=0), np.min(element, axis=0)))
-        elif type_pooling == "median_max_min":
-            result = np.concatenate((np.median(element, axis=0), np.max(element, axis=0), np.min(element, axis=0)))
+        elif type_pooling == "max_median_min":
+            result = np.concatenate((np.max(element, axis=0), np.median(element, axis=0), np.min(element, axis=0)))
         elif type_pooling == "mean":
             result = np.mean(element, axis=0)
         elif type_pooling == "mean_max":

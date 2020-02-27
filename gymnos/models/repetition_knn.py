@@ -10,6 +10,7 @@ from .mixins import SklearnMixin
 from .model import Model
 from ..utils.lazy_imports import lazy_imports
 
+sklearn = __import__(f"{lazy_imports.sklearn}.neighbors")
 
 class RepetitionKNN(SklearnMixin, Model):
     """
@@ -32,7 +33,7 @@ class RepetitionKNN(SklearnMixin, Model):
     """
 
     def __init__(self, cv=5, search=None, scoring='roc_auc', n_iter=100):
-        self.model = lazy_imports.sklearn_neighbors.KNeighborsClassifier(n_neighbors=5)
+        self.model = sklearn.neighbors.KNeighborsClassifier(n_neighbors=5)
         self.cv = cv
         self.search = search
         self.scoring = scoring
