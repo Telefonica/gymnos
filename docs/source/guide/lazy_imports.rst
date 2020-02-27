@@ -89,6 +89,6 @@ Let's say we want to import ``linear_model`` from ``sklearn``:
 
 .. code-block:: python
 
-    sklearn = __import__(f"{lazy_imports.sklearn}.linear_model")
+    sklearn = __import__(f"{lazy_imports.sklearn.__name__}.linear_model")
 
     _ = sklearn.linear_model.LinearRegression()  # ✔️
