@@ -17,7 +17,8 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join("..", "..")))
 
-autodoc_mock_imports = ["tqdm", "numpy", "pandas", "h5py", "cpuinfo", "GPUtil", "dill", "pyspark"]
+autodoc_mock_imports = ["tqdm", "numpy", "pandas", "h5py", "cpuinfo", "GPUtil", "dill", "pyspark",
+                        "gymnos.utils.lazy_imports"]
 
 # -- Project information -----------------------------------------------------
 
@@ -78,8 +79,7 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ["xgboost", "sklearn_model_selection", "sklearn_svm", "sklearn_neighbors", "sklearn_ensemble",
-                    "auracog_embeddings", "auracog_utils"]
+exclude_patterns = []
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = None
