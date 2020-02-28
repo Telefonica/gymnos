@@ -10,8 +10,8 @@ import numpy as np
 
 from .preprocessor import Preprocessor
 from ..utils.lazy_imports import lazy_imports
-auracog_embeddings = __import__(f"{lazy_imports.auracog_embeddings}.embeddings")
-auracog_utils = __import__(f"{lazy_imports.auracog_utils}.text")
+auracog_embeddings = __import__(f"{lazy_imports.auracog_embeddings.__name__}.embeddings")
+auracog_utils = __import__(f"{lazy_imports.auracog_utils.__name__}.text")
 
 
 class SequencesAuraEmbeddings(Preprocessor):
@@ -24,6 +24,17 @@ class SequencesAuraEmbeddings(Preprocessor):
         - This preprocesor requires a module from a private PYPI server:
 
             auracog_utils==0.10.0 : https://github.com/Telefonica/aura-cognitive2-utils.git
+
+    This preprocessor requires a module from a private PYPI server (artifactory/pypi-aura-repo).
+     To add this module add the following line to ~/.pip/pip.conf:
+
+    [global]
+    extra-index-url = http://<username>:<password>@artifactory.hi.inet/artifactory/api/pypi/pypi-aura-cache/simple
+    trusted-host = artifactory.hi.inet
+
+    where <username> and <password> are your credentials from Telefonica.
+
+    Installation: https://telefonicacorp.sharepoint.com/sites/AURA/Cognitive%20wiki/dev/utils2.aspx
 
     Parameters
     -----------

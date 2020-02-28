@@ -10,7 +10,7 @@ from .mixins import SklearnMixin
 from .model import Model
 from ..utils.lazy_imports import lazy_imports
 
-sklearn = __import__(f"{lazy_imports.sklearn}.svm")
+sklearn = __import__(f"{lazy_imports.sklearn.__name__}.svm")
 
 
 class RepetitionSVC(SklearnMixin, Model):
