@@ -10,7 +10,8 @@ from .mixins import SklearnMixin
 from .model import Model
 from ..utils.lazy_imports import lazy_imports
 
-sklearn = __import__(f"{lazy_imports.sklearn.__name__}.ensemble")
+sklearn_ensemble = __import__(f"{lazy_imports.sklearn.__name__}.ensemble")
+sklearn_model_selection = __import__(f"{lazy_imports.sklearn.__name__}.model_selection")
 
 
 class RepetitionAdaBoost(SklearnMixin, Model):
@@ -34,7 +35,7 @@ class RepetitionAdaBoost(SklearnMixin, Model):
     """
 
     def __init__(self, cv=5, search=None, scoring='roc_auc', n_iter=100):
-        self.model = sklearn.ensemble.AdaBoostClassifier()
+        self.model = sklearn_ensemble.ensemble.AdaBoostClassifier()
         self.cv = cv
         self.search = search
         self.scoring = scoring
@@ -46,18 +47,18 @@ class RepetitionAdaBoost(SklearnMixin, Model):
         y = np.array(y)
 
         # create cross validation iterator
-        cv = lazy_imports.sklearn.model_selection.ShuffleSplit(n_splits=self.cv, test_size=0.2, random_state=0)
+        cv = sklearn_model_selection.model_selection.ShuffleSplit(n_splits=self.cv, test_size=0.2, random_state=0)
 
         if self.search == "grid_search":
             ada_boost_grid = {'n_estimators': [500, 1000, 2000], 'learning_rate': [.001, 0.01, .1]}
-            self.model = lazy_imports.sklearn.model_selection.GridSearchCV(estimator=self.model,
-                                                                           param_grid=ada_boost_grid,
-                                                                           scoring=self.scoring,
-                                                                           refit=True, cv=cv, verbose=3, n_jobs=1)
+            self.model = sklearn_model_selection.model_selection.GridSearchCV(estimator=self.model,
+                                                                              param_grid=ada_boost_grid,
+                                                                              scoring=self.scoring,
+                                                                              refit=True, cv=cv, verbose=3, n_jobs=1)
 
         elif self.search == "random_search":
             ada_boost_random_grid = {'n_estimators': [500, 1000, 2000], 'learning_rate': [.001, 0.01, .1]}
-            self.model = lazy_imports.sklearn.model_selection.RandomizedSearchCV(
+            self.model = sklearn_model_selection.model_selection.RandomizedSearchCV(
                 estimator=self.model,
                 param_distributions=ada_boost_random_grid,
                 scoring=self.scoring, cv=cv,

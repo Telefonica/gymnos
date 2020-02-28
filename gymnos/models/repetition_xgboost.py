@@ -11,6 +11,7 @@ from .model import Model
 from ..utils.lazy_imports import lazy_imports
 
 xgboost = lazy_imports.xgboost
+sklearn_model_selection = __import__(f"{lazy_imports.sklearn.__name__}.model_selection")
 
 
 class RepetitionXGBoost(SklearnMixin, Model):
@@ -47,20 +48,20 @@ class RepetitionXGBoost(SklearnMixin, Model):
         y = np.array(y)
 
         # create cross validation iterator
-        cv = lazy_imports.sklearn.model_selection.ShuffleSplit(n_splits=self.cv, test_size=0.2, random_state=0)
+        cv = sklearn_model_selection.model_selection.ShuffleSplit(n_splits=self.cv, test_size=0.2, random_state=0)
 
         if self.search == "grid_search":
             xgboost_grid = {'Classifier__max_depth': [2, 4, 6],
                             'Classifier__n_estimators': np.geomspace(50, 500, num=5).astype(int)}
-            self.model = lazy_imports.sklearn.model_selection.GridSearchCV(estimator=self.model,
-                                                                           param_grid=xgboost_grid,
-                                                                           scoring=self.scoring, refit=True, cv=cv,
-                                                                           verbose=3,
-                                                                           n_jobs=-1)
+            self.model = sklearn_model_selection.model_selection.GridSearchCV(estimator=self.model,
+                                                                              param_grid=xgboost_grid,
+                                                                              scoring=self.scoring, refit=True, cv=cv,
+                                                                              verbose=3,
+                                                                              n_jobs=-1)
         elif self.search == "random_search":
             xgboost_random_grid = {'Classifier__max_depth': [2, 4, 6],
                                    'Classifier__n_estimators': np.geomspace(50, 500, num=5).astype(int)}
-            self.model = lazy_imports.sklearn.model_selection.RandomizedSearchCV(
+            self.model = sklearn_model_selection.model_selection.RandomizedSearchCV(
                 estimator=self.model,
                 param_distributions=xgboost_random_grid,
                 scoring=self.scoring, cv=cv,
