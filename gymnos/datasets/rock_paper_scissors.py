@@ -13,7 +13,7 @@ from .dataset import Dataset, ClassLabel, Array
 from ..utils.lazy_imports import lazy_imports as lazy
 from ..preprocessors.utils.image_ops import img_to_arr
 
-DATASET_SMB_URI = "smb://10.95.194.112/homes/ruben_salas/rock-paper-scissors.zip"
+DATASET_SMB_URI = "smb://10.95.194.112/public/rock-paper-scissors.zip"
 
 
 class RockPaperScissors(Dataset):
