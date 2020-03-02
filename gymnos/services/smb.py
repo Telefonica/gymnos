@@ -78,18 +78,18 @@ class SMB(Service):
 
     class Config(config.Config):
         """
-        You need credentials to access SAMBA servers.
+        Some SAMBA servers require credentials. If credentials not provided, connection will be as ``guest``.
 
         Attributes
         -------------
-        SMB_USERNAME: str
+        SMB_USERNAME: str, optional
             Your username for SAMBA server
-        SMB_PASSWORD: str
+        SMB_PASSWORD: str, optional
             Your password for SAMBA server
         """
 
-        SMB_USERNAME = config.Value(required=True, help="SAMBA server username")
-        SMB_PASSWORD = config.Value(required=True, help="SAMBA server password")
+        SMB_USERNAME = config.Value(required=False, default="guest", help="SAMBA server username")
+        SMB_PASSWORD = config.Value(required=False, default="", help="SAMBA server password")
 
     def _download_url(self, url, verbose=True):
         """
@@ -124,6 +124,9 @@ class SMB(Service):
         filename = sha1_url_hash + "_" + slug_url
 
         real_file_path = os.path.join(self.download_dir, filename)
+
+        if self.config.SMB_USERNAME == "guest":
+            logger.warning("You're connecting as guest. Credentials may be required")
 
         smb_conn_params = dict(username=self.config.SMB_USERNAME,
                                password=self.config.SMB_PASSWORD,
