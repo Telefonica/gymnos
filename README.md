@@ -139,7 +139,7 @@ For instance, to run a configuration for [Dogs vs. Cats dataset](https://www.kag
 $ gymnos train examples/experiments/dogs_vs_cats.json
 ```
 
-For more information check out [Gymnos documentation](http://dev-aura-comp-01/docs/gymnos/en/latest/).
+For more information check out [Gymnos documentation](http://dev-aura-comp-01.hi.inet/docs/gymnos/en/latest/).
 
 ## Development
 Gymnos is still under development. Contributions are always welcome!.
