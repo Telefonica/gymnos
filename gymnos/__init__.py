@@ -224,6 +224,11 @@ preprocessors.register(
     entry_point="gymnos.preprocessors.audio.spectrogram.Spectrogram"
 )
 
+preprocessors.register(
+    type="normalize",
+    entry_point="gymnos.preprocessors.images.normalize.Normalize"
+)
+
 # MARK: Tracker registration
 
 trackers.register(
