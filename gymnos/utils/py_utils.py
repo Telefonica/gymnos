@@ -5,23 +5,35 @@
 #
 
 
-class classproperty:
-    """"
-    Decorator to build class properties
+class ClassPropertyDescriptor:
 
-    Example
-    -------
-    >>> class MyClass:
-            @classproperty
-            def my_computed_class_property(cls):
-                return 2.0
-    """
+    def __init__(self, fget, fset=None):
+        self.fget = fget
+        self.fset = fset
 
-    def __init__(self, getter):
-        self.getter = getter
+    def __get__(self, obj, klass=None):
+        if klass is None:
+            klass = type(obj)
+        return self.fget.__get__(obj, klass)()
 
-    def __get__(self, instance, owner):
-        return self.getter(owner)
+    def __set__(self, obj, value):
+        if not self.fset:
+            raise AttributeError("can't set attribute")
+        type_ = type(obj)
+        return self.fset.__get__(obj, type_)(value)
+
+    def setter(self, func):
+        if not isinstance(func, (classmethod, staticmethod)):
+            func = classmethod(func)
+        self.fset = func
+        return self
+
+
+def classproperty(func):
+    if not isinstance(func, (classmethod, staticmethod)):
+        func = classmethod(func)
+
+    return ClassPropertyDescriptor(func)
 
 
 def chain(*funcs):
@@ -57,7 +69,7 @@ _missing = object()
 # Adapted from https://github.com/pallets/werkzeug
 
 
-class cached_property():
+class cached_property:
     """
     A decorator that converts a function into a lazy property.  The
     function wrapped is called the first time to retrieve the result
