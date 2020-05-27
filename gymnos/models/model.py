@@ -6,6 +6,7 @@
 
 import numpy as np
 
+from tqdm import tqdm
 from collections import defaultdict
 from abc import ABCMeta, abstractmethod
 
@@ -120,17 +121,7 @@ class Model(metaclass=ABCMeta):
         metrics: dict
             Dictionnary with metrics
         """
-        metrics = defaultdict(list)
-
-        for X, y in generator:
-            batch_metrics = self.evaluate(X, y)
-            for metric_name, metric_value in batch_metrics.items():
-                metrics[metric_name].append(metric_value)
-
-        for metric_name, metric_value in metrics.items():
-            metrics[metric_name] = np.mean(metric_value)
-
-        return metrics
+        raise NotImplementedError("Model {} don't implement evaluate_generator method".format(self.__class__.__name__))
 
     @abstractmethod
     def save(self, save_dir):

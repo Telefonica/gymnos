@@ -20,6 +20,18 @@ TENSORFLOW_SESSION_FILENAME = "session.ckpt"
 SKLEARN_MODEL_SAVE_FILENAME = "model.joblib"
 
 
+class IterableKerasSequence(lazy.tensorflow.keras.utils.Sequence):
+
+    def __init__(self, sequence):
+        self.sequence = sequence
+
+    def __getitem__(self, index):
+        return self.sequence[index]
+
+    def __len__(self):
+        return len(self.sequence)
+
+
 class BaseKerasMixin:
     """
     Mixin to write keras methods. It provides implementation for ``fit``, ``predict``, ``evaluate``,
@@ -105,17 +117,6 @@ class BaseKerasMixin:
         if callbacks is not None:
             callbacks = self.__instantiate_callbacks(callbacks)
 
-        class IterableKerasSequence(lazy.tensorflow.keras.utils.Sequence):
-
-            def __init__(self, sequence):
-                self.sequence = sequence
-
-            def __getitem__(self, index):
-                return self.sequence[index]
-
-            def __len__(self):
-                return len(self.sequence)
-
         if hasattr(generator, "__getitem__") and hasattr(generator, "__len__"):
             # To train with sequences, Keras requires to inherit from utils.Sequence
             keras_generator = IterableKerasSequence(generator)
@@ -142,6 +143,20 @@ class BaseKerasMixin:
             Labels
         """
         metrics = self.model.evaluate(X, y)
+        if not isinstance(metrics, Iterable):
+            metrics = [metrics]
+        return dict(zip(self.model.metrics_names, metrics))
+
+    def evaluate_generator(self, generator):
+        if hasattr(generator, "__getitem__") and hasattr(generator, "__len__"):
+            # To train with sequences, Keras requires to inherit from utils.Sequence
+            keras_generator = IterableKerasSequence(generator)
+        else:
+            # we need to convert the iterator to an infinite generator
+            keras_generator = forever_generator(generator)
+
+        metrics = self.model.evaluate_generator(keras_generator, steps=len(generator))
+
         if not isinstance(metrics, Iterable):
             metrics = [metrics]
         return dict(zip(self.model.metrics_names, metrics))
@@ -370,6 +385,36 @@ class SklearnMixin:
             True labels
         """
         return {self.metric_name: self.model.score(X, y)}
+
+    def evaluate_generator(self, generator):
+        if self.metric_name == "accuracy":
+            return self._evaluate_generator_acc(generator)
+        elif self.metric_name == "mse":
+            return self._evaluate_generator_mse(generator)
+        else:
+            raise ValueError("Unknown metric: {}".format(self.metric_name))
+
+    def _evaluate_generator_mse(self, generator):
+        sklearn = __import__("{}.metrics".format(lazy.sklearn.__name__))
+
+        running_mse = 0.0
+        for features, targets in generator:
+            outputs = self.model.predict(features)
+            running_mse += sklearn.metrics.mean_squared_error(targets, outputs)
+
+        return {"mse": running_mse / len(generator)}
+
+    def _evaluate_generator_acc(self, generator):
+        sklearn = __import__("{}.metrics".format(lazy.sklearn.__name__))
+
+        num_samples = 0
+        running_correct_labels = 0
+        for features, targets in generator:
+            outputs = self.model.predict(features)
+            num_samples += len(features)
+            running_correct_labels += sklearn.metrics.accuracy_score(targets, outputs, normalize=False)
+
+        return {"acc": running_correct_labels / float(num_samples)}
 
     def save(self, save_dir):
         """
