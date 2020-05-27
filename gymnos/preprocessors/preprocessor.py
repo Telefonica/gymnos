@@ -21,7 +21,6 @@ class Preprocessor(metaclass=ABCMeta):
     If you want to support generators, you need to implement the method ``fit_generator``.
     """
 
-    @abstractmethod
     def fit(self, X, y=None):
         """
         Fit preprocessor to training data.
@@ -38,6 +37,7 @@ class Preprocessor(metaclass=ABCMeta):
         self: Preprocessor
             Own instance for chain purposes.
         """
+        return self
 
     def fit_generator(self, generator):
         """
@@ -53,8 +53,7 @@ class Preprocessor(metaclass=ABCMeta):
         self: Preprocessor
             Own instance for chain purposes.
         """
-        raise NotImplementedError(("Preprocessor {} don't implement fit_generator "
-                                   "method").format(self.__class__.__name__))
+        return self
 
     @abstractmethod
     def transform(self, X):
@@ -72,7 +71,6 @@ class Preprocessor(metaclass=ABCMeta):
             Transformed features
         """
 
-    @abstractmethod
     def save(self, save_dir):
         """
         Save preprocessor to directory
@@ -83,7 +81,6 @@ class Preprocessor(metaclass=ABCMeta):
             Directory to save preprocessor
         """
 
-    @abstractmethod
     def restore(self, save_dir):
         """
         Restore preprocessor from directory
