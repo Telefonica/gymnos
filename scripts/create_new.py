@@ -23,10 +23,7 @@ def is_string(obj):
     :return: True if string, false otherwise.
     :rtype: bool
     """
-    try:  # basestring is available in python 2 but missing in python 3!
-        return isinstance(obj, basestring)
-    except NameError:
-        return isinstance(obj, str)
+    return isinstance(obj, str)
 
 
 def is_full_string(string):
@@ -101,8 +98,7 @@ DATA_AUGMENTOR_TYPE = "data_augmentor"
 SERVICE_TYPE = "service"
 EXECUTION_ENVIRONMENT_TYPE = "execution_environment"
 
-DATASET_FILE_STR = """
-#
+DATASET_FILE_STR = """#
 #
 #   {name}
 #
@@ -111,7 +107,7 @@ DATASET_FILE_STR = """
 from .dataset import Dataset, Array, ClassLabel
 
 
-class {name}:
+class {name}(Dataset):
     \"""
     {TODO}: Description of my dataset.
     \"""
@@ -127,15 +123,14 @@ class {name}:
     def download_and_prepare(self, dl_manager):
         pass  # {TODO}: download any file you will need later in the __getitem__ and __len__ function
 
-    def __getitem__(self, given):
-        pass  # {TODO}: Get dataset item/s. Given can be a slice object or an int. Called after download_and_prepare.
+    def __getitem__(self, index):
+        pass  # {TODO}: Get dataset item/s. Called after download_and_prepare.
 
     def __len__(self):
         pass  # {TODO}: Dataset length. Called after download_and_prepare
 """
 
-MODEL_FILE_STR = """
-#
+MODEL_FILE_STR = """#
 #
 #   {name}
 #
@@ -155,7 +150,7 @@ class {name}(Model):
     def fit(self, X, y, **training_parameters):
         pass  # {TODO}: Fit model to training data.
 
-    def fit_generator(self, X, y, **training_parameters):
+    def fit_generator(self, generator, **training_parameters):
         # {OPTIONAL}: Fit model to training generator. Write method if your model supports incremental learning
         raise NotImplementedError()
 
@@ -176,8 +171,7 @@ class {name}(Model):
         pass  # {TODO}: Restore model from save_dir.
 """
 
-PREPROCESSOR_FILE_STR = """
-#
+PREPROCESSOR_FILE_STR = """#
 #
 #   {name}
 #
@@ -211,8 +205,7 @@ class {name}(Preprocessor):
         # TODO(my_preprocessor): Restore preprocessor from directory
 """
 
-TRACKER_FILE_STR = """
-#
+TRACKER_FILE_STR = """#
 #
 #   {name}
 #
@@ -262,8 +255,7 @@ class {name}(Tracker):
         pass
 """
 
-DATA_AUGMENTOR_FILE_STR = """
-#
+DATA_AUGMENTOR_FILE_STR = """#
 #
 #   {name}
 #
@@ -292,8 +284,7 @@ class {name}(DataAugmentor):
         pass  # {TODO}: Preprocess data
 """
 
-SERVICE_FILE_STR = """
-#
+SERVICE_FILE_STR = """#
 #
 #   {name}
 #
@@ -315,8 +306,7 @@ class {name}(Service):
         pass  # {OPTIONAL}: Download file.
 """
 
-EXECUTION_ENVIRONMENT_FILE_STR = """
-#
+EXECUTION_ENVIRONMENT_FILE_STR = """#
 #
 #   {name}
 #
