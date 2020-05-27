@@ -10,14 +10,14 @@
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
-            "level": "DEBUG",
+            "level": "INFO",
             "formatter": "standard",
             "stream": "ext://sys.stdout"
         },
-        
+
         "file": {
             "class": "logging.FileHandler",
-            "level": "DEBUG",
+            "level": "INFO",
             "formatter": "standard",
             "filename": "execution.log",
             "encoding": "utf8",
@@ -27,7 +27,7 @@
 
     "loggers": {
         "": {
-            "level": "DEBUG",
+            "level": "INFO",
             "handlers": ["console", "file"],
             "propagate": "no"
         }
