@@ -62,6 +62,9 @@ class Dataset:
         a ``type`` field specifying the type of preprocessor.  The other properties are the properties for that preprocessor.
     seed: int, optional
         Seed used to split dataset.
+    chunk_size: int, optional
+        Number of samples to load into generator for each batch. If this property is not null, model must have implemented
+        the ``fit_generator`` method.
     shuffle: bool, optional
         Whether or not to shuffle the data before splitting.
     one_hot: bool, optional
@@ -84,6 +87,7 @@ class Dataset:
                 "train": 0.8,
                 "test": 0.2
             },
+            chunk_size=32,
             preprocessors=[
                 {
                     "type": "grayscale"
