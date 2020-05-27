@@ -13,7 +13,6 @@ from ..utils.py_utils import drop
 
 class Tracker(metaclass=ABCMeta):
 
-    @abstractmethod
     def start(self, run_id, logdir):
         """
         Called when the experiment is started.
@@ -30,7 +29,6 @@ class Tracker(metaclass=ABCMeta):
             Path of logging.
         """
 
-    @abstractmethod
     def log_tag(self, key, value):
         """
         Log tag to experiment.
@@ -47,7 +45,6 @@ class Tracker(metaclass=ABCMeta):
         for key, value in tags.items():
             self.log_tag(key, value)
 
-    @abstractmethod
     def log_asset(self, name, file_path):
         """
         Log asset.
@@ -60,7 +57,6 @@ class Tracker(metaclass=ABCMeta):
             Asset's path.
         """
 
-    @abstractmethod
     def log_image(self, name, file_path):
         """
         Log image
@@ -73,7 +69,6 @@ class Tracker(metaclass=ABCMeta):
             Image's path.
         """
 
-    @abstractmethod
     def log_figure(self, name, figure):
         """
         Log Matplotlib figure
@@ -86,7 +81,6 @@ class Tracker(metaclass=ABCMeta):
             Matplotlib figure.
         """
 
-    @abstractmethod
     def log_metric(self, name, value, step=None):
         """
         Log metric
@@ -114,7 +108,6 @@ class Tracker(metaclass=ABCMeta):
             else:
                 self.log_metric(prefix + name, value, step)
 
-    @abstractmethod
     def log_param(self, name, value, step=None):
         """
         Log parameter
@@ -133,7 +126,6 @@ class Tracker(metaclass=ABCMeta):
         for (name, value) in dic.items():
             self.log_param(prefix + name, value, step)
 
-    @abstractmethod
     def end(self):
         """
         Called when the experiment is finished.
