@@ -19,8 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 def _is_venv():
-    return (hasattr(sys, 'real_prefix') or
-            (hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix))
+    return (hasattr(sys, 'real_prefix') or (hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix))
 
 
 def _install_module_with_pip_module(module_name):
@@ -130,7 +129,7 @@ class LazyImporter:
 
     @classproperty
     def scipy(cls):
-        return _try_import("scipy", module_to_install="scipy")
+        return _try_import("scipy")
 
     @classproperty
     def tensorflow(cls):
@@ -143,6 +142,14 @@ class LazyImporter:
     @classproperty
     def sklearn(cls):
         return _try_import("sklearn", module_to_install="scikit-learn")
+
+    @classproperty
+    def torch(cls):
+        return _try_import("torch")
+
+    @classproperty
+    def torchvision(cls):
+        return _try_import("torchvision")
 
     @classproperty
     def dummy(cls):
