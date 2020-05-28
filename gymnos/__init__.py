@@ -93,6 +93,11 @@ datasets.register(
     entry_point="gymnos.datasets.synthetic_ok_aura.SyntheticOkAura"
 )
 
+datasets.register(
+    type="covid19_chest_xray",
+    entry_point="gymnos.datasets.covid19_chest_xray.Covid19ChestXray"
+)
+
 # MARK: Services registration
 
 services.register(
