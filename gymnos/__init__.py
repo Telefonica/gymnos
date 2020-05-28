@@ -234,6 +234,12 @@ preprocessors.register(
     entry_point="gymnos.preprocessors.images.normalize.Normalize"
 )
 
+preprocessors.register(
+    type="channels_first",
+    entry_point="gymnos.preprocessors.images.channels_first.ChannelsFirst"
+)
+
+
 # MARK: Tracker registration
 
 trackers.register(
