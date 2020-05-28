@@ -6,12 +6,11 @@
 
 from copy import deepcopy
 from collections.abc import Iterable
-from abc import ABCMeta, abstractmethod
 
 from ..utils.py_utils import drop
 
 
-class Tracker(metaclass=ABCMeta):
+class Tracker:
 
     def start(self, run_id, logdir):
         """
