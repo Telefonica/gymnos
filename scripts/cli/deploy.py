@@ -11,13 +11,14 @@ from ..utils.io_utils import read_json
 
 from pprint import pprint
 from gymnos import config
-from gymnos.services.sofia import SOFIA
+from gymnos.services.sofia import DEFAULT_DOMAIN
 from gymnos.utils.lazy_imports import lazy_imports as lazy
 
 
 class Config(config.Config):
     SOFIA_EMAIL = config.Value(required=True, help="SOFIA account email")
     SOFIA_PASSWORD = config.Value(required=True, help="SOFIA account password")
+    SOFIA_DOMAIN = config.Value(required=False, help="SOFIA domain", default=DEFAULT_DOMAIN)
 
 
 def add_arguments(parser):
@@ -40,7 +41,7 @@ def run_command(args):
         "response": lambda r, *args, **kwargs: r.raise_for_status()
     }
 
-    res = session.post(SOFIA.SERVER_URL + "/api/login", data=dict(
+    res = session.post(config.SOFIA_DOMAIN + "/api/login", data=dict(
         email=config.SOFIA_EMAIL,
         password=config.SOFIA_PASSWORD
     ))
@@ -55,13 +56,12 @@ def run_command(args):
         metadata = dict(
             title=ask.text("Title", required=True),
             description=ask.text("Description"),
-            license=ask.text("License"),
-            acknowledgements=ask.text("Acknowledgements"),
             public=ask.confirm("Is it public?", default=True)
         )
 
     with open(args.saved_trainer, "rb") as fp:
-        res = session.post(SOFIA.SERVER_URL + "/api/models", data=metadata, files=dict(model=fp), headers=auth_headers)
+        res = session.post(config.SOFIA_DOMAIN + "/api/models", data=metadata, files=dict(model=fp),
+                           headers=auth_headers)
 
     print("Saved trainer uploaded successfully")
 

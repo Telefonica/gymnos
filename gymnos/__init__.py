@@ -93,6 +93,11 @@ datasets.register(
     entry_point="gymnos.datasets.synthetic_ok_aura.SyntheticOkAura"
 )
 
+datasets.register(
+    type="covid19_chest_xray",
+    entry_point="gymnos.datasets.covid19_chest_xray.Covid19ChestXray"
+)
+
 # MARK: Services registration
 
 services.register(
@@ -162,6 +167,11 @@ models.register(
     entry_point="gymnos.models.trigger_word_detection.TriggerWordDetection"
 )
 
+models.register(
+    type="covid19_chest_xray_cnn",
+    entry_point="gymnos.models.covid19_chest_xray_cnn.Covid19ChestXrayCnn"
+)
+
 # MARK: Preprocessors registration
 
 preprocessors.register(
@@ -228,6 +238,12 @@ preprocessors.register(
     type="normalize",
     entry_point="gymnos.preprocessors.images.normalize.Normalize"
 )
+
+preprocessors.register(
+    type="channels_first",
+    entry_point="gymnos.preprocessors.images.channels_first.ChannelsFirst"
+)
+
 
 # MARK: Tracker registration
 

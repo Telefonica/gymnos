@@ -164,6 +164,9 @@ class {name}(Model):
     def evaluate(self, X, y):
         pass  # {TODO}: Evaluate model.
 
+    def evaluate_generator(self, generator):
+        pass  # {OPTIONAL}: Evaluate model using a generator.
+
     def save(self, save_dir):
         pass  # {TODO}: Save model to save_dir.
 

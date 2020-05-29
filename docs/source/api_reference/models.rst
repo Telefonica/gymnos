@@ -53,9 +53,14 @@ gymnos.models.unusual_data_usage_weighted_thresholds
 .. automodule:: gymnos.models.unusual_data_usage_weighted_thresholds
     :members:
 
-
 gymnos.models.trigger_word_detection
 =======================================================
 
 .. automodule:: gymnos.models.trigger_word_detection
+    :members:
+
+gymnos.models.covid19_chest_xray_cnn
+=======================================================
+
+.. automodule:: gymnos.models.covid19_chest_xray_cnn
     :members:

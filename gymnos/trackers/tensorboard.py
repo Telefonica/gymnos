@@ -30,6 +30,8 @@ class TensorBoard(Tracker):
 class SummaryWriter:
 
     def __init__(self, logdir):
+        _ = lazy.tensorboard  # install tensorboard if needed
+
         try:
             from tensorflow.summary import FileWriter as Writer
             mode = "tf"

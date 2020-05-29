@@ -37,6 +37,12 @@ gymnos.preprocessors.images.image_resize
 .. automodule:: gymnos.preprocessors.images.image_resize
     :members:
 
+
+gymnos.preprocessors.images.channels_first
+---------------------------------------------
+.. automodule:: gymnos.preprocessors.images.channels_first
+    :members:
+
 gymnos.preprocessors.texts
 =============================
 

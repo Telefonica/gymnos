@@ -93,3 +93,9 @@ gymnos.datasets.synthetic_ok_aura
 
 .. automodule:: gymnos.datasets.synthetic_ok_aura
     :members:
+
+gymnos.datasets.covid19_chest_xray
+====================================================
+
+.. automodule:: gymnos.datasets.covid19_chest_xray
+    :members:

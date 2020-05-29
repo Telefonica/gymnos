@@ -113,7 +113,41 @@ class BaseKerasMixin:
     def fit_generator(self, generator, epochs=1, verbose=1, callbacks=None,
                       class_weight=None, max_queue_size=10, workers=1, use_multiprocessing=False, shuffle=False,
                       initial_epoch=0):
+        """
+        Fit model to generator
+        More info about fit_generator parameters at `keras <https://keras.io/models/sequential/#fit>`_
 
+        Parameters
+        ----------
+        generator: generator
+            Generator of features and targets
+        epochs: int, optional
+            Number of epochs to train.
+        verbose: int, optional
+            Verbosity mode. 0 = silent, 1 = progress bar, 2 = one line per epoch.
+        callbacks: list of dict, optional
+            List with specs for Keras callbacks in the following format ``{"type": "<id>", **kwargs}``. The following callbacks are available:
+                - ``early_stopping``: tensorflow.keras.callbacks.EarlyStopping
+                - ``model_checkpoint``: tensorflow.keras.callbacks.ModelCheckpoint
+                - ``reduce_learning``: tensorflow.keras.callbacks.ReduceLROnPlateau
+                - ``tensorboard``: tensorflow.keras.callbacks.TensorBoard
+        shuffle: bool, optional
+            Whether to shuffle the training data before each epoch
+        class_weight: dict, optional
+            Dictionnary mapping class indices (integers) to a weight (float) value,
+            used for weighting the loss function (during training only).
+        initial_epoch: int, optional
+            Epoch at which start training (useful for resuming previous training run).
+        workers: int
+            Number of workers to retrieve data
+        use_multiprocessing: bool
+            Whether or not use multiprocessing to retrieve data
+
+        Returns
+        -------
+        dict
+            Training metrics
+        """  # noqa
         if callbacks is not None:
             callbacks = self.__instantiate_callbacks(callbacks)
 

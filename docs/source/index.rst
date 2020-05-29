@@ -16,6 +16,7 @@ Gymnos
    trainer
    execution_environments
    guide/overview
+   research/overview
    api_reference/overview
    command_line_apps/overview
    contributing
