@@ -14,10 +14,21 @@ from ..preprocessors.utils.image_ops import imread_rgb, imresize
 
 class Covid19ChestXray(Dataset):
     """
-    TODO(Covid19ChestXray): Description of my dataset.
+    Dataset of chest X-ray images for COVID-19 positive cases along with normal
+    and viral pneumonia images.
+
+    Characteristics
+        - **Classes**: 3
+        - **Samples total**: 2905
+        - **Features**: real, between 0 and 255
+
+    Parameters
+    ----------
+    target_size: list
+        Target size (width, height) of returned image
     """
 
-    def __init__(self, target_size=(512, 512)):
+    def __init__(self, target_size=(1024, 1024)):
         self.target_size = target_size
 
     @property
@@ -47,7 +58,8 @@ class Covid19ChestXray(Dataset):
     def __getitem__(self, index):
         image_path, target = self.images[index], self.targets[index]
         image = imread_rgb(image_path)
-        image = imresize(image, self.target_size)
+        if self.target_size is not None:
+            image = imresize(image, self.target_size)
         return image, target
 
     def __len__(self):
