@@ -31,3 +31,9 @@ synthetic_digits
 .. autoclass:: gymnos.datasets.synthetic_digits.SyntheticDigits
     :noindex:
     :show-inheritance:
+
+covid19_chest_xray
+=============================
+.. autoclass:: gymnos.datasets.covid19_chest_xray.Covid19ChestXray
+    :noindex:
+    :show-inheritance:

@@ -19,3 +19,9 @@ grayscale_to_color
 .. autoclass:: gymnos.preprocessors.images.grayscale_to_color.GrayscaleToColor
     :noindex:
     :show-inheritance:
+
+channels_first
+===========================
+.. autoclass:: gymnos.preprocessors.images.channels_first.ChannelsFirst
+    :noindex:
+    :show-inheritance:
