@@ -111,6 +111,10 @@ class LazyImporter:
         return _try_import("mlflow")
 
     @classproperty
+    def tensorboard(cls):
+        return _try_import("tensorboard")
+
+    @classproperty
     def PIL(cls):
         PIL = _try_import("PIL", module_to_install="Pillow")
         return __import__("{}.Image".format(PIL.__name__))  # import common module
