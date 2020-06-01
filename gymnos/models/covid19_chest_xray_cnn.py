@@ -80,7 +80,7 @@ class Covid19ChestXrayCnn(Model):
             device = "cuda" if torch.cuda.is_available() else "cpu"
 
         if class_weights is not None:
-            class_weights = torch.tensor(class_weights)
+            class_weights = torch.tensor(class_weights, device=device)
 
         self.device = device
 
