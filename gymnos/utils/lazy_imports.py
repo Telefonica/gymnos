@@ -156,6 +156,14 @@ class LazyImporter:
         return _try_import("torchvision")
 
     @classproperty
+    def wondervision(cls):
+        return _try_import("wondervision", "git+https://github.com/Telefonica/wondervision")
+
+    @classproperty
+    def pytorch_lightning(cls):
+        return _try_import("pytorch_lightning", "pytorch-lightning")
+
+    @classproperty
     def dummy(cls):
         """
         Only for testing purposes

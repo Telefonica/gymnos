@@ -7,7 +7,7 @@
 import os
 
 from ..utils import ask
-from ..utils.io_utils import read_json
+from gymnos.utils.json_utils import read_json
 
 from pprint import pprint
 from gymnos import config

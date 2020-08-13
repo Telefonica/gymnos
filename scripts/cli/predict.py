@@ -9,7 +9,7 @@ import itertools
 import numpy as np
 import pandas as pd
 
-from ..utils.io_utils import read_json
+from gymnos.utils.json_utils import read_json
 
 from gymnos.trainer import Trainer
 from gymnos.datasets.dataset import ClassLabel

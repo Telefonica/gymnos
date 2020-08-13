@@ -18,8 +18,8 @@ from . import execution_environments
 # MARK: Public API
 from . import callbacks    # noqa: F401
 from . import config    # noqa: F401
-from . import trainer    # noqa: F401
 from . import registration    # noqa: F401
+from .trainer import Trainer    # noqa: F401
 
 # MARK: Datasets registration
 
@@ -354,4 +354,9 @@ data_augmentors.register(
 execution_environments.register(
     type="fourth_platform",
     entry_point="gymnos.execution_environments.fourth_platform.FourthPlatform"
+)
+
+execution_environments.register(
+    type="wondervision",
+    entry_point="gymnos.execution_environments.wondervision.WonderVision"
 )
