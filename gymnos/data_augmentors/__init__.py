@@ -27,7 +27,7 @@ def register(type, entry_point):
     return registry.register(type, entry_point)
 
 
-def load(type, **kwargs):
+def load(*args, **kwargs):
     """
     Load registered data augmentor
 
@@ -43,4 +43,4 @@ def load(type, **kwargs):
     data augmentor: gymnos.data augmentors.data augmentor.data augmentor
         Data augmentor instance
     """
-    return registry.load(type, **kwargs)
+    return registry.load(*args, **kwargs)

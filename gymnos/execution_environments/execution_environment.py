@@ -4,6 +4,8 @@
 #
 #
 
+import argparse
+
 from .. import config
 
 from abc import ABCMeta, abstractmethod
@@ -15,8 +17,6 @@ class ExecutionEnvironment(metaclass=ABCMeta):
 
     Parameters
     ------------
-    trainer: gymnos.trainer.Trainer
-        Trainer instance
     config_files: list of str, optional
         List of JSON paths to look for configuration variables
     """
@@ -30,18 +30,12 @@ class ExecutionEnvironment(metaclass=ABCMeta):
         self.config = self.Config(files=config_files)
         self.config.load()
 
+    @staticmethod
+    def add_arguments(parser):
+        ...
+
     @abstractmethod
-    def train(self, trainer):
+    def train(self, trainer, **kwargs):
         """
         Train experiment with execution environment
-        """
-
-    def monitor(self, **train_kwargs):
-        """
-        Monitor training status
-
-        Parameters
-        -----------
-        train_kwargs: any
-            train() method outputs.
         """

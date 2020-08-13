@@ -32,18 +32,23 @@ def build_parser():
 def main():
     parser = build_parser()
 
-    args = parser.parse_args()
+    args, _ = parser.parse_known_args()
 
     if args.command == "train":
-        train.run_command(args)
+        module = train
     elif args.command == "predict":
-        predict.run_command(args)
+        module = predict
     elif args.command == "serve":
-        serve.run_command(args)
+        module = serve
     elif args.command == "deploy":
-        deploy.run_command(args)
+        module = deploy
     else:
-        parser.print_help()
+        return parser.print_help()
+
+    if hasattr(module, "parse_args"):
+        args = module.parse_args(parser)
+
+    module.run_command(args)
 
 
 if __name__ == "__main__":

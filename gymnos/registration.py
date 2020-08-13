@@ -55,6 +55,18 @@ class ComponentRegistry:
         self.component_specs = {}
         self.component_type = component_type
 
+    def validate(self, type):
+        if type in self.component_specs:
+            return {"is_valid": False, "message": "Cannot re-register {} with type: {}".format(self.component_type,
+                                                                                               type)}
+
+        allowed_characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_"
+        if set(type).difference(allowed_characters):
+            return {"is_valid": False, "message": ("Invalid characters. Only the following characters are "
+                                                "allowed: {}").format(allowed_characters)}
+
+        return {"is_valid": True, "message": ""}
+
     def register(self, type, entry_point):
         """
         Register component
@@ -65,14 +77,15 @@ class ComponentRegistry:
             Component type to register. It must be unique
         entry_point: str
             Component path, e.g gymnos.datasets.dogs_vs_cats_cnn.DogsVsCatsCNN
-
         """
-        if type in self.component_specs:
-            raise ValueError("Cannot re-register {} with type: {}".format(self.component_type, type))
+        validation_result = self.validate(type)
+
+        if not validation_result["is_valid"]:
+            raise ValueError(validation_result["message"])
 
         self.component_specs[type] = ComponentSpec(type, entry_point)
 
-    def load(self, type, **kwargs):
+    def load(self, type=None, entry_point=None, **kwargs):
         """
         Load registered component
 
@@ -80,6 +93,8 @@ class ComponentRegistry:
         ----------
         type: str
             Component type / id
+        entry_point: str
+            Entry point
         **kwargs: any
             Constructor arguments for component
 
@@ -88,6 +103,14 @@ class ComponentRegistry:
         component
             Registered component instance
         """
+        if type is not None:
+            return self._load_from_type(type, **kwargs)
+        elif entry_point is not None:
+            return self._load_from_entry_point(entry_point, **kwargs)
+        else:
+            raise ValueError("`type` or `entry_point` must not be None")
+
+    def _load_from_type(self, type, **kwargs):
         try:
             mod_type, type = type.split(":", 1)
             importlib.import_module(mod_type)  # import it so we can register external components
@@ -105,6 +128,12 @@ class ComponentRegistry:
 
         return component_spec.load(**kwargs)
 
+    def _load_from_entry_point(self, entry_point, **kwargs):
+        cls = pydoc.locate(entry_point)
+        if cls is None:
+            raise ValueError("Entry-point {} cannot be imported".format(entry_point))
+        return cls(**kwargs)
+
     def all(self):
         """
         Gets all component specifications
@@ -114,7 +143,7 @@ class ComponentRegistry:
         list
             List with all component specifications
         """
-        return self.component_specs.values()
+        return list(self.component_specs.values())
 
     def __contains__(self, type):
         """

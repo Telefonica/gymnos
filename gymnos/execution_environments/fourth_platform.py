@@ -8,6 +8,7 @@ import json
 import time
 import base64
 import logging
+import argparse
 
 from .. import config
 
@@ -200,6 +201,13 @@ class FourthPlatform(ExecutionEnvironment):
 
     GYMNOS_ALGORITHM_ID = "gymnos"
 
+    @staticmethod
+    def add_arguments(parser):
+        parser.add_argument("--monitor", help="Whether or not monitor training from execution environment",
+                            action="store_true", default=False)
+        parser.add_argument("--monitor_refresh", help="Number of seconds to retrieve new logs and status",
+                            default=30, type=int)
+
     class Config(config.Config):
         """
         You need a 4th Platform account to train with this service.
@@ -210,14 +218,9 @@ class FourthPlatform(ExecutionEnvironment):
             Fourth Platform Client ID
         FOURTH_PLATFORM_PASSWORD: str
             Fourth Platform Client Password
-        FOURTH_PLATFORM_REFRESH_SECONDS: int, optional
-            Number of seconds to retrieve new logs and status. Default: 30s
         """  # noqa: E501
         FOURTH_PLATFORM_PASSWORD = config.Value(required=True, help="Fourth Platform Client ID")
         FOURTH_PLATFORM_CLIENT_ID = config.Value(required=True, help="Fourth Platform Client Password")
-
-        FOURTH_PLATFORM_REFRESH_SECONDS = config.Value(default=30, help=("Number of seconds to retrieve new logs "
-                                                                         "and status"))
 
     def __init__(self, config_files=None):
         super().__init__(config_files)
@@ -225,7 +228,7 @@ class FourthPlatform(ExecutionEnvironment):
         self._api = FourthPlatformAPI(self.config.FOURTH_PLATFORM_CLIENT_ID,
                                       self.config.FOURTH_PLATFORM_PASSWORD)
 
-    def train(self, trainer):
+    def train(self, trainer, **kwargs):
         """
         Train experiment
 
@@ -247,9 +250,12 @@ class FourthPlatform(ExecutionEnvironment):
 
         res = self._api.run_algorithm(self.GYMNOS_ALGORITHM_ID, args=[experiment_b64_str])
 
-        return dict(execution_id=res["execution_id"])
+        logger.info("Experiment executed successfully. Execution ID: {}".format(res["execution_id"]))
 
-    def monitor(self, execution_id):
+        if kwargs["monitor"]:
+            self._start_monitoring(res["execution_id"], kwargs["monitor_refresh"])
+
+    def _start_monitoring(self, execution_id, refresh_seconds=30):
         """
         Monitor execution fetching logs and status.
         It will finish monitoring when the status is either completed or failed.
@@ -258,10 +264,12 @@ class FourthPlatform(ExecutionEnvironment):
         -----------
         execution_id: str
             Execution ID to monitor.
+        refresh_seconds: int
+            Refresh seconds
         """
         diff_streamer = difference_streamer()
 
-        logger.info("New logs and status will be fetched every {}s".format(self.config.FOURTH_PLATFORM_REFRESH_SECONDS))
+        logger.info("New logs and status will be fetched every {}s".format(refresh_seconds))
 
         while True:
             logs = self._api.logs_algorithm_execution(execution_id)
@@ -298,4 +306,4 @@ class FourthPlatform(ExecutionEnvironment):
                 logger.info("Training successfully completed")
                 break
 
-            time.sleep(self.config.FOURTH_PLATFORM_REFRESH_SECONDS)
+            time.sleep(refresh_seconds)

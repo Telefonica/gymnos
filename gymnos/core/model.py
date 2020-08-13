@@ -48,18 +48,18 @@ class Model:
 
         self.training = training
 
-        self._model_spec = deepcopy(model)
+        self.model_spec = deepcopy(model)
 
     @property
     def parameters(self):
-        return drop(self._model_spec, "type")
+        return drop(self.model_spec, "type")
 
     @cached_property
     def model(self):
-        return models.load(**self._model_spec)
+        return models.load(**self.model_spec)
 
     def to_dict(self):
         return dict(
-            model=self._model_spec,
+            model=self.model_spec,
             training=self.training
         )

@@ -27,7 +27,7 @@ def register(type, entry_point):
     return registry.register(type, entry_point)
 
 
-def load(type, **kwargs):
+def load(*args, **kwargs):
     """
     Load registered preprocessor
 
@@ -43,4 +43,4 @@ def load(type, **kwargs):
     preprocessor: gymnos.preprocessors.preprocessor.preprocessor
         Preprocessor instance
     """
-    return registry.load(type, **kwargs)
+    return registry.load(*args, **kwargs)

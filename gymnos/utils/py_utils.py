@@ -66,9 +66,8 @@ def chain(*funcs):
 
 _missing = object()
 
+
 # Adapted from https://github.com/pallets/werkzeug
-
-
 class cached_property:
     """
     A decorator that converts a function into a lazy property.  The
@@ -115,3 +114,15 @@ class cached_property:
 
 def drop(dic, key):
     return {k: v for k, v in dic.items() if k != key}
+
+
+class Dummy:
+
+    def __init__(*args, **kwargs):
+        pass
+
+    def __call__(self, *args, **kwargs):
+        return self
+
+    def __getattr__(self, *args, **kwargs):
+        return self

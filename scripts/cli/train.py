@@ -4,26 +4,40 @@
 #
 #
 
-
 import os
 import uuid
+import pydoc
 import gymnos
 import logging
-import platform
+import argparse
 import logging.config
 
 from datetime import datetime
+from gymnos.services import DownloadManager
+from ..utils.platform_info import get_platform_info
+from gymnos.utils.json_utils import read_json, save_to_json
 
-from ..utils.io_utils import save_to_json, read_json
-from ..utils.platform_info import get_cpu_info, get_gpus_info, get_git_revision_hash
+
+logger = logging.getLogger(__name__)
 
 
 # MARK: Public methods
 
-def add_arguments(parser):
-    parser.add_argument("training_specs_json", help=("Training configuration JSON path. " +
-                                                     "This will call Trainer.from_dict() with the JSON file."),
+def add_arguments(parser: argparse.ArgumentParser):
+    parser.add_argument("training_specs", help=("Training configuration JSON path. " +
+                                                "This will call Trainer.from_dict() with the JSON file."),
                         type=str)
+    subparser = parser.add_subparsers(dest="environment", help="Execution environment to run experiment",
+                                      required=False)
+
+    for execution_environment_spec in gymnos.execution_environments.registry.all():
+        execution_environment_parser = subparser.add_parser(execution_environment_spec.type)
+        execution_environment_cls = pydoc.locate(execution_environment_spec.entry_point)
+        execution_environment_cls.add_arguments(execution_environment_parser)
+
+
+def get_default_parser():
+    parser = argparse.ArgumentParser()
     parser.add_argument("--download_dir", help="Directory to download datasets", type=str, default="downloads")
     parser.add_argument("--force_download", help="Whether or not force download if file already exists",
                         action="store_true", default=False)
@@ -43,37 +57,49 @@ def add_arguments(parser):
     parser.add_argument("--trackings_dir", help="Execution directory to store tracking outputs. It accepts the" +
                                                 " following format arguments: dataset_type, model_type, uuid",
                         type=str, default="trainings/{dataset_type}/trackings")
-    parser.add_argument("--environment", help="Execution environment to run experiment", type=str, default=None)
-    parser.add_argument("--monitor", help="Whether or not monitor training from execution environment",
-                        action="store_true", default=False)
+    return parser
 
 
-def run_command(args):
-    training_config = read_json(args.training_specs_json)
+def parse_args(parser: argparse.ArgumentParser):
+    args, extras = parser.parse_known_args()
 
-    trainer = gymnos.trainer.Trainer.from_dict(training_config)
+    if args.environment is None:
+        default_parser = get_default_parser()
+        extras_args = default_parser.parse_args(extras)
+        args = argparse.Namespace(**vars(args), **vars(extras_args))
 
-    logger = logging.getLogger(__name__)
+    return args
 
-    if args.environment is not None:
-        setup_basic_log_config()
 
-        logger.info("Training will be executed in external environment")
+def run_command(args: argparse.Namespace):
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        handlers=[
+            logging.StreamHandler()
+        ]
+    )
 
-        environment_instance = gymnos.execution_environments.load(args.environment)
-        train_kwargs = environment_instance.train(trainer)
+    training_config = read_json(args.training_specs)
 
-        logger.info("Training outputs: {}".format(train_kwargs))
+    trainer = gymnos.Trainer.from_dict(training_config)
 
-        if args.monitor:
-            logger.info("Monitoring will begin")
-            environment_instance.monitor(**train_kwargs)
+    if args.environment is None:
+        _run_without_environment(trainer, args)
+    else:
+        _run_with_environment(trainer, args)
 
-        return train_kwargs
 
+def _run_with_environment(trainer, args):
+    execution_environment = gymnos.execution_environments.load(args.environment)
+
+    execution_environment.train(trainer, **vars(args))
+
+
+def _run_without_environment(trainer, args):
     format_kwargs = dict(
-        dataset_type=training_config["dataset"]["dataset"]["type"],
-        model_type=training_config["model"]["model"]["type"],
+        dataset_type=trainer.dataset.dataset_spec.get("type", ""),
+        model_type=trainer.model.model_spec.get("type", ""),
         uuid=uuid.uuid4().hex,
         now=datetime.now()
     )
@@ -84,7 +110,8 @@ def run_command(args):
     os.makedirs(execution_dir)
     os.makedirs(trackings_dir, exist_ok=True)
 
-    logging_config = read_json(os.path.join(os.path.dirname(__file__), "..", "config", "logging.json"))
+    logging_config = read_json(
+        os.path.join(os.path.dirname(__file__), "..", "..", "scripts", "config", "logging.json"))  # FIXME
     logging_config["handlers"]["file"]["filename"] = os.path.join(execution_dir,
                                                                   logging_config["handlers"]["file"]["filename"])
     logging.config.dictConfig(logging_config)
@@ -92,8 +119,8 @@ def run_command(args):
     logger.info("Execution directory will be located at {}".format(execution_dir))
     logger.info("Trackings directory will be located at {}".format(trackings_dir))
 
-    dl_manager = gymnos.services.DownloadManager(args.download_dir, force_download=args.force_download,
-                                                 force_extraction=args.force_extraction)
+    dl_manager = DownloadManager(args.download_dir, force_download=args.force_download,
+                                 force_extraction=args.force_extraction)
 
     try:
         training_results = trainer.train(dl_manager, trackings_dir=trackings_dir)
@@ -109,7 +136,7 @@ def run_command(args):
     if not args.no_save_training_specs:
         path = os.path.join(execution_dir, "training_specs.json")
         logger.info("Saving training specs to {}".format(path))
-        save_to_json(path, training_config)
+        save_to_json(path, trainer.to_dict())
 
     if not args.no_save_metrics:
         path = os.path.join(execution_dir, "metrics.json")
@@ -120,40 +147,3 @@ def run_command(args):
         path = os.path.join(execution_dir, "platform_info.json")
         logger.info("Saving platform info to {}".format(path))
         save_to_json(path, get_platform_info())
-
-
-# MARK: Helpers
-
-def setup_basic_log_config():
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        handlers=[
-            logging.StreamHandler()
-        ]
-    )
-
-
-def get_platform_info():
-    logger = logging.getLogger(__name__)
-
-    info = dict(platform=platform.platform())
-
-    try:
-        info["cpu"] = get_cpu_info()
-    except Exception:
-        logger.error("Error retrieving CPU information")
-
-    try:
-        info["gpu"] = get_gpus_info()
-    except Exception:
-        logger.error("Error retrieving GPU information")
-
-    info["gymnos"] = dict(version=gymnos.__version__)
-
-    try:
-        info["gymnos"]["git_hash"] = get_git_revision_hash()
-    except Exception:
-        logger.error("Error retrieving git revision hash")
-
-    return info
