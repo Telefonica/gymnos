@@ -14,7 +14,7 @@ from ..utils.json_utils import save_to_json
 from .execution_environment import ExecutionEnvironment
 
 
-class GymnosLogger(lazy.pytorch_lightning.loggers.LightningLoggerBase):
+class _GymnosLogger(lazy.pytorch_lightning.loggers.LightningLoggerBase):
 
     def __init__(self, logger, run_id=None):
         super().__init__()
@@ -48,6 +48,16 @@ class GymnosLogger(lazy.pytorch_lightning.loggers.LightningLoggerBase):
 
 
 class WonderVision(ExecutionEnvironment):
+    """
+    Execution environment to run experiments using `wondervision <https://github.com/Telefonica/wondervision/>`_.
+    framework.
+    Check ``examples/experiments/wondervision.json`` to see a wondervision experiment.
+
+    Parameters
+    ------------
+    config_files: list of str, optional
+        List of JSON paths to look for configuration values.
+    """
 
     @staticmethod
     def add_arguments(parser):
@@ -73,7 +83,7 @@ class WonderVision(ExecutionEnvironment):
         trainer.tracking.trackers.start(trainer.tracking.run_id, trackings_dir)
 
         pl_trainer = lazy.pytorch_lightning.Trainer(
-            logger=GymnosLogger(trainer.tracking.trackers, trainer.tracking.run_id),
+            logger=_GymnosLogger(trainer.tracking.trackers, trainer.tracking.run_id),
             weights_save_path=execution_dir,
             **trainer.model.training)
 

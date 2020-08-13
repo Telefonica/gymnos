@@ -16,8 +16,8 @@ Usage
 
 All Execution Environments
 ****************************
-.. contents:: 
-    :local: 
+.. contents::
+    :local:
 
 fourth_platform
 ========================
@@ -29,3 +29,11 @@ fourth_platform
     .. autoclass:: gymnos.execution_environments.fourth_platform.FourthPlatform.Config
         :noindex:
         :members:
+
+wondervision
+========================
+.. autoclass:: gymnos.execution_environments.wondervision.WonderVision
+    :noindex:
+    :members:
+    :exclude-members: Config
+

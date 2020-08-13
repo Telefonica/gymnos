@@ -4,8 +4,6 @@
 #
 #
 
-import argparse
-
 from .. import config
 
 from abc import ABCMeta, abstractmethod

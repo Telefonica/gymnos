@@ -8,7 +8,6 @@ import json
 import time
 import base64
 import logging
-import argparse
 
 from .. import config
 
@@ -161,14 +160,14 @@ class FourthPlatformAPI:
         return res.json()
 
 
-def difference_streamer():
+def _difference_streamer():
     """
     Wrapper to compute differences between streamed lists.
     Original data is asummed to be in the same order as previous data.
 
     Examples
     ---------
-    >>> diff_streamer = difference_streamer()
+    >>> diff_streamer = _difference_streamer()
     >>> new_data = diff_streamer([0, 1, 2])  # new_data=[0, 1, 2]
     >>> new_data = diff_streamer([0, 1, 2, 3, 4])  # new_data=[3, 4]
     >>> new_data = diff_streamer([0, 1, 2, 3, 4])  # new_data=[]
@@ -267,7 +266,7 @@ class FourthPlatform(ExecutionEnvironment):
         refresh_seconds: int
             Refresh seconds
         """
-        diff_streamer = difference_streamer()
+        diff_streamer = _difference_streamer()
 
         logger.info("New logs and status will be fetched every {}s".format(refresh_seconds))
 
