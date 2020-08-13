@@ -32,7 +32,7 @@ def build_parser():
 def main():
     parser = build_parser()
 
-    args, _ = parser.parse_known_args()
+    args = parser.parse_args()
 
     if args.command == "train":
         module = train
@@ -44,9 +44,6 @@ def main():
         module = deploy
     else:
         return parser.print_help()
-
-    if hasattr(module, "parse_args"):
-        args = module.parse_args(parser)
 
     module.run_command(args)
 

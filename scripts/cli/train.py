@@ -35,9 +35,6 @@ def add_arguments(parser: argparse.ArgumentParser):
         execution_environment_cls = pydoc.locate(execution_environment_spec.entry_point)
         execution_environment_cls.add_arguments(execution_environment_parser)
 
-
-def get_default_parser():
-    parser = argparse.ArgumentParser()
     parser.add_argument("--download_dir", help="Directory to download datasets", type=str, default="downloads")
     parser.add_argument("--force_download", help="Whether or not force download if file already exists",
                         action="store_true", default=False)
@@ -57,18 +54,6 @@ def get_default_parser():
     parser.add_argument("--trackings_dir", help="Execution directory to store tracking outputs. It accepts the" +
                                                 " following format arguments: dataset_type, model_type, uuid",
                         type=str, default="trainings/{dataset_type}/trackings")
-    return parser
-
-
-def parse_args(parser: argparse.ArgumentParser):
-    args, extras = parser.parse_known_args()
-
-    if args.environment is None:
-        default_parser = get_default_parser()
-        extras_args = default_parser.parse_args(extras)
-        args = argparse.Namespace(**vars(args), **vars(extras_args))
-
-    return args
 
 
 def run_command(args: argparse.Namespace):
