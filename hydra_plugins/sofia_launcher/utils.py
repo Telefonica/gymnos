@@ -38,15 +38,13 @@ def get_current_revision():
 
     has_warnings = False
 
-    try:
-        gymnos_remote.fetch(current_revision)
-    except git.exc.GitCommandError:
+    if not repo.git.branch("-r", "--contains", current_revision):
         has_warnings = True
-        warnings.warn("The current revision have not been found on gymnos repository")
+        logger.warning("The current revision have not been found on gymnos repository")
 
-    if repo.is_dirty():
+    if repo.is_dirty(untracked_files=True):
         has_warnings = True
-        warnings.warn(f"You have {len(repo.untracked_files)} uncommited changes")
+        logger.warning(f"You have uncommited changes")
 
     if has_warnings:
         confirm = confirm_prompt("You have unpushed changes to gymnos repository. Are you sure you want to continue?: ")
