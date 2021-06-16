@@ -1,0 +1,28 @@
+defaults:
+    - trainer: ???
+    - data: ???
+    - experiment: null
+
+test: false
+
+show_config: true
+show_dependencies: true
+
+dependencies:
+    install: false
+
+mlflow:
+    run_name: null
+    experiment_name: null
+    tracking_uri: null
+    log_config: true
+    log_trainer_params: true
+    autolog:
+        log_input_examples: false
+        log_model_signatures: false
+        log_models: false
+        disable: false
+        exclusive: false
+        disable_for_unsupported_versions: false
+        silent: false
+

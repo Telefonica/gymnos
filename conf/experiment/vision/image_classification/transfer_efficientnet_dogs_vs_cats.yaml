@@ -1,0 +1,17 @@
+# @package _global_
+
+defaults:
+    - override /trainer: vision/image_classification/transfer_efficientnet
+    - override /data: dummy
+
+trainer:
+    num_epochs: 2
+    train_split: 0.6
+    val_split: 0.2
+    test_split: 0.2
+    classes:
+        - dog
+        - cat
+
+data:
+    path: data/dogs_vs_cats
