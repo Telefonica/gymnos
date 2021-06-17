@@ -2,7 +2,7 @@
 
 defaults:
     - override /trainer: vision/image_classification/transfer_efficientnet
-    - override /data: dummy
+    - override /data: sofia
 
 trainer:
     num_epochs: 2
@@ -14,4 +14,4 @@ trainer:
         - cat
 
 data:
-    path: data/dogs_vs_cats
+    dataset: ruben/datasets/dogs_vs_cats
