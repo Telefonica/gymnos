@@ -134,7 +134,7 @@ dmypy.json
 .idea
 
 # Local data to test datasets
-data
+datasets
 
 # Hydra stuff
 outputs

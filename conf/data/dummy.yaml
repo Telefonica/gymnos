@@ -1,0 +1,2 @@
+_target_: gymnos.services.dummy.Dummy.load
+path: ???
