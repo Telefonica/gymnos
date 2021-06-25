@@ -60,9 +60,11 @@ def main(config: DictConfig):
         mlflow.set_experiment(config.mlflow.experiment_name)
 
     with mlflow.start_run(run_name=config.mlflow.run_name) as run:
-        mlflow.autolog(**config.mlflow.autolog)
-
         logger.info(f"MLFlow run id: {run.info.run_id}")
+
+        is_sofia_env = strtobool(os.getenv("SOFIA", "false"))
+        if is_sofia_env:
+            print({"run_id": run.info.run_id, "experiment_id": run.info.experiment_id})
 
         if config.mlflow.log_config:
             mlflow.log_artifact(".hydra")
