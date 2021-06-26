@@ -16,7 +16,8 @@ from hydra.core.config_store import ConfigStore
 from hydra.utils import instantiate, get_original_cwd
 
 from hydra_plugins.sofia_launcher import SOFIALauncherConfig
-from .utils import print_config, print_dependencies, find_dependencies, iterate_config, find_trainer_dependencies
+from .utils import print_config, print_dependencies, find_dependencies, iterate_config, find_trainer_dependencies, \
+    find_trainer_package, find_predictors
 
 # Register SOFIA launcher
 cs = ConfigStore.instance()
@@ -65,7 +66,16 @@ def main(config: DictConfig):
 
         is_sofia_env = strtobool(os.getenv("SOFIA", "false"))
         if is_sofia_env:
-            print({"run_id": run.info.run_id, "experiment_id": run.info.experiment_id})
+            package = find_trainer_package(config.trainer)
+            module = package.load_module()
+
+            print({
+                "sofia": True,
+                "run_id": run.info.run_id,
+                "experiment_id": run.info.experiment_id,
+                "module": module.__name__,
+                "predictors": find_predictors(module)
+            })
 
         if config.mlflow.log_config:
             mlflow.log_artifact(".hydra")
