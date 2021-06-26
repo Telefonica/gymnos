@@ -7,9 +7,13 @@
 import ast
 import json
 import pkgutil
+import inspect
 import rich.tree
 import rich.syntax
 import pkg_resources
+
+from ..models import Predictor
+
 from rich.text import Text
 from typing import Sequence
 from omegaconf import DictConfig, OmegaConf, ListConfig
@@ -89,10 +93,30 @@ def find_dependencies(path):
 
 
 def find_trainer_dependencies(trainer_config):
-    *module, trainer = trainer_config["_target_"].split(".")
-    package = pkgutil.get_loader(".".join(module))
+    package = find_trainer_package(trainer_config)
     dependencies = find_dependencies(package.get_filename())
     return dependencies
+
+
+def find_trainer_package(trainer_config):
+    *module, trainer = trainer_config["_target_"].split(".")
+    package = pkgutil.get_loader(".".join(module))
+    return package
+
+
+def find_predictors(module):
+    predictors = []
+
+    for var_name in dir(module):
+        if var_name.startswith("__"):
+            continue
+
+        var = getattr(module, var_name)
+
+        if inspect.isclass(var) and issubclass(var, Predictor):
+            predictors.append(var_name)
+
+    return predictors
 
 
 def iterate_config(config: DictConfig, prefix=""):
