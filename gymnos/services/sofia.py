@@ -74,7 +74,7 @@ def login_required(func):
 
 class SOFIA:
 
-    domain = os.getenv("SOFIA_DOMAIN", "http://localhost:5555")  # FIXME
+    domain = os.getenv("SOFIA_DOMAIN", "http://obiwan.hi.inet:7272")
 
     @classmethod
     def session(cls):
