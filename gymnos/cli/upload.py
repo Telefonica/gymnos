@@ -53,10 +53,10 @@ def main(mlflow_run_id, name, description, public):
 
     mlflow_run = mlflow_run_id
 
-    logger = logging.getLogger(__name__)
-
     handler = RichHandler(rich_tracebacks=True)
     logging.basicConfig(level="INFO", format="%(message)s", datefmt="[%X]", handlers=[handler])
+
+    logger = logging.getLogger(__name__)
 
     response = SOFIA.get_current_user()
 
