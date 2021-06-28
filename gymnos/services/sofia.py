@@ -6,9 +6,11 @@
 
 import re
 import os
+import json
 import fastdl
 import requests
 
+from omegaconf import OmegaConf
 from dataclasses import dataclass
 from posixpath import join as urljoin
 
@@ -36,14 +38,30 @@ class SOFIADataset:
 
     @classmethod
     def parse(cls, dataset):
-        match = re.match(r"^(.+)/datasets/(.+)$", dataset)
+        username, name = parse_resource("datasets", dataset)
+        return cls(username, name)
 
-        if not match:
-            raise ValueError("Unexpected dataset {}. It must be in the following format <username>/datasets/<name>")
 
-        username, dataset_name = match.group(1), match.group(2)
+@dataclass
+class SOFIAModel:
+    username: str
+    name: str
 
-        return cls(username, dataset_name)
+    @classmethod
+    def parse(cls, model):
+        username, name = parse_resource("models", model)
+        return cls(username, name)
+
+
+def parse_resource(resource_type: str, resource: str):
+    match = re.match(rf"^(.+)/{resource_type}/(.+)$", resource)
+
+    if not match:
+        raise ValueError("Unexpected dataset {}. It must be in the following format <username>/datasets/<name>")
+
+    username, name = match.group(1), match.group(2)
+
+    return username, name
 
 
 def login_required(func):
@@ -86,9 +104,38 @@ class SOFIA:
                                          "files"))
 
     @classmethod
+    def get_model(cls, model: str):
+        model = SOFIAModel.parse(model)
+        return cls.session().get(urljoin(cls.domain, "api", "models", model.username, model.name))
+
+    @classmethod
+    def download_model_artifacts(cls, model: str, force_download=False, force_extraction=False, verbose=True):
+        model = SOFIAModel.parse(model)
+        config = get_gymnos_config()
+        home = get_gymnos_home()
+        save_dir = os.path.join(home, "models", "sofia", model.username, model.name)
+        download_url = urljoin(cls.domain, "api", "models", model.username, model.name, "artifacts", "download")
+
+        fastdl.download(
+            url=download_url,
+            headers={
+                "Authorization": f"Bearer {config.sofia.access_token}"
+            },
+            progressbar=verbose,
+            fname="artifacts.zip",
+            dir_prefix=save_dir,
+            extract=True,
+            force_download=force_download,
+            force_extraction=force_extraction
+        )
+
+        return os.path.join(save_dir, "artifacts")
+
+    @classmethod
     def create_project_job(cls, args, project_name, ref=None, device="CPU", name=None, description=None):
         response = cls.get_current_user()
         response.raise_for_status()
+
         username = response.json()["username"]
 
         json_data = {
@@ -105,13 +152,34 @@ class SOFIA:
                                   json=json_data)
 
     @classmethod
-    def download_dataset(cls, dataset, files=None, force_download=False, max_workers=None):
-        home = get_gymnos_home()
+    def create_model(cls, name, description, is_public, module, predictors, config, run_info, artifacts_path):
+        model = {
+            "name": name,
+            "description": description,
+            "is_public": is_public,
+            "gymnos_module": module,
+            "gymnos_predictors": predictors,
+            "run": run_info
+        }
 
+        with open(artifacts_path, "rb") as fp:
+            files = [
+                ("model", ("model", json.dumps(model), "application/json")),
+                ("config", ("config.yaml", OmegaConf.to_yaml(config), "application/x-yaml")),
+                ("artifacts", ("artifacts.zip", fp, "application/zip"))
+            ]
+
+            return cls.session().post(urljoin(cls.domain, "api", "user", "models"), files=files)
+
+    @classmethod
+    def download_dataset(cls, dataset, files=None, force_download=False, max_workers=None):
         if files is None:
             response = cls.get_dataset_files(dataset)
             response.raise_for_status()
+
             files = response.json()
+
+        home = get_gymnos_home()
 
         dataset = SOFIADataset.parse(dataset)
 

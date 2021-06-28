@@ -9,7 +9,7 @@ import uuid
 
 from omegaconf import open_dict
 from hydra.core.hydra_config import HydraConfig
-from hydra.core.utils import JobReturn, run_job
+from hydra.core.utils import JobReturn, run_job, configure_log
 
 from typing import Sequence, Callable
 from posixpath import join as urljoin
@@ -59,6 +59,9 @@ def launch(launcher, job_overrides: Sequence[Sequence[str]], initial_job_idx: in
         with open_dict(sweep_config):
             sweep_config.hydra.job.id = str(uuid.uuid4())
             sweep_config.hydra.job.num = initial_job_idx + idx
+            sweep_config.hydra.launcher.ref = launcher.ref
+
+        configure_log(sweep_config.hydra.job_logging, sweep_config.hydra.verbose)
 
         HydraConfig.instance().set_config(sweep_config)
 
@@ -77,5 +80,7 @@ def launch(launcher, job_overrides: Sequence[Sequence[str]], initial_job_idx: in
             job_subdir_key="hydra.sweep.subdir",
         )
         job_returns.append(job_return)
+
+        configure_log(launcher.config.hydra.hydra_logging, launcher.config.hydra.verbose)
 
     return job_returns

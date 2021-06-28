@@ -11,6 +11,8 @@ import rich.tree
 import rich.syntax
 
 from git import Repo
+from rich.panel import Panel
+from gymnos.cli.utils import confirm_prompt
 from omegaconf import DictConfig, OmegaConf
 
 
@@ -40,11 +42,11 @@ def get_current_revision():
 
     if not repo.git.branch("-r", "--contains", current_revision):
         has_warnings = True
-        logger.warning("The current revision have not been found on gymnos repository")
+        warnings.warn("The current revision have not been found on gymnos repository")
 
     if repo.is_dirty(untracked_files=True):
         has_warnings = True
-        logger.warning(f"You have uncommited changes")
+        warnings.warn(f"You have uncommited changes")
 
     if has_warnings:
         confirm = confirm_prompt("You have unpushed changes to gymnos repository. Are you sure you want to continue?: ")
@@ -55,18 +57,6 @@ def get_current_revision():
     logger.info(f"Current revision {current_revision[:8]} will be used")
 
     return current_revision
-
-
-def confirm_prompt(question: str) -> bool:
-    """ Prompt the yes/no-*question* to the user. """
-    from distutils.util import strtobool
-
-    while True:
-        user_input = input(question + " [y/n]: ")
-        try:
-            return bool(strtobool(user_input))
-        except ValueError:
-            print("Please use y/n or yes/no.")
 
 
 def print_launcher(config: DictConfig, resolve: bool = True):
@@ -80,14 +70,14 @@ def print_launcher(config: DictConfig, resolve: bool = True):
     subbranch_content = OmegaConf.to_yaml(config, resolve=resolve)
     subbranch.add(rich.syntax.Syntax(subbranch_content, "yaml"))
 
-    rich.print(tree)
+    rich.print(Panel(tree))
 
 
 def print_dependencies(dependencies):
     style = "dim"
-    tree = rich.tree.Tree(":computer: DEPENDENCIES", style=style, guide_style=style)
+    tree = rich.tree.Tree(":package: DEPENDENCIES", style=style, guide_style=style)
 
     for dependency in dependencies:
         tree.add(dependency, style=style, guide_style=style)
 
-    rich.print(tree)
+    rich.print(Panel(tree))

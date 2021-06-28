@@ -5,9 +5,10 @@
 #
 
 import enum
+import logging
 
 from typing import Optional
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 class Device(enum.Enum):
