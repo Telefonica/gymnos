@@ -1,6 +1,6 @@
 import os
 import ast
-import glob
+import fnmatch
 import setuptools
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -33,15 +33,43 @@ def parse_dependencies(filepath):
     return dependencies
 
 
-def parse_models_requirements():
-    entrypoints = glob.glob(os.path.join(here, "gymnos", "models", "*", "*", "*", "__init__.py"))
+def find_files(directory, pattern):
+    for root, dirs, files in os.walk(directory):
+        for basename in files:
+            if fnmatch.fnmatch(basename, pattern):
+                filename = os.path.join(root, basename)
+                yield filename
+
+
+def remove_prefix(text, prefix):
+    if text.startswith(prefix):
+        return text[len(prefix):]
+    return text
+
+
+def remove_suffix(text, suffix):
+    if suffix and text.endswith(suffix):
+        return text[:-len(suffix)]
+    return text
+
+
+def find_model_dependencies():
+    models_dir = os.path.join(here, "gymnos", "models")
 
     dependencies_by_model = {}
-    for entrypoint in entrypoints:
-        model_name = os.path.basename(os.path.dirname(entrypoint))
-        dependencies = parse_dependencies(entrypoint)
-        if dependencies is not None:
-            dependencies_by_model[model_name] = dependencies
+
+    for file in find_files(models_dir, "__init__.py"):
+        with open(file) as fp:
+            header = fp.readline()
+            if not header.startswith("#"):
+                continue
+            content = header.lstrip("#")
+            if content.strip() == "@model":
+                module_name = remove_prefix(file, models_dir)
+                module_name = remove_suffix(module_name, "__init__.py")
+                module_name = module_name.replace(os.path.sep, ".")
+                model_name = "models." + module_name.strip(".")
+                dependencies_by_model[model_name] = parse_dependencies(file) or []
 
     return dependencies_by_model
 
@@ -49,6 +77,7 @@ def parse_models_requirements():
 INSTALL_REQUIRES = [
     "rich",
     "mlflow",
+    "click",
     "fastdl",
     "dacite",
     "requests",
@@ -64,7 +93,7 @@ EXTRAS_REQUIRE = {
         ],
 }
 
-EXTRAS_REQUIRE.update({f"model.{key}": value for key, value in parse_models_requirements().items()})
+EXTRAS_REQUIRE.update(find_model_dependencies())
 
 setuptools.setup(
     name="gymnos",
