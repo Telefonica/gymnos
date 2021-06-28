@@ -44,7 +44,7 @@ class TransferEfficientNetPredictor(Predictor):
             T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
 
-    def load(self, trainer_config, artifacts_dir):
+    def load(self, artifacts_dir):
         checkpoints = glob.glob(os.path.join(artifacts_dir, "*.ckpt"))
         if len(checkpoints) == 0:
             raise ValueError("No checkpoint found")
@@ -52,8 +52,8 @@ class TransferEfficientNetPredictor(Predictor):
             warnings.warn("More than one checkpoint found. Selecting the first one")
 
         self.model = TransferEfficientNetModule.load_from_checkpoint(checkpoints[0],
-                                                                     num_classes=len(trainer_config.classes))
-        self.classes = trainer_config.classes
+                                                                     num_classes=len(self.trainer.config.classes))
+        self.classes = sorted(self.trainer.config.classes)
 
         self.model.to(self.device).eval()
 
