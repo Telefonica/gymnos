@@ -148,3 +148,12 @@ def extract_archive(from_path: str, to_path: Optional[str] = None, remove_finish
     extractor(from_path, to_path, compression)
 
     return to_path
+
+
+def zipdir(in_dir, zip_file):
+    with zipfile.ZipFile(zip_file, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        for root, _, files in os.walk(in_dir):
+            for file in files:
+                full_path = os.path.join(root, file)
+                relative_path = full_path.replace(in_dir + "/", "")
+                zipf.write(full_path, relative_path)

@@ -1,4 +1,4 @@
-#
+# @model
 #
 # Efficient-net image classifier
 #

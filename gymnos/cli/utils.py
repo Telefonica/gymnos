@@ -8,6 +8,7 @@ import ast
 import json
 import pkgutil
 import inspect
+import pathlib
 import rich.tree
 import rich.syntax
 import pkg_resources
@@ -16,6 +17,9 @@ from ..models import Predictor
 
 from rich.text import Text
 from typing import Sequence
+from rich.panel import Panel
+from rich.markup import escape
+from rich.filesize import decimal
 from omegaconf import DictConfig, OmegaConf, ListConfig
 
 
@@ -50,12 +54,12 @@ def print_config(
             branch_content = json.dumps(config_section).strip('"')
             tree.add(f"{field}: {branch_content}", style=style, guide_style=style)
 
-    rich.print(tree)
+    rich.print(Panel(tree))
 
 
 def print_dependencies(dependencies):
     style = "dim"
-    tree = rich.tree.Tree(":computer: DEPENDENCIES", style=style, guide_style=style)
+    tree = rich.tree.Tree(":package: DEPENDENCIES", style=style, guide_style=style)
     for dependency in dependencies:
         text = dependency
         try:
@@ -70,7 +74,38 @@ def print_dependencies(dependencies):
 
         tree.add(Text(text, color), style=style, guide_style=style)
 
-    rich.print(tree)
+    rich.print(Panel(tree))
+
+
+def print_artifacts(artifacts_dir):
+    """Recursively build a Tree with directory contents."""
+    tree = rich.tree.Tree(f":open_file_folder: ARTIFACTS", guide_style="dim")
+    _walk_directory_for_rich(artifacts_dir, tree)
+    rich.print(Panel(tree))
+
+
+def _walk_directory_for_rich(directory, tree):
+    paths = sorted(pathlib.Path(directory).iterdir(), key=lambda path: (path.is_file(), path.name.lower()))
+
+    for path in paths:
+        # Remove hidden files
+        if path.name.startswith("."):
+            continue
+        if path.is_dir():
+            style = "dim" if path.name.startswith("__") else ""
+            branch = tree.add(
+                f"[bold magenta]:open_file_folder: [link file://{path}]{escape(path.name)}",
+                style=style,
+                guide_style=style,
+            )
+            _walk_directory_for_rich(path, branch)
+        else:
+            text_filename = Text(path.name, "green")
+            text_filename.highlight_regex(r"\..*$", "bold red")
+            text_filename.stylize(f"link file://{path}")
+            file_size = path.stat().st_size
+            text_filename.append(f" ({decimal(file_size)})", "blue")
+            tree.add(Text("📄 ") + text_filename)
 
 
 def find_dependencies(path):
@@ -125,3 +160,15 @@ def iterate_config(config: DictConfig, prefix=""):
             yield from iterate_config(value, f"{prefix}{key}/")
         else:
             yield f"{prefix}{key}", value
+
+
+def confirm_prompt(question: str) -> bool:
+    """ Prompt the yes/no-*question* to the user. """
+    from distutils.util import strtobool
+
+    while True:
+        user_input = input(question + " [y/n]: ")
+        try:
+            return bool(strtobool(user_input))
+        except ValueError:
+            print("Please use y/n or yes/no.")

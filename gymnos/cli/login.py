@@ -4,34 +4,18 @@
 #
 #
 
-import argparse
+import click
 
-from getpass import getpass
 from rich import print as rprint
 
 from ..services.sofia import SOFIA
 from ..config import get_gymnos_config, set_gymnos_config
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--email", required=False)
-    parser.add_argument("--username", required=False)
-    parser.add_argument("--password", required=False)
-
-    args = parser.parse_args()
-
-    if args.email is not None:
-        username_or_email = args.email
-    elif args.username is not None:
-        username_or_email = args.username
-    else:
-        username_or_email = input("Username or email: ")
-
-    password = args.password
-    if password is None:
-        password = getpass()
-
+@click.command(help="Login to SOFIA")
+@click.option("--username_or_email", prompt=True)
+@click.option("--password", prompt=True, hide_input=True)
+def main(username_or_email, password):
     config = get_gymnos_config()
 
     response = SOFIA.login(username_or_email, password)

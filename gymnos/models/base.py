@@ -10,11 +10,13 @@ import abc
 import mlflow
 import tempfile
 
+from dacite import from_dict
 from dataclasses import dataclass
 from omegaconf import OmegaConf, DictConfig
 from typing import Any, Dict, Union
 
-from ..utils.py_utils import strip_underscores
+from ..services.sofia import SOFIA
+from ..utils.mlflow_utils import jsonify_mlflow_run
 
 
 @dataclass
@@ -62,27 +64,37 @@ class Predictor(metaclass=abc.ABCMeta):
 
                 # Load weights
                 config = OmegaConf.load(os.path.join(tmpdir, ".hydra", "config.yaml"))
-                predictor.load(config.trainer, tmpdir)
 
                 # Add trainer info
                 predictor.trainer = TrainerInfo(
-                    run=TrainerRunInfo(
-                        info=strip_underscores(run.info),
-                        metrics=run.data.metrics,
-                        params=run.data.params,
-                        tags=run.data.tags
-                    ),
+                    run=from_dict(TrainerRunInfo, jsonify_mlflow_run(run)),
                     config=config.trainer
                 )
+
+                predictor.load(tmpdir)
         elif source == "sofia":
-            ...
-            artifacts_dir = None
+            response = SOFIA.get_model(name_or_run_id)
+            response.raise_for_status()
+
+            data = response.json()
+
+            artifacts_dir = SOFIA.download_model_artifacts(name_or_run_id, force_download=force_reload,
+                                                           force_extraction=force_reload, verbose=verbose)
+
+            config = OmegaConf.load(os.path.join(artifacts_dir, ".hydra", "config.yaml"))
+
+            predictor.trainer = TrainerInfo(
+                run=from_dict(TrainerRunInfo, data["run"]),
+                config=config.trainer
+            )
+
+            predictor.load(artifacts_dir)
         else:
-            raise ValueError(f'Unknown source: "{source}". Allowed values: "sofia" | "mlflow".')
+            raise ValueError(f'Unknown source: "{source}". Allowed values: "sofia" | "mlflow"')
 
         return predictor
 
-    def load(self, trainer_config: DictConfig, artifacts_dir: str):
+    def load(self, artifacts_dir: str):
         pass
 
     @abc.abstractmethod
