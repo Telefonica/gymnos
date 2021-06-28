@@ -16,7 +16,7 @@ from hydra.core.config_store import ConfigStore
 from hydra.utils import instantiate, get_original_cwd
 
 from hydra_plugins.sofia_launcher import SOFIALauncherConfig
-from .utils import print_config, print_dependencies, find_dependencies, iterate_config, find_trainer_dependencies, \
+from .utils import print_config, print_dependencies, iterate_config, find_trainer_dependencies, \
     find_trainer_package, find_predictors
 
 # Register SOFIA launcher
@@ -43,9 +43,7 @@ def main(config: DictConfig):
         if config.dependencies.install:
             subprocess.check_call([sys.executable, "-m", "pip", "install", *dependencies])
 
-    if config.mlflow.tracking_uri is not None:
-        tracking_uri = config.mlflow.tracking_uri
-    elif "MLFLOW_TRACKING_URI" in os.environ:
+    if "MLFLOW_TRACKING_URI" in os.environ:
         tracking_uri = os.environ["MLFLOW_TRACKING_URI"]
     else:
         tracking_uri = os.path.join(get_original_cwd(), "mlruns")
@@ -64,6 +62,8 @@ def main(config: DictConfig):
     with mlflow.start_run(run_name=config.mlflow.run_name) as run:
         logger.info(f"MLFlow run id: {run.info.run_id}")
 
+        mlflow.log_artifact(".hydra")
+
         is_sofia_env = strtobool(os.getenv("SOFIA", "false"))
         if is_sofia_env:
             package = find_trainer_package(config.trainer)
@@ -77,16 +77,14 @@ def main(config: DictConfig):
                 "predictors": find_predictors(module)
             })
 
-        if config.mlflow.log_config:
-            mlflow.log_artifact(".hydra")
-
         if config.mlflow.log_trainer_params:
             mlflow.log_params(dict(iterate_config(config.trainer)))
 
         trainer = instantiate(config.trainer)
 
-        data_dir = instantiate(config.data)
-        trainer.setup(data_dir)
+        if config.get("data") is not None:
+            data_dir = instantiate(config.data)
+            trainer.setup(data_dir)
 
         trainer.train()
 

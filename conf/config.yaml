@@ -14,7 +14,5 @@ dependencies:
 mlflow:
     run_name: null
     experiment_name: null
-    tracking_uri: null
-    log_config: true
     log_trainer_params: true
 
