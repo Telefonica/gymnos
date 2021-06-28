@@ -83,6 +83,7 @@ INSTALL_REQUIRES = [
     "requests",
     "GitPython",
     "omegaconf",
+    "stringcase",
     "hydra-core>=1.1.0",
     'dataclasses; python_version < "3.7"'
 ]
@@ -112,7 +113,8 @@ setuptools.setup(
         "console_scripts": [
             "gymnos-train=gymnos.cli.train:hydra_entry",
             "gymnos-upload=gymnos.cli.upload:main"
-            "gymnos-login=gymnos.cli.login:main"
+            "gymnos-login=gymnos.cli.login:main",
+            "gymnos-create=gymnos.cli.create:main"
         ]},
     classifiers=[
         "Development Status :: 1 - Alpha",

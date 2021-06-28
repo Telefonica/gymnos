@@ -1,5 +1,0 @@
-#
-#
-#   Transfer Mobilenet predictor
-#
-#
