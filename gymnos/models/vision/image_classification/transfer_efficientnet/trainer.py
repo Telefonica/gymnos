@@ -18,7 +18,7 @@ from .utils import get_lightning_mlflow_logger, MlflowModelLoggerArtifact
 class TransferEfficientNetTrainer(Trainer):
 
     def __init__(self, classes, num_workers: int = 0, batch_size: int = 32, num_epochs: int = 30, gpus: int = -1,
-                 train_split: float = 0.6, val_split: float = 0.2, test_split: float = 0.2):
+                 train_split: float = 0.6, val_split: float = 0.2, test_split: float = 0.2, distributed_backend="ddp"):
         if gpus < 0:
             gpus = torch.cuda.device_count()
         if num_workers < 0:
@@ -40,6 +40,7 @@ class TransferEfficientNetTrainer(Trainer):
             max_epochs=num_epochs,
             gpus=self.gpus,
             logger=get_lightning_mlflow_logger(),
+            distributed_backend=distributed_backend,
             callbacks=[
                 MlflowModelLoggerArtifact()
             ]
