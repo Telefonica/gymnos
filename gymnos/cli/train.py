@@ -19,6 +19,8 @@ from hydra_plugins.sofia_launcher import SOFIALauncherConfig
 from .utils import print_config, print_dependencies, iterate_config, find_trainer_dependencies, \
     find_trainer_package, find_predictors, get_missing_dependencies, print_install
 
+from ..utils.py_utils import remove_prefix
+
 # Register SOFIA launcher
 cs = ConfigStore.instance()
 cs.store(group="hydra/launcher", name="sofia", node=SOFIALauncherConfig)
@@ -54,13 +56,15 @@ def main(config: DictConfig):
     if "MLFLOW_TRACKING_URI" in os.environ:
         tracking_uri = os.environ["MLFLOW_TRACKING_URI"]
     else:
-        tracking_uri = os.path.join(get_original_cwd(), "mlruns")
+        tracking_uri = "file://" + os.path.join(get_original_cwd(), "mlruns")
 
-    # Fix tracking uri and hydra cwd
+    # # Fix tracking uri and hydra cwd
     if tracking_uri.startswith("file://"):
-        tracking_path = tracking_uri.lstrip("file://")
+        tracking_path = remove_prefix(tracking_uri, "file://")
         if not os.path.isabs(tracking_path):
-            tracking_uri = os.path.join("file://", get_original_cwd(), tracking_path)
+            tracking_uri = "file://" + os.path.join(get_original_cwd(), tracking_path)
+
+    os.environ["MLFLOW_TRACKING_URI"] = tracking_uri
 
     mlflow.set_tracking_uri(tracking_uri)
 

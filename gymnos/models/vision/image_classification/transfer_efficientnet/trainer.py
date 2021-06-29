@@ -39,9 +39,10 @@ class TransferEfficientNetTrainer(Trainer):
         self.trainer = pl.Trainer(
             max_epochs=num_epochs,
             gpus=self.gpus,
-            logger=get_lightning_mlflow_logger(),
             distributed_backend=distributed_backend,
+            logger=get_lightning_mlflow_logger(),
             callbacks=[
+                pl.callbacks.ModelCheckpoint("checkpoints", monitor="val_loss"),
                 MlflowModelLoggerArtifact()
             ]
         )
