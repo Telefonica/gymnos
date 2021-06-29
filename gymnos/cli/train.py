@@ -34,8 +34,6 @@ def main(config: DictConfig):
 
     package = find_trainer_package(config.trainer)
 
-    module = package.load_module()
-
     dependencies = find_trainer_dependencies(config.trainer)
 
     if dependencies is None:
@@ -48,7 +46,7 @@ def main(config: DictConfig):
 
             if missing_dependencies:
                 logger.info("Some dependencies are missing")
-                print_install(module)
+                print_install(package)
 
         if config.dependencies.install:
             subprocess.check_call([sys.executable, "-m", "pip", "install", *dependencies])

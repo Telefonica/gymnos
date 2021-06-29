@@ -67,8 +67,8 @@ def get_missing_dependencies(dependencies):
     return missing_dependencies
 
 
-def print_install(module):
-    lib, *path = module.__name__.split(".")
+def print_install(package):
+    lib, *path = package.name.split(".")
 
     pip_install_command = f"pip install {lib}\[{'.'.join(path)}]"
 

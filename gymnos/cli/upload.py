@@ -92,7 +92,7 @@ def main(mlflow_run_id, name, description, public):
 
         rprint(Panel(f"{':unlocked:' if public else ':locked:'}{user['username']}/models/{name}\n{description or '[italic]No description available'}"))
 
-        print_install(module)
+        print_install(package)
 
         style = "dim"
         dependencies_tree = rich.tree.Tree(":package: DEPENDENCIES", style=style, guide_style=style)
