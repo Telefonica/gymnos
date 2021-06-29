@@ -14,4 +14,4 @@ trainer:
         - cat
 
 data:
-    dataset: ruben/datasets/dogs_vs_cats
+    dataset: ruben/datasets/dogs-vs-cats
