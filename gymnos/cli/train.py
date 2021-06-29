@@ -64,8 +64,7 @@ def main(config: DictConfig):
 
     mlflow.set_tracking_uri(tracking_uri)
 
-    if config.mlflow.experiment_name is not None:
-        mlflow.set_experiment(config.mlflow.experiment_name)
+    mlflow.set_experiment(config.mlflow.experiment_name)
 
     with mlflow.start_run(run_name=config.mlflow.run_name) as run:
         logger.info(f"MLFlow run id: {run.info.run_id}")

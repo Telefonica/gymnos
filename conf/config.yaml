@@ -13,6 +13,6 @@ dependencies:
 
 mlflow:
     run_name: null
-    experiment_name: null
+    experiment_name: Default
     log_trainer_params: true
 
