@@ -33,8 +33,6 @@ class TransferEfficientNetTrainer(Trainer):
         self.val_split = val_split
         self.test_split = test_split
 
-        mlflow.pytorch.autolog(log_models=False)
-
         self.datamodule = None
         self.model = TransferEfficientNetModule(len(classes))
 
