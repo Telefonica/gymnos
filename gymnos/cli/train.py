@@ -17,7 +17,7 @@ from hydra.utils import instantiate, get_original_cwd
 
 from hydra_plugins.sofia_launcher import SOFIALauncherConfig
 from .utils import print_config, print_dependencies, iterate_config, find_trainer_dependencies, \
-    find_trainer_package, find_predictors
+    find_trainer_package, find_predictors, get_missing_dependencies, print_install
 
 # Register SOFIA launcher
 cs = ConfigStore.instance()
@@ -32,6 +32,10 @@ def main(config: DictConfig):
     if config.show_config:
         print_config(config, resolve=True)
 
+    package = find_trainer_package(config.trainer)
+
+    module = package.load_module()
+
     dependencies = find_trainer_dependencies(config.trainer)
 
     if dependencies is None:
@@ -39,6 +43,12 @@ def main(config: DictConfig):
     else:
         if config.show_dependencies:
             print_dependencies(dependencies)
+
+            missing_dependencies = get_missing_dependencies(dependencies)
+
+            if missing_dependencies:
+                logger.info("Some dependencies are missing")
+                print_install(module)
 
         if config.dependencies.install:
             subprocess.check_call([sys.executable, "-m", "pip", "install", *dependencies])

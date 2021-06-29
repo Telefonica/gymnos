@@ -22,7 +22,7 @@ from posixpath import join as urljoin
 from ..services.sofia import SOFIA
 from ..utils.data_utils import zipdir
 from ..utils.mlflow_utils import jsonify_mlflow_run
-from .utils import find_trainer_package, confirm_prompt, find_predictors, print_artifacts
+from .utils import find_trainer_package, confirm_prompt, find_predictors, print_artifacts, print_install
 
 
 def _get_mlflow_run(ctx, param, value):
@@ -90,13 +90,9 @@ def main(mlflow_run_id, name, description, public):
 
         predictors = find_predictors(module)
 
-        lib, *path = module.__name__.split(".")
-
         rprint(Panel(f"{':unlocked:' if public else ':locked:'}{user['username']}/models/{name}\n{description or '[italic]No description available'}"))
 
-        pip_install_command = f"pip install {lib}\[{'.'.join(path)}]"
-
-        rprint(Panel(f":floppy_disk: INSTALL\n{pip_install_command}"))
+        print_install(module)
 
         style = "dim"
         dependencies_tree = rich.tree.Tree(":package: DEPENDENCIES", style=style, guide_style=style)

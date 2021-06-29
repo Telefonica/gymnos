@@ -57,6 +57,24 @@ def print_config(
     rich.print(Panel(tree))
 
 
+def get_missing_dependencies(dependencies):
+    missing_dependencies = []
+    for dependency in dependencies:
+        try:
+            pkg_resources.require(dependency)
+        except pkg_resources.DistributionNotFound:
+            missing_dependencies.append(dependency)
+    return missing_dependencies
+
+
+def print_install(module):
+    lib, *path = module.__name__.split(".")
+
+    pip_install_command = f"pip install {lib}\[{'.'.join(path)}]"
+
+    rich.print(Panel(f":floppy_disk: INSTALL\n{pip_install_command}"))
+
+
 def print_dependencies(dependencies):
     style = "dim"
     tree = rich.tree.Tree(":package: DEPENDENCIES", style=style, guide_style=style)
