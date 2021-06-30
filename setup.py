@@ -1,4 +1,5 @@
 import os
+import re
 import ast
 import fnmatch
 import setuptools
@@ -54,21 +55,22 @@ def remove_suffix(text, suffix):
 
 
 def find_model_dependencies():
-    models_dir = os.path.join(here, "gymnos", "models")
+    app_dir = os.path.join(here, "gymnos")
 
     dependencies_by_model = {}
 
-    for file in find_files(models_dir, "__init__.py"):
+    model_pattern = re.compile(r"^# *@model$", re.MULTILINE)
+
+    for file in find_files(app_dir, "__init__.py"):
         with open(file) as fp:
-            header = fp.readline()
-            if not header.startswith("#"):
-                continue
-            content = header.lstrip("#")
-            if content.strip() == "@model":
-                module_name = remove_prefix(file, models_dir)
+            text = fp.read()
+            matches = model_pattern.findall(text)
+
+            if matches:
+                module_name = remove_prefix(file, app_dir)
                 module_name = remove_suffix(module_name, "__init__.py")
                 module_name = module_name.replace(os.path.sep, ".")
-                model_name = "models." + module_name.strip(".")
+                model_name = module_name.strip(".")
                 dependencies_by_model[model_name] = parse_dependencies(file) or []
 
     return dependencies_by_model
@@ -90,8 +92,10 @@ INSTALL_REQUIRES = [
 
 EXTRAS_REQUIRE = {
     "docs": [
-            "Sphinx"
-        ],
+        "Sphinx",
+        "sphinx-rtd-theme",
+        "sphinx-autobuild"
+    ],
 }
 
 EXTRAS_REQUIRE.update(find_model_dependencies())

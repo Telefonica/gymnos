@@ -1,6 +1,6 @@
 #
 #
-#   Base model
+#   Predictor
 #
 #
 
@@ -15,8 +15,8 @@ from dataclasses import dataclass
 from omegaconf import OmegaConf, DictConfig
 from typing import Any, Dict, Union
 
-from ..services.sofia import SOFIA
-from ..utils.mlflow_utils import jsonify_mlflow_run
+from .services.sofia import SOFIA
+from .utils.mlflow_utils import jsonify_mlflow_run
 
 
 @dataclass
@@ -102,14 +102,3 @@ class Predictor(metaclass=abc.ABCMeta):
         ...
 
 
-class Trainer:
-
-    def setup(self, data_dir):
-        pass
-
-    @abc.abstractmethod
-    def train(self):
-        ...
-
-    def test(self):
-        raise NotImplementedError(f"Trainer {self.__class__.__name__} does not support test")

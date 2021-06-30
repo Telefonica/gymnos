@@ -24,12 +24,12 @@ def main(task, model):
     logger = logging.getLogger(__name__)
 
     here = os.path.abspath(os.path.dirname(__file__))
-    models_dir = os.path.abspath(os.path.join(here, "..", "models"))
+    app_dir = os.path.abspath(os.path.join(here, ".."))
     conf_dir = os.path.abspath(os.path.join(here, "..", "..", "conf"))
 
     task_dir = os.path.join(*task.split("/"))
 
-    model_full_path = os.path.join(models_dir, task_dir, model)
+    model_full_path = os.path.join(app_dir, task_dir, model)
 
     if os.path.isdir(model_full_path):
         logger.error(f"Model {model} for task {task} already exists")
@@ -39,7 +39,7 @@ def main(task, model):
     trainer_name = stringcase.pascalcase(model) + "Trainer"
     predictor_name = stringcase.pascalcase(model) + "Predictor"
 
-    os.chdir(models_dir)
+    os.chdir(app_dir)
 
     for subtask in task.split("/"):
         os.makedirs(subtask, exist_ok=True)
@@ -50,12 +50,12 @@ def main(task, model):
 
     os.chdir(here)
 
-    init_model_filestr = inspect.cleandoc(f"""
+    init_model_filestr = inspect.cleandoc(f'''
+        """
+        Docstring for {title_name}
+        """
+   
         #  @model
-        #
-        #   {title_name}
-        #
-        #
         
         from .trainer import {trainer_name}
         from .predictor import {predictor_name}
@@ -64,7 +64,7 @@ def main(task, model):
         
         ]
 
-    """)
+    ''')
 
     trainer_filestr = inspect.cleandoc(f"""
         #
@@ -73,7 +73,7 @@ def main(task, model):
         #
         #
         
-        from {'.' * (len(task.split("/")) + 2)}base import Trainer
+        from {'.' * (len(task.split("/")) + 2)}trainer import Trainer
         
         
         class {trainer_name}(Trainer):
@@ -99,7 +99,7 @@ def main(task, model):
         #
         #
         
-        from {'.' * (len(task.split("/")) + 2)}base import Predictor
+        from {'.' * (len(task.split("/")) + 2)}predictor import Predictor
         
         
         class {predictor_name}(Predictor):
@@ -114,9 +114,11 @@ def main(task, model):
                 pass  # TODO: Mandatory method
     """)
 
-    trainer_conf_filestr = inspect.cleandoc(f"""
-        _target_: gymnos.models.{task.replace('/', '.')}.{model}.{trainer_name}
-    """)
+    trainer_conf_filestr = inspect.cleandoc(f'''
+        # @package trainer
+
+        _target_: gymnos.{task.replace('/', '.')}.{model}.{trainer_name}
+    ''')
 
     os.makedirs(model_full_path)
 

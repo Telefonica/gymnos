@@ -81,11 +81,6 @@ def main(mlflow_run_id, name, description, public):
 
         package = find_trainer_package(config.trainer)
 
-        with open(package.get_filename()) as fp:
-            header = fp.readline()
-            has_model_header = header.startswith("#") and header.strip("# \n") == "@model"
-            assert has_model_header, "Invalid model. Must start with # @model"
-
         module = package.load_module()
 
         predictors = find_predictors(module)

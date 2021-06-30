@@ -13,7 +13,7 @@ import rich.tree
 import rich.syntax
 import pkg_resources
 
-from ..models import Predictor
+from ..predictor import Predictor
 
 from rich.text import Text
 from typing import Sequence

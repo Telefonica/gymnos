@@ -1,8 +1,8 @@
+"""
+TODO: add short description about your model
+"""
+
 # @model
-#
-# Efficient-net image classifier
-#
-#
 
 from .trainer import TransferEfficientNetTrainer
 from .predictor import TransferEfficientNetPredictor

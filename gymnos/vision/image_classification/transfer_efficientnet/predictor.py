@@ -16,7 +16,7 @@ from PIL import Image
 from typing import Union
 from dataclasses import dataclass
 
-from ....base import Predictor
+from ....predictor import Predictor
 from .model import TransferEfficientNetModule
 
 
@@ -28,8 +28,14 @@ class TransferEfficientNetPrediction:
 
 
 class TransferEfficientNetPredictor(Predictor):
+    """
+    Parameters
+    ------------
+    device
+        Device to run predictions, e.g ``cuda``, ``cpu`` or ``cuda:0``
+    """
 
-    def __init__(self, device=None):
+    def __init__(self, device: str = None):
         if device is None:
             device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -59,6 +65,26 @@ class TransferEfficientNetPredictor(Predictor):
 
     @torch.no_grad()
     def predict(self, image: Union[np.ndarray, PIL.Image.Image, str]):
+        """
+        Predict class for image.
+
+        Parameters
+        ----------
+        image
+            Image to predict. It can be any of the following types:
+
+                - ``np.ndarray``: RGB image as numpy array
+                - ``PIL.Image``: Pillow image
+                - ``str``: path of image
+
+        Returns
+        -------
+        dataclass
+            Dataclass with the following properties
+
+                - ``label``: int
+                - ``probabilities``: list of float
+        """
         if isinstance(image, str):
             image = PIL.Image.open(image)
         elif isinstance(image, np.ndarray):

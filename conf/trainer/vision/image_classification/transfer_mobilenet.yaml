@@ -1,3 +1,0 @@
-# @package trainer
-
-_target_: gymnos.models.vision.image_classification.transfer_mobilenet.TransferMobileNetTrainer
