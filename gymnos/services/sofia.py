@@ -110,6 +110,8 @@ class SOFIA:
 
     @classmethod
     def download_model_artifacts(cls, model: str, force_download=False, force_extraction=False, verbose=True):
+        _ = cls.session()  # check credentials
+
         model = SOFIAModel.parse(model)
         config = get_gymnos_config()
         home = get_gymnos_home()
@@ -178,6 +180,8 @@ class SOFIA:
             response.raise_for_status()
 
             files = response.json()
+        else:
+            _ = cls.session()  # check credentials are stored
 
         home = get_gymnos_home()
 
@@ -207,8 +211,3 @@ class SOFIA:
                 download.get()
 
         return save_dir
-
-    @classmethod
-    @login_required
-    def download_model(cls, username, model):
-        ...
