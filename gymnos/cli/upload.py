@@ -104,7 +104,7 @@ def main(mlflow_run_id, name, description, public):
         usage_strs = []
         for predictor in predictors:
             import_str = f"from {module.__name__} import {predictor}"
-            use_str = f'model = {predictor}.from_pretrained("{resource_url}")'
+            use_str = f'predictor = {predictor}.from_pretrained("{resource_url}")'
             usage_strs.append(import_str + "\n" + use_str)
 
         usage_str = "\nor\n".join(usage_strs)

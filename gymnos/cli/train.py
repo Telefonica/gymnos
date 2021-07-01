@@ -5,11 +5,13 @@
 #
 import os
 import sys
+import rich
 import hydra
 import mlflow
 import logging
 import subprocess
 
+from rich.panel import Panel
 from omegaconf import DictConfig
 from distutils.util import strtobool
 from hydra.core.config_store import ConfigStore
@@ -47,7 +49,7 @@ def main(config: DictConfig):
             missing_dependencies = get_missing_dependencies(dependencies)
 
             if missing_dependencies:
-                logger.info("Some dependencies are missing")
+                logger.info("Some dependencies are missing. Training will probably fail")
                 print_install(package)
 
         if config.dependencies.install:
@@ -72,6 +74,18 @@ def main(config: DictConfig):
 
     with mlflow.start_run(run_name=config.mlflow.run_name) as run:
         logger.info(f"MLFlow run id: {run.info.run_id}")
+
+        # Show usage
+        usage_strs = []
+        module = package.load_module()
+        predictors = find_predictors(module)
+        for predictor in predictors:
+            import_str = f"from {module.__name__} import {predictor}"
+            use_str = f'predictor = {predictor}.from_pretrained("{run.info.run_id}")'
+            usage_strs.append(import_str + "\n" + use_str)
+
+        usage_str = "\nor\n".join(usage_strs)
+        rich.print(Panel(f":computer: USAGE\n{usage_str}"))
 
         mlflow.log_artifact(".hydra")
 
