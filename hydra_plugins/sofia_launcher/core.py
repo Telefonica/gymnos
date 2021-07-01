@@ -61,8 +61,6 @@ def launch(launcher, job_overrides: Sequence[Sequence[str]], initial_job_idx: in
             sweep_config.hydra.job.num = initial_job_idx + idx
             sweep_config.hydra.launcher.ref = launcher.ref
 
-        configure_log(sweep_config.hydra.job_logging, sweep_config.hydra.verbose)
-
         HydraConfig.instance().set_config(sweep_config)
 
         if sweep_config.show_config:
