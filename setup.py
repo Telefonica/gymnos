@@ -116,7 +116,7 @@ setuptools.setup(
     entry_points={
         "console_scripts": [
             "gymnos-train=gymnos.cli.train:hydra_entry",
-            "gymnos-upload=gymnos.cli.upload:main"
+            "gymnos-upload=gymnos.cli.upload:main",
             "gymnos-login=gymnos.cli.login:main",
             "gymnos-create=gymnos.cli.create:main"
         ]},
