@@ -26,7 +26,7 @@ class NotLoggedIn(Exception):
     """
 
     def __init__(self):
-        message = ("This functionality requires to be logged."
+        message = ("This functionality requires to be logged. "
                    "Please run gymnos-login to log in.")
         super().__init__(message)
 
