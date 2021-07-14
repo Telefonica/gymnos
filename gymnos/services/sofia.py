@@ -73,6 +73,11 @@ def login_required(func):
 
 
 class SOFIA:
+    """
+    Service to interact with SOFIA API.
+
+    Downloads will be stored on GYMNOS_HOME/downloads/sofia/
+    """
 
     domain = os.getenv("SOFIA_DOMAIN", "http://obiwan.hi.inet:7272")
 
@@ -115,7 +120,7 @@ class SOFIA:
         model = SOFIAModel.parse(model)
         config = get_gymnos_config()
         home = get_gymnos_home()
-        save_dir = os.path.join(home, "models", "sofia", model.username, model.name)
+        save_dir = os.path.join(home, "downloads", "sofia", "models", model.username, model.name)
         download_url = urljoin(cls.domain, "api", "models", model.username, model.name, "artifacts", "download")
 
         fastdl.download(
@@ -174,7 +179,26 @@ class SOFIA:
             return cls.session().post(urljoin(cls.domain, "api", "user", "models"), files=files)
 
     @classmethod
-    def download_dataset(cls, dataset, files=None, force_download=False, max_workers=None):
+    def download_dataset(cls, dataset, files=None, force_download=False, max_workers=None) -> str:
+        """
+        Download dataset from SOFIA platform
+
+        Parameters
+        ----------
+        dataset
+            Dataset to download (`<username>/datasets/<dataset>`), e.g ``johndoe/datasets/mydataset``
+        files
+            Files to download. By default, all files are downloaded
+        force_download
+            Whether or not ignore cache to download files
+        max_workers
+            Max workers for parallel downloads. Default to all CPUs.
+
+        Returns
+        -------
+        str
+            Download directory
+        """
         if files is None:
             response = cls.get_dataset_files(dataset)
             response.raise_for_status()
@@ -189,7 +213,7 @@ class SOFIA:
 
         config = get_gymnos_config()
 
-        save_dir = os.path.join(home, "datasets", "sofia", dataset.username, dataset.name)
+        save_dir = os.path.join(home, "downloads", "sofia", "datasets", dataset.username, dataset.name)
 
         with fastdl.Parallel(max_workers=max_workers) as p:
             downloads = []

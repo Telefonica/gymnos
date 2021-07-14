@@ -4,19 +4,23 @@
 #
 #
 
+import os
 import ast
+import glob
 import json
 import pkgutil
 import inspect
 import pathlib
+import importlib
 import rich.tree
 import rich.syntax
 import pkg_resources
 
-from ..predictor import Predictor
+from ..base import BasePredictor
+from ..utils.py_utils import remove_suffix
 
 from rich.text import Text
-from typing import Sequence
+from typing import Sequence, Optional
 from rich.panel import Panel
 from rich.markup import escape
 from rich.filesize import decimal
@@ -27,7 +31,7 @@ def print_config(
     config: DictConfig,
     fields: Sequence[str] = (
         "trainer",
-        "data",
+        "dataset",
         "test",
         "mlflow",
     ),
@@ -67,10 +71,8 @@ def get_missing_dependencies(dependencies):
     return missing_dependencies
 
 
-def print_install(package):
-    lib, *path = package.name.split(".")
-
-    pip_install_command = f"pip install {lib}\[{'.'.join(path)}]"
+def print_install(lib, name):
+    pip_install_command = f"pip install {lib}\[{name}]"
 
     rich.print(Panel(f":floppy_disk: INSTALL\n{pip_install_command}"))
 
@@ -166,7 +168,7 @@ def find_predictors(module):
 
         var = getattr(module, var_name)
 
-        if inspect.isclass(var) and issubclass(var, Predictor):
+        if inspect.isclass(var) and issubclass(var, BasePredictor):
             predictors.append(var_name)
 
     return predictors
@@ -190,3 +192,28 @@ def confirm_prompt(question: str) -> bool:
             return bool(strtobool(user_input))
         except ValueError:
             print("Please use y/n or yes/no.")
+
+
+def iter_modules(fname):
+    root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
+    for path in glob.iglob(os.path.join(root, "**", fname), recursive=True):
+        module_path = os.path.relpath(path, root)
+        module_name = remove_suffix("..." + module_path.replace(os.path.sep, "."), ".py")
+        yield importlib.import_module(module_name, __name__)
+
+
+def find_file_parent_dir(fname, cwd) -> Optional[str]:
+    found = False
+    current_dir = cwd
+
+    while not found:
+        if os.path.isfile(os.path.join(current_dir, fname)):
+            found = True
+        else:
+            current_dir = os.path.dirname(current_dir)
+
+    if not found:
+        return None
+
+    return current_dir

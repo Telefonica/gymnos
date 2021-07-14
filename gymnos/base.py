@@ -1,6 +1,6 @@
 #
 #
-#   Predictor
+#   Base
 #
 #
 
@@ -10,17 +10,17 @@ import abc
 import mlflow
 import tempfile
 
-from dacite import from_dict
-from dataclasses import dataclass
-from omegaconf import OmegaConf, DictConfig
 from typing import Any, Dict, Union
+from dataclasses import dataclass
+from abc import ABCMeta, abstractmethod
+from omegaconf import OmegaConf, DictConfig
 
 from .services.sofia import SOFIA
 from .utils.mlflow_utils import jsonify_mlflow_run
 
 
 @dataclass
-class TrainerRunInfo:
+class MLFlowRun:
     info: Any
     metrics: Dict[str, Union[int, float]]
     params: Dict[str, Any]
@@ -29,13 +29,18 @@ class TrainerRunInfo:
 
 @dataclass
 class TrainerInfo:
-    run: TrainerRunInfo
+    run: MLFlowRun
     config: DictConfig
 
 
-class Predictor(metaclass=abc.ABCMeta):
+@dataclass
+class PredictorInfo:
+    trainer: TrainerInfo
 
-    trainer: TrainerInfo = None
+
+class BasePredictor(metaclass=abc.ABCMeta):
+
+    info: PredictorInfo = None
 
     @classmethod
     def from_pretrained(cls, name_or_run_id, *args, **kwargs):
@@ -65,10 +70,13 @@ class Predictor(metaclass=abc.ABCMeta):
                 # Load weights
                 config = OmegaConf.load(os.path.join(tmpdir, ".hydra", "config.yaml"))
 
-                # Add trainer info
-                predictor.trainer = TrainerInfo(
-                    run=from_dict(TrainerRunInfo, jsonify_mlflow_run(run)),
-                    config=config.trainer
+                mlflow_run = jsonify_mlflow_run(run)
+
+                predictor.info = PredictorInfo(
+                    trainer=TrainerInfo(
+                        run=mlflow_run,
+                        config=config.trainer,
+                    )
                 )
 
                 predictor.load(tmpdir)
@@ -83,9 +91,11 @@ class Predictor(metaclass=abc.ABCMeta):
 
             config = OmegaConf.load(os.path.join(artifacts_dir, ".hydra", "config.yaml"))
 
-            predictor.trainer = TrainerInfo(
-                run=from_dict(TrainerRunInfo, data["run"]),
-                config=config.trainer
+            predictor.info = PredictorInfo(
+                trainer=TrainerInfo(
+                    run=data["run"],
+                    config=config.trainer
+                )
             )
 
             predictor.load(artifacts_dir)
@@ -102,3 +112,21 @@ class Predictor(metaclass=abc.ABCMeta):
         ...
 
 
+class BaseTrainer(metaclass=ABCMeta):
+
+    def setup(self, data_dir):
+        pass
+
+    @abstractmethod
+    def train(self):
+        ...
+
+    def test(self):
+        raise NotImplementedError(f"Trainer {self.__class__.__name__} does not support test")
+
+
+class BaseDataset(metaclass=ABCMeta):
+
+    @abstractmethod
+    def __call__(self, root):
+        ...

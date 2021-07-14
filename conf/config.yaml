@@ -1,7 +1,6 @@
 defaults:
     - trainer: ???
-    - data: ???
-    - experiment: null
+    - dataset: ???
 
 test: false
 

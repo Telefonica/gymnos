@@ -7,61 +7,66 @@
 import torch
 import pytorch_lightning as pl
 
-from typing import List
+from typing import List, Optional
+from dataclasses import dataclass
 from multiprocessing import cpu_count
 
-from ....trainer import Trainer
+from ....base import BaseTrainer
+from .conf import TransferEfficientNetConf
 from .model import TransferEfficientNetModule
 from .datamodule import TransferEfficientNetDataModule
 from .utils import get_lightning_mlflow_logger, MlflowModelLoggerArtifact
 
 
-class TransferEfficientNetTrainer(Trainer):
+@dataclass
+class TransferEfficientNetTrainer(TransferEfficientNetConf, BaseTrainer):
     """
-    Transfer Efficient-net trainer
+    Trainer for TransferEfficientNet.
 
-    Hint
-    -----
-        This model expects data in the following format
+    The expected structure is one directory for each class.
+
+    Let's say we have ``classes=["dog", "cat"]``, then we should have two directories ``"dog"`` and ``"cat"``
+    containing the images:
+
+    .. code-block::
+
+        dog/
+            img1.png
+            img2.png
+            ...
+        cat/
+            img1.png
+            img2.png
+            ...
 
     Parameters
     ----------
-    classes
-        List of classes
-    num_workers
-    batch_size
-    num_epochs
-    gpus
-    train_split
-    val_split
-    test_split
-    distributed_backend
+    classes:
+        Classes to train on, each class should be the name of the folder
+    num_workers:
+        Num workers to load data. If ``0``, loading data will be synchronous. If ``-1``, all CPUs will be used.
+    batch_size:
+        Batch size for training and testing
+    num_epochs:
+        Number of epochs to train
     """
 
-    def __init__(self, classes: List[str], num_workers: int = 0, batch_size: int = 32, num_epochs: int = 30,
-                 gpus: int = -1, train_split: float = 0.6, val_split: float = 0.2, test_split: float = 0.2,
-                 distributed_backend: str = "ddp"):
-        if gpus < 0:
-            gpus = torch.cuda.device_count()
-        if num_workers < 0:
-            num_workers = cpu_count()
+    def __post_init__(self):
+        if self.gpus < 0:
+            self.gpus = torch.cuda.device_count()
 
-        self.classes = classes
-        self.num_workers = num_workers
-        self.batch_size = batch_size
-        self.num_epochs = num_epochs
-        self.gpus = gpus
-        self.train_split = train_split
-        self.val_split = val_split
-        self.test_split = test_split
+        if self.num_workers < 0:
+            self.num_workers = cpu_count()
 
-        self.datamodule = None
-        self.model = TransferEfficientNetModule(len(classes))
+        if self.distributed_backend is None and self.gpus > 0:
+            self.distributed_backend = "ddp"
+
+        self.model = TransferEfficientNetModule(len(self.classes))
 
         self.trainer = pl.Trainer(
-            max_epochs=num_epochs,
+            max_epochs=self.num_epochs,
             gpus=self.gpus,
-            distributed_backend=distributed_backend,
+            distributed_backend=self.distributed_backend,
             logger=get_lightning_mlflow_logger(),
             callbacks=[
                 pl.callbacks.ModelCheckpoint("checkpoints", monitor="val_loss"),

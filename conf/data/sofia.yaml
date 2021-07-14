@@ -1,5 +1,0 @@
-_target_: gymnos.datasources.sofia.SOFIADataSource
-dataset: ???
-files: null
-force_download: false
-max_workers: null

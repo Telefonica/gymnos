@@ -16,7 +16,7 @@ from PIL import Image
 from typing import Union
 from dataclasses import dataclass
 
-from ....predictor import Predictor
+from ....base import BasePredictor
 from .model import TransferEfficientNetModule
 
 
@@ -27,11 +27,11 @@ class TransferEfficientNetPrediction:
     probabilities: np.ndarray
 
 
-class TransferEfficientNetPredictor(Predictor):
+class TransferEfficientNetPredictor(BasePredictor):
     """
     Parameters
     ------------
-    device
+    device:
         Device to run predictions, e.g ``cuda``, ``cpu`` or ``cuda:0``
     """
 
@@ -58,8 +58,8 @@ class TransferEfficientNetPredictor(Predictor):
             warnings.warn("More than one checkpoint found. Selecting the first one")
 
         self.model = TransferEfficientNetModule.load_from_checkpoint(checkpoints[0],
-                                                                     num_classes=len(self.trainer.config.classes))
-        self.classes = sorted(self.trainer.config.classes)
+                                                                     num_classes=len(self.info.trainer.config.classes))
+        self.classes = sorted(self.info.trainer.config.classes)
 
         self.model.to(self.device).eval()
 
@@ -70,7 +70,7 @@ class TransferEfficientNetPredictor(Predictor):
 
         Parameters
         ----------
-        image
+        image:
             Image to predict. It can be any of the following types:
 
                 - ``np.ndarray``: RGB image as numpy array
@@ -79,7 +79,7 @@ class TransferEfficientNetPredictor(Predictor):
 
         Returns
         -------
-        dataclass
+        TransferEfficientNetPrediction
             Dataclass with the following properties
 
                 - ``label``: int

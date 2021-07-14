@@ -1,19 +1,9 @@
 """
-TODO: add short description about your model
+Docstring for transfer effiicientnet
 """
 
-# @model
+from ....utils import lazy_import
 
-from .trainer import TransferEfficientNetTrainer
-from .predictor import TransferEfficientNetPredictor
-
-
-dependencies = [
-    "numpy",
-    "torch",
-    "Pillow",
-    "torchvision",
-    "torchmetrics",
-    "efficientnet_pytorch==0.7.0",
-    "pytorch-lightning>=1.0.0"
-]
+# Public API
+TransferEfficientNetPredictor = lazy_import("gymnos.vision.image_classification.transfer_efficientnet.predictor."
+                                            "TransferEfficientNetPredictor")

@@ -4,15 +4,12 @@
 #
 #
 
-import os
-import logging
 import pytorch_lightning as pl
 import torchvision.transforms as T
 
 from typing import Optional
 from torchvision.datasets import ImageFolder
 from torch.utils.data import DataLoader, Subset
-from fastdl.extractor import extract_file
 
 from .utils import split_indices
 
@@ -34,13 +31,6 @@ class TransferEfficientNetDataModule(pl.LightningDataModule):
         self.random_state = random_state
 
         self._train_indices, self._val_indices, self._test_indices = None, None, None
-
-    def prepare_data(self):
-        logger = logging.getLogger(__name__)
-
-        logger.info("Extracting files ...")
-        for classname in self.classes:
-            extract_file(os.path.join(self.root, classname + ".zip"), extract_dir=os.path.join(self.root, classname))
 
     def setup(self, stage=None):
         dataset = ImageFolder(self.root)

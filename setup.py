@@ -1,6 +1,7 @@
 import os
 import re
 import ast
+import glob
 import fnmatch
 import setuptools
 
@@ -59,19 +60,31 @@ def find_model_dependencies():
 
     dependencies_by_model = {}
 
-    model_pattern = re.compile(r"^# *@model$", re.MULTILINE)
+    for path in glob.iglob(os.path.join(app_dir, "**", "__model__.py"), recursive=True):
+        with open(path, "r") as fp:
+            code = fp.read()
 
-    for file in find_files(app_dir, "__init__.py"):
-        with open(file) as fp:
-            text = fp.read()
-            matches = model_pattern.findall(text)
+        tree = ast.parse(code)
 
-            if matches:
-                module_name = remove_prefix(file, app_dir)
-                module_name = remove_suffix(module_name, "__init__.py")
-                module_name = module_name.replace(os.path.sep, ".")
-                model_name = module_name.strip(".")
-                dependencies_by_model[model_name] = parse_dependencies(file) or []
+        assigns = [x for x in tree.body if isinstance(x, ast.Assign)]
+
+        name = None
+        dependencies = None
+
+        for assign in assigns:
+            if not assign.targets:
+                continue
+            if isinstance(assign.value, ast.List) and assign.targets[0].id == "dependencies":
+                dependencies = []
+                for elem in assign.value.elts:
+                    if isinstance(elem, ast.Str):
+                        dependencies.append(elem.s)
+            elif assign.targets[0].id == "name":
+                name = assign.value.s
+
+        assert name is not None
+
+        dependencies_by_model[name] = dependencies
 
     return dependencies_by_model
 
@@ -86,8 +99,8 @@ INSTALL_REQUIRES = [
     "GitPython",
     "omegaconf",
     "stringcase",
+    "lazy-object-proxy",
     "hydra-core>=1.1.0",
-    'dataclasses; python_version < "3.7"'
 ]
 
 EXTRAS_REQUIRE = {
@@ -110,7 +123,7 @@ setuptools.setup(
     url=about["__url__"],
     license=about["__license__"],
     packages=setuptools.find_packages(),
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     install_requires=INSTALL_REQUIRES,
     extras_require=EXTRAS_REQUIRE,
     entry_points={

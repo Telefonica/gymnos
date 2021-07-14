@@ -73,7 +73,7 @@ def main(task, model):
         #
         #
         
-        from {'.' * (len(task.split("/")) + 2)}trainer import Trainer
+        from {'.' * (len(task.split("/")) + 2)}base import Trainer
         
         
         class {trainer_name}(Trainer):
@@ -99,7 +99,7 @@ def main(task, model):
         #
         #
         
-        from {'.' * (len(task.split("/")) + 2)}predictor import Predictor
+        from {'.' * (len(task.split("/")) + 2)}base import Predictor
         
         
         class {predictor_name}(Predictor):
