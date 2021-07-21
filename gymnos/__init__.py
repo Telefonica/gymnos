@@ -4,7 +4,7 @@
 #
 #
 
-from . import utils, config
+from . import config
 from .__about__ import __description__, __author__, __version__, __license__, __url__  # noqa: F401
 
 
