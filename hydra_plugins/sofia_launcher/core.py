@@ -50,7 +50,7 @@ def launch_job(args: Sequence[str], project_name: str, ref: str, device: Device)
 def launch(launcher, job_overrides: Sequence[Sequence[str]], initial_job_idx: int) -> Sequence[JobReturn]:
     job_returns = []
 
-    if launcher.show:
+    if launcher.verbose:
         print_launcher(launcher.config.hydra.launcher)
 
     for idx, args in enumerate(job_overrides):

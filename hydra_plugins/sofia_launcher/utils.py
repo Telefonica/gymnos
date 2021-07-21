@@ -60,12 +60,11 @@ def get_current_revision():
 
 
 def print_launcher(config: DictConfig, resolve: bool = True):
-    style = "dim"
-    tree = rich.tree.Tree(":desktop_computer: SOFIA", style=style, guide_style=style)
+    tree = rich.tree.Tree(":desktop_computer:   SOFIA")
 
     config = OmegaConf.to_container(config)
 
-    branch = tree.add("hydra", style=style, guide_style=style)
+    branch = tree.add("hydra")
     subbranch = branch.add("launcher")
     subbranch_content = OmegaConf.to_yaml(config, resolve=resolve)
     subbranch.add(rich.syntax.Syntax(subbranch_content, "yaml"))
