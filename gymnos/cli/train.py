@@ -66,7 +66,7 @@ def main(config: DictConfig):
         missing_dependencies = get_missing_dependencies(dependencies)
 
         if missing_dependencies:
-            logger.info("Some dependencies are missing. Training will probably fail")
+            logger.info("Some dependencies are missing")
             print_install(model_lib_name, model_mod_name)
 
     if config.dependencies.install:
