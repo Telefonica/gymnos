@@ -181,7 +181,8 @@ class SOFIA:
     @classmethod
     def download_dataset(cls, dataset, files=None, force_download=False, max_workers=None) -> str:
         """
-        Download dataset from SOFIA platform
+        Download dataset from SOFIA platform.
+        Files will be downloaded in parallel
 
         Parameters
         ----------
@@ -192,7 +193,13 @@ class SOFIA:
         force_download
             Whether or not ignore cache to download files
         max_workers
-            Max workers for parallel downloads. Default to all CPUs.
+            Max workers for parallel downloads. Defaults to number of CPUs.
+
+        Examples
+        ----------
+        >>> download_dir = SOFIA.download_dataset("johndoe/datasets/super-dataset")
+
+        >>> download_dir = SOFIA.download_dataset("janedoe/datasets/custom-dataset", files=["data.csv", "names.json"])
 
         Returns
         -------

@@ -102,10 +102,17 @@ INSTALL_REQUIRES = [
 ]
 
 EXTRAS_REQUIRE = {
+    "style": [
+        "flake8"
+    ],
     "docs": [
         "Sphinx",
+        "sphinx-tabs",
+        "sphinx-click",
+        "python-benedict",
         "sphinx-rtd-theme",
-        "sphinx-autobuild"
+        "sphinx-autobuild",
+        "sphinxcontrib.asciinema"
     ],
 }
 
