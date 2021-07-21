@@ -1,161 +1,244 @@
 #
 #
-#   SOFIA service
+#   SOFIA
 #
 #
 
+import re
 import os
-import uuid
-import time
-import shutil
-import logging
+import json
+import fastdl
+import requests
 
-from urllib.parse import urlparse
-from collections.abc import Iterable
-from mimetypes import guess_extension
+from omegaconf import OmegaConf
+from dataclasses import dataclass
+from posixpath import join as urljoin
 
-from .. import config
-
-from .service import Service
-from ..utils.text_utils import filenamify_url
-from .http import download_file_from_url, urljoin
-from ..utils.lazy_imports import lazy_imports as lazy
+from ..config import get_gymnos_config, get_gymnos_home
 
 
-logger = logging.getLogger(__name__)
-
-DEFAULT_DOMAIN = "http://skywalker:8989"
+Response = requests.models.Response
 
 
-class SOFIA(Service):
+class NotLoggedIn(Exception):
     """
-    Download components from SOFIA
+    Raises when not logged in to SOFIA
     """
 
-    class Config(config.Config):
-        """
-        You need credentials to access SOFIA.
+    def __init__(self):
+        message = ("This functionality requires to be logged. "
+                   "Please run gymnos-login to log in.")
+        super().__init__(message)
 
-        Attributes
-        ----------
-        SOFIA_EMAIL: str
-            Your SOFIA email
-        SOFIA_PASSWORD: str
-            Your password for your account
-        """
-        SOFIA_EMAIL = config.Value(required=True, help="SOFIA username")
-        SOFIA_PASSWORD = config.Value(required=True, help="SOFIA password")
-        SOFIA_DOMAIN = config.Value(required=False, help="SOFIA domain", default=DEFAULT_DOMAIN)
 
-    def __init__(self, download_dir="downloads", force_download=False, config_files=None):
-        super().__init__(download_dir=download_dir, force_download=force_download, config_files=config_files)
+@dataclass
+class SOFIADataset:
+    username: str
+    name: str
 
-        self._auth_headers = None
+    @classmethod
+    def parse(cls, dataset):
+        username, name = parse_resource("datasets", dataset)
+        return cls(username, name)
 
-    def _login(self):
-        login_url = self.config.SOFIA_DOMAIN + "/api/login"
 
-        res = lazy.requests.post(login_url, data=dict(email=self.config.SOFIA_EMAIL,
-                                                      password=self.config.SOFIA_PASSWORD))
+@dataclass
+class SOFIAModel:
+    username: str
+    name: str
 
-        res.raise_for_status()
+    @classmethod
+    def parse(cls, model):
+        username, name = parse_resource("models", model)
+        return cls(username, name)
 
-        res_json = res.json()
 
-        self._auth_headers = {
-            "Authorization": "Bearer {}".format(res_json["token"])
+def parse_resource(resource_type: str, resource: str):
+    match = re.match(rf"^(.+)/{resource_type}/(.+)$", resource)
+
+    if not match:
+        raise ValueError("Unexpected dataset {}. It must be in the following format <username>/datasets/<name>")
+
+    username, name = match.group(1), match.group(2)
+
+    return username, name
+
+
+def login_required(func):
+    config = get_gymnos_config()
+    if config.sofia.access_token is None:
+        raise NotLoggedIn()
+
+    return func
+
+
+class SOFIA:
+    """
+    Service to interact with SOFIA API.
+
+    Downloads will be stored on GYMNOS_HOME/downloads/sofia/
+    """
+
+    domain = os.getenv("SOFIA_DOMAIN", "http://obiwan.hi.inet:7272")
+
+    @classmethod
+    def session(cls):
+        config = get_gymnos_config()
+        if config.sofia.access_token is None:
+            raise NotLoggedIn()
+
+        session = requests.Session()
+        session.headers.update({"Authorization": f"Bearer {config.sofia.access_token}"})
+        return session
+
+    @classmethod
+    def login(cls, username_or_email: str, password: str) -> Response:
+        return requests.post(urljoin(cls.domain, "api", "auth", "login"), json={
+            "username_or_email": username_or_email,
+            "password": password
+        })
+
+    @classmethod
+    def get_current_user(cls):
+        return cls.session().get(urljoin(cls.domain, "api", "user"))
+
+    @classmethod
+    def get_dataset_files(cls, dataset: str):
+        dataset = SOFIADataset.parse(dataset)
+        return cls.session().get(urljoin(cls.domain, "api", "datasets", dataset.username, dataset.name,
+                                         "files"))
+
+    @classmethod
+    def get_model(cls, model: str):
+        model = SOFIAModel.parse(model)
+        return cls.session().get(urljoin(cls.domain, "api", "models", model.username, model.name))
+
+    @classmethod
+    def download_model_artifacts(cls, model: str, force_download=False, force_extraction=False, verbose=True):
+        _ = cls.session()  # check credentials
+
+        model = SOFIAModel.parse(model)
+        config = get_gymnos_config()
+        home = get_gymnos_home()
+        save_dir = os.path.join(home, "downloads", "sofia", "models", model.username, model.name)
+        download_url = urljoin(cls.domain, "api", "models", model.username, model.name, "artifacts", "download")
+
+        fastdl.download(
+            url=download_url,
+            headers={
+                "Authorization": f"Bearer {config.sofia.access_token}"
+            },
+            progressbar=verbose,
+            fname="artifacts.zip",
+            dir_prefix=save_dir,
+            extract=True,
+            force_download=force_download,
+            force_extraction=force_extraction
+        )
+
+        return os.path.join(save_dir, "artifacts")
+
+    @classmethod
+    def create_project_job(cls, args, project_name, ref=None, device="CPU", name=None, description=None):
+        response = cls.get_current_user()
+        response.raise_for_status()
+
+        username = response.json()["username"]
+
+        json_data = {
+            "args": args,
+            "ref": ref,
+            "device": device,
+            "description": description
         }
 
-        self._token_expiration = res_json["exp"]
-        self._last_time_token_fetched = time.time()
+        if name is not None:
+            json_data["name"] = name  # null is not allowed
 
-    def _token_has_expired(self):
-        elapsed_since_last_login = time.time() - self._last_time_token_fetched
-        return elapsed_since_last_login > self._token_expiration
+        return cls.session().post(urljoin(cls.domain, "api", "projects", username, project_name, "jobs"),
+                                  json=json_data)
 
-    def _login_if_needed(self):
-        never_logged = self._auth_headers is None
+    @classmethod
+    def create_model(cls, name, description, is_public, module, predictors, config, run_info, artifacts_path):
+        model = {
+            "name": name,
+            "description": description,
+            "is_public": is_public,
+            "gymnos_module": module,
+            "gymnos_predictors": predictors,
+            "run": run_info
+        }
 
-        if never_logged or self._token_has_expired():
-            self._login()
+        with open(artifacts_path, "rb") as fp:
+            files = [
+                ("model", ("model", json.dumps(model), "application/json")),
+                ("config", ("config.yaml", OmegaConf.to_yaml(config), "application/x-yaml")),
+                ("artifacts", ("artifacts.zip", fp, "application/zip"))
+            ]
 
-    def download(self, url_or_urls, verbose=True):
+            return cls.session().post(urljoin(cls.domain, "api", "user", "models"), files=files)
+
+    @classmethod
+    def download_dataset(cls, dataset, files=None, force_download=False, max_workers=None) -> str:
         """
-        Download file/s from SOFIA
+        Download dataset from SOFIA platform.
+        Files will be downloaded in parallel
 
         Parameters
         ----------
-        url_or_urls: str or list of str or dict(name: url)
-            Url or urls to download
-        verbose: bool, optional
-            Whether or not show progress bar and logging info
+        dataset
+            Dataset to download (`<username>/datasets/<dataset>`), e.g ``johndoe/datasets/mydataset``
+        files
+            Files to download. By default, all files are downloaded
+        force_download
+            Whether or not ignore cache to download files
+        max_workers
+            Max workers for parallel downloads. Defaults to number of CPUs.
+
+        Examples
+        ----------
+        >>> download_dir = SOFIA.download_dataset("johndoe/datasets/super-dataset")
+
+        >>> download_dir = SOFIA.download_dataset("janedoe/datasets/custom-dataset", files=["data.csv", "names.json"])
 
         Returns
         -------
-        str, list of str or dict
-            File paths with downloaded SOFIA files.
-            The return type depends on the ``url_or_urls`` parameter.
-            If ``url_or_urls`` is a str, it returns the file path.
-            If ``url_or_urls`` is a list of str, it returns a list with the file paths.
-            If ``url_or_urls`` is a dict, the return type is a dict(name: filepath)
+        str
+            Download directory
         """
-        if isinstance(url_or_urls, str):
-            return self._download_url(url_or_urls, verbose=verbose)
-        elif isinstance(url_or_urls, dict):
-            file_paths = {}
-            for name, url in url_or_urls.items():
-                file_paths[name] = self.download(url, verbose=verbose)
-            return file_paths
-        elif isinstance(url_or_urls, Iterable):
-            file_paths = []
-            for url in url_or_urls:
-                download_path = self.download(url, verbose=verbose)
-                file_paths.append(download_path)
-            return file_paths
+        if files is None:
+            response = cls.get_dataset_files(dataset)
+            response.raise_for_status()
+
+            files = response.json()
         else:
-            raise ValueError("url_or_urls must be a str, an iterable or a dict. Got {}".format(type(url_or_urls)))
+            _ = cls.session()  # check credentials are stored
 
-    def _download_url(self, url, verbose=True):
-        parsed = urlparse(url)
+        home = get_gymnos_home()
 
-        assert parsed.scheme == "sofia"
-        assert parsed.netloc in ("datasets", "models", "experiments")
+        dataset = SOFIADataset.parse(dataset)
 
-        sofia_info_url = urljoin(self.config.SOFIA_DOMAIN, "api", parsed.netloc, parsed.path)
-        sofia_download_url = urljoin(sofia_info_url, "files")
+        config = get_gymnos_config()
 
-        self._login_if_needed()
+        save_dir = os.path.join(home, "downloads", "sofia", "datasets", dataset.username, dataset.name)
 
-        res = lazy.requests.get(sofia_info_url, headers=self._auth_headers)
-        res.raise_for_status()
+        with fastdl.Parallel(max_workers=max_workers) as p:
+            downloads = []
 
-        slug_url = filenamify_url(url)
+            for file in files:
+                download = p.download(
+                    url=urljoin(cls.domain, "api", "datasets", dataset.username, dataset.name, "files", file["name"],
+                                "download"),
+                    headers={
+                        "Authorization": f"Bearer {config.sofia.access_token}"
+                    },
+                    content_disposition=True,
+                    dir_prefix=save_dir,
+                    force_download=force_download
+                )
+                downloads.append(download)
 
-        download_file_name = res.json().get("file", {}).get("name")
+            for download in downloads:
+                download.get()
 
-        if download_file_name is None:
-            mime = res.json().get("file", {}).get("content_type", "")
-            extension = guess_extension(mime) or ""
-            filename = slug_url + extension
-        else:
-            filename = slug_url + "_" + download_file_name
-
-        real_file_path = os.path.join(self.download_dir, filename)
-
-        if os.path.isfile(real_file_path) and not self.force_download:
-            if verbose:
-                logger.info("Download for url {} found. Skipping".format(url))
-            return real_file_path
-
-        tmp_download_dir = os.path.join(self.download_dir, filename + ".tmp." + uuid.uuid4().hex)
-        tmp_file_path = os.path.join(tmp_download_dir, filename)
-
-        os.makedirs(tmp_download_dir)
-
-        download_file_from_url(sofia_download_url, file_path=tmp_file_path, verbose=verbose,
-                               force=self.force_download, headers=self._auth_headers)
-
-        logger.info("Removing download temporary directory and moving files")
-        shutil.move(tmp_file_path, real_file_path)
-        shutil.rmtree(tmp_download_dir)
-        return real_file_path
+        return save_dir

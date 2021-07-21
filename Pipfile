@@ -4,14 +4,15 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [scripts]
-"sphinx:watch"="sphinx-autobuild docs/source docs/build --watch gymnos --watch scripts"
-"sphinx:build"="make -C docs html"
+"docs:watch"="sphinx-autobuild docs/source docs/build/html --watch gymnos --watch conf --watch hydra_plugins"
+"docs:clean"="rm -rf docs/build"
+"docs:build"="sphinx-build docs/source docs/build"
 
 [dev-packages]
-gymnos = {editable = true,extras = ["complete"],path = "."}
+gymnos = {editable = true,path = ".",extras=["docs", "style"]}
 
 [packages]
 gymnos = {editable = true,path = "."}
 
 [requires]
-python_version = "3.6"
+python_version = "3.7"

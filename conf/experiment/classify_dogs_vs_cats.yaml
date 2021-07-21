@@ -1,0 +1,11 @@
+# @package _global_
+# TODO: docstring for experiment
+
+defaults:
+    - override /trainer: vision.image_classification.transfer_efficientnet
+    - override /dataset: dogs_vs_cats
+
+trainer:
+    classes: [dog, cat]
+
+dataset: {}

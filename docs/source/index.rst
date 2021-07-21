@@ -1,29 +1,129 @@
+.. gymnos documentation master file, created by
+   sphinx-quickstart on Tue Jun 29 12:13:13 2021.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
 Gymnos
-================================
+==================================
+
+.. include:: introduction.rst
+
+.. toctree::
+   :maxdepth: 1
+   :name: start
+   :caption: Get started
+
+   installation
+   quickstart
+
+.. toctree::
+   :name: datasets
+   :caption: Datasets
+   :glob:
+
+   datasets/*
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :name: vision
+   :caption: Vision
+   :glob:
 
-   introduction
-   installation
-   datasets/overview
-   services
-   models/overview
-   preprocessors/overview
-   data_augmentors
-   trackers
-   trainer
-   execution_environments
-   guide/overview
-   research/overview
-   api_reference/overview
-   command_line_apps/overview
-   contributing
+   vision/*/index
+
+.. toctree::
+   :maxdepth: 2
+   :name: audio
+   :caption: Audio
+   :glob:
+
+   audio/*/index
+
+.. toctree::
+   :maxdepth: 2
+   :name: generative
+   :caption: Generative
+   :glob:
+
+   generative/*/index
+
+.. toctree::
+   :maxdepth: 2
+   :name: tabular
+   :caption: Tabular
+   :glob:
+
+   tabular/*/index
+
+.. toctree::
+   :maxdepth: 2
+   :name: nlp
+   :caption: Natural Language Processing
+   :glob:
+
+   nlp/*/index
+
+.. toctree::
+   :maxdepth: 2
+   :name: unsupervised
+   :caption: Unsupervised
+   :glob:
+
+   unsupervised/*/index
+
+.. toctree::
+   :maxdepth: 2
+   :name: rl
+   :caption: Reinforcement Learning
+   :glob:
+
+   rl/*/index
+
+.. toctree::
+   :maxdepth: 2
+   :name: misc
+   :caption: Misc
+   :glob:
+
+   misc/*/index
+
+.. toctree::
+   :maxdepth: 1
+   :name: cli
+   :caption: CLI
+
+   cli/login
+   cli/train
+   cli/upload
+   cli/create
+
+.. toctree::
+   :maxdepth: 2
+   :name: launchers
+   :caption: Launchers
+
+   launchers/sofia
+
+
+.. toctree::
+   :name: experiments
+   :caption: Experiments
+   :glob:
+
+   experiments/*
+
+
+.. toctree::
+   :maxdepth: 2
+   :name: services
+   :caption: Services
+
+   services/sofia
 
 
 Indices and tables
 ==================
 
 * :ref:`genindex`
+* :ref:`modindex`
 * :ref:`search`
