@@ -10,22 +10,18 @@ import rich
 import mlflow
 import hydra
 import logging
-import pkgutil
 import importlib
 import subprocess
 
 from rich.panel import Panel
 from omegaconf import DictConfig
-from lazy_object_proxy import Proxy
 from distutils.util import strtobool
 from hydra.core.config_store import ConfigStore
 from hydra.utils import instantiate, get_original_cwd
+from hydra_plugins.sofia_launcher import SOFIALauncherHydraConf
 
-from hydra_plugins.sofia_launcher import SOFIALauncherConfig
 from .utils import (print_config, print_dependencies, iterate_config, get_missing_dependencies, print_install,
-                    iter_modules, find_file_parent_dir)
-
-from ..base import BasePredictor
+                    iter_modules, find_predictors, find_model_module, find_dataset_module)
 from ..config import get_gymnos_home
 from ..utils.py_utils import remove_prefix
 
@@ -33,15 +29,17 @@ from ..utils.py_utils import remove_prefix
 cs = ConfigStore.instance()
 
 # Register SOFIA launcher
-cs.store(group="hydra/launcher", name="sofia", node=SOFIALauncherConfig)
+cs.store(group="hydra/launcher", name="sofia", node=SOFIALauncherHydraConf)
 
 # Register models for Hydra
 for module in iter_modules("__model__.py"):
-    cs.store(group="trainer", name=getattr(module, "name"), node=getattr(module, "conf"))
+    modname = remove_prefix(module.__package__, "gymnos.")
+    cs.store(group="trainer", name=modname, node=getattr(module, "hydra_conf"))
 
 # Register datasets for Hydra
 for module in iter_modules("__dataset__.py"):
-    cs.store(group="dataset", name=getattr(module, "name"), node=getattr(module, "conf"))
+    modname = remove_prefix(module.__package__, "gymnos.datasets.")
+    cs.store(group="dataset", name=modname, node=getattr(module, "hydra_conf"))
 
 
 def main(config: DictConfig):
@@ -49,54 +47,30 @@ def main(config: DictConfig):
 
     logger.info(f"Outputs will be stored on: {os.getcwd()}")
 
-    if config.show_config:
+    if config.verbose:
         print_config(config, resolve=True)
 
-    trainer_target = config.trainer["_target_"]
-    lib_name, *mod_name, cls_name = trainer_target.split(".")
-    lib_dir = os.path.dirname(pkgutil.get_loader(lib_name).get_filename())
+    model_module = find_model_module(config.trainer["_target_"])
+    model_lib_name, model_mod_name = model_module.__name__.split(".", 1)
+    model_meta_module = importlib.import_module("." + model_mod_name + ".__model__", model_lib_name)
 
-    model_dir = find_file_parent_dir("__model__.py", cwd=os.path.join(lib_dir, *mod_name))
+    dataset_module = find_dataset_module(config.dataset["_target_"])
 
-    if model_dir is None:
-        raise FileNotFoundError(f"__model__.py not found for {trainer_target}")
+    *_, dataset_name = dataset_module.__name__.split(".")
 
-    model_dirpath = os.path.relpath(model_dir, lib_dir)
+    dependencies = getattr(model_meta_module, "dependencies", [])
 
-    model_modname = model_dirpath.replace(os.path.sep, ".")
+    if config.verbose:
+        print_dependencies(dependencies)
 
-    model_module = importlib.import_module("." + model_modname, lib_name)
-    model_meta_module = importlib.import_module("." + model_modname + ".__model__", lib_name)
+        missing_dependencies = get_missing_dependencies(dependencies)
 
-    dataset_target = config.dataset["_target_"]
-    lib_name, *mod_name, cls_name = dataset_target.split(".")
-    lib_dir = os.path.dirname(pkgutil.get_loader(lib_name).get_filename())
-    dataset_dir = find_file_parent_dir("__dataset__.py", cwd=os.path.join(lib_dir, *mod_name))
+        if missing_dependencies:
+            logger.info("Some dependencies are missing. Training will probably fail")
+            print_install(model_lib_name, model_mod_name)
 
-    if dataset_dir is None:
-        raise FileNotFoundError(f"__dataset__.py not found for {dataset_target}")
-
-    dataset_dirpath = os.path.relpath(dataset_dir, lib_dir)
-    dataset_modname = dataset_dirpath.replace(os.path.sep, ".")
-
-    dataset_meta_module = importlib.import_module("." + dataset_modname + ".__dataset__", lib_name)
-
-    dependencies = getattr(model_meta_module, "dependencies", None)
-
-    if dependencies is None:
-        logger.warning("Error retrieving dependencies")
-    else:
-        if config.show_dependencies:
-            print_dependencies(dependencies)
-
-            missing_dependencies = get_missing_dependencies(dependencies)
-
-            if missing_dependencies:
-                logger.info("Some dependencies are missing. Training will probably fail")
-                print_install(lib_name, getattr(model_meta_module, "name"))
-
-        if config.dependencies.install:
-            subprocess.check_call([sys.executable, "-m", "pip", "install", *dependencies])
+    if config.dependencies.install:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", *dependencies])
 
     if "MLFLOW_TRACKING_URI" in os.environ:
         tracking_uri = os.environ["MLFLOW_TRACKING_URI"]
@@ -118,16 +92,7 @@ def main(config: DictConfig):
     with mlflow.start_run(run_name=config.mlflow.run_name) as run:
         logger.info(f"MLFlow run id: {run.info.run_id}")
 
-        predictors = []
-
-        for var_name in dir(model_module):
-            var = getattr(model_module, var_name)
-
-            if isinstance(var, Proxy):
-                var = var.__wrapped__
-
-            if isinstance(var, type) and issubclass(var, BasePredictor):
-                predictors.append(var_name)
+        predictors = find_predictors(model_module)
 
         # Show usage
         usage_strs = []
@@ -136,8 +101,9 @@ def main(config: DictConfig):
             use_str = f'predictor = {predictor}.from_pretrained("{run.info.run_id}")'
             usage_strs.append(import_str + "\n" + use_str)
 
-        usage_str = "\nor\n".join(usage_strs)
-        rich.print(Panel(f":computer: USAGE\n{usage_str}"))
+        if config.verbose:
+            usage_str = "\nor\n".join(usage_strs)
+            rich.print(Panel(f":computer: USAGE\n{usage_str}"))
 
         mlflow.log_artifact(".hydra")
 
@@ -157,7 +123,7 @@ def main(config: DictConfig):
         trainer = instantiate(config.trainer)
 
         if config.get("dataset") is not None:
-            data_dir = os.path.join(get_gymnos_home(), "datasets", getattr(dataset_meta_module, "name"))
+            data_dir = os.path.join(get_gymnos_home(), "datasets", dataset_name)
             os.makedirs(data_dir, exist_ok=True)
 
             dataset = instantiate(config.dataset)

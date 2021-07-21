@@ -1,6 +1,6 @@
 #
 #
-#   Login to SOFIA
+#   Save login for SOFIA
 #
 #
 
@@ -13,8 +13,8 @@ from ..config import get_gymnos_config, set_gymnos_config
 
 
 @click.command(help="Login to SOFIA")
-@click.option("--username_or_email", prompt=True)
-@click.option("--password", prompt=True, hide_input=True)
+@click.option("--username_or_email", prompt=True, help="SOFIA username or email")
+@click.option("--password", prompt=True, hide_input=True, help="SOFIA password")
 def main(username_or_email, password):
     config = get_gymnos_config()
 

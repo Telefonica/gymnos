@@ -9,7 +9,6 @@ import ast
 import glob
 import json
 import pkgutil
-import inspect
 import pathlib
 import importlib
 import rich.tree
@@ -20,10 +19,11 @@ from ..base import BasePredictor
 from ..utils.py_utils import remove_suffix
 
 from rich.text import Text
-from typing import Sequence, Optional
 from rich.panel import Panel
 from rich.markup import escape
 from rich.filesize import decimal
+from lazy_object_proxy import Proxy
+from typing import Sequence, Optional
 from omegaconf import DictConfig, OmegaConf, ListConfig
 
 
@@ -45,18 +45,17 @@ def print_config(
         resolve (bool, optional): Whether to resolve reference fields of DictConfig.
     """
 
-    style = "dim"
-    tree = rich.tree.Tree(":gear: CONFIG", style=style, guide_style=style)
+    tree = rich.tree.Tree(":gear: CONFIG")
 
     for field in fields:
         config_section = config.get(field)
         if isinstance(config_section, (dict, list, DictConfig, ListConfig)):
-            branch = tree.add(field, style=style, guide_style=style)
+            branch = tree.add(field)
             branch_content = OmegaConf.to_yaml(config_section, resolve=resolve)
             branch.add(rich.syntax.Syntax(branch_content, "yaml"))
         else:
             branch_content = json.dumps(config_section).strip('"')
-            tree.add(f"{field}: {branch_content}", style=style, guide_style=style)
+            tree.add(f"{field}: {branch_content}")
 
     rich.print(Panel(tree))
 
@@ -72,14 +71,13 @@ def get_missing_dependencies(dependencies):
 
 
 def print_install(lib, name):
-    pip_install_command = f"pip install {lib}\[{name}]"
+    pip_install_command = f"pip install {lib}\[{name}]"  # noqa
 
     rich.print(Panel(f":floppy_disk: INSTALL\n{pip_install_command}"))
 
 
 def print_dependencies(dependencies):
-    style = "dim"
-    tree = rich.tree.Tree(":package: DEPENDENCIES", style=style, guide_style=style)
+    tree = rich.tree.Tree(":package: DEPENDENCIES")
     for dependency in dependencies:
         text = dependency
         try:
@@ -92,14 +90,14 @@ def print_dependencies(dependencies):
             color = "red"
             text = f"{dependency} (got {current_version})"
 
-        tree.add(Text(text, color), style=style, guide_style=style)
+        tree.add(Text(text, color))
 
     rich.print(Panel(tree))
 
 
 def print_artifacts(artifacts_dir):
     """Recursively build a Tree with directory contents."""
-    tree = rich.tree.Tree(f":open_file_folder: ARTIFACTS", guide_style="dim")
+    tree = rich.tree.Tree(":open_file_folder: ARTIFACTS")
     _walk_directory_for_rich(artifacts_dir, tree)
     rich.print(Panel(tree))
 
@@ -147,28 +145,49 @@ def find_dependencies(path):
     return dependencies
 
 
-def find_trainer_dependencies(trainer_config):
-    package = find_trainer_package(trainer_config)
-    dependencies = find_dependencies(package.get_filename())
-    return dependencies
+def find_model_module(trainer_target):
+    lib_name, *mod_name, cls_name = trainer_target.split(".")
+    lib_dir = os.path.dirname(pkgutil.get_loader(lib_name).get_filename())
+    model_dir = find_file_parent_dir("__model__.py", cwd=os.path.join(lib_dir, *mod_name))
+
+    if model_dir is None:
+        raise FileNotFoundError(f"__model__.py not found for {trainer_target}")
+
+    model_dirpath = os.path.relpath(model_dir, lib_dir)
+
+    model_modname = model_dirpath.replace(os.path.sep, ".")
+
+    model_module = importlib.import_module("." + model_modname, lib_name)
+
+    return model_module
 
 
-def find_trainer_package(trainer_config):
-    *module, trainer = trainer_config["_target_"].split(".")
-    package = pkgutil.get_loader(".".join(module))
-    return package
+def find_dataset_module(dataset_target):
+    lib_name, *mod_name, cls_name = dataset_target.split(".")
+    lib_dir = os.path.dirname(pkgutil.get_loader(lib_name).get_filename())
+    dataset_dir = find_file_parent_dir("__dataset__.py", cwd=os.path.join(lib_dir, *mod_name))
+
+    if dataset_dir is None:
+        raise FileNotFoundError(f"__dataset__.py not found for {dataset_target}")
+
+    dataset_dirpath = os.path.relpath(dataset_dir, lib_dir)
+    dataset_modname = dataset_dirpath.replace(os.path.sep, ".")
+
+    dataset_module = importlib.import_module("." + dataset_modname, lib_name)
+
+    return dataset_module
 
 
-def find_predictors(module):
+def find_predictors(model_module):
     predictors = []
 
-    for var_name in dir(module):
-        if var_name.startswith("__"):
-            continue
+    for var_name in dir(model_module):
+        var = getattr(model_module, var_name)
 
-        var = getattr(module, var_name)
+        if isinstance(var, Proxy):
+            var = var.__wrapped__
 
-        if inspect.isclass(var) and issubclass(var, BasePredictor):
+        if isinstance(var, type) and issubclass(var, BasePredictor):
             predictors.append(var_name)
 
     return predictors

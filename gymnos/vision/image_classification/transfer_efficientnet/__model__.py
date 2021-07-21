@@ -4,11 +4,9 @@
 #
 #
 
-from .conf import TransferEfficientNetConf
+from .hydra_conf import TransferEfficientNetHydraConf
 
-name = "vision.image_classification.transfer_efficientnet"
-
-conf = TransferEfficientNetConf
+hydra_conf = TransferEfficientNetHydraConf
 
 dependencies = [
     "numpy",

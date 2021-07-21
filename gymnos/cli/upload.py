@@ -10,7 +10,7 @@ import click
 import mlflow
 import tempfile
 import logging
-import rich.tree
+import importlib
 
 from rich.panel import Panel
 from omegaconf import OmegaConf
@@ -22,7 +22,8 @@ from posixpath import join as urljoin
 from ..services.sofia import SOFIA
 from ..utils.data_utils import zipdir
 from ..utils.mlflow_utils import jsonify_mlflow_run
-from .utils import find_trainer_package, confirm_prompt, find_predictors, print_artifacts, print_install
+from .utils import (find_model_module, confirm_prompt, print_artifacts, print_install, print_dependencies,
+                    find_predictors)
 
 
 def _get_mlflow_run(ctx, param, value):
@@ -42,11 +43,11 @@ def _validate_name(ctx, param, value):
     return value
 
 
-@click.command()
+@click.command(help="Create SOFIA model by uploading local Mlflow run ID")
 @click.argument("mlflow_run_id", callback=_get_mlflow_run)
-@click.option("--name", prompt=True, callback=_validate_name)
-@click.option("--description", prompt=True, default="")
-@click.option("--public", prompt=True, is_flag=True)
+@click.option("--name", prompt=True, callback=_validate_name, help="Name for SOFIA model")
+@click.option("--description", prompt=True, default="", help="Description for SOFIA model")
+@click.option("--public", prompt=True, is_flag=True, help="Whether or not SOFIA model is public")
 def main(mlflow_run_id, name, description, public):
     if not description:
         description = None
@@ -79,31 +80,26 @@ def main(mlflow_run_id, name, description, public):
 
         config = OmegaConf.load(os.path.join(artifacts_dir, ".hydra", "config.yaml"))
 
-        package = find_trainer_package(config.trainer)
+        model_module = find_model_module(config.trainer["_target_"])
+        model_lib_name, model_mod_name = model_module.__name__.split(".", 1)
+        model_meta_module = importlib.import_module("." + model_mod_name + ".__model__", model_lib_name)
 
-        module = package.load_module()
+        rprint(Panel(f"{':unlocked:' if public else ':locked:'}{user['username']}/models/"
+                     f"{name}\n{description or '[italic]No description available'}"))
 
-        predictors = find_predictors(module)
+        print_install(model_lib_name, model_mod_name)
 
-        rprint(Panel(f"{':unlocked:' if public else ':locked:'}{user['username']}/models/{name}\n{description or '[italic]No description available'}"))
-
-        print_install(package)
-
-        style = "dim"
-        dependencies_tree = rich.tree.Tree(":package: DEPENDENCIES", style=style, guide_style=style)
-
-        for dependency in module.dependencies:
-            dependencies_tree.add(dependency, style=style, guide_style=style)
-
-        rprint(Panel(dependencies_tree))
+        print_dependencies(getattr(model_meta_module, "dependencies", []))
 
         print_artifacts(artifacts_dir)
 
         resource_url = f"{user['username']}/models/{name}"
 
+        predictors = find_predictors(model_module)
+
         usage_strs = []
         for predictor in predictors:
-            import_str = f"from {module.__name__} import {predictor}"
+            import_str = f"from {model_module.__name__} import {predictor}"
             use_str = f'predictor = {predictor}.from_pretrained("{resource_url}")'
             usage_strs.append(import_str + "\n" + use_str)
 
@@ -126,8 +122,8 @@ def main(mlflow_run_id, name, description, public):
         run_info = jsonify_mlflow_run(mlflow_run)
 
         with console.status("[bold green]Uploading model..."):
-            response = SOFIA.create_model(name, description, public, module.__name__, predictors, config, run_info,
-                                          artifacts_zip_fpath)
+            response = SOFIA.create_model(name, description, public, model_module.__name__, predictors, config,
+                                          run_info, artifacts_zip_fpath)
 
         response.raise_for_status()
 

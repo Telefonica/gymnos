@@ -1,5 +1,4 @@
 import os
-import re
 import ast
 import glob
 import fnmatch
@@ -68,7 +67,6 @@ def find_model_dependencies():
 
         assigns = [x for x in tree.body if isinstance(x, ast.Assign)]
 
-        name = None
         dependencies = None
 
         for assign in assigns:
@@ -79,10 +77,10 @@ def find_model_dependencies():
                 for elem in assign.value.elts:
                     if isinstance(elem, ast.Str):
                         dependencies.append(elem.s)
-            elif assign.targets[0].id == "name":
-                name = assign.value.s
 
-        assert name is not None
+        name = os.path.relpath(path, app_dir)
+        name = os.path.dirname(name)
+        name = name.replace(os.path.sep, ".")
 
         dependencies_by_model[name] = dependencies
 
