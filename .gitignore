@@ -142,3 +142,6 @@ multirun
 
 # MLFlow staff
 mlruns
+
+# Docs artifacts
+docs/build
