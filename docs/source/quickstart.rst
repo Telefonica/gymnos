@@ -111,7 +111,7 @@ We will also introduce the concept of multirun that enable us to train with mult
 
 .. code-block:: console
 
-    $ gymnos-train -m hydra/launcher=sofia hydra.launcher.project_name=<SOFIA_PROJECT_NAME> hydra.launcher.device=GPU +experiment=classify_dogs_vs_cats trainer.num_epochs=5,10
+    $ gymnos-train -m hydra/launcher=sofia hydra.launcher.project_name=<SOFIA_PROJECT_NAME> hydra.launcher.device=GPU +experiment=classify_dogs_vs_cats trainer.num_epochs=5,10 trainer.num_workers=-1
 
 Let's split the command:
 
@@ -121,6 +121,7 @@ Let's split the command:
     - ``hydra.launcher.device``: we want to use GPU for our training. We can also use ``CPU`` as the device
     - ``+experiment``: we define the experiment to use. The experiment will define both the training and dataset. The plus (``+``) symbol at the beginning is mandatory. More information about experiment at :ref:`classify_dogs_vs_cats_experiment`.
     - ``trainer.num_epochs``: we override the default value for trainer parameter ``num_epochs`` with two values. This will create two trainings on SOFIA, one training where ``num_epochs`` is equal to ``5`` and one training where ``num_epochs`` is ``10``.
+    - ``trainer.num_workers``: we override the default value for trainer parameter ``num_workers`` to use all CPUs while loading the dataset.
 
 The trainining logs will have the link to the SOFIA job for each training.
 
