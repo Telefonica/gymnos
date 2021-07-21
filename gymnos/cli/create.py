@@ -5,142 +5,501 @@
 #
 
 import os
+import re
 import click
 import inspect
-import logging
 import stringcase
 
-from pathlib import Path
-from rich.logging import RichHandler
+from rich.tree import Tree
+from rich.text import Text
+from rich import print as rprint
 
 
-@click.command()
-@click.argument("task")
-@click.argument("model")
-def main(task, model):
-    handler = RichHandler(rich_tracebacks=True)
-    logging.basicConfig(level="INFO", format="%(message)s", datefmt="[%X]", handlers=[handler])
+MAIN_DOMAINS = [
+    "vision",
+    "generative",
+    "audio",
+    "misc",
+    "nlp",
+    "rl",
+    "tabular",
+    "unsupervised"
+]
 
-    logger = logging.getLogger(__name__)
 
-    here = os.path.abspath(os.path.dirname(__file__))
-    app_dir = os.path.abspath(os.path.join(here, ".."))
-    conf_dir = os.path.abspath(os.path.join(here, "..", "..", "conf"))
+def _only_letters_numbers_underscores(value):
+    pattern = r"^([A-Za-z0-9\_]+)$"
+    if not re.match(pattern, value):
+        raise click.BadParameter("Only letters, numbers and underscores")
 
-    task_dir = os.path.join(*task.split("/"))
+    return value
 
-    model_full_path = os.path.join(app_dir, task_dir, model)
 
-    if os.path.isdir(model_full_path):
-        logger.error(f"Model {model} for task {task} already exists")
-        raise SystemExit(1)
+def _validate_name(ctx, param, value):
+    return _only_letters_numbers_underscores(value)
 
-    title_name = stringcase.titlecase(model)
-    trainer_name = stringcase.pascalcase(model) + "Trainer"
-    predictor_name = stringcase.pascalcase(model) + "Predictor"
 
-    os.chdir(app_dir)
+def _validate_domain(ctx, param, value):
+    subdomains = value.split("/")
 
-    for subtask in task.split("/"):
-        os.makedirs(subtask, exist_ok=True)
-        init_fpath = os.path.join(subtask, "__init__.py")
-        if not os.path.isfile(init_fpath):
-            Path(init_fpath).touch()
-        os.chdir(subtask)
+    if len(subdomains) != 2:
+        raise click.BadParameter("Must has the following structure: <DOMAIN>/<SUBDOMAIN>, "
+                                 "e.g vision/image_classification")
 
-    os.chdir(here)
+    if subdomains[0] not in MAIN_DOMAINS:
+        raise click.BadParameter(f"Main domain must be one of the following: {', '.join(MAIN_DOMAINS)}")
 
-    init_model_filestr = inspect.cleandoc(f'''
-        """
-        Docstring for {title_name}
-        """
-   
-        #  @model
-        
-        from .trainer import {trainer_name}
-        from .predictor import {predictor_name}
-        
+    _only_letters_numbers_underscores(subdomains[1])
+
+    return subdomains
+
+
+@click.group()
+def main():
+    pass
+
+
+@main.command()
+@click.argument("name", callback=_validate_name)
+@click.argument("domain", callback=_validate_domain)
+def model(name, domain):
+    """
+    Create new model.
+
+    The DOMAIN is the task solved by the model, e.g ``vision/image_classification`` or ``text/question_answering``.
+    """
+    title = stringcase.titlecase(name)
+    classname = stringcase.pascalcase(name)
+    hydra_conf_classname = classname + "HydraConf"
+    trainer_classname = classname + "Trainer"
+    predictor_classname = classname + "Predictor"
+
+    __init__template = inspect.cleandoc(f"""
+        \"""
+        TODO: Docstring for {title}
+        \"""
+
+        from ....utils import lazy_import
+
+        # Public API
+        {predictor_classname} = lazy_import("gymnos.{domain[0]}.{domain[1]}.{name}.predictor.{predictor_classname}")
+    """) + "\n"
+
+    __model__template = inspect.cleandoc(f"""
+        #
+        #
+        #   Model
+        #
+        #
+
+        from .hydra_conf import {hydra_conf_classname}
+
+        hydra_conf = {hydra_conf_classname}
+
         dependencies = [
-        
         ]
+    """) + "\n"
 
-    ''')
-
-    trainer_filestr = inspect.cleandoc(f"""
+    trainer_template = inspect.cleandoc(f"""
         #
         #
-        #   Trainer for {title_name}
+        #   Trainer
         #
         #
-        
-        from {'.' * (len(task.split("/")) + 2)}base import Trainer
-        
-        
-        class {trainer_name}(Trainer):
 
-            def __init__(self, *args, **kwargs):
-                pass
+        from dataclasses import dataclass
 
-            def setup(self, data_dir):
-                pass
+        from ....base import BaseTrainer
+        from .hydra_conf import {hydra_conf_classname}
+
+
+        @dataclass
+        class {trainer_classname}({hydra_conf_classname}, BaseTrainer):
+            \"""
+            TODO: docstring for trainer
+            \"""
+
+            def setup(self, root):
+                pass   # OPTIONAL: do anything with your data
 
             def train(self):
-                pass  # TODO: Mandatory method
+                pass   # TODO: training code
 
             def test(self):
-                raise NotImplementedError(f"Trainer {{self.__class__.__name__}} does not support test")
+                pass   # OPTIONAL: test code
+    """) + "\n"
 
-    """)
+    predictor_template = inspect.cleandoc(f"""
+        #
+        #
+        #   Predictor
+        #
+        #
 
-    predictor_filestr = inspect.cleandoc(f"""
-        #
-        #
-        #   Predictor for {title_name}
-        #
-        #
-        
-        from {'.' * (len(task.split("/")) + 2)}base import Predictor
-        
-        
-        class {predictor_name}(Predictor):
-        
-            def __init__(self, *args, **kwargs):
-                pass
+        from ....base import BasePredictor
+
+
+        class {predictor_classname}(BasePredictor):
+            \"""
+            TODO: docstring for predictor
+            \"""
 
             def load(self, artifacts_dir):
-                pass
+                pass   # OPTIONAL: load model from MLFlow artifacts directory
 
             def predict(self, *args, **kwargs):
-                pass  # TODO: Mandatory method
-    """)
+                pass   # TODO: prediction code. Define parameters
+    """) + "\n"
 
-    trainer_conf_filestr = inspect.cleandoc(f'''
-        # @package trainer
+    hydra_conf_template = inspect.cleandoc(f"""
+        #
+        #
+        #   {title} Hydra configuration
+        #
+        #
 
-        _target_: gymnos.{task.replace('/', '.')}.{model}.{trainer_name}
-    ''')
+        from dataclasses import dataclass, field
 
-    os.makedirs(model_full_path)
 
-    init_fpath = os.path.join(model_full_path, "__init__.py")
-    logger.info(f"Creating {init_fpath}")
-    with open(init_fpath, "w") as fp:
-        fp.write(init_model_filestr + "\n")
+        @dataclass
+        class {hydra_conf_classname}:
 
-    trainer_fpath = os.path.join(model_full_path, "trainer.py")
-    logger.info(f"Creating {trainer_fpath}")
-    with open(trainer_fpath, "w") as fp:
-        fp.write(trainer_filestr + "\n")
+            # TODO: define trainer parameters
 
-    predictor_fpath = os.path.join(model_full_path, "predictor.py")
-    logger.info(f"Creating {predictor_fpath}")
-    with open(predictor_fpath, "w") as fp:
-        fp.write(predictor_filestr + "\n")
+            _target_: str = field(init=False, repr=False, default="gymnos.{domain[0]}.{domain[1]}.{name}."
+                                                                  "trainer.{trainer_classname}")
+    """) + "\n"
 
-    conf_task_dir = os.path.join(conf_dir, "trainer", task_dir)
-    os.makedirs(conf_task_dir, exist_ok=True)
+    docs_template = inspect.cleandoc(f"""
+        .. _{domain[0]}.{domain[1]}.{name}:
 
-    trainer_conf_fpath = os.path.join(conf_task_dir, model + ".yaml")
-    logger.info(f"Creating {trainer_conf_fpath}")
-    with open(trainer_conf_fpath, "w") as fp:
-        fp.write(trainer_conf_filestr)
+        {title}
+        {"=" * len(title)}
+
+        .. automodule:: gymnos.{domain[0]}.{domain[1]}.{name}
+
+        .. code-block:: console
+
+            $ pip install gymnos[{domain[0]}.{domain[1]}.{name}]
+
+        .. contents::
+            :local:
+
+        .. _{domain[0]}.{domain[1]}.{name}__trainer:
+
+        Trainer
+        *********
+
+        .. code-block:: console
+
+            $ gymnos-train trainer={domain[0]}.{domain[1]}.{name}
+
+        .. rst-class:: gymnos-hydra
+
+            .. autoclass:: gymnos.{domain[0]}.{domain[1]}.{name}.trainer.{trainer_classname}
+                :inherited-members:
+
+
+        .. _{domain[0]}.{domain[1]}.{name}__predictor:
+
+        Predictor
+        ***********
+
+        .. code-block:: py
+
+            from gymnos.{domain[0]}.{domain[1]}.{name} import {predictor_classname}
+
+            {predictor_classname}.from_pretrained("johndoe/models/pretrained", *args, **kwargs)
+
+        .. autoclass:: gymnos.{domain[0]}.{domain[1]}.{name}.predictor.{predictor_classname}
+           :members:
+    """) + "\n"
+
+    subdomain_title = stringcase.titlecase(domain[1])
+
+    docs_subdomain_template = inspect.cleandoc(f"""
+        .. _{domain[1]}:
+
+        {subdomain_title}
+        {"=" * len(subdomain_title)}
+
+        .. automodule:: gymnos.{domain[0]}.{domain[1]}
+
+        .. toctree::
+            :glob:
+
+            *
+    """) + "\n"
+
+    subdomain__init__template = inspect.cleandoc(f"""
+        \"""
+        Models for {subdomain_title}
+        \"""
+    """) + "\n"
+
+    subdomain_dir = os.path.join("gymnos", domain[0], domain[1])
+    docs_subdomain_dir = os.path.join("docs", "source", domain[0], domain[1])
+
+    if not os.path.isdir(docs_subdomain_dir):
+        os.makedirs(docs_subdomain_dir)
+        with open(os.path.join(docs_subdomain_dir, "index.rst"), "w") as fp:
+            fp.write(docs_subdomain_template)
+
+    if not os.path.isdir(subdomain_dir):
+        os.makedirs(subdomain_dir)
+        with open(os.path.join(subdomain_dir, "__init__.py"), "w") as fp:
+            fp.write(subdomain__init__template)
+
+    docs_dir = os.path.join("docs", "source", domain[0], domain[1])
+    model_dir = os.path.join("gymnos", domain[0], domain[1], name)
+
+    os.makedirs(model_dir)
+
+    with open(os.path.join(docs_dir, name + ".rst"), "w") as fp:
+        fp.write(docs_template)
+
+    with open(os.path.join(model_dir, "__init__.py"), "w") as fp:
+        fp.write(__init__template)
+
+    with open(os.path.join(model_dir, "__model__.py"), "w") as fp:
+        fp.write(__model__template)
+
+    with open(os.path.join(model_dir, "trainer.py"), "w") as fp:
+        fp.write(trainer_template)
+
+    with open(os.path.join(model_dir, "predictor.py"), "w") as fp:
+        fp.write(predictor_template)
+
+    with open(os.path.join(model_dir, "hydra_conf.py"), "w") as fp:
+        fp.write(hydra_conf_template)
+
+    rprint("The following files have been created: ")
+
+    tree = Tree(":open_file_folder:", guide_style="dim")
+    gymnos_tree = tree.add("gymnos")
+    domain_tree = gymnos_tree.add(domain[0])
+    subdomain_tree = domain_tree.add(domain[1])
+    model_tree = subdomain_tree.add(Text(name, "bold blue"))
+    for fname in ("__init__.py", "__model__.py", "trainer.py", "predictor.py", "hydra_conf.py"):
+        model_tree.add(Text(f"📄 {fname}", "bold blue"))
+
+    docs_tree = tree.add("docs")
+    source_tree = docs_tree.add("source")
+    domain_tree = source_tree.add(domain[0])
+    subdomain_tree = domain_tree.add(domain[1])
+    subdomain_tree.add(Text(name + ".rst", "bold blue"))
+
+    rprint(tree)
+
+
+@main.command()
+@click.argument("name", callback=_validate_name)
+def dataset(name):
+    """
+    Create new dataset
+    """
+    title = stringcase.titlecase(name)
+
+    __init__template = inspect.cleandoc(f"""
+        \"""
+        TODO: Docstring for {title}
+        \"""
+    """) + "\n"
+
+    classname = stringcase.pascalcase(name)
+    conf_classname = classname + "HydraConf"
+
+    __dataset__template = inspect.cleandoc(f"""
+        #
+        #
+        #   {title} gymnos conf
+        #
+        #
+
+        from .hydra_conf import {conf_classname}
+
+        hydra_conf = {conf_classname}
+    """) + "\n"
+
+    hydra_conf_template = inspect.cleandoc(f"""
+        #
+        #
+        #   {title} Hydra conf
+        #
+        #
+
+        from dataclasses import dataclass, field
+
+
+        @dataclass
+        class {conf_classname}:
+
+            # TODO: add custom parameters
+
+            _target_: str = field(init=False, default="gymnos.datasets.{name}.{classname}")
+    """) + "\n"
+
+    dataset_template = inspect.cleandoc(f"""
+        #
+        #
+        #   {title} dataset
+        #
+        #
+
+        from ...base import BaseDataset
+        from .hydra_conf import {conf_classname}
+
+        from dataclasses import dataclass
+
+
+        @dataclass
+        class {classname}({conf_classname}, BaseDataset):
+            \"""
+            TODO: description about data structure
+
+            Parameters
+            -----------
+            TODO: description of each parameter
+            \"""
+
+            def __call__(self, root):
+                pass  # TODO: save dataset files to `root`
+    """) + "\n"
+
+    docs_template = inspect.cleandoc(f"""
+        .. _{name}:
+
+        {title}
+        {"=" * len(title)}
+
+        .. automodule:: gymnos.datasets.{name}
+
+        .. code-block:: console
+
+            $ gymnos.train dataset={name}
+
+        .. rst-class:: gymnos-hydra
+
+            .. autoclass:: gymnos.datasets.{name}.dataset.{classname}
+    """) + "\n"
+
+    docs_dir = os.path.join("docs", "source", "datasets")
+    dataset_dir = os.path.join("gymnos", "datasets", name)
+
+    os.makedirs(dataset_dir)
+
+    with open(os.path.join(dataset_dir, "__init__.py"), "w") as fp:
+        fp.write(__init__template)
+
+    with open(os.path.join(dataset_dir, "__dataset__.py"), "w") as fp:
+        fp.write(__dataset__template)
+
+    with open(os.path.join(dataset_dir, "dataset.py"), "w") as fp:
+        fp.write(dataset_template)
+
+    with open(os.path.join(dataset_dir, "hydra_conf.py"), "w") as fp:
+        fp.write(hydra_conf_template)
+
+    with open(os.path.join(docs_dir, f"{name}.rst"), "w") as fp:
+        fp.write(docs_template)
+
+    rprint("The following files have been created: ")
+
+    tree = Tree(":open_file_folder:", guide_style="dim")
+    gymnos_tree = tree.add("gymnos")
+    datasets_tree = gymnos_tree.add("datasets")
+    dataset_tree = datasets_tree.add(Text(name, "bold blue"))
+    for fname in ("__init__.py", "__dataset__.py", "dataset.py", "hydra_conf.py"):
+        dataset_tree.add(Text(f"📄 {fname}", "bold blue"))
+
+    docs_tree = tree.add("docs")
+    source_tree = docs_tree.add("source")
+    datasets_tree = source_tree.add("datasets")
+    datasets_tree.add(Text(name + ".rst", "bold blue"))
+
+    rprint(tree)
+
+
+@main.command()
+@click.argument("name", callback=_validate_name)
+def experiment(name):
+    """
+    Create new experiment
+    """
+    title = stringcase.titlecase(name)
+
+    template = inspect.cleandoc("""
+        # @package _global_
+        # TODO: description about experiment
+
+        defaults:
+            - override /trainer: <trainer_name>  # TODO: set name of trainer to use
+            - override /dataset: <dataset_name>  # TODO: set name of dataset to use
+
+        trainer:
+            <param>: <value>   # TODO: override default trainer params
+
+        dataset:
+            <param>: <value>  # TODO: override default dataset params
+    """) + "\n"
+
+    docs_template = inspect.cleandoc(f"""
+        .. _{name}_experiment:
+
+        {title}
+        ==============================
+
+        .. autoyamldoc:: conf/experiment/{name}.yaml
+            :lineno-start: 1
+
+
+        .. code-block:: console
+
+            $ gymnos-train +experiment={name}
+
+
+        .. tabs::
+
+           .. tab:: Trainer
+
+                .. autoyaml:: conf/experiment/{name}.yaml
+                    :key: trainer
+                    :caption: :ref:`{{defaults[0].override /trainer}}`
+
+           .. tab:: Dataset
+
+                .. autoyaml:: conf/experiment/{name}.yaml
+                    :key: dataset
+                    :caption: :ref:`{{defaults[1].override /dataset}}`
+
+    """) + "\n"
+
+    fpath = os.path.join("conf", "experiment", name + ".yaml")
+
+    if os.path.isfile(fpath):
+        raise FileExistsError(f"Experiment {fpath} already exists")
+
+    with open(fpath, "w") as fp:
+        fp.write(template)
+
+    docs_fpath = os.path.join("docs", "source", "experiments", name + ".rst")
+
+    if os.path.isfile(docs_fpath):
+        raise FileExistsError(f"Docs {docs_fpath} already exists")
+
+    with open(docs_fpath, "w") as fp:
+        fp.write(docs_template)
+
+    rprint("The following files have been created: ")
+
+    tree = Tree(":open_file_folder:", guide_style="dim")
+    conf_tree = tree.add("conf")
+    experiment_tree = conf_tree.add("experiment")
+    experiment_tree.add(Text(f"📄 {name}.yaml", "bold blue"))
+
+    docs_tree = tree.add("docs")
+    docs_source_tree = docs_tree.add("source")
+    docs_experiments_tree = docs_source_tree.add("experiments")
+    docs_experiments_tree.add(Text(f"📄 {name}.rst", "bold blue"))
+
+    rprint(tree)
