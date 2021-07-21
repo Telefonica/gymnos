@@ -42,6 +42,6 @@ class SOFIALauncher(SOFIALauncherHydraConf, Launcher):
         configure_log(self.config.hydra.hydra_logging, self.config.hydra.verbose)
 
         if self.ref is None:
-            self.ref = get_current_revision()
+            self.ref = get_current_revision() or "master"
 
         return launch(self, job_overrides, initial_job_idx)
