@@ -142,3 +142,6 @@ mlruns
 
 # Build for docs
 docs/build
+
+# Public folder
+public
