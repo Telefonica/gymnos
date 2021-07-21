@@ -142,6 +142,3 @@ multirun
 
 # MLFlow staff
 mlruns
-
-# Build for docs
-docs/build
