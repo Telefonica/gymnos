@@ -133,9 +133,6 @@ dmypy.json
 # PyCharm
 .idea
 
-# Local data to test datasets
-datasets
-
 # Hydra stuff
 outputs
 multirun
