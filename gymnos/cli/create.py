@@ -178,9 +178,9 @@ def model(name, domain):
 
         .. automodule:: gymnos.{domain[0]}.{domain[1]}.{name}
 
-        .. code-block:: console
+        .. prompt:: bash
 
-            $ pip install gymnos[{domain[0]}.{domain[1]}.{name}]
+            pip install gymnos[{domain[0]}.{domain[1]}.{name}]
 
         .. contents::
             :local:
@@ -190,9 +190,9 @@ def model(name, domain):
         Trainer
         *********
 
-        .. code-block:: console
+        .. prompt:: bash
 
-            $ gymnos-train trainer={domain[0]}.{domain[1]}.{name}
+            gymnos-train trainer={domain[0]}.{domain[1]}.{name}
 
         .. rst-class:: gymnos-hydra
 
@@ -374,9 +374,9 @@ def dataset(name):
 
         .. automodule:: gymnos.datasets.{name}
 
-        .. code-block:: console
+        .. prompt:: bash
 
-            $ gymnos.train dataset={name}
+            gymnos.train dataset={name}
 
         .. rst-class:: gymnos-hydra
 
@@ -453,9 +453,9 @@ def experiment(name):
             :lineno-start: 1
 
 
-        .. code-block:: console
+        .. prompt:: bash
 
-            $ gymnos-train +experiment={name}
+            gymnos-train +experiment={name}
 
 
         .. tabs::

@@ -109,10 +109,12 @@ EXTRAS_REQUIRE = {
         "Sphinx",
         "sphinx-tabs",
         "sphinx-click",
+        "sphinx-prompt",
         "python-benedict",
         "sphinx-rtd-theme",
         "sphinx-autobuild",
-        "sphinxcontrib.asciinema"
+        "sphinxcontrib.asciinema",
+        "Sphinx-Substitution-Extensions",
     ],
 }
 

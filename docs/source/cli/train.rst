@@ -5,9 +5,9 @@ gymnos-train
 
 This is the `Hydra <https://hydra.cc>`_ entrypoint for trainings.
 
-.. code-block:: console
+.. prompt:: bash
 
-    $ gymnos-train trainer=<TRAINER> trainer.<PARAM>=<VALUE> dataset=<DATASET> dataset.<PARAM>=<VALUE> test=false verbose=true dependencies.install=false mlflow.run_name=null mlflow.experiment_name=Default mlflow.log_trainer_params=true
+    gymnos-train trainer=<TRAINER> trainer.<PARAM>=<VALUE> dataset=<DATASET> dataset.<PARAM>=<VALUE> test=false verbose=true dependencies.install=false mlflow.run_name=null mlflow.experiment_name=Default mlflow.log_trainer_params=true
 
 .. list-table::
    :header-rows: 1

@@ -17,6 +17,8 @@
 import os
 import sys
 
+from gymnos.__about__ import __version__
+
 sys.path.insert(0, os.path.abspath("_ext"))
 
 
@@ -25,6 +27,11 @@ sys.path.insert(0, os.path.abspath("_ext"))
 project = 'gymnos'
 copyright = '2021, Telefonica'
 author = 'Telefonica'
+version = __version__
+
+rst_prolog = f"""
+.. |release| replace:: {version}
+"""
 
 
 # -- General configuration ---------------------------------------------------
@@ -39,7 +46,9 @@ extensions = [
     "sphinx_rtd_theme",
     "autoyaml",
     "sphinx_click",
-    "sphinxcontrib.asciinema"
+    "sphinxcontrib.asciinema",
+    "sphinx-prompt",
+    "sphinx_substitution_extensions"
 ]
 
 add_module_names = False

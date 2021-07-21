@@ -16,9 +16,9 @@ In this section:
 
 Make sure you have been logged to SOFIA. This will only be needed the first time.
 
-.. code-block:: console
+.. prompt:: bash
 
-    $ gymnos-login
+    gymnos-login
 
 
 Model dependencies
@@ -26,9 +26,9 @@ Model dependencies
 
 Each model will have their own dependencies, we will use the model :ref:`vision.image_classification.transfer_efficientnet` so we need to install the ``vision.image_classification.transfer_efficientnet`` extra dependency.
 
-.. code-block:: console
+.. prompt:: bash
 
-    $ pip install gymnos[vision.image_classification.transfer_efficientnet]
+    pip install gymnos[vision.image_classification.transfer_efficientnet]
 
 Training
 -----------
@@ -36,9 +36,9 @@ First of all, we will train the model :ref:`vision.image_classification.transfer
 
 We will use the command ``gymnos-train`` to do the training.
 
-.. code-block:: console
+.. prompt:: bash
 
-    $ gymnos-train dataset=dogs_vs_cats trainer=vision.image_classification.transfer_efficientnet trainer.classes="[dog,cat]" trainer.num_epochs=1
+    gymnos-train dataset=dogs_vs_cats trainer=vision.image_classification.transfer_efficientnet trainer.classes="[dog,cat]" trainer.num_epochs=1
 
 Let's split the command:
 
@@ -49,9 +49,9 @@ Let's split the command:
 
 While training, open MLFlow to visualize live metrics:
 
-.. code-block:: console
+.. prompt:: bash
 
-    $ mlflow ui
+    mlflow ui
 
 Predicting
 -------------
@@ -79,9 +79,9 @@ Finally, we will upload the trained model to SOFIA platform.
 
 We will only need the Mlflow run ID from the training to upload the model.
 
-.. code-block:: console
+.. prompt:: bash
 
-    $ gymnos-upload <MLFLOW_RUN_ID>
+    gymnos-upload <MLFLOW_RUN_ID>
 
 
 Using Gymnos with SOFIA
@@ -94,9 +94,9 @@ In this section:
 
 Make sure you have been logged to SOFIA. This will only be needed the first time.
 
-.. code-block:: console
+.. prompt:: bash
 
-    $ gymnos-login
+    gymnos-login
 
 Training
 -----------
@@ -109,9 +109,9 @@ This is useful to avoid writing long commands and to have reproducible results.
 
 We will also introduce the concept of multirun that enable us to train with multiple configurations. Refer to `Hydra Multi-Run <https://hydra.cc/docs/next/tutorials/basic/running_your_app/multi-run/>`_ for more information.
 
-.. code-block:: console
+.. prompt:: bash
 
-    $ gymnos-train -m hydra/launcher=sofia hydra.launcher.project_name=<SOFIA_PROJECT_NAME> hydra.launcher.device=GPU +experiment=classify_dogs_vs_cats trainer.num_epochs=5,10 trainer.num_workers=-1
+    gymnos-train -m hydra/launcher=sofia hydra.launcher.project_name=<SOFIA_PROJECT_NAME> hydra.launcher.device=GPU +experiment=classify_dogs_vs_cats trainer.num_epochs=5,10 trainer.num_workers=-1
 
 Let's split the command:
 
@@ -150,9 +150,9 @@ We will use the created model to predict whether an image contains a dog or a ca
 
 First, we need to install dependencies for the model:
 
-.. code-block:: console
+.. prompt:: bash
 
-    $ pip install gymnos[vision.image_classification.transfer_efficientnet]
+    pip install gymnos[vision.image_classification.transfer_efficientnet]
 
 
 Check the model :ref:`vision.image_classification.transfer_efficientnet__predictor` to read the documentation about ``predict`` method.

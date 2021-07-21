@@ -5,9 +5,9 @@ Transfer Efficientnet
 
 .. automodule:: gymnos.vision.image_classification.transfer_efficientnet
 
-.. code-block:: console
+.. prompt:: bash
 
-    $ pip install gymnos[vision.image_classification.transfer_efficientnet]
+    pip install gymnos[vision.image_classification.transfer_efficientnet]
 
 .. contents::
     :local:
@@ -17,9 +17,9 @@ Transfer Efficientnet
 Trainer
 *********
 
-.. code-block:: console
+.. prompt:: bash
 
-    $ gymnos-train trainer=vision.image_classification.transfer_efficientnet
+    gymnos-train trainer=vision.image_classification.transfer_efficientnet
 
 .. rst-class:: gymnos-hydra
 

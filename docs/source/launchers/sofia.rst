@@ -3,9 +3,9 @@
 SOFIA
 ==============================
 
-.. code-block:: console
+.. prompt:: bash
 
-    $ gymnos-train -m hydra/launcher=sofia hydra.launcher.<ANY_SOFIA_HYDRA_LAUNCHER_PARAM>
+    gymnos-train -m hydra/launcher=sofia hydra.launcher.<ANY_SOFIA_HYDRA_LAUNCHER_PARAM>
 
 .. list-table::
    :header-rows: 1
