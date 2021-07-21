@@ -9,7 +9,7 @@ jobs:
     container: python:3.7-slim
     steps:
       - name: Install rsync 📚
-        run: apt-get update && apt-get install -y rsync
+        run: apt-get update && apt-get install -y rsync git
       - name: Install requirements
         run: python -m pip install ".[docs]"
       - name: Build docs
