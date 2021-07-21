@@ -4,20 +4,20 @@
 #
 #
 
-import logging
 import uuid
+import logging
+import importlib
 
 from omegaconf import open_dict
-from hydra.core.hydra_config import HydraConfig
-from hydra.core.utils import JobReturn, run_job, configure_log
-
 from typing import Sequence, Callable
 from posixpath import join as urljoin
 from gymnos.services.sofia import SOFIA
-from gymnos.cli.utils import print_config, find_trainer_dependencies
+from hydra.core.hydra_config import HydraConfig
+from hydra.core.utils import JobReturn, run_job, configure_log
+from gymnos.cli.utils import print_config, find_model_module, print_dependencies
 
-from .config import Device
-from .utils import print_launcher, print_dependencies
+from .hydra_conf import Device
+from .utils import print_launcher
 
 
 class SOFIAProjectNotFound(Exception):
@@ -63,12 +63,15 @@ def launch(launcher, job_overrides: Sequence[Sequence[str]], initial_job_idx: in
 
         HydraConfig.instance().set_config(sweep_config)
 
-        if sweep_config.show_config:
+        if sweep_config.verbose:
             print_config(sweep_config, ("trainer", "data", "test"))
 
-        if sweep_config.show_dependencies:
-            dependencies = find_trainer_dependencies(sweep_config.trainer)
-            print_dependencies(dependencies)
+        model_module = find_model_module(sweep_config.trainer["_target_"])
+        model_lib_name, model_mod_name = model_module.__name__.split(".", 1)
+        model_meta_module = importlib.import_module("." + model_mod_name + ".__model__", model_lib_name)
+
+        if sweep_config.verbose:
+            print_dependencies(getattr(model_meta_module, "dependencies", []))
 
         job_return = run_job(
             launch_job(args, launcher.project_name, launcher.ref, launcher.device),

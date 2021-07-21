@@ -4,32 +4,32 @@
 #
 #
 
-import logging
-import uuid
-
+from typing import Sequence
 from omegaconf import DictConfig
-from omegaconf import open_dict
-from typing import Sequence, Optional
+from dataclasses import dataclass
 from hydra.plugins.launcher import Launcher
 from hydra.types import TaskFunction, HydraContext
 from hydra.core.utils import JobReturn, setup_globals, configure_log
 
-from .config import Device
 from .core import launch
 from .utils import get_current_revision
+from .hydra_conf import SOFIALauncherHydraConf
 
 
-class SOFIALauncher(Launcher):
+@dataclass
+class SOFIALauncher(SOFIALauncherHydraConf, Launcher):
+    """
+    Launch training on the SOFIA platform
 
-    def __init__(self, project_name: str, ref: str, device: Device = "CPU", show=True):
-        self.project_name = project_name
-        self.ref = ref
-        self.device = device
-        self.show = show
-
-        self.hydra_context: Optional[HydraContext] = None
-        self.task_function: Optional[TaskFunction] = None
-        self.config: Optional[DictConfig] = None
+    Parameters
+    ------------
+    project_name:
+        SOFIA project name
+    ref:
+        Gymnos release, branch or commit to execute training. Defaults to current commit.
+    device:
+        Device to execute training. One of the following: ``CPU``, ``GPU``.
+    """
 
     def setup(self, *, hydra_context: HydraContext, task_function: TaskFunction, config: DictConfig):
         self.config = config

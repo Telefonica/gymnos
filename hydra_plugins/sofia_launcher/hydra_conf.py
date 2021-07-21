@@ -5,21 +5,21 @@
 #
 
 import enum
-import logging
 
 from typing import Optional
 from dataclasses import dataclass, field
 
 
-class Device(enum.Enum):
+class Device(str, enum.Enum):
     CPU = "CPU"
     GPU = "GPU"
 
 
 @dataclass
-class SOFIALauncherConfig:
-    _target_: str = "hydra_plugins.sofia_launcher.launcher.SOFIALauncher"
+class SOFIALauncherHydraConf:
 
-    project_name: str = "???"
+    project_name: str
     ref: Optional[str] = None
     device: Device = Device.CPU
+
+    _target_: str = field(init=False, repr=False, default="hydra_plugins.sofia_launcher.launcher.SOFIALauncher")

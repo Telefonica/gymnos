@@ -46,7 +46,7 @@ def get_current_revision():
 
     if repo.is_dirty(untracked_files=True):
         has_warnings = True
-        warnings.warn(f"You have uncommited changes")
+        warnings.warn("You have uncommited changes")
 
     if has_warnings:
         confirm = confirm_prompt("You have unpushed changes to gymnos repository. Are you sure you want to continue?: ")
@@ -69,15 +69,5 @@ def print_launcher(config: DictConfig, resolve: bool = True):
     subbranch = branch.add("launcher")
     subbranch_content = OmegaConf.to_yaml(config, resolve=resolve)
     subbranch.add(rich.syntax.Syntax(subbranch_content, "yaml"))
-
-    rich.print(Panel(tree))
-
-
-def print_dependencies(dependencies):
-    style = "dim"
-    tree = rich.tree.Tree(":package: DEPENDENCIES", style=style, guide_style=style)
-
-    for dependency in dependencies:
-        tree.add(dependency, style=style, guide_style=style)
 
     rich.print(Panel(tree))
