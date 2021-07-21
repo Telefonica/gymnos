@@ -4,8 +4,7 @@ defaults:
 
 test: false
 
-show_config: true
-show_dependencies: true
+verbose: true
 
 dependencies:
     install: false
