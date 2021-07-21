@@ -12,12 +12,11 @@ import warnings
 import numpy as np
 import torchvision.transforms as T
 
-from PIL import Image
 from typing import Union
 from dataclasses import dataclass
 
 from ....base import BasePredictor
-from .model import TransferEfficientNetModule
+from .module import TransferEfficientNetModule
 
 
 @dataclass

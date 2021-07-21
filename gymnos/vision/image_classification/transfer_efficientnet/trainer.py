@@ -3,26 +3,23 @@
 #   Trainer
 #
 #
-
+import mlflow
 import torch
 import pytorch_lightning as pl
 
-from typing import List, Optional
 from dataclasses import dataclass
 from multiprocessing import cpu_count
 
+from .utils import MLFlowLogger
 from ....base import BaseTrainer
-from .conf import TransferEfficientNetConf
-from .model import TransferEfficientNetModule
+from .module import TransferEfficientNetModule
+from .hydra_conf import TransferEfficientNetHydraConf
 from .datamodule import TransferEfficientNetDataModule
-from .utils import get_lightning_mlflow_logger, MlflowModelLoggerArtifact
 
 
 @dataclass
-class TransferEfficientNetTrainer(TransferEfficientNetConf, BaseTrainer):
+class TransferEfficientNetTrainer(TransferEfficientNetHydraConf, BaseTrainer):
     """
-    Trainer for TransferEfficientNet.
-
     The expected structure is one directory for each class.
 
     Let's say we have ``classes=["dog", "cat"]``, then we should have two directories ``"dog"`` and ``"cat"``
@@ -58,19 +55,18 @@ class TransferEfficientNetTrainer(TransferEfficientNetConf, BaseTrainer):
         if self.num_workers < 0:
             self.num_workers = cpu_count()
 
-        if self.distributed_backend is None and self.gpus > 0:
-            self.distributed_backend = "ddp"
+        if self.gpus > 0:
+            self.accelerator = "dp"
 
         self.model = TransferEfficientNetModule(len(self.classes))
 
         self.trainer = pl.Trainer(
             max_epochs=self.num_epochs,
             gpus=self.gpus,
-            distributed_backend=self.distributed_backend,
-            logger=get_lightning_mlflow_logger(),
+            accelerator=self.accelerator,
+            logger=MLFlowLogger(tracking_uri=mlflow.get_tracking_uri()),
             callbacks=[
-                pl.callbacks.ModelCheckpoint("checkpoints", monitor="val_loss"),
-                MlflowModelLoggerArtifact()
+                pl.callbacks.ModelCheckpoint("checkpoints", monitor="val_loss")
             ]
         )
 
@@ -80,7 +76,11 @@ class TransferEfficientNetTrainer(TransferEfficientNetConf, BaseTrainer):
                                                          self.num_workers, self.batch_size)
 
     def train(self):
-        self.trainer.fit(self.model, datamodule=self.datamodule)
+        try:
+            self.trainer.fit(self.model, datamodule=self.datamodule)
+        finally:
+            if self.trainer.checkpoint_callback.best_model_path:
+                mlflow.log_artifact(self.trainer.checkpoint_callback.best_model_path)
 
     def test(self):
         self.trainer.test(datamodule=self.datamodule)

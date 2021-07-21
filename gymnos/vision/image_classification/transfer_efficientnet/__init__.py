@@ -1,5 +1,5 @@
 """
-Docstring for transfer effiicientnet
+Image classifier based on Transfer Learning with EfficientNet as backbone
 """
 
 from ....utils import lazy_import

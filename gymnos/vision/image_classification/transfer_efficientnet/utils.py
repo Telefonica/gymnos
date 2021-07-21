@@ -29,23 +29,11 @@ def split_indices(num_samples, frac_list=None, shuffle=True, random_state=None):
     return [indices[offset - length:offset] for offset, length in zip(accumulate(lengths), lengths)]
 
 
-def get_lightning_mlflow_logger():
-    mlflow_logger = pl.loggers.mlflow.MLFlowLogger(
-        experiment_name=mlflow.get_experiment(mlflow.active_run().info.experiment_id).name,
-        tracking_uri=mlflow.get_tracking_uri()
-    )
-    mlflow_logger._run_id = mlflow.active_run().info.run_id  # HACK: lightning create new run no matter what
-    return mlflow_logger
+class MLFlowLogger(pl.loggers.mlflow.MLFlowLogger):
 
+    @property
+    def experiment(self):
+        self._run_id = mlflow.active_run().info.run_id
+        self._experiment_id = mlflow.active_run().info.experiment_id
 
-class MlflowModelLoggerArtifact(pl.callbacks.Callback):
-
-    def _log_model(self, trainer):
-        if trainer.checkpoint_callback.best_model_path:
-            mlflow.log_artifact(trainer.checkpoint_callback.best_model_path)
-
-    def on_train_end(self, trainer, pl_module):
-        self._log_model(trainer)
-
-    def on_keyboard_interrupt(self, trainer, pl_module):
-        self._log_model(trainer)
+        return super().experiment

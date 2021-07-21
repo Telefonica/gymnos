@@ -11,7 +11,7 @@ from typing import Optional
 
 
 @dataclass
-class TransferEfficientNetConf:
+class TransferEfficientNetHydraConf:
 
     classes: List[str]
     num_workers: int = 0
@@ -21,7 +21,7 @@ class TransferEfficientNetConf:
     train_split: float = 0.6
     val_split: float = 0.2
     test_split: float = 0.2
-    distributed_backend: Optional[str] = None
+    accelerator: Optional[str] = None
 
     _target_: str = field(init=False, repr=False, default="gymnos.vision.image_classification.transfer_efficientnet."
                                                           "trainer.TransferEfficientNetTrainer")

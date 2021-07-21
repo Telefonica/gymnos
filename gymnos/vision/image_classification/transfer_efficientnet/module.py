@@ -58,23 +58,39 @@ class TransferEfficientNetModule(pl.LightningModule):
 
         self.log("train_loss", loss)
 
-        self.train_accuracy(torch.softmax(logits, 1), batch[1])
-
-        return loss
+        return {
+            "loss": loss,
+            "y_pred": logits,
+            "y_true": batch[1]
+        }
 
     def validation_step(self, batch, batch_idx):
         logits = self(batch[0])
         loss = F.cross_entropy(logits, batch[1])
 
-        self.val_accuracy(torch.softmax(logits, 1), batch[1])
-
         return {
-            "loss": loss
+            "loss": loss,
+            "y_pred": logits,
+            "y_true": batch[1]
         }
 
     def test_step(self, batch, batch_idx):
         logits = self(batch[0])
-        self.test_accuracy(torch.softmax(logits, 1), batch[1])
+        return {
+            "y_pred": logits,
+            "y_true": batch[1]
+        }
+
+    def training_step_end(self, outputs):
+        self.train_accuracy(torch.softmax(outputs["y_pred"], 1), outputs["y_true"])
+        return outputs["loss"].mean()
+
+    def validation_step_end(self, outputs):
+        self.val_accuracy(torch.softmax(outputs["y_pred"], 1), outputs["y_true"])
+        return outputs
+
+    def test_step_end(self, outputs):
+        self.test_accuracy(torch.softmax(outputs["y_pred"], 1), outputs["y_true"])
 
     def training_epoch_end(self, outputs):
         self.log("train_acc", self.train_accuracy.compute())
