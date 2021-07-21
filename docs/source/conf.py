@@ -75,4 +75,7 @@ html_js_files = [
     "custom.js"
 ]
 
+autodoc_mock_imports = ["tqdm", "numpy", "pandas", "torch", "torchvision", "pytorch_lightning", "torchmetrics",
+                        "efficientnet_pytorch", "PIL"]
+
 sphinx_tabs_disable_tab_closing = True
