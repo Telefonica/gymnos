@@ -7,9 +7,9 @@ Classify dogs vs cats
     :lineno-start: 1
 
 
-.. code-block:: console
+.. prompt:: bash
 
-    $ gymnos-train +experiment=classify_dogs_vs_cats
+    gymnos-train +experiment=classify_dogs_vs_cats
 
 
 .. tabs::

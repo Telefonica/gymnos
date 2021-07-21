@@ -5,9 +5,9 @@ Dogs vs Cats
 
 .. automodule:: gymnos.datasets.dogs_vs_cats
 
-.. code-block:: console
+.. prompt:: bash
 
-    $ gymnos-train dataset=dogs_vs_cats
+    gymnos-train dataset=dogs_vs_cats
 
 .. rst-class:: gymnos-hydra
 
