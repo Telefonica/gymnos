@@ -1,5 +1,3 @@
-#
-#
-#   Vision
-#
-#
+"""
+Module for vision tasks
+"""
