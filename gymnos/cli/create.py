@@ -217,7 +217,7 @@ def model(name, domain):
     subdomain_title = stringcase.titlecase(domain[1])
 
     docs_subdomain_template = inspect.cleandoc(f"""
-        .. _{domain[1]}:
+        .. _{domain[0]}__{domain[1]}:
 
         {subdomain_title}
         {"=" * len(subdomain_title)}

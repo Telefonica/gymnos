@@ -1,4 +1,4 @@
-.. _image_classification:
+.. _vision__image_classification:
 
 Image classification
 ==============================
