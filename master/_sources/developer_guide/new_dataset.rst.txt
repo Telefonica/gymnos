@@ -100,7 +100,8 @@ Then we will implement the ``__call__(root)`` method where root is the directory
 
             extract_archive(os.path.join(download_dir, "data.zip"), os.path.join(root, "data"))  # we will extract data.zip to root/data directory
 
-            os.symlink(os.path.join(download_dir, "index.csv"), os.path.join(root, "index.csv"))  # instead of copying the file, we will symlink the file to optimize storage
+            if not os.path.isfile(os.path.join(root, "index.csv")):
+                os.symlink(os.path.join(download_dir, "index.csv"), os.path.join(root, "index.csv"))  # instead of copying the file, we will symlink the file to optimize storage
 
 Running the dataset
 --------------------
