@@ -19,7 +19,6 @@ MAIN_DOMAINS = [
     "vision",
     "generative",
     "audio",
-    "misc",
     "nlp",
     "rl",
     "tabular",

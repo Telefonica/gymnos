@@ -80,14 +80,6 @@ Gymnos
    rl/*/index
 
 .. toctree::
-   :maxdepth: 2
-   :name: misc
-   :caption: Misc
-   :glob:
-
-   misc/*/index
-
-.. toctree::
    :maxdepth: 1
    :name: cli
    :caption: CLI
