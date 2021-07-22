@@ -115,6 +115,7 @@ EXTRAS_REQUIRE = {
         "sphinx-autobuild",
         "sphinxcontrib.asciinema",
         "Sphinx-Substitution-Extensions",
+        "sphinx-multiversion"
     ],
 }
 

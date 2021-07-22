@@ -18,7 +18,17 @@ jobs:
       - name: Install requirements
         run: python -m pip install ".[docs]"
       - name: Build docs
-        run: sphinx-build docs/source docs/build
+        run: sphinx-multiversion docs/source docs/build && cp .github/workflows/docs-redirect.html docs/build/index.html
+      - name: Add index.html to redirect to master
+        run: |
+          echo "<!DOCTYPE html>"  > docs/build/index.html
+          echo "<html>"  >> docs/build/index.html
+          echo "<head>"  >> docs/build/index.html
+          echo "<title>Redirecting to master branch</title>"  >> docs/build/index.html
+          echo "<meta charset='utf-8'>"  >> docs/build/index.html
+          echo "<meta http-equiv='refresh' content='0; url=./master/index.html'>"  >> docs/build/index.html
+          echo "</head>"  >> docs/build/index.html
+          echo "</html>"  >> docs/build/index.html
       - name: Deploy to Github Pages 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:

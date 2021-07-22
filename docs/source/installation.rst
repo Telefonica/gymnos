@@ -12,7 +12,7 @@ Stable release
 .. prompt:: bash
    :substitutions:
 
-   pip install git+https://github.com/Telefonica/gymnos.git@|release|
+   pip install git+https://github.com/Telefonica/gymnos.git@|stable_release|
 
 
 Bleeding-edge version

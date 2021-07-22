@@ -4,6 +4,27 @@
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
+import packaging.version
+
+from git import Repo
+
+
+def get_stable_release():
+    repo = Repo(os.path.join("..", ".."))
+
+    releases = []
+    for tag in repo.tags:
+        tag_version = packaging.version.parse(tag.name)
+
+        if tag_version.is_prerelease:
+            continue
+
+        releases.append(tag_version)
+
+    max_release = max(releases)
+
+    return str(max_release)
+
 # -- Path setup --------------------------------------------------------------
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -16,6 +37,7 @@
 
 import os
 import sys
+import warnings
 
 from gymnos.__about__ import __version__
 
@@ -29,8 +51,14 @@ copyright = '2021, Telefonica'
 author = 'Telefonica'
 version = __version__
 
+try:
+    stable_release = get_stable_release()
+except Exception as e:
+    warnings.warn(f"Error reading stable release: {e}")
+    stable_release = "???"
+
 rst_prolog = f"""
-.. |release| replace:: {version}
+.. |stable_release| replace:: {stable_release}
 """
 
 
@@ -48,7 +76,8 @@ extensions = [
     "sphinx_click",
     "sphinxcontrib.asciinema",
     "sphinx-prompt",
-    "sphinx_substitution_extensions"
+    "sphinx_substitution_extensions",
+    "sphinx_multiversion"
 ]
 
 add_module_names = False
@@ -88,3 +117,7 @@ autodoc_mock_imports = ["tqdm", "numpy", "pandas", "torch", "torchvision", "pyto
                         "efficientnet_pytorch", "PIL"]
 
 sphinx_tabs_disable_tab_closing = True
+
+smv_tag_whitelist = r"^(?!0\.1.*).*"
+
+smv_branch_whitelist = "master"
