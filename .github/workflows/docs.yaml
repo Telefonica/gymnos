@@ -18,7 +18,7 @@ jobs:
       - name: Install requirements
         run: python -m pip install ".[docs]"
       - name: Build docs
-        run: sphinx-multiversion docs/source docs/build && cp .github/workflows/docs-redirect.html docs/build/index.html
+        run: sphinx-multiversion docs/source docs/build
       - name: Add index.html to redirect to master
         run: |
           echo "<!DOCTYPE html>"  > docs/build/index.html
