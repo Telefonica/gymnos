@@ -140,6 +140,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="services/sofia.html">SOFIA</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide/style_guide.html">Style guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide/documentation.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide/new_experiment.html">New experiment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide/new_dataset.html">New dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide/new_model.html">New model</a></li>
+</ul>
 
             
           
@@ -302,12 +310,14 @@ Each model will have their own parameters so make sure to check the documentatio
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">gymnos-login</span>
 </pre></div></div><div class="section" id="id1">
 <h3><a class="toc-backref" href="#id9">Training</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
-<p>We will use the command <code class="docutils literal notranslate"><span class="pre">gymnos-train</span></code> to do the training.</p>
+<p>First of all, we need to create a SOFIA project. We will call the project <code class="docutils literal notranslate"><span class="pre">dogs-vs-cats</span></code> but you can choose any other name:</p>
+<a class="reference internal image-reference" href="_images/sofia_new_project.png"><img alt="_images/sofia_new_project.png" src="_images/sofia_new_project.png" style="width: 100%;" /></a>
+<p>Now we will use the command <code class="docutils literal notranslate"><span class="pre">gymnos-train</span></code> to do the training.</p>
 <p>We will also introduce the concept of experiment.
 An experiment is simply a YAML file that specifies the trainer and dataset, each one with their parameters.
 This is useful to avoid writing long commands and to have reproducible results.</p>
 <p>We will also introduce the concept of multirun that enable us to train with multiple configurations. Refer to <a class="reference external" href="https://hydra.cc/docs/next/tutorials/basic/running_your_app/multi-run/">Hydra Multi-Run</a> for more information.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">gymnos-train -m hydra/launcher<span class="o">=</span>sofia hydra.launcher.project_name<span class="o">=</span>&lt;SOFIA_PROJECT_NAME&gt; hydra.launcher.device<span class="o">=</span>GPU +experiment<span class="o">=</span>classify_dogs_vs_cats trainer.num_epochs<span class="o">=</span><span class="m">5</span>,10 trainer.num_workers<span class="o">=</span>-1</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">gymnos-train -m hydra/launcher<span class="o">=</span>sofia hydra.launcher.project_name<span class="o">=</span>dogs-vs-cats hydra.launcher.device<span class="o">=</span>GPU +experiment<span class="o">=</span>classify_dogs_vs_cats trainer.num_epochs<span class="o">=</span><span class="m">1</span>,2 trainer.num_workers<span class="o">=</span>-1</span>
 </pre></div></div><p>Let’s split the command:</p>
 <blockquote>
 <div><ul class="simple">
@@ -320,7 +330,7 @@ This is useful to avoid writing long commands and to have reproducible results.<
 <li><p><code class="docutils literal notranslate"><span class="pre">trainer.num_workers</span></code>: we override the default value for trainer parameter <code class="docutils literal notranslate"><span class="pre">num_workers</span></code> to use all CPUs while loading the dataset.</p></li>
 </ul>
 </div></blockquote>
-<p>The trainining logs will have the link to the SOFIA job for each training.</p>
+<p>The trainining logs will have the link to the SOFIA job for each training we have generated.</p>
 <a class="reference internal image-reference" href="_images/sofia_job.png"><img alt="_images/sofia_job.png" src="_images/sofia_job.png" style="width: 100%;" /></a>
 <p>Here we can visualize system metrics, logs and live metrics with MLFlow.</p>
 </div>

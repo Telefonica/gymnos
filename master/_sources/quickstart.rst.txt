@@ -101,7 +101,12 @@ Make sure you have been logged to SOFIA. This will only be needed the first time
 Training
 -----------
 
-We will use the command ``gymnos-train`` to do the training.
+First of all, we need to create a SOFIA project. We will call the project ``dogs-vs-cats`` but you can choose any other name:
+
+.. image:: _static/images/sofia_new_project.png
+    :width: 100%
+
+Now we will use the command ``gymnos-train`` to do the training.
 
 We will also introduce the concept of experiment.
 An experiment is simply a YAML file that specifies the trainer and dataset, each one with their parameters.
@@ -111,7 +116,7 @@ We will also introduce the concept of multirun that enable us to train with mult
 
 .. prompt:: bash
 
-    gymnos-train -m hydra/launcher=sofia hydra.launcher.project_name=<SOFIA_PROJECT_NAME> hydra.launcher.device=GPU +experiment=classify_dogs_vs_cats trainer.num_epochs=5,10 trainer.num_workers=-1
+    gymnos-train -m hydra/launcher=sofia hydra.launcher.project_name=dogs-vs-cats hydra.launcher.device=GPU +experiment=classify_dogs_vs_cats trainer.num_epochs=1,2 trainer.num_workers=-1
 
 Let's split the command:
 
@@ -123,7 +128,7 @@ Let's split the command:
     - ``trainer.num_epochs``: we override the default value for trainer parameter ``num_epochs`` with two values. This will create two trainings on SOFIA, one training where ``num_epochs`` is equal to ``5`` and one training where ``num_epochs`` is ``10``.
     - ``trainer.num_workers``: we override the default value for trainer parameter ``num_workers`` to use all CPUs while loading the dataset.
 
-The trainining logs will have the link to the SOFIA job for each training.
+The trainining logs will have the link to the SOFIA job for each training we have generated.
 
 .. image:: _static/images/sofia_job.png
     :width: 100%

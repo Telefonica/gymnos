@@ -120,6 +120,17 @@ Gymnos
 
    services/sofia
 
+.. toctree::
+   :maxdepth: 1
+   :name: developer_guide
+   :caption: Developer Guide
+
+   developer_guide/style_guide
+   developer_guide/documentation
+   developer_guide/new_experiment
+   developer_guide/new_dataset
+   developer_guide/new_model
+
 
 Indices and tables
 ==================
