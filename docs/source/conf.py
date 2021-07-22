@@ -20,7 +20,6 @@ import warnings
 import packaging.version
 
 from git import Repo
-from gymnos.__about__ import __version__
 
 sys.path.insert(0, os.path.abspath("_ext"))
 
@@ -47,7 +46,6 @@ def get_stable_release():
 project = 'gymnos'
 copyright = '2021, Telefonica'
 author = 'Telefonica'
-version = __version__
 
 try:
     stable_release = get_stable_release()
