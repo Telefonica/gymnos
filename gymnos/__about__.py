@@ -1,4 +1,4 @@
-__version__ = "0.2"
+__version__ = "0.3-dev"
 __author__ = "Telefonica"
 __description__ = "A training platform for AI models"
 __license__ = "GNU General Public License v3.0"
