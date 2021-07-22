@@ -76,19 +76,23 @@ def print_install(lib, name):
     rich.print(Panel(f":floppy_disk: INSTALL\n{pip_install_command}"))
 
 
-def print_dependencies(dependencies):
+def print_dependencies(dependencies, autocolor=True):
     tree = rich.tree.Tree(":package: DEPENDENCIES")
     for dependency in dependencies:
         text = dependency
-        try:
-            pkg_resources.require(dependency)
-            color = "green"
-        except pkg_resources.DistributionNotFound:
-            color = "bold red"
-        except pkg_resources.VersionConflict as e:
-            current_version = e.dist.version
-            color = "red"
-            text = f"{dependency} (got {current_version})"
+
+        if autocolor:
+            try:
+                pkg_resources.require(dependency)
+                color = "green"
+            except pkg_resources.DistributionNotFound:
+                color = "bold red"
+            except pkg_resources.VersionConflict as e:
+                current_version = e.dist.version
+                color = "red"
+                text = f"{dependency} (got {current_version})"
+        else:
+            color = "bold blue"
 
         tree.add(Text(text, color))
 

@@ -60,7 +60,7 @@ def get_current_revision():
 
 
 def print_launcher(config: DictConfig, resolve: bool = True):
-    tree = rich.tree.Tree(":desktop_computer:   SOFIA")
+    tree = rich.tree.Tree(":desktop_computer: SOFIA")
 
     config = OmegaConf.to_container(config)
 

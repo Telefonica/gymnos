@@ -71,7 +71,7 @@ def launch(launcher, job_overrides: Sequence[Sequence[str]], initial_job_idx: in
         model_meta_module = importlib.import_module("." + model_mod_name + ".__model__", model_lib_name)
 
         if sweep_config.verbose:
-            print_dependencies(getattr(model_meta_module, "dependencies", []))
+            print_dependencies(getattr(model_meta_module, "dependencies", []), autocolor=False)
 
         job_return = run_job(
             launch_job(args, launcher.project_name, launcher.ref, launcher.device),
