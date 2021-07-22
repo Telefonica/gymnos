@@ -1,0 +1,421 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Quick Start &mdash; gymnos  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/asciinema-player_2.6.1.css" type="text/css" />
+  <link rel="stylesheet" href="_static/asciinema-custom.css" type="text/css" />
+  <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/asciinema-player_2.6.1.js"></script>
+        <script src="_static/custom.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Dogs vs Cats" href="datasets/dogs_vs_cats.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> gymnos
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3-dev
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Get started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#using-gymnos">Using Gymnos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#model-dependencies">Model dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#training">Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#predicting">Predicting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#uploading-trained-model">Uploading trained model</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#using-gymnos-with-sofia">Using Gymnos with SOFIA</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#creating-model">Creating model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Predicting</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Datasets</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="datasets/dogs_vs_cats.html">Dogs vs Cats</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Vision</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="vision/image_classification/index.html">Image classification</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">CLI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cli/login.html">gymnos-login</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli/train.html">gymnos-train</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli/upload.html">gymnos-upload</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli/create.html">gymnos-create</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Launchers</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="launchers/sofia.html">SOFIA</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Experiments</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="experiments/classify_dogs_vs_cats.html">Classify dogs vs cats</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Services</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="services/sofia.html">SOFIA</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">gymnos</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Quick Start</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/quickstart.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="quick-start">
+<h1>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h1>
+<p>Gymnos has a collection of datasets and models to train and predict. It uses the <a class="reference external" href="https://hydra.cc">Hydra</a> framework to manage configuration for all of its trainings and MLFlow to track metrics and parameters.
+It’s extremely recommended to read the <a class="reference external" href="https://hydra.cc/docs/intro">Hydra documentation</a> and the <a class="reference external" href="https://www.mlflow.org/docs/latest/index.html">MLFlow documentation</a> before.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#using-gymnos" id="id3">Using Gymnos</a></p>
+<ul>
+<li><p><a class="reference internal" href="#model-dependencies" id="id4">Model dependencies</a></p></li>
+<li><p><a class="reference internal" href="#training" id="id5">Training</a></p></li>
+<li><p><a class="reference internal" href="#predicting" id="id6">Predicting</a></p></li>
+<li><p><a class="reference internal" href="#uploading-trained-model" id="id7">Uploading trained model</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#using-gymnos-with-sofia" id="id8">Using Gymnos with SOFIA</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id1" id="id9">Training</a></p></li>
+<li><p><a class="reference internal" href="#creating-model" id="id10">Creating model</a></p></li>
+<li><p><a class="reference internal" href="#id2" id="id11">Predicting</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="using-gymnos">
+<h2><a class="toc-backref" href="#id3">Using Gymnos</a><a class="headerlink" href="#using-gymnos" title="Permalink to this headline">¶</a></h2>
+<dl class="simple">
+<dt>In this section:</dt><dd><ul class="simple">
+<li><p>We will train a model for image classification,</p></li>
+<li><p>We will predict an image with the trained model</p></li>
+<li><p>We will upload the trained model to SOFIA</p></li>
+</ul>
+</dd>
+</dl>
+<p>Make sure you have been logged to SOFIA. This will only be needed the first time.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><style type="text/css">
+span.prompt1:before {
+  content: "$ ";
+}
+</style><span class="prompt1">gymnos-login</span>
+</pre></div></div><div class="section" id="model-dependencies">
+<h3><a class="toc-backref" href="#id4">Model dependencies</a><a class="headerlink" href="#model-dependencies" title="Permalink to this headline">¶</a></h3>
+<p>Each model will have their own dependencies, we will use the model <a class="reference internal" href="vision/image_classification/transfer_efficientnet.html#vision-image-classification-transfer-efficientnet"><span class="std std-ref">Transfer Efficientnet</span></a> so we need to install the <code class="docutils literal notranslate"><span class="pre">vision.image_classification.transfer_efficientnet</span></code> extra dependency.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">pip install gymnos<span class="o">[</span>vision.image_classification.transfer_efficientnet<span class="o">]</span></span>
+</pre></div></div></div>
+<div class="section" id="training">
+<h3><a class="toc-backref" href="#id5">Training</a><a class="headerlink" href="#training" title="Permalink to this headline">¶</a></h3>
+<p>First of all, we will train the model <a class="reference internal" href="vision/image_classification/transfer_efficientnet.html#vision-image-classification-transfer-efficientnet"><span class="std std-ref">Transfer Efficientnet</span></a> with the dataset <a class="reference internal" href="datasets/dogs_vs_cats.html#dogs-vs-cats"><span class="std std-ref">Dogs vs Cats</span></a> to classify dogs and cats images.</p>
+<p>We will use the command <code class="docutils literal notranslate"><span class="pre">gymnos-train</span></code> to do the training.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">gymnos-train <span class="nv">dataset</span><span class="o">=</span>dogs_vs_cats <span class="nv">trainer</span><span class="o">=</span>vision.image_classification.transfer_efficientnet trainer.classes<span class="o">=</span><span class="s2">&quot;[dog,cat]&quot;</span> trainer.num_epochs<span class="o">=</span><span class="m">1</span></span>
+</pre></div></div><p>Let’s split the command:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dataset=dogs_vs_cats</span></code>: we define the Gymnos dataset to use</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trainer=vision.image_classification.transfer_efficientnet</span></code>: we define the Gymnos trainer to use</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trainer.classes</span></code>: we customize the trainer parameter <code class="docutils literal notranslate"><span class="pre">classes</span></code>, refer to model <a class="reference internal" href="vision/image_classification/transfer_efficientnet.html#vision-image-classification-transfer-efficientnet"><span class="std std-ref">Transfer Efficientnet</span></a> documentation for full list of parameters</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trainer.num_epochs</span></code>: we customize the trainer parameter <code class="docutils literal notranslate"><span class="pre">num_epochs</span></code> to <code class="docutils literal notranslate"><span class="pre">1</span></code> to speed-up training</p></li>
+</ul>
+</div></blockquote>
+<p>While training, open MLFlow to visualize live metrics:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">mlflow ui</span>
+</pre></div></div></div>
+<div class="section" id="predicting">
+<h3><a class="toc-backref" href="#id6">Predicting</a><a class="headerlink" href="#predicting" title="Permalink to this headline">¶</a></h3>
+<p>Once training has finished, we will use the trained model to predict whether an image contains a dog or a cat.</p>
+<p>First of all, retrieve the Mlflow run ID from the training, either from the Mlflow dashboard or the training logs.</p>
+<p>Now we can predict an image using the trained model. Check the model <a class="reference internal" href="vision/image_classification/transfer_efficientnet.html#vision-image-classification-transfer-efficientnet-predictor"><span class="std std-ref">Predictor</span></a> to read the documentation about <code class="docutils literal notranslate"><span class="pre">predict</span></code> method.
+Each model will have their own parameters so make sure to check the documentation for each model.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gymnos.vision.image_classification.transfer_efficientnet</span> <span class="kn">import</span> <span class="n">TransferEfficientNetPredictor</span>
+
+<span class="n">predictor</span> <span class="o">=</span> <span class="n">TransferEfficientNetPredictor</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="o">&lt;</span><span class="n">MLFLOW_RUN_ID</span><span class="o">&gt;</span><span class="p">)</span>
+
+<span class="n">predictions</span> <span class="o">=</span> <span class="n">predictor</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="o">&lt;</span><span class="n">IMG_PATH</span><span class="o">&gt;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="uploading-trained-model">
+<h3><a class="toc-backref" href="#id7">Uploading trained model</a><a class="headerlink" href="#uploading-trained-model" title="Permalink to this headline">¶</a></h3>
+<p>Finally, we will upload the trained model to SOFIA platform.</p>
+<p>We will only need the Mlflow run ID from the training to upload the model.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">gymnos-upload &lt;MLFLOW_RUN_ID&gt;</span>
+</pre></div></div></div>
+</div>
+<div class="section" id="using-gymnos-with-sofia">
+<h2><a class="toc-backref" href="#id8">Using Gymnos with SOFIA</a><a class="headerlink" href="#using-gymnos-with-sofia" title="Permalink to this headline">¶</a></h2>
+<dl class="simple">
+<dt>In this section:</dt><dd><ul class="simple">
+<li><p>We will train a model for image classification using SOFIA platform</p></li>
+<li><p>We will create a SOFIA model from the training</p></li>
+<li><p>We will predict an image using the created model</p></li>
+</ul>
+</dd>
+</dl>
+<p>Make sure you have been logged to SOFIA. This will only be needed the first time.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">gymnos-login</span>
+</pre></div></div><div class="section" id="id1">
+<h3><a class="toc-backref" href="#id9">Training</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>We will use the command <code class="docutils literal notranslate"><span class="pre">gymnos-train</span></code> to do the training.</p>
+<p>We will also introduce the concept of experiment.
+An experiment is simply a YAML file that specifies the trainer and dataset, each one with their parameters.
+This is useful to avoid writing long commands and to have reproducible results.</p>
+<p>We will also introduce the concept of multirun that enable us to train with multiple configurations. Refer to <a class="reference external" href="https://hydra.cc/docs/next/tutorials/basic/running_your_app/multi-run/">Hydra Multi-Run</a> for more information.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">gymnos-train -m hydra/launcher<span class="o">=</span>sofia hydra.launcher.project_name<span class="o">=</span>&lt;SOFIA_PROJECT_NAME&gt; hydra.launcher.device<span class="o">=</span>GPU +experiment<span class="o">=</span>classify_dogs_vs_cats trainer.num_epochs<span class="o">=</span><span class="m">5</span>,10 trainer.num_workers<span class="o">=</span>-1</span>
+</pre></div></div><p>Let’s split the command:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-m</span></code>: this flag specifies we want to use multirun. Mandatory if we specify a <code class="docutils literal notranslate"><span class="pre">hydra/launcher</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hydra/launcher</span></code>: we define <code class="docutils literal notranslate"><span class="pre">sofia</span></code> as the launcher for our training.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hydra.launcher.project_name</span></code>: we define the SOFIA project name for our training. More information about parameters for SOFIA launcher at <a class="reference internal" href="launchers/sofia.html#sofia-launcher"><span class="std std-ref">SOFIA</span></a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hydra.launcher.device</span></code>: we want to use GPU for our training. We can also use <code class="docutils literal notranslate"><span class="pre">CPU</span></code> as the device</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">+experiment</span></code>: we define the experiment to use. The experiment will define both the training and dataset. The plus (<code class="docutils literal notranslate"><span class="pre">+</span></code>) symbol at the beginning is mandatory. More information about experiment at <a class="reference internal" href="experiments/classify_dogs_vs_cats.html#classify-dogs-vs-cats-experiment"><span class="std std-ref">Classify dogs vs cats</span></a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trainer.num_epochs</span></code>: we override the default value for trainer parameter <code class="docutils literal notranslate"><span class="pre">num_epochs</span></code> with two values. This will create two trainings on SOFIA, one training where <code class="docutils literal notranslate"><span class="pre">num_epochs</span></code> is equal to <code class="docutils literal notranslate"><span class="pre">5</span></code> and one training where <code class="docutils literal notranslate"><span class="pre">num_epochs</span></code> is <code class="docutils literal notranslate"><span class="pre">10</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trainer.num_workers</span></code>: we override the default value for trainer parameter <code class="docutils literal notranslate"><span class="pre">num_workers</span></code> to use all CPUs while loading the dataset.</p></li>
+</ul>
+</div></blockquote>
+<p>The trainining logs will have the link to the SOFIA job for each training.</p>
+<a class="reference internal image-reference" href="_images/sofia_job.png"><img alt="_images/sofia_job.png" src="_images/sofia_job.png" style="width: 100%;" /></a>
+<p>Here we can visualize system metrics, logs and live metrics with MLFlow.</p>
+</div>
+<div class="section" id="creating-model">
+<h3><a class="toc-backref" href="#id10">Creating model</a><a class="headerlink" href="#creating-model" title="Permalink to this headline">¶</a></h3>
+<p>Once training has finished, we can create a model. Click on <cite>New model</cite> button at the top right of the screen.</p>
+<a class="reference internal image-reference" href="_images/sofia_new_model.png"><img alt="_images/sofia_new_model.png" src="_images/sofia_new_model.png" style="width: 100%;" /></a>
+<p>Once form has been submitted, a model will be created.</p>
+<a class="reference internal image-reference" href="_images/sofia_model.png"><img alt="_images/sofia_model.png" src="_images/sofia_model.png" style="width: 100%;" /></a>
+</div>
+<div class="section" id="id2">
+<h3><a class="toc-backref" href="#id11">Predicting</a><a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>We will use the created model to predict whether an image contains a dog or a cat.</p>
+<p>First, we need to install dependencies for the model:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">pip install gymnos<span class="o">[</span>vision.image_classification.transfer_efficientnet<span class="o">]</span></span>
+</pre></div></div><p>Check the model <a class="reference internal" href="vision/image_classification/transfer_efficientnet.html#vision-image-classification-transfer-efficientnet-predictor"><span class="std std-ref">Predictor</span></a> to read the documentation about <code class="docutils literal notranslate"><span class="pre">predict</span></code> method.
+Predicting will be the same as before but instead of passing the MLFlow run ID as parameter for <code class="docutils literal notranslate"><span class="pre">from_pretrained</span></code> method, we will pass the SOFIA model (<cite>&lt;USERNAME&gt;/models/&lt;MODEL_NAME&gt;</cite>).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gymnos.vision.image_classification.transfer_efficientnet</span> <span class="kn">import</span> <span class="n">TransferEfficientNetPredictor</span>
+
+<span class="n">predictor</span> <span class="o">=</span> <span class="n">TransferEfficientNetPredictor</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="o">&lt;</span><span class="n">USERNAME</span><span class="o">&gt;/</span><span class="n">models</span><span class="o">/&lt;</span><span class="n">MODEL_NAME</span><span class="o">&gt;</span><span class="p">)</span>
+
+<span class="n">predictions</span> <span class="o">=</span> <span class="n">predictor</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="o">&lt;</span><span class="n">IMG_PATH</span><span class="o">&gt;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="datasets/dogs_vs_cats.html" class="btn btn-neutral float-right" title="Dogs vs Cats" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Telefonica.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    v: 0.2
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl>
+      <dt>Tags</dt>
+      <dd><a href="quickstart.html">0.2</a></dd>
+    </dl>
+    <dl>
+      <dt>Branches</dt>
+      <dd><a href="../master/quickstart.html">master</a></dd>
+    </dl>
+  </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
