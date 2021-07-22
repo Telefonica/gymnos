@@ -335,7 +335,7 @@ def dataset(name):
 
             # TODO: add custom parameters
 
-            _target_: str = field(init=False, default="gymnos.datasets.{name}.{classname}")
+            _target_: str = field(init=False, default="gymnos.datasets.{name}.dataset.{classname}")
     """) + "\n"
 
     dataset_template = inspect.cleandoc(f"""
