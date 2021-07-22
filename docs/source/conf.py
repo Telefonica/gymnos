@@ -4,9 +4,25 @@
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
+# -- Path setup --------------------------------------------------------------
+
+# If extensions (or modules to document with autodoc) are in another directory,
+# add these directories to sys.path here. If the directory is relative to the
+# documentation root, use os.path.abspath to make it absolute, like shown here.
+#
+# import os
+# import sys
+# sys.path.insert(0, os.path.abspath('.'))
+
+import os
+import sys
+import warnings
 import packaging.version
 
 from git import Repo
+from gymnos.__about__ import __version__
+
+sys.path.insert(0, os.path.abspath("_ext"))
 
 
 def get_stable_release():
@@ -24,24 +40,6 @@ def get_stable_release():
     max_release = max(releases)
 
     return str(max_release)
-
-# -- Path setup --------------------------------------------------------------
-
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
-#
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
-
-import os
-import sys
-import warnings
-
-from gymnos.__about__ import __version__
-
-sys.path.insert(0, os.path.abspath("_ext"))
 
 
 # -- Project information -----------------------------------------------------
