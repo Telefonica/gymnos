@@ -279,7 +279,7 @@ span.prompt1:before {
 <h3><a class="toc-backref" href="#id6">Predicting</a><a class="headerlink" href="#predicting" title="Permalink to this headline">¶</a></h3>
 <p>Once training has finished, we will use the trained model to predict whether an image contains a dog or a cat.</p>
 <p>First of all, retrieve the Mlflow run ID from the training, either from the Mlflow dashboard or the training logs.</p>
-<p>Now we can predict an image using the trained model. Check the model <a class="reference internal" href="vision/image_classification/transfer_efficientnet.html#vision-image-classification-transfer-efficientnet-predictor"><span class="std std-ref">Predictor</span></a> to read the documentation about <code class="docutils literal notranslate"><span class="pre">predict</span></code> method.
+<p>Now we can predict an image using the trained model. Check the <a class="reference internal" href="vision/image_classification/transfer_efficientnet.html#vision-image-classification-transfer-efficientnet-predictor"><span class="std std-ref">Predictor</span></a> to read the documentation about <code class="docutils literal notranslate"><span class="pre">predict</span></code> method.
 Each model will have their own parameters so make sure to check the documentation for each model.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gymnos.vision.image_classification.transfer_efficientnet</span> <span class="kn">import</span> <span class="n">TransferEfficientNetPredictor</span>
 
@@ -346,7 +346,7 @@ This is useful to avoid writing long commands and to have reproducible results.<
 <p>We will use the created model to predict whether an image contains a dog or a cat.</p>
 <p>First, we need to install dependencies for the model:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">pip install gymnos<span class="o">[</span>vision.image_classification.transfer_efficientnet<span class="o">]</span></span>
-</pre></div></div><p>Check the model <a class="reference internal" href="vision/image_classification/transfer_efficientnet.html#vision-image-classification-transfer-efficientnet-predictor"><span class="std std-ref">Predictor</span></a> to read the documentation about <code class="docutils literal notranslate"><span class="pre">predict</span></code> method.
+</pre></div></div><p>Check the <a class="reference internal" href="vision/image_classification/transfer_efficientnet.html#vision-image-classification-transfer-efficientnet-predictor"><span class="std std-ref">Predictor</span></a> to read the documentation about <code class="docutils literal notranslate"><span class="pre">predict</span></code> method.
 Predicting will be the same as before but instead of passing the MLFlow run ID as parameter for <code class="docutils literal notranslate"><span class="pre">from_pretrained</span></code> method, we will pass the SOFIA model (<cite>&lt;USERNAME&gt;/models/&lt;MODEL_NAME&gt;</cite>).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gymnos.vision.image_classification.transfer_efficientnet</span> <span class="kn">import</span> <span class="n">TransferEfficientNetPredictor</span>
 
