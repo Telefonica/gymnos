@@ -60,7 +60,7 @@ Once training has finished, we will use the trained model to predict whether an 
 
 First of all, retrieve the Mlflow run ID from the training, either from the Mlflow dashboard or the training logs.
 
-Now we can predict an image using the trained model. Check the model :ref:`vision.image_classification.transfer_efficientnet__predictor` to read the documentation about ``predict`` method.
+Now we can predict an image using the trained model. Check the :ref:`vision.image_classification.transfer_efficientnet__predictor` to read the documentation about ``predict`` method.
 Each model will have their own parameters so make sure to check the documentation for each model.
 
 .. code-block:: python
@@ -160,7 +160,7 @@ First, we need to install dependencies for the model:
     pip install gymnos[vision.image_classification.transfer_efficientnet]
 
 
-Check the model :ref:`vision.image_classification.transfer_efficientnet__predictor` to read the documentation about ``predict`` method.
+Check the :ref:`vision.image_classification.transfer_efficientnet__predictor` to read the documentation about ``predict`` method.
 Predicting will be the same as before but instead of passing the MLFlow run ID as parameter for ``from_pretrained`` method, we will pass the SOFIA model (`<USERNAME>/models/<MODEL_NAME>`).
 
 .. code-block:: python
