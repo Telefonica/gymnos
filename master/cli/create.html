@@ -105,6 +105,31 @@
 <p class="caption" role="heading"><span class="caption-text">Vision</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../vision/image_classification/index.html">Image classification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vision/misc/index.html">Miscellaneous</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Audio</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../audio/misc/index.html">Miscellaneous</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Generative</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../generative/misc/index.html">Miscellaneous</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tabular</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tabular/misc/index.html">Miscellaneous</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Natural Language Processing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../nlp/misc/index.html">Miscellaneous</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Unsupervised</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../unsupervised/misc/index.html">Miscellaneous</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reinforcement Learning</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../rl/misc/index.html">Miscellaneous</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">CLI</span></p>
 <ul class="current">
@@ -240,7 +265,8 @@
 <div class="section" id="gymnos-create-model">
 <h2>model<a class="headerlink" href="#gymnos-create-model" title="Permalink to this headline">¶</a></h2>
 <p>Create new model.</p>
-<p>The DOMAIN is the task solved by the model, e.g <code class="docutils literal notranslate"><span class="pre">vision/image_classification</span></code> or <code class="docutils literal notranslate"><span class="pre">text/question_answering</span></code>.</p>
+<p>The DOMAIN is the task solved by the model, it can be a main domain (e.g <code class="docutils literal notranslate"><span class="pre">audio</span></code>, <code class="docutils literal notranslate"><span class="pre">vision</span></code>) or
+a main domain with a subdomain (e.g <code class="docutils literal notranslate"><span class="pre">vision/image_classification</span></code>, <code class="docutils literal notranslate"><span class="pre">text/question_answering</span></code>).</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>gymnos-create model <span class="o">[</span>OPTIONS<span class="o">]</span> NAME DOMAIN
 </pre></div>
 </div>
