@@ -41,12 +41,14 @@ def _validate_name(ctx, param, value):
 def _validate_domain(ctx, param, value):
     subdomains = value.split("/")
 
-    if len(subdomains) != 2:
-        raise click.BadParameter("Must has the following structure: <DOMAIN>/<SUBDOMAIN>, "
-                                 "e.g vision/image_classification")
-
     if subdomains[0] not in MAIN_DOMAINS:
         raise click.BadParameter(f"Main domain must be one of the following: {', '.join(MAIN_DOMAINS)}")
+
+    if len(subdomains) == 1:
+        subdomains.append("misc")
+    elif len(subdomains) != 2:
+        raise click.BadParameter("Must has the following structure: <DOMAIN>/<SUBDOMAIN>, "
+                                 "e.g vision/image_classification")
 
     _only_letters_numbers_underscores(subdomains[1])
 
@@ -65,7 +67,8 @@ def model(name, domain):
     """
     Create new model.
 
-    The DOMAIN is the task solved by the model, e.g ``vision/image_classification`` or ``text/question_answering``.
+    The DOMAIN is the task solved by the model, it can be a main domain (e.g ``audio``, ``vision``) or
+    a main domain with a subdomain (e.g ``vision/image_classification``, ``text/question_answering``).
     """
     title = stringcase.titlecase(name)
     classname = stringcase.pascalcase(name)
