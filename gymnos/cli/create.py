@@ -22,7 +22,6 @@ MAIN_DOMAINS = [
     "nlp",
     "rl",
     "tabular",
-    "unsupervised"
 ]
 
 
