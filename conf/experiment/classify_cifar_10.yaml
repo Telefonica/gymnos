@@ -1,0 +1,25 @@
+# @package _global_
+# Classify CIFAR-10 using Transfer-EfficientNet
+
+defaults:
+    - override /trainer: vision.image_classification.transfer_efficientnet
+    - override /dataset: cifar_10
+
+trainer:
+    classes:
+        - airplane
+        - automobile
+        - bird
+        - cat
+        - deer
+        - dog
+        - frog
+        - horse
+        - ship
+        - truck
+    img_size: 32
+    num_epochs: 1
+    num_workers: -1
+    batch_size: 64
+
+dataset: {}
