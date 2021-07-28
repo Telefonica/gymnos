@@ -18,7 +18,7 @@ trainer:
         - ship
         - truck
     img_size: 32
-    num_epochs: 1
+    num_epochs: 15
     num_workers: -1
     batch_size: 64
 
