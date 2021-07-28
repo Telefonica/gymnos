@@ -71,7 +71,7 @@ class TransferEfficientNetTrainer(TransferEfficientNetHydraConf, BaseTrainer):
         )
 
     def setup(self, data_dir):
-        self.datamodule = TransferEfficientNetDataModule(data_dir, self.classes,
+        self.datamodule = TransferEfficientNetDataModule(data_dir, self.classes, self.img_size,
                                                          (self.train_split, self.val_split, self.test_split),
                                                          self.num_workers, self.batch_size)
 

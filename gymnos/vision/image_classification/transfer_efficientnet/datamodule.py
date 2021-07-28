@@ -16,7 +16,7 @@ from .utils import split_indices
 
 class TransferEfficientNetDataModule(pl.LightningDataModule):
 
-    def __init__(self, root: str, classes, split=(0.6, 0.2, 0.2), num_workers: int = 0, batch_size: int = 32,
+    def __init__(self, root: str, classes, img_size: int = 224, split=(0.6, 0.2, 0.2), num_workers: int = 0, batch_size: int = 32,
                  random_state: Optional[int] = None):
         super().__init__()
 
@@ -28,6 +28,7 @@ class TransferEfficientNetDataModule(pl.LightningDataModule):
         self.num_workers = num_workers
         self.batch_size = batch_size
         self.split = split
+        self.img_size = img_size
         self.random_state = random_state
 
         self._train_indices, self._val_indices, self._test_indices = None, None, None
@@ -40,7 +41,7 @@ class TransferEfficientNetDataModule(pl.LightningDataModule):
 
     def train_dataloader(self):
         transform = T.Compose([
-            T.Resize((224, 224), interpolation=T.InterpolationMode.BICUBIC),
+            T.Resize((self.img_size, self.img_size), interpolation=T.InterpolationMode.BICUBIC),
             T.RandomHorizontalFlip(),
             T.RandomRotation(20, interpolation=T.InterpolationMode.BILINEAR),
             T.ToTensor(),
@@ -52,7 +53,7 @@ class TransferEfficientNetDataModule(pl.LightningDataModule):
 
     def val_dataloader(self):
         transform = T.Compose([
-            T.Resize((224, 224), interpolation=T.InterpolationMode.BICUBIC),
+            T.Resize((self.img_size, self.img_size), interpolation=T.InterpolationMode.BICUBIC),
             T.ToTensor(),
             T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
@@ -62,7 +63,7 @@ class TransferEfficientNetDataModule(pl.LightningDataModule):
 
     def test_dataloader(self):
         transform = T.Compose([
-            T.Resize((224, 224), interpolation=T.InterpolationMode.BICUBIC),
+            T.Resize((self.img_size, self.img_size), interpolation=T.InterpolationMode.BICUBIC),
             T.ToTensor(),
             T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
