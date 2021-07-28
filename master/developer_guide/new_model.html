@@ -122,10 +122,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../nlp/misc/index.html">Miscellaneous</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Unsupervised</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../unsupervised/misc/index.html">Miscellaneous</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Reinforcement Learning</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../rl/misc/index.html">Miscellaneous</a></li>
@@ -494,7 +490,12 @@ e.g a <code class="docutils literal notranslate"><span class="pre">np.ndarray</s
 <h2>Running the model<a class="headerlink" href="#running-the-model" title="Permalink to this headline">¶</a></h2>
 <p>Once finished, you can run your model with Hydra using the command <code class="docutils literal notranslate"><span class="pre">gymnos-train</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">gymnos-train <span class="nv">trainer</span><span class="o">=</span>audio.audio_classification.my_model trainer.param_1<span class="o">=</span><span class="nb">false</span> trainer.param_2<span class="o">=</span><span class="s2">&quot;[dog,cat]&quot;</span></span>
+</pre></div></div><div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You can use <code class="docutils literal notranslate"><span class="pre">dataset=dummy</span></code> to check that your model is working properly, e.g:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">gymnos-train <span class="nv">trainer</span><span class="o">=</span>audio.audio_classification.my_model <span class="nv">dataset</span><span class="o">=</span>dummy</span>
 </pre></div></div></div>
+</div>
 <div class="section" id="documentation">
 <h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
 <p>Remember to check the <a class="reference internal" href="documentation.html#documentation"><span class="std std-ref">Documentation</span></a> for your new model</p>

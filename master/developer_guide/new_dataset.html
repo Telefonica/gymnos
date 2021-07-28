@@ -123,10 +123,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../nlp/misc/index.html">Miscellaneous</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Unsupervised</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../unsupervised/misc/index.html">Miscellaneous</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Reinforcement Learning</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../rl/misc/index.html">Miscellaneous</a></li>
@@ -340,7 +336,12 @@ span.prompt1:before {
 <h2>Running the dataset<a class="headerlink" href="#running-the-dataset" title="Permalink to this headline">¶</a></h2>
 <p>Once finished, you can run your dataset with Hydra using the command <code class="docutils literal notranslate"><span class="pre">gymnos-train</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">gymnos-train <span class="nv">dataset</span><span class="o">=</span>my_dataset dataset.param_1<span class="o">=</span><span class="s2">&quot;example string&quot;</span> dataset.param_2<span class="o">=</span><span class="m">5</span></span>
+</pre></div></div><div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You can use <code class="docutils literal notranslate"><span class="pre">trainer=dummy</span></code> to check that your dataset is working properly, e.g:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">gymnos-train <span class="nv">dataset</span><span class="o">=</span>my_dataset <span class="nv">trainer</span><span class="o">=</span>dummy</span>
 </pre></div></div></div>
+</div>
 <div class="section" id="documentation">
 <h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
 <p>Remember to check the <a class="reference internal" href="documentation.html#documentation"><span class="std std-ref">Documentation</span></a> for your new dataset</p>

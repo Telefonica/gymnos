@@ -112,6 +112,14 @@ Once finished, you can run your dataset with Hydra using the command ``gymnos-tr
 
     gymnos-train dataset=my_dataset dataset.param_1="example string" dataset.param_2=5
 
+.. tip::
+    You can use ``trainer=dummy`` to check that your dataset is working properly, e.g:
+
+    .. prompt:: bash
+
+        gymnos-train dataset=my_dataset trainer=dummy
+
+
 
 Documentation
 ---------------

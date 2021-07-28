@@ -276,6 +276,14 @@ Once finished, you can run your model with Hydra using the command ``gymnos-trai
 
     gymnos-train trainer=audio.audio_classification.my_model trainer.param_1=false trainer.param_2="[dog,cat]"
 
+.. tip::
+    You can use ``dataset=dummy`` to check that your model is working properly, e.g:
+
+    .. prompt:: bash
+
+        gymnos-train trainer=audio.audio_classification.my_model dataset=dummy
+
+
 
 Documentation
 ---------------

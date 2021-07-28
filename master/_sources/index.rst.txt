@@ -65,14 +65,6 @@ Gymnos
 
 .. toctree::
    :maxdepth: 2
-   :name: unsupervised
-   :caption: Unsupervised
-   :glob:
-
-   unsupervised/*/index
-
-.. toctree::
-   :maxdepth: 2
    :name: rl
    :caption: Reinforcement Learning
    :glob:
