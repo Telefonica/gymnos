@@ -130,7 +130,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../cli/login.html">gymnos-login</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cli/train.html">gymnos-train</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../cli/upload.html">gymnos-upload</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cli/create.html">gymnos-create</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Launchers</span></p>
@@ -152,7 +151,8 @@
 <li class="toctree-l1"><a class="reference internal" href="new_experiment.html">New experiment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="new_dataset.html">New dataset</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">New model</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#defining-dependencies">Defining dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-requirements">Defining requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-packages">Defining packages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#defining-the-public-api">Defining the public API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#adding-the-docstring">Adding the docstring</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#defining-the-trainer-parameters">Defining the trainer parameters</a></li>
@@ -260,15 +260,28 @@ span.prompt1:before {
 <li><p><code class="docutils literal notranslate"><span class="pre">hydra_conf</span></code>: Hydra configuration definition. Here we will define the parameters for the trainer</p></li>
 </ul>
 </div></blockquote>
-<div class="section" id="defining-dependencies">
-<h2>Defining dependencies<a class="headerlink" href="#defining-dependencies" title="Permalink to this headline">¶</a></h2>
-<p>You can add any dependency needed for your model by editing the <code class="docutils literal notranslate"><span class="pre">dependencies</span></code> variable in <code class="docutils literal notranslate"><span class="pre">__model__.py</span></code>:</p>
+<div class="section" id="defining-requirements">
+<h2>Defining requirements<a class="headerlink" href="#defining-requirements" title="Permalink to this headline">¶</a></h2>
+<p>You can add any dependency needed for your model by editing the <code class="docutils literal notranslate"><span class="pre">requirements</span></code> variable in <code class="docutils literal notranslate"><span class="pre">__model__.py</span></code>:</p>
 <div class="literal-block-wrapper docutils container" id="id3">
 <div class="code-block-caption"><span class="caption-text">__model__.py</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requirements</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;torch&quot;</span><span class="p">,</span>
     <span class="s2">&quot;torchaudio&quot;</span><span class="p">,</span>
     <span class="s2">&quot;scikit-learn&lt;1.0,</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="defining-packages">
+<h2>Defining packages<a class="headerlink" href="#defining-packages" title="Permalink to this headline">¶</a></h2>
+<p>You can add any <code class="docutils literal notranslate"><span class="pre">apt-get</span></code> package needed for your model by editing the <code class="docutils literal notranslate"><span class="pre">packages</span></code> variable in <code class="docutils literal notranslate"><span class="pre">__model__.py</span></code>.</p>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">__model__.py</span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">packages</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;ffmpeg&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;libsm6&quot;</span>
 <span class="p">]</span>
 </pre></div>
 </div>
@@ -292,8 +305,8 @@ span.prompt1:before {
 <div class="section" id="adding-the-docstring">
 <h2>Adding the docstring<a class="headerlink" href="#adding-the-docstring" title="Permalink to this headline">¶</a></h2>
 <p>First of all, we will modify the docstring for the module:</p>
-<div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-text">__init__.py</span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">__init__.py</span><a class="headerlink" href="#id5" title="Permalink to this code">¶</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Small description about the model</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -311,8 +324,8 @@ span.prompt1:before {
 <li><p>An optional list parameter named <code class="docutils literal notranslate"><span class="pre">param_2</span></code> with default value <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
 </ul>
 </div></blockquote>
-<div class="literal-block-wrapper docutils container" id="id5">
-<div class="code-block-caption"><span class="caption-text">hydra_conf.py</span><a class="headerlink" href="#id5" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">hydra_conf.py</span><a class="headerlink" href="#id6" title="Permalink to this code">¶</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
 
@@ -332,8 +345,8 @@ span.prompt1:before {
 <div class="section" id="implementing-the-trainer">
 <h2>Implementing the trainer<a class="headerlink" href="#implementing-the-trainer" title="Permalink to this headline">¶</a></h2>
 <p>First of all, we will write a class docstring explaining about the data structure expected by model and the class parameters.</p>
-<div class="literal-block-wrapper docutils container" id="id6">
-<div class="code-block-caption"><span class="caption-text">trainer.py</span><a class="headerlink" href="#id6" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">trainer.py</span><a class="headerlink" href="#id7" title="Permalink to this code">¶</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">MyModelTrainer</span><span class="p">(</span><span class="n">MyModelHydraConf</span><span class="p">,</span> <span class="n">BaseTrainer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
