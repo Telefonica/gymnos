@@ -78,7 +78,10 @@ def install_requirements(requirements):
     subprocess.check_call([sys.executable, "-m", "pip", "install", *requirements])
 
 
-def install_packages(packages):
+def install_packages_with_apt(packages):
+    if not packages:
+        return
+
     try:
         import apt
     except ModuleNotFoundError:
@@ -102,6 +105,18 @@ def install_packages(packages):
         pkg.mark_install()
 
     cache.commit()
+
+
+def install_packages_with_cli(packages, sudo=False):
+    if not packages:
+        return
+
+    command = ["apt-get", "install", "-y", *packages]
+
+    if sudo:
+        command.insert(0, "sudo")
+
+    subprocess.check_call(command)
 
 
 def print_install_requirements(lib, name):

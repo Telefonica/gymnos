@@ -22,8 +22,8 @@ from hydra_plugins.sofia_launcher import SOFIALauncherHydraConf
 
 from .utils import (print_requirements, iterate_config, get_missing_requirements, print_install_requirements,
                     iter_modules, find_predictors, find_model_module, find_dataset_module, print_config,
-                    print_packages, get_missing_packages, print_install_packages, install_packages,
-                    install_requirements)
+                    print_packages, get_missing_packages, print_install_packages, install_packages_with_apt,
+                    install_requirements, install_packages_with_cli)
 from ..config import get_gymnos_home
 from ..utils.py_utils import remove_prefix
 
@@ -46,6 +46,8 @@ for module in iter_modules("__dataset__.py"):
 
 def main(config: DictConfig):
     logger = logging.getLogger(__name__)
+
+    is_sofia_env = strtobool(os.getenv("SOFIA", "false"))
 
     logger.info(f"Outputs will be stored on: {os.getcwd()}")
 
@@ -82,7 +84,11 @@ def main(config: DictConfig):
                 print_install_packages(missing_packages)
 
     if config.install:
-        install_packages(packages)
+        if is_sofia_env:
+            install_packages_with_cli(packages, sudo=True)
+        else:
+            install_packages_with_apt(packages)
+
         install_requirements(dependencies)
 
     if "MLFLOW_TRACKING_URI" in os.environ:
@@ -120,7 +126,6 @@ def main(config: DictConfig):
 
         mlflow.log_artifact(".hydra")
 
-        is_sofia_env = strtobool(os.getenv("SOFIA", "false"))
         if is_sofia_env:
             print({
                 "sofia": True,
