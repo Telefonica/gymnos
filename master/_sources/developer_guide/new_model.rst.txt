@@ -19,29 +19,29 @@ This wil create the Python module ``gymnos/audio/audio_classification/my_model``
     - ``predictor``: predictor class. Here we will define the predictor.
     - ``hydra_conf``: Hydra configuration definition. Here we will define the parameters for the trainer
 
-Defining requirements
-----------------------
+Defining pip dependencies
+--------------------------
 
-You can add any dependency needed for your model by editing the ``requirements`` variable in ``__model__.py``:
+You can add any pip dependency needed for your model by editing the ``pip_dependencies`` variable in ``__model__.py``:
 
 .. code-block:: python
     :caption: __model__.py
 
-    requirements = [
+    pip_dependencies = [
         "torch",
         "torchaudio",
         "scikit-learn<1.0,
     ]
 
-Defining packages
------------------
+Defining apt dependencies
+---------------------------
 
-You can add any ``apt-get`` package needed for your model by editing the ``packages`` variable in ``__model__.py``.
+You can add any ``apt-get`` package needed for your model by editing the ``apt_dependencies`` variable in ``__model__.py``.
 
 .. code-block:: python
     :caption: __model__.py
 
-    packages = [
+    apt_dependencies = [
         "ffmpeg",
         "libsm6"
     ]
