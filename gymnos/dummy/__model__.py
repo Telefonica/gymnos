@@ -15,7 +15,9 @@ class DummyHydraConf:
 
 hydra_conf = DummyHydraConf
 
-dependencies = []
+requirements = []
+
+packages = []
 
 
 class DummyTrainer:
