@@ -122,12 +122,15 @@ def install_packages_with_cli(packages, sudo=False):
 def print_install_requirements(lib, name):
     pip_install_command = f"pip install {lib}\[{name}]"  # noqa
 
-    rich.print(Panel(f":floppy_disk: INSTALL\n{pip_install_command}"))
+    rich.print(Panel(f":floppy_disk: INSTALL PIP DEPENDENCIES\n{pip_install_command}"))
 
 
 def print_install_packages(packages):
+    if not packages:
+        return
+
     command = f"apt install {' '.join(packages)}"
-    rich.print(Panel(f":floppy_disk: INSTALL PACKAGES\n{command}"))
+    rich.print(Panel(f":floppy_disk: INSTALL APT DEPENDENCIES\n{command}"))
 
 
 def print_packages(packages, autocolor=True):
