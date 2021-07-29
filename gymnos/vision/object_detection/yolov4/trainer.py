@@ -474,16 +474,8 @@ class Yolov4Trainer(Yolov4HydraConf, BaseTrainer):
                         "train/loss_obj": loss_obj.item(),
                         "train/loss_cls": loss_cls.item(),
                         "train/loss_l2": loss_l2.item(),
-                        "lr": scheduler.get_last_lr() * self.batch_size,
+                        "lr": scheduler.get_last_lr()[0] * self.batch_size,
                     }, global_step)
-
-                    pbar.set_postfix(**{'loss (batch)': loss.item(), 'loss_xy': loss_xy.item(),
-                                        'loss_wh': loss_wh.item(),
-                                        'loss_obj': loss_obj.item(),
-                                        'loss_cls': loss_cls.item(),
-                                        'loss_l2': loss_l2.item(),
-                                        'lr': scheduler.get_last_lr() * self.batch_size
-                                        })
 
             pbar.write(f"Epoch: {epoch}\nStep: {global_step}\nTrain Loss: {epoch_loss}\n")
 
