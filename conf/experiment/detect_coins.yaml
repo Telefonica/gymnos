@@ -10,4 +10,9 @@ trainer:
         - 1yuan
         - 5jiao
         - 1jiao
+    use_darknet: false
+    num_epochs: 10
+    batch_size: 4
+    subdivisions: 1
+
 dataset: {}
