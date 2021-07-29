@@ -87,7 +87,7 @@ def install_packages(packages):
                           "Please install it manually")
         else:
             warnings.warn("We couldn't install packages. Packages are only for debian-based systems")
-            return
+        return
 
     cache = apt.Cache()
 
