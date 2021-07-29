@@ -14,5 +14,6 @@ trainer:
     num_epochs: 10
     batch_size: 4
     subdivisions: 1
+    num_workers: -1
 
 dataset: {}
