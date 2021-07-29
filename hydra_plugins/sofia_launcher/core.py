@@ -14,7 +14,7 @@ from posixpath import join as urljoin
 from gymnos.services.sofia import SOFIA
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.utils import JobReturn, run_job, configure_log
-from gymnos.cli.utils import print_config, find_model_module, print_dependencies
+from gymnos.cli.utils import print_config, find_model_module, print_requirements, print_packages
 
 from .hydra_conf import Device
 from .utils import print_launcher
@@ -71,7 +71,8 @@ def launch(launcher, job_overrides: Sequence[Sequence[str]], initial_job_idx: in
         model_meta_module = importlib.import_module("." + model_mod_name + ".__model__", model_lib_name)
 
         if sweep_config.verbose:
-            print_dependencies(getattr(model_meta_module, "dependencies", []), autocolor=False)
+            print_requirements(getattr(model_meta_module, "requirements", []), autocolor=False)
+            print_packages(getattr(model_meta_module, "packages", []), autocolor=False)
 
         job_return = run_job(
             launch_job(args, launcher.project_name, launcher.ref, launcher.device),
