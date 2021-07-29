@@ -90,6 +90,8 @@ def install_packages(packages):
         return
 
     cache = apt.Cache()
+    cache.update()
+    cache.open()
 
     for package_name in packages:
         pkg = cache[package_name]
@@ -142,7 +144,9 @@ def is_package_installed(package):
 
     cache = apt.Cache()
 
-    return cache[package].is_installed
+    pkg = cache.get(package)
+
+    return pkg is not None and pkg.is_installed
 
 
 def get_missing_packages(packages):
@@ -156,7 +160,9 @@ def get_missing_packages(packages):
     missing_packages = []
 
     for package in packages:
-        if not cache[package].is_installed:
+        pkg = cache.get(package)
+
+        if pkg is None or not pkg.is_installed:
             missing_packages.append(package)
 
     return missing_packages
