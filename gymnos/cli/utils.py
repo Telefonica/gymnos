@@ -6,12 +6,16 @@
 
 import os
 import ast
+import sys
 import glob
 import json
 import pkgutil
 import pathlib
 import importlib
+import warnings
+
 import rich.tree
+import subprocess
 import rich.syntax
 import pkg_resources
 
@@ -60,7 +64,7 @@ def print_config(
     rich.print(Panel(tree))
 
 
-def get_missing_dependencies(dependencies):
+def get_missing_requirements(dependencies):
     missing_dependencies = []
     for dependency in dependencies:
         try:
@@ -70,14 +74,117 @@ def get_missing_dependencies(dependencies):
     return missing_dependencies
 
 
-def print_install(lib, name):
+def install_requirements(requirements):
+    subprocess.check_call([sys.executable, "-m", "pip", "install", *requirements])
+
+
+def install_packages_with_apt(packages):
+    if not packages:
+        return
+
+    try:
+        import apt
+    except ModuleNotFoundError:
+        if sys.platform == "linux":
+            warnings.warn("We couldn't install packages. Package `python-apt` is not installed. "
+                          "Please install it manually")
+        else:
+            warnings.warn("We couldn't install packages. Packages are only for debian-based systems")
+        return
+
+    cache = apt.Cache()
+    cache.update()
+    cache.open()
+
+    for package_name in packages:
+        pkg = cache[package_name]
+
+        if pkg.is_installed:
+            continue
+
+        pkg.mark_install()
+
+    cache.commit()
+
+
+def install_packages_with_cli(packages, sudo=False):
+    if not packages:
+        return
+
+    command = ["apt-get", "install", "-y", *packages]
+
+    if sudo:
+        command.insert(0, "sudo")
+
+    subprocess.check_call(command)
+
+
+def print_install_requirements(lib, name):
     pip_install_command = f"pip install {lib}\[{name}]"  # noqa
 
     rich.print(Panel(f":floppy_disk: INSTALL\n{pip_install_command}"))
 
 
-def print_dependencies(dependencies, autocolor=True):
-    tree = rich.tree.Tree(":package: DEPENDENCIES")
+def print_install_packages(packages):
+    command = f"apt install {' '.join(packages)}"
+    rich.print(Panel(f":floppy_disk: INSTALL PACKAGES\n{command}"))
+
+
+def print_packages(packages, autocolor=True):
+    tree = rich.tree.Tree(":package: PACKAGES")
+    for package in packages:
+        text = package
+
+        if autocolor:
+            is_installed = is_package_installed(package)
+            if is_installed is None:
+                color = "bold blue"
+            elif is_installed:
+                color = "green"
+            else:
+                color = "bold red"
+        else:
+            color = "bold blue"
+
+        tree.add(Text(text, color))
+
+    rich.print(Panel(tree))
+
+
+def is_package_installed(package):
+    try:
+        import apt
+    except ModuleNotFoundError:
+        return None
+
+    cache = apt.Cache()
+
+    pkg = cache.get(package)
+
+    return pkg is not None and pkg.is_installed
+
+
+def get_missing_packages(packages):
+    try:
+        import apt
+    except ModuleNotFoundError:
+        return None
+
+    cache = apt.Cache()
+
+    missing_packages = []
+
+    for package in packages:
+        pkg = cache.get(package)
+
+        if pkg is None or not pkg.is_installed:
+            missing_packages.append(package)
+
+    return missing_packages
+
+
+def print_requirements(dependencies, autocolor=True):
+    tree = rich.tree.Tree(":package: REQUIREMENTS")
     for dependency in dependencies:
         text = dependency
 

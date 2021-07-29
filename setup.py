@@ -25,7 +25,7 @@ def parse_dependencies(filepath):
     dependencies = None
 
     for assign in assigns:
-        if assign.targets and isinstance(assign.value, ast.List) and assign.targets[0].id == "dependencies":
+        if assign.targets and isinstance(assign.value, ast.List) and assign.targets[0].id == "requirements":
             dependencies = []
             for elem in assign.value.elts:
                 if isinstance(elem, ast.Str):
@@ -72,7 +72,7 @@ def find_model_dependencies():
         for assign in assigns:
             if not assign.targets:
                 continue
-            if isinstance(assign.value, ast.List) and assign.targets[0].id == "dependencies":
+            if isinstance(assign.value, ast.List) and assign.targets[0].id == "requirements":
                 dependencies = []
                 for elem in assign.value.elts:
                     if isinstance(elem, ast.Str):

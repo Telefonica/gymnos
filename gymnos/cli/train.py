@@ -20,8 +20,10 @@ from hydra.core.config_store import ConfigStore
 from hydra.utils import instantiate, get_original_cwd
 from hydra_plugins.sofia_launcher import SOFIALauncherHydraConf
 
-from .utils import (print_config, print_dependencies, iterate_config, get_missing_dependencies, print_install,
-                    iter_modules, find_predictors, find_model_module, find_dataset_module)
+from .utils import (print_requirements, iterate_config, get_missing_requirements, print_install_requirements,
+                    iter_modules, find_predictors, find_model_module, find_dataset_module, print_config,
+                    print_packages, get_missing_packages, print_install_packages, install_packages_with_apt,
+                    install_requirements, install_packages_with_cli)
 from ..config import get_gymnos_home
 from ..utils.py_utils import remove_prefix
 
@@ -45,6 +47,8 @@ for module in iter_modules("__dataset__.py"):
 def main(config: DictConfig):
     logger = logging.getLogger(__name__)
 
+    is_sofia_env = strtobool(os.getenv("SOFIA", "false"))
+
     logger.info(f"Outputs will be stored on: {os.getcwd()}")
 
     if config.verbose:
@@ -58,19 +62,34 @@ def main(config: DictConfig):
 
     *_, dataset_name = dataset_module.__name__.split(".")
 
-    dependencies = getattr(model_meta_module, "dependencies", [])
+    packages = getattr(model_meta_module, "packages", [])
+    dependencies = getattr(model_meta_module, "requirements", [])
 
     if config.verbose:
-        print_dependencies(dependencies)
+        print_requirements(dependencies)
+        print_packages(packages)
 
-        missing_dependencies = get_missing_dependencies(dependencies)
+        missing_packages = get_missing_packages(packages)
+        missing_dependencies = get_missing_requirements(dependencies)
 
         if missing_dependencies:
-            logger.info("Some dependencies are missing")
-            print_install(model_lib_name, model_mod_name)
+            logger.info("Some requirements are missing")
+            print_install_requirements(model_lib_name, model_mod_name)
 
-    if config.dependencies.install:
-        subprocess.check_call([sys.executable, "-m", "pip", "install", *dependencies])
+        if sys.platform is "linux":
+            if missing_packages is None:
+                logger.warning("Package `python-apt` so we couln't retrieve installed packages")
+            elif missing_packages:
+                logger.info("Some packages are missing")
+                print_install_packages(missing_packages)
+
+    if config.install:
+        if is_sofia_env:
+            install_packages_with_cli(packages, sudo=True)
+        else:
+            install_packages_with_apt(packages)
+
+        install_requirements(dependencies)
 
     if "MLFLOW_TRACKING_URI" in os.environ:
         tracking_uri = os.environ["MLFLOW_TRACKING_URI"]
@@ -107,7 +126,6 @@ def main(config: DictConfig):
 
         mlflow.log_artifact(".hydra")
 
-        is_sofia_env = strtobool(os.getenv("SOFIA", "false"))
         if is_sofia_env:
             print({
                 "sofia": True,
