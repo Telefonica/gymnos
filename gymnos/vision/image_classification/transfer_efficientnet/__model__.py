@@ -9,7 +9,6 @@ from .hydra_conf import TransferEfficientNetHydraConf
 hydra_conf = TransferEfficientNetHydraConf
 
 requirements = [
-    "opencv-python",
     "numpy",
     "torch",
     "Pillow",
@@ -20,5 +19,4 @@ requirements = [
 ]
 
 packages = [
-    "libgl1-mesa-glx"
 ]
