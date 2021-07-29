@@ -71,8 +71,8 @@ def launch(launcher, job_overrides: Sequence[Sequence[str]], initial_job_idx: in
         model_meta_module = importlib.import_module("." + model_mod_name + ".__model__", model_lib_name)
 
         if sweep_config.verbose:
-            print_requirements(getattr(model_meta_module, "requirements", []), autocolor=False)
-            print_packages(getattr(model_meta_module, "packages", []), autocolor=False)
+            print_requirements(getattr(model_meta_module, "pip_dependencies", []), autocolor=False)
+            print_packages(getattr(model_meta_module, "apt_dependencies", []), autocolor=False)
 
         job_return = run_job(
             launch_job(args, launcher.project_name, launcher.ref, launcher.device),
