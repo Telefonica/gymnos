@@ -8,7 +8,7 @@ from .hydra_conf import TransferEfficientNetHydraConf
 
 hydra_conf = TransferEfficientNetHydraConf
 
-requirements = [
+pip_dependencies = [
     "numpy",
     "torch",
     "Pillow",
@@ -18,5 +18,5 @@ requirements = [
     "pytorch-lightning>=1.0.0"
 ]
 
-packages = [
+apt_dependencies = [
 ]

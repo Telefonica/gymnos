@@ -11,7 +11,6 @@ import mlflow
 import hydra
 import logging
 import importlib
-import subprocess
 
 from rich.panel import Panel
 from omegaconf import DictConfig
@@ -62,8 +61,8 @@ def main(config: DictConfig):
 
     *_, dataset_name = dataset_module.__name__.split(".")
 
-    packages = getattr(model_meta_module, "packages", [])
-    dependencies = getattr(model_meta_module, "requirements", [])
+    packages = getattr(model_meta_module, "apt_dependencies", [])
+    dependencies = getattr(model_meta_module, "pip_dependencies", [])
 
     if config.verbose:
         print_requirements(dependencies)
@@ -76,7 +75,7 @@ def main(config: DictConfig):
             logger.info("Some requirements are missing")
             print_install_requirements(model_lib_name, model_mod_name)
 
-        if sys.platform is "linux":
+        if sys.platform == "linux":
             if missing_packages is None:
                 logger.warning("Package `python-apt` so we couln't retrieve installed packages")
             elif missing_packages:

@@ -131,7 +131,7 @@ def print_install_packages(packages):
 
 
 def print_packages(packages, autocolor=True):
-    tree = rich.tree.Tree(":package: PACKAGES")
+    tree = rich.tree.Tree(":package: APT DEPENDENCIES")
     for package in packages:
         text = package
 
@@ -184,7 +184,7 @@ def get_missing_packages(packages):
 
 
 def print_requirements(dependencies, autocolor=True):
-    tree = rich.tree.Tree(":package: REQUIREMENTS")
+    tree = rich.tree.Tree(":package: PIP DEPENDENCIES")
     for dependency in dependencies:
         text = dependency
 

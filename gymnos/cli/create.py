@@ -97,9 +97,9 @@ def model(name, domain):
 
         hydra_conf = {hydra_conf_classname}
 
-        requirements = []  # Python requirements
-        
-        packages = []   # apt install packages
+        pip_dependencies = []
+
+        apt_dependencies = []
     """) + "\n"
 
     trainer_template = inspect.cleandoc(f"""

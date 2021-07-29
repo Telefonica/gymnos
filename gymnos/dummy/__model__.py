@@ -15,9 +15,9 @@ class DummyHydraConf:
 
 hydra_conf = DummyHydraConf
 
-requirements = []
+pip_dependencies = []
 
-packages = []
+apt_dependencies = []
 
 
 class DummyTrainer:
