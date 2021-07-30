@@ -68,6 +68,7 @@ class Yolov4HydraConf:
     config_file: DarknetConfigFile = DarknetConfigFile.YOLOV4
     cutmix: bool = False
     mosaic: bool = True
+    use_pretrained: bool = False
 
     _target_: str = field(init=False, repr=False, default="gymnos.vision.object_detection.yolov4."
                                                           "trainer.Yolov4Trainer")

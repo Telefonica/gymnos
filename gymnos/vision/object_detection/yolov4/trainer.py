@@ -3,39 +3,34 @@
 #   Trainer
 #
 #
-import inspect
-from dataclasses import dataclass
 
+import os
+import math
 import mlflow
+import torch
+import fastdl
 import atexit
 import shutil
-import tempfile
-
-from ....base import BaseTrainer
-from .hydra_conf import Yolov4HydraConf, Yolov4IouType, Yolov4OptimizerType
-
-import time
 import logging
-import os, sys, math
-import argparse
-from collections import deque
-import datetime
-
-import cv2
-from tqdm import tqdm
+import inspect
+import tempfile
 import numpy as np
-import torch
 import torch.nn as nn
-from torch.utils.data import DataLoader
+
+from tqdm import tqdm
 from torch import optim
+from dataclasses import dataclass
 from torch.nn import functional as F
 from multiprocessing import cpu_count
+from torch.utils.data import DataLoader
 
-from .dataset import YOLODataset
 from .models import Yolov4
+from ....base import BaseTrainer
+from .dataset import YOLODataset
+from ....config import get_gymnos_home
 from .tool.darknet2pytorch import Darknet
-
 from .tool.tv_reference.utils import collate_fn as val_collate
+from .hydra_conf import Yolov4HydraConf, Yolov4IouType, Yolov4OptimizerType
 
 
 def bboxes_iou(bboxes_a, bboxes_b, xyxy=True, GIoU=False, DIoU=False, CIoU=False):
@@ -295,6 +290,8 @@ class Yolov4Trainer(Yolov4HydraConf, BaseTrainer):
     """
 
     def __post_init__(self):
+        logger = logging.getLogger(__name__)
+
         if self.num_workers < 0:
             self.num_workers = cpu_count()
 
@@ -316,7 +313,16 @@ class Yolov4Trainer(Yolov4HydraConf, BaseTrainer):
         if self.use_darknet:
             self._model = Darknet(os.path.join(here, "cfg", self.config_file.value))
         else:
-            self._model = Yolov4(None, len(self.classes))  # FIXME
+            pretrained_path = None
+
+            if self.use_pretrained:
+                logging.info("Downloading pretrained model")
+                pretrained_path = fastdl.download(
+                    url="http://obiwan.hi.inet/public/gymnos/yolov4/yolov4.conv.137.pth",
+                    dir_prefix=os.path.join(get_gymnos_home(), "downloads", "yolov4")
+                )
+
+            self._model = Yolov4(pretrained_path, len(self.classes), inference=False)
 
         if self.gpus == 0 or not torch.cuda.is_available():
             self._device = torch.device("cpu")
@@ -480,6 +486,9 @@ class Yolov4Trainer(Yolov4HydraConf, BaseTrainer):
             pbar.write(f"Epoch: {epoch}\nSteps: {global_step}\nTrain Loss: {epoch_loss / len(train_loader):.2f}\n")
 
             mlflow.log_metric("epoch", epoch)
+
+        torch.save(self._model.state_dict(), "checkpoint.pth")
+        mlflow.log_artifact("checkpoint.pth")
 
     def test(self):
         test_dataset = YOLODataset(self._test_labels_fpath)
