@@ -264,6 +264,7 @@ class YOLODataset(Dataset):
         truth = {}
         with open(labels_path) as f:
             for line in f.readlines():
+                line = line.strip()
                 data = line.split(" ")
                 truth[data[0]] = []
                 for i in data[1:]:

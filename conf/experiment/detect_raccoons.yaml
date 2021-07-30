@@ -1,0 +1,14 @@
+# @package _global_
+# TODO: description about experiment
+
+defaults:
+    - override /trainer: vision.object_detection.yolov4
+    - override /dataset: raccoon_detection
+
+trainer:
+    classes:
+        - raccoon
+    subdivisions: 2
+    batch_size: 64
+
+dataset: {}

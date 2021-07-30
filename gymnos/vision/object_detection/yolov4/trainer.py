@@ -29,6 +29,7 @@ from ....base import BaseTrainer
 from .dataset import YOLODataset
 from ....config import get_gymnos_home
 from .tool.darknet2pytorch import Darknet
+from .utils import download_pretrained_model
 from .tool.tv_reference.utils import collate_fn as val_collate
 from .hydra_conf import Yolov4HydraConf, Yolov4IouType, Yolov4OptimizerType
 
@@ -317,10 +318,7 @@ class Yolov4Trainer(Yolov4HydraConf, BaseTrainer):
 
             if self.use_pretrained:
                 logging.info("Downloading pretrained model")
-                pretrained_path = fastdl.download(
-                    url="http://obiwan.hi.inet/public/gymnos/yolov4/yolov4.conv.137.pth",
-                    dir_prefix=os.path.join(get_gymnos_home(), "downloads", "yolov4")
-                )
+                pretrained_path = download_pretrained_model()
 
             self._model = Yolov4(pretrained_path, len(self.classes), inference=False)
 
@@ -403,7 +401,7 @@ class Yolov4Trainer(Yolov4HydraConf, BaseTrainer):
             Images size:        {self.width}
             Optimizer:          {self.optimizer.name}
             Dataset classes:    {self.classes}
-            Pretrained:
+            Pretrained:         {self.use_pretrained}
         '''))
 
         # learning rate setup
