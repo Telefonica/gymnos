@@ -477,7 +477,7 @@ class Yolov4Trainer(Yolov4HydraConf, BaseTrainer):
                         "lr": scheduler.get_last_lr()[0] * self.batch_size,
                     }, global_step)
 
-            pbar.write(f"Epoch: {epoch}\nStep: {global_step}\nTrain Loss: {epoch_loss}\n")
+            pbar.write(f"Epoch: {epoch}\nStep: {global_step}\nTrain Loss: {epoch_loss / len(train_loader):.2f}\n")
 
             mlflow.log_metric("epoch", epoch)
 
