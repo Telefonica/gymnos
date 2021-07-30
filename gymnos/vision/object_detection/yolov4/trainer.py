@@ -466,16 +466,15 @@ class Yolov4Trainer(Yolov4HydraConf, BaseTrainer):
                     scheduler.step()
                     optimizer.zero_grad()
 
-                if global_step % (self.log_interval_frequency * self.subdivisions) == 0:
-                    mlflow.log_metrics({
-                        "train/loss": loss.item(),
-                        "train/loss_xy": loss_xy.item(),
-                        "train/loss_wh": loss_wh.item(),
-                        "train/loss_obj": loss_obj.item(),
-                        "train/loss_cls": loss_cls.item(),
-                        "train/loss_l2": loss_l2.item(),
-                        "lr": scheduler.get_last_lr()[0] * self.batch_size,
-                    }, global_step)
+                mlflow.log_metrics({
+                    "train/loss": loss.item(),
+                    "train/loss_xy": loss_xy.item(),
+                    "train/loss_wh": loss_wh.item(),
+                    "train/loss_obj": loss_obj.item(),
+                    "train/loss_cls": loss_cls.item(),
+                    "train/loss_l2": loss_l2.item(),
+                    "lr": scheduler.get_last_lr()[0] * self.batch_size,
+                }, global_step)
 
             pbar.write(f"Epoch: {epoch}\nStep: {global_step}\nTrain Loss: {epoch_loss / len(train_loader):.2f}\n")
 
