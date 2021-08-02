@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>&lt;no title&gt; &mdash; gymnos  documentation</title>
+  <title>gymnos-upload &mdash; gymnos  documentation</title>
   
 
   
@@ -128,9 +128,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../rl/misc/index.html">Miscellaneous</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">CLI</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="login.html">gymnos-login</a></li>
 <li class="toctree-l1"><a class="reference internal" href="train.html">gymnos-train</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">gymnos-upload</a></li>
 <li class="toctree-l1"><a class="reference internal" href="create.html">gymnos-create</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Launchers</span></p>
@@ -200,7 +201,7 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>&lt;no title&gt;</li>
+      <li>gymnos-upload</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -219,7 +220,40 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  
+  <div class="section" id="gymnos-upload">
+<span id="gymnos-upload"></span><h1>gymnos-upload<a class="headerlink" href="#gymnos-upload" title="Permalink to this headline">¶</a></h1>
+<p>Create SOFIA model by uploading local Mlflow run ID</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>gymnos-upload <span class="o">[</span>OPTIONS<span class="o">]</span> MLFLOW_RUN_ID
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-gymnos-upload-name">
+<span class="sig-name descname"><span class="pre">--name</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;name&gt;</span></span><a class="headerlink" href="#cmdoption-gymnos-upload-name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name for SOFIA model</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-gymnos-upload-description">
+<span class="sig-name descname"><span class="pre">--description</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;description&gt;</span></span><a class="headerlink" href="#cmdoption-gymnos-upload-description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Description for SOFIA model</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-gymnos-upload-public">
+<span class="sig-name descname"><span class="pre">--public</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-gymnos-upload-public" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether or not SOFIA model is public</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-gymnos-upload-arg-MLFLOW_RUN_ID">
+<span id="cmdoption-gymnos-upload-arg-mlflow-run-id"></span><span class="sig-name descname"><span class="pre">MLFLOW_RUN_ID</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-gymnos-upload-arg-MLFLOW_RUN_ID" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</div>
+
 
            </div>
            

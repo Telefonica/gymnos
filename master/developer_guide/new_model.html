@@ -130,6 +130,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../cli/login.html">gymnos-login</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cli/train.html">gymnos-train</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/upload.html">gymnos-upload</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cli/create.html">gymnos-create</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Launchers</span></p>
@@ -465,6 +466,14 @@ You must implement two methods:</p>
     <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">artifacts_dir</span><span class="p">):</span>
         <span class="c1"># Load model from artifacts directory</span>
 </pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You can access the original config from the trainer with the <code class="docutils literal notranslate"><span class="pre">info</span></code> property:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">artifacts_dir</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">config</span>
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="predict">
