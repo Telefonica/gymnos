@@ -22,7 +22,7 @@ from posixpath import join as urljoin
 from ..services.sofia import SOFIA
 from ..utils.data_utils import zipdir
 from ..utils.mlflow_utils import jsonify_mlflow_run
-from .utils import (find_model_module, confirm_prompt, print_artifacts, print_install, print_dependencies,
+from .utils import (find_model_module, confirm_prompt, print_artifacts, print_install_requirements, print_requirements,
                     find_predictors)
 
 
@@ -87,9 +87,9 @@ def main(mlflow_run_id, name, description, public):
         rprint(Panel(f"{':unlocked:' if public else ':locked:'}{user['username']}/models/"
                      f"{name}\n{description or '[italic]No description available'}"))
 
-        print_install(model_lib_name, model_mod_name)
+        print_install_requirements(model_lib_name, model_mod_name)
 
-        print_dependencies(getattr(model_meta_module, "dependencies", []))
+        print_requirements(getattr(model_meta_module, "pip_dependencies", []))
 
         print_artifacts(artifacts_dir)
 
