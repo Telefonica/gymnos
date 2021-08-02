@@ -248,6 +248,14 @@ This method must implement the weight loading from the directory containing all 
             # Load model from artifacts directory
 
 
+.. tip::
+    You can access the original config from the trainer with the ``info`` property:
+
+    .. code-block:: python
+
+        def log(self, artifacts_dir):
+            self.info.trainer.config
+
 Predict
 ***********
 
