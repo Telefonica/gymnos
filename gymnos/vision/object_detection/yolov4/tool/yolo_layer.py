@@ -39,12 +39,12 @@ def yolo_forward(output, conf_thresh, num_classes, anchors, num_anchors, scale_x
     # Shape: [batch, num_anchors, H, W]
     det_confs = torch.cat(det_confs_list, dim=1)
     # Shape: [batch, num_anchors * H * W]
-    det_confs = det_confs.view(batch, num_anchors * H * W)
+    det_confs = det_confs.reshape(batch, num_anchors * H * W)
 
     # Shape: [batch, num_anchors * num_classes, H, W]
     cls_confs = torch.cat(cls_confs_list, dim=1)
     # Shape: [batch, num_anchors, num_classes, H * W]
-    cls_confs = cls_confs.view(batch, num_anchors, num_classes, H * W)
+    cls_confs = cls_confs.reshape(batch, num_anchors, num_classes, H * W)
     # Shape: [batch, num_anchors, num_classes, H * W] --> [batch, num_anchors * H * W, num_classes]
     cls_confs = cls_confs.permute(0, 1, 3, 2).reshape(batch, num_anchors * H * W, num_classes)
 
@@ -118,10 +118,10 @@ def yolo_forward(output, conf_thresh, num_classes, anchors, num_anchors, scale_x
     by_bh /= H
 
     # Shape: [batch, num_anchors * H * W, 1]
-    bx = bx_bw[:, :num_anchors].view(batch, num_anchors * H * W, 1)
-    by = by_bh[:, :num_anchors].view(batch, num_anchors * H * W, 1)
-    bw = bx_bw[:, num_anchors:].view(batch, num_anchors * H * W, 1)
-    bh = by_bh[:, num_anchors:].view(batch, num_anchors * H * W, 1)
+    bx = bx_bw[:, :num_anchors].reshape(batch, num_anchors * H * W, 1)
+    by = by_bh[:, :num_anchors].reshape(batch, num_anchors * H * W, 1)
+    bw = bx_bw[:, num_anchors:].reshape(batch, num_anchors * H * W, 1)
+    bh = by_bh[:, num_anchors:].reshape(batch, num_anchors * H * W, 1)
 
     bx1 = bx - bw * 0.5
     by1 = by - bh * 0.5
@@ -129,14 +129,14 @@ def yolo_forward(output, conf_thresh, num_classes, anchors, num_anchors, scale_x
     by2 = by1 + bh
 
     # Shape: [batch, num_anchors * h * w, 4] -> [batch, num_anchors * h * w, 1, 4]
-    boxes = torch.cat((bx1, by1, bx2, by2), dim=2).view(batch, num_anchors * H * W, 1, 4)
+    boxes = torch.cat((bx1, by1, bx2, by2), dim=2).reshape(batch, num_anchors * H * W, 1, 4)
     # boxes = boxes.repeat(1, 1, num_classes, 1)
 
     # boxes:     [batch, num_anchors * H * W, 1, 4]
     # cls_confs: [batch, num_anchors * H * W, num_classes]
     # det_confs: [batch, num_anchors * H * W]
 
-    det_confs = det_confs.view(batch, num_anchors * H * W, 1)
+    det_confs = det_confs.reshape(batch, num_anchors * H * W, 1)
     confs = cls_confs * det_confs
 
     # boxes: [batch, num_anchors * H * W, 1, 4]
@@ -261,10 +261,10 @@ def yolo_forward_dynamic(output, conf_thresh, num_classes, anchors, num_anchors,
     by_bh /= output.size(2)
 
     # Shape: [batch, num_anchors * H * W, 1]
-    bx = bx_bw[:, :num_anchors].view(output.size(0), num_anchors * output.size(2) * output.size(3), 1)
-    by = by_bh[:, :num_anchors].view(output.size(0), num_anchors * output.size(2) * output.size(3), 1)
-    bw = bx_bw[:, num_anchors:].view(output.size(0), num_anchors * output.size(2) * output.size(3), 1)
-    bh = by_bh[:, num_anchors:].view(output.size(0), num_anchors * output.size(2) * output.size(3), 1)
+    bx = bx_bw[:, :num_anchors].reshape(output.size(0), num_anchors * output.size(2) * output.size(3), 1)
+    by = by_bh[:, :num_anchors].reshape(output.size(0), num_anchors * output.size(2) * output.size(3), 1)
+    bw = bx_bw[:, num_anchors:].reshape(output.size(0), num_anchors * output.size(2) * output.size(3), 1)
+    bh = by_bh[:, num_anchors:].reshape(output.size(0), num_anchors * output.size(2) * output.size(3), 1)
 
     bx1 = bx - bw * 0.5
     by1 = by - bh * 0.5
@@ -272,14 +272,14 @@ def yolo_forward_dynamic(output, conf_thresh, num_classes, anchors, num_anchors,
     by2 = by1 + bh
 
     # Shape: [batch, num_anchors * h * w, 4] -> [batch, num_anchors * h * w, 1, 4]
-    boxes = torch.cat((bx1, by1, bx2, by2), dim=2).view(output.size(0), num_anchors * output.size(2) * output.size(3), 1, 4)
+    boxes = torch.cat((bx1, by1, bx2, by2), dim=2).reshape(output.size(0), num_anchors * output.size(2) * output.size(3), 1, 4)
     # boxes = boxes.repeat(1, 1, num_classes, 1)
 
     # boxes:     [batch, num_anchors * H * W, 1, 4]
     # cls_confs: [batch, num_anchors * H * W, num_classes]
     # det_confs: [batch, num_anchors * H * W]
 
-    det_confs = det_confs.view(output.size(0), num_anchors * output.size(2) * output.size(3), 1)
+    det_confs = det_confs.reshape(output.size(0), num_anchors * output.size(2) * output.size(3), 1)
     confs = cls_confs * det_confs
 
     # boxes: [batch, num_anchors * H * W, 1, 4]
