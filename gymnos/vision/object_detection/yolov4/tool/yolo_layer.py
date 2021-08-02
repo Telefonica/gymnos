@@ -182,12 +182,12 @@ def yolo_forward_dynamic(output, conf_thresh, num_classes, anchors, num_anchors,
     # Shape: [batch, num_anchors, H, W]
     det_confs = torch.cat(det_confs_list, dim=1)
     # Shape: [batch, num_anchors * H * W]
-    det_confs = det_confs.view(output.size(0), num_anchors * output.size(2) * output.size(3))
+    det_confs = det_confs.reshape(output.size(0), num_anchors * output.size(2) * output.size(3))
 
     # Shape: [batch, num_anchors * num_classes, H, W]
     cls_confs = torch.cat(cls_confs_list, dim=1)
     # Shape: [batch, num_anchors, num_classes, H * W]
-    cls_confs = cls_confs.view(output.size(0), num_anchors, num_classes, output.size(2) * output.size(3))
+    cls_confs = cls_confs.reshape(output.size(0), num_anchors, num_classes, output.size(2) * output.size(3))
     # Shape: [batch, num_anchors, num_classes, H * W] --> [batch, num_anchors * H * W, num_classes]
     cls_confs = cls_confs.permute(0, 1, 3, 2).reshape(output.size(0), num_anchors * output.size(2) * output.size(3), num_classes)
 
