@@ -320,9 +320,8 @@ class Neck(nn.Module):
 
 
 class Yolov4Head(nn.Module):
-    def __init__(self, output_ch, n_classes, inference=False):
+    def __init__(self, output_ch, n_classes):
         super().__init__()
-        self.inference = inference
 
         self.conv1 = Conv_Bn_Activation(128, 256, 3, 1, 'leaky')
         self.conv2 = Conv_Bn_Activation(256, output_ch, 1, 1, 'linear', bn=False, bias=True)
@@ -394,15 +393,14 @@ class Yolov4Head(nn.Module):
         x17 = self.conv17(x16)
         x18 = self.conv18(x17)
 
-        if self.inference:
+        if self.training:
+            return [x2, x10, x18]
+        else:
             y1 = self.yolo1(x2)
             y2 = self.yolo2(x10)
             y3 = self.yolo3(x18)
 
             return get_region_boxes([y1, y2, y3])
-
-        else:
-            return [x2, x10, x18]
 
 
 class Yolov4(nn.Module):
@@ -418,7 +416,7 @@ class Yolov4(nn.Module):
         self.down4 = DownSample4()
         self.down5 = DownSample5()
         # neck
-        self.neek = Neck(inference)
+        self.neek = Neck()
         # yolov4conv137
         if yolov4conv137weight:
             _model = nn.Sequential(self.down1, self.down2, self.down3, self.down4, self.down5, self.neek)
@@ -432,8 +430,7 @@ class Yolov4(nn.Module):
             _model.load_state_dict(model_dict)
 
         # head
-        self.head = Yolov4Head(output_ch, n_classes, inference)
-
+        self.head = Yolov4Head(output_ch, n_classes)
 
     def forward(self, input):
         d1 = self.down1(input)

@@ -10,11 +10,9 @@ trainer:
         - 1yuan
         - 5jiao
         - 1jiao
-    use_darknet: false
     num_epochs: 300
     batch_size: 4
     subdivisions: 1
-    num_workers: -1
     train_split: 0.8
     val_split: 0.1
     test_split: 0.1

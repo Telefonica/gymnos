@@ -14,11 +14,13 @@ import shutil
 import logging
 import inspect
 import tempfile
+import cv2 as cv
 import numpy as np
 import torch.nn as nn
 
 from tqdm import tqdm
 from torch import optim
+from jinja2 import Template
 from dataclasses import dataclass
 from torch.nn import functional as F
 from multiprocessing import cpu_count
@@ -27,9 +29,9 @@ from torch.utils.data import DataLoader
 from .models import Yolov4
 from ....base import BaseTrainer
 from .dataset import YOLODataset
-from ....config import get_gymnos_home
-from .tool.darknet2pytorch import Darknet
 from .utils import download_pretrained_model
+from .tool.tv_reference.coco_eval import CocoEvaluator
+from .tool.tv_reference.coco_utils import convert_to_coco_api
 from .tool.tv_reference.utils import collate_fn as val_collate
 from .hydra_conf import Yolov4HydraConf, Yolov4IouType, Yolov4OptimizerType
 
@@ -284,6 +286,57 @@ def collate(batch):
     return images, bboxes
 
 
+@torch.no_grad()
+def evaluate(model, data_loader, width, height, device):
+    coco = convert_to_coco_api(data_loader.dataset, bbox_fmt='coco')
+    coco_evaluator = CocoEvaluator(coco, iou_types=["bbox"], bbox_fmt='coco')
+
+    for images, targets in data_loader:
+        model_input = [[cv.resize(img, (width, height))] for img in images]
+        model_input = np.concatenate(model_input, axis=0)
+        model_input = model_input.transpose(0, 3, 1, 2)
+        model_input = torch.from_numpy(model_input).div(255.0)
+        model_input = model_input.to(device)
+        targets = [{k: v.to(device) for k, v in t.items()} for t in targets]
+
+        if torch.cuda.is_available():
+            torch.cuda.synchronize()
+
+        outputs = model(model_input)
+
+        res = {}
+        for img, target, boxes, confs in zip(images, targets, outputs[0], outputs[1]):
+            img_height, img_width = img.shape[:2]
+            boxes = boxes.squeeze(2).cpu().detach().numpy()
+            boxes[..., 2:] = boxes[..., 2:] - boxes[..., :2]  # Transform [x1, y1, x2, y2] to [x1, y1, w, h]
+            boxes[..., 0] = boxes[..., 0]*img_width
+            boxes[..., 1] = boxes[..., 1]*img_height
+            boxes[..., 2] = boxes[..., 2]*img_width
+            boxes[..., 3] = boxes[..., 3]*img_height
+            boxes = torch.as_tensor(boxes, dtype=torch.float32)
+            # confs = output[...,4:].copy()
+            confs = confs.cpu().detach().numpy()
+            labels = np.argmax(confs, axis=1).flatten()
+            labels = torch.as_tensor(labels, dtype=torch.int64)
+            scores = np.max(confs, axis=1).flatten()
+            scores = torch.as_tensor(scores, dtype=torch.float32)
+            res[target["image_id"].item()] = {
+                "boxes": boxes,
+                "scores": scores,
+                "labels": labels,
+            }
+        coco_evaluator.update(res)
+
+    # gather the stats from all processes
+    coco_evaluator.synchronize_between_processes()
+
+    # accumulate predictions from all images
+    coco_evaluator.accumulate()
+    coco_evaluator.summarize()
+
+    return coco_evaluator
+
+
 @dataclass
 class Yolov4Trainer(Yolov4HydraConf, BaseTrainer):
     """
@@ -291,8 +344,6 @@ class Yolov4Trainer(Yolov4HydraConf, BaseTrainer):
     """
 
     def __post_init__(self):
-        logger = logging.getLogger(__name__)
-
         if self.num_workers < 0:
             self.num_workers = cpu_count()
 
@@ -309,18 +360,13 @@ class Yolov4Trainer(Yolov4HydraConf, BaseTrainer):
             else:
                 raise ValueError("`mosaic` or `cutmix` must be True")
 
-        here = os.path.dirname(os.path.abspath(__file__))
+        pretrained_path = None
 
-        if self.use_darknet:
-            self._model = Darknet(os.path.join(here, "cfg", self.config_file.value))
-        else:
-            pretrained_path = None
+        if self.use_pretrained:
+            logging.info("Downloading pretrained model")
+            pretrained_path = download_pretrained_model()
 
-            if self.use_pretrained:
-                logging.info("Downloading pretrained model")
-                pretrained_path = download_pretrained_model()
-
-            self._model = Yolov4(pretrained_path, len(self.classes), inference=False)
+        self._model = Yolov4(pretrained_path, len(self.classes), inference=False)
 
         if self.gpus == 0 or not torch.cuda.is_available():
             self._device = torch.device("cpu")
@@ -333,8 +379,6 @@ class Yolov4Trainer(Yolov4HydraConf, BaseTrainer):
         self._model.to(self._device)
 
     def setup(self, root):
-        self._dataset_dir = root
-
         labels_fpath = os.path.join(root, "labels.txt")
         assert os.path.isfile(labels_fpath), "labels.txt not found"
 
@@ -358,6 +402,7 @@ class Yolov4Trainer(Yolov4HydraConf, BaseTrainer):
         tempfolder = tempfile.mkdtemp()
         atexit.register(shutil.rmtree, tempfolder)
 
+        self._dataset_dir = root
         self._train_labels_fpath = os.path.join(tempfolder, "train.txt")
         self._val_labels_fpath = os.path.join(tempfolder, "val.txt")
         self._test_labels_fpath = os.path.join(tempfolder, "test.txt")
@@ -385,10 +430,10 @@ class Yolov4Trainer(Yolov4HydraConf, BaseTrainer):
         samples_val = len(val_dataset)
 
         train_loader = DataLoader(train_dataset, batch_size=self.batch_size // self.subdivisions, shuffle=True,
-                                  num_workers=self.num_workers, pin_memory=True, drop_last=True, collate_fn=collate)
+                                  num_workers=self.num_workers, pin_memory=True, drop_last=False, collate_fn=collate)    # FIXME?: drop_last
 
         val_loader = DataLoader(val_dataset, batch_size=self.batch_size // self.subdivisions, shuffle=True,
-                                num_workers=self.num_workers, pin_memory=True, drop_last=True, collate_fn=val_collate)
+                                num_workers=self.num_workers, pin_memory=True, drop_last=False, collate_fn=val_collate)  # FIXME?: drop_last
 
         logger.info(inspect.cleandoc(f'''Starting training:
             Epochs:             {self.num_epochs}
@@ -438,11 +483,11 @@ class Yolov4Trainer(Yolov4HydraConf, BaseTrainer):
         criterion = YOLOLoss(len(self.classes), batch=self.batch_size // self.subdivisions, device=self._device,
                              n_anchors=self.num_anchors)
 
-        self._model.train()
-
         global_step = 0
 
         for epoch in range(self.num_epochs):
+            self._model.train()
+
             epoch_loss = 0
             epoch_step = 0
 
@@ -480,6 +525,26 @@ class Yolov4Trainer(Yolov4HydraConf, BaseTrainer):
                         "train/loss_l2": loss_l2.item(),
                         "lr": scheduler.get_last_lr()[0] * self.batch_size,
                     }, global_step)
+
+            self._model.eval()
+
+            val_evaluator = evaluate(self._model, val_loader, self.width, self.height, self._device)
+
+            stats = val_evaluator.coco_eval['bbox'].stats
+            mlflow.log_metrics({
+                "val/AP": stats[0],
+                "val/AP50": stats[1],
+                "val/AP75": stats[2],
+                "val/AP_small": stats[3],
+                "val/AP_medium": stats[4],
+                "val/AP_large": stats[5],
+                "val/AR1": stats[6],
+                "val/AR10": stats[7],
+                "val/AR100": stats[8],
+                "val/AR_small": stats[9],
+                "val/AR_medium": stats[10],
+                "val/AR_large": stats[11],
+            }, global_step)
 
             pbar.write(f"Epoch: {epoch}\nSteps: {global_step}\nTrain Loss: {epoch_loss / len(train_loader):.2f}\n")
 

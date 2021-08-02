@@ -1,9 +1,7 @@
 import json
-import tempfile
 
 import numpy as np
 import copy
-import time
 import torch
 import torch._six
 
@@ -76,7 +74,7 @@ class CocoEvaluator(object):
         for original_id, prediction in predictions.items():
             if len(prediction) == 0:
                 continue
-            
+
             if self.bbox_fmt == 'coco':
                 boxes = prediction["boxes"].tolist()
             else:

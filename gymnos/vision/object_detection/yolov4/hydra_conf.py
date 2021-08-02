@@ -36,7 +36,6 @@ class Yolov4HydraConf:
     classes: List[str]
     batch_size: int = 64
     subdivisions: int = 16
-    use_darknet: bool = False
     num_epochs: int = 300
     learning_rate: float = 0.001
     gpus: int = -1
