@@ -1,7 +1,9 @@
-from torch import nn
+import torch
 import torch.nn.functional as F
-from .tool.torch_utils import *
+
+from torch import nn
 from .tool.yolo_layer import YoloLayer
+from .tool.torch_utils import get_region_boxes
 
 
 class Mish(torch.nn.Module):
@@ -24,10 +26,11 @@ class Upsample(nn.Module):
         if self.training:
             return F.interpolate(x, size=(target_size[2], target_size[3]), mode='nearest')
         else:
-            return x.view(x.size(0), x.size(1), x.size(2), 1, x.size(3), 1).\
-                    expand(x.size(0), x.size(1), x.size(2), target_size[2] // x.size(2), x.size(3),
-                           target_size[3] // x.size(3)).contiguous().view(x.size(0), x.size(1), target_size[2],
-                                                                          target_size[3])
+            return x.view(x.size(0), x.size(1), x.size(2), 1,
+                          x.size(3), 1).expand(x.size(0), x.size(1), x.size(2), target_size[2] // x.size(2), x.size(3),
+                                               target_size[3] // x.size(3)).contiguous().view(x.size(0), x.size(1),
+                                                                                              target_size[2],
+                                                                                              target_size[3])
 
 
 class ConvBnActivation(nn.Module):
@@ -54,8 +57,8 @@ class ConvBnActivation(nn.Module):
             raise ValueError(f"Unknown activation: {activation}")
 
     def forward(self, x):
-        for l in self.conv:
-            x = l(x)
+        for mod in self.conv:
+            x = mod(x)
         return x
 
 
@@ -319,10 +322,9 @@ class Yolov4Head(nn.Module):
         self.conv1 = ConvBnActivation(128, 256, 3, 1, 'leaky')
         self.conv2 = ConvBnActivation(256, output_ch, 1, 1, 'linear', bn=False, bias=True)
 
-        self.yolo1 = YoloLayer(
-                                anchor_mask=[0, 1, 2], num_classes=n_classes,
-                                anchors=[12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401],
-                                num_anchors=9, stride=8)
+        self.yolo1 = YoloLayer(anchor_mask=[0, 1, 2], num_classes=n_classes,
+                               anchors=[12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401],
+                               num_anchors=9, stride=8)
 
         # R -4
         self.conv3 = ConvBnActivation(128, 256, 3, 2, 'leaky')
@@ -336,10 +338,9 @@ class Yolov4Head(nn.Module):
         self.conv9 = ConvBnActivation(256, 512, 3, 1, 'leaky')
         self.conv10 = ConvBnActivation(512, output_ch, 1, 1, 'linear', bn=False, bias=True)
 
-        self.yolo2 = YoloLayer(
-                                anchor_mask=[3, 4, 5], num_classes=n_classes,
-                                anchors=[12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401],
-                                num_anchors=9, stride=16)
+        self.yolo2 = YoloLayer(anchor_mask=[3, 4, 5], num_classes=n_classes,
+                               anchors=[12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401],
+                               num_anchors=9, stride=16)
 
         # R -4
         self.conv11 = ConvBnActivation(256, 512, 3, 2, 'leaky')
@@ -353,10 +354,9 @@ class Yolov4Head(nn.Module):
         self.conv17 = ConvBnActivation(512, 1024, 3, 1, 'leaky')
         self.conv18 = ConvBnActivation(1024, output_ch, 1, 1, 'linear', bn=False, bias=True)
 
-        self.yolo3 = YoloLayer(
-                                anchor_mask=[6, 7, 8], num_classes=n_classes,
-                                anchors=[12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401],
-                                num_anchors=9, stride=32)
+        self.yolo3 = YoloLayer(anchor_mask=[6, 7, 8], num_classes=n_classes,
+                               anchors=[12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401],
+                               num_anchors=9, stride=32)
 
     def forward(self, input1, input2, input3):
         x1 = self.conv1(input1)

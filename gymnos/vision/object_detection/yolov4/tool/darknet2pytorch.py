@@ -1,9 +1,12 @@
+import torch
+import numpy as np
 import torch.nn as nn
 import torch.nn.functional as F
-from .region_loss import RegionLoss
+
 from .yolo_layer import YoloLayer
-from .config import *
-from .torch_utils import *
+from .region_loss import RegionLoss
+from .torch_utils import get_region_boxes
+from .config import parse_cfg, print_cfg, load_conv, load_conv_bn, load_fc
 
 
 class Mish(torch.nn.Module):
@@ -48,9 +51,9 @@ class MaxPoolDark(nn.Module):
         return x
 
 
-class Upsample_expand(nn.Module):
+class UpsampleExpand(nn.Module):
     def __init__(self, stride=2):
-        super(Upsample_expand, self).__init__()
+        super(UpsampleExpand, self).__init__()
         self.stride = stride
 
     def forward(self, x):
@@ -63,9 +66,9 @@ class Upsample_expand(nn.Module):
         return x
 
 
-class Upsample_interpolate(nn.Module):
+class UpsampleInterpolate(nn.Module):
     def __init__(self, stride):
-        super(Upsample_interpolate, self).__init__()
+        super(UpsampleInterpolate, self).__init__()
         self.stride = stride
 
     def forward(self, x):
@@ -264,7 +267,7 @@ class Darknet(nn.Module):
                 elif activation == 'mish':
                     model.add_module('mish{0}'.format(conv_id), Mish())
                 else:
-                    print("convalution havn't activate {}".format(activation))
+                    print("Unknown activation: {}".format(activation))
 
                 prev_filters = filters
                 out_filters.append(prev_filters)
@@ -320,7 +323,7 @@ class Darknet(nn.Module):
                 prev_stride = prev_stride // stride
                 out_strides.append(prev_stride)
 
-                models.append(Upsample_expand(stride))
+                models.append(UpsampleExpand(stride))
                 # models.append(Upsample_interpolate(stride))
 
             elif block['type'] == 'route':
@@ -340,8 +343,8 @@ class Darknet(nn.Module):
                     prev_stride = out_strides[layers[0]]
                 elif len(layers) == 4:
                     assert (layers[0] == ind - 1)
-                    prev_filters = out_filters[layers[0]] + out_filters[layers[1]] + out_filters[layers[2]] + \
-                                   out_filters[layers[3]]
+                    prev_filters = (out_filters[layers[0]] + out_filters[layers[1]] + out_filters[layers[2]] +
+                                    out_filters[layers[3]])
                     prev_stride = out_strides[layers[0]]
                 else:
                     print("route error!!!")

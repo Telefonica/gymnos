@@ -1,8 +1,9 @@
 import math
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
-from .torch_utils import *
+from .torch_utils import bbox_ious, convert2cpu
 from .utils import bbox_iou
 
 
@@ -10,7 +11,6 @@ def build_targets(pred_boxes, target, anchors, num_anchors, num_classes, nH, nW,
                   sil_thresh, seen):
     nB = target.size(0)
     nA = num_anchors
-    nC = num_classes
     anchor_step = len(anchors) / num_anchors
     conf_mask = torch.ones(nB, nA, nH, nW) * noobject_scale
     coord_mask = torch.zeros(nB, nA, nH, nW)
@@ -120,7 +120,6 @@ class RegionLoss(nn.Module):
 
     def forward(self, output, target):
         # output : BxAs*(4+1+num_classes)*H*W
-        t0 = time.time()
         nB = output.data.size(0)
         nA = self.num_anchors
         nC = self.num_classes
@@ -135,7 +134,6 @@ class RegionLoss(nn.Module):
         conf = F.sigmoid(output.index_select(2, Variable(torch.cuda.LongTensor([4]))).view(nB, nA, nH, nW))
         cls = output.index_select(2, Variable(torch.linspace(5, 5 + nC - 1, nC).long().cuda()))
         cls = cls.view(nB * nA, nC, nH * nW).transpose(1, 2).contiguous().view(nB * nA * nH * nW, nC)
-        t1 = time.time()
 
         pred_boxes = torch.cuda.FloatTensor(4, nB * nA * nH * nW)
         grid_x = torch.linspace(0, nW - 1, nW).repeat(nH, 1).repeat(nB * nA, 1, 1).view(nB * nA * nH * nW).cuda()
@@ -149,19 +147,17 @@ class RegionLoss(nn.Module):
         pred_boxes[2] = torch.exp(w.data) * anchor_w
         pred_boxes[3] = torch.exp(h.data) * anchor_h
         pred_boxes = convert2cpu(pred_boxes.transpose(0, 1).contiguous().view(-1, 4))
-        t2 = time.time()
 
         nGT, nCorrect, coord_mask, conf_mask, cls_mask, tx, ty, tw, th, tconf, tcls = build_targets(pred_boxes,
                                                                                                     target.data,
                                                                                                     self.anchors, nA,
-                                                                                                    nC, \
+                                                                                                    nC,
                                                                                                     nH, nW,
                                                                                                     self.noobject_scale,
                                                                                                     self.object_scale,
                                                                                                     self.thresh,
                                                                                                     self.seen)
         cls_mask = (cls_mask == 1)
-        nProposals = int((conf > 0.25).sum().data[0])
 
         tx = Variable(tx.cuda())
         ty = Variable(ty.cuda())
@@ -174,8 +170,6 @@ class RegionLoss(nn.Module):
         conf_mask = Variable(conf_mask.cuda().sqrt())
         cls_mask = Variable(cls_mask.view(-1, 1).repeat(1, nC).cuda())
         cls = cls[cls_mask].view(-1, nC)
-
-        t3 = time.time()
 
         loss_x = self.coord_scale * nn.MSELoss(reduction='sum')(x * coord_mask, tx * coord_mask) / 2.0
         loss_y = self.coord_scale * nn.MSELoss(reduction='sum')(y * coord_mask, ty * coord_mask) / 2.0

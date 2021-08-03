@@ -69,10 +69,10 @@ def evaluate(model, data_loader, width, height, device):
             img_height, img_width = img.shape[:2]
             boxes = boxes.squeeze(2).cpu().detach().numpy()
             boxes[..., 2:] = boxes[..., 2:] - boxes[..., :2]  # Transform [x1, y1, x2, y2] to [x1, y1, w, h]
-            boxes[..., 0] = boxes[..., 0]*img_width
-            boxes[..., 1] = boxes[..., 1]*img_height
-            boxes[..., 2] = boxes[..., 2]*img_width
-            boxes[..., 3] = boxes[..., 3]*img_height
+            boxes[..., 0] = boxes[..., 0] * img_width
+            boxes[..., 1] = boxes[..., 1] * img_height
+            boxes[..., 2] = boxes[..., 2] * img_width
+            boxes[..., 3] = boxes[..., 3] * img_height
             boxes = torch.as_tensor(boxes, dtype=torch.float32)
             # confs = output[...,4:].copy()
             confs = confs.cpu().detach().numpy()
@@ -187,7 +187,7 @@ class Yolov4Trainer(Yolov4HydraConf, BaseTrainer):
         train_dataset = YOLODataset(self._train_labels_fpath, self._dataset_dir, self.mixup, self.letter_box,
                                     self.width, self.height, self.jitter, self.hue, self.saturation, self.exposure,
                                     self.flip, self.blur, self.gaussian, self.boxes, len(self.classes), train=True)
-        val_dataset = YOLODataset(self._val_labels_fpath,  self._dataset_dir, self.mixup, self.letter_box, self.width,
+        val_dataset = YOLODataset(self._val_labels_fpath, self._dataset_dir, self.mixup, self.letter_box, self.width,
                                   self.height, self.jitter, self.hue, self.saturation, self.exposure, self.flip,
                                   self.blur, self.gaussian, self.boxes, len(self.classes), train=False)
 

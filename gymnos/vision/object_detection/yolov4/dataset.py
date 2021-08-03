@@ -154,10 +154,10 @@ def image_data_augmentation(mat, w, h, pleft, ptop, swidth, sheight, flip, dhue,
                     width = b.w * sized.shape[1]
                     top = (b.y - b.h / 2.) * sized.shape[0]
                     height = b.h * sized.shape[0]
-                    roi(left, top, width, height)
-                    roi = roi & img_rect
-                    dst[roi[0]:roi[0] + roi[2], roi[1]:roi[1] + roi[3]] = sized[roi[0]:roi[0] + roi[2],
-                                                                          roi[1]:roi[1] + roi[3]]
+                    roi = [left, top, width, height]
+                    roi = rect_intersection(roi, img_rect)
+                    dst[roi[0]:roi[0] + roi[2], roi[1]:roi[1] + roi[3]] = (sized[roi[0]:roi[0] + roi[2],
+                                                                           roi[1]:roi[1] + roi[3]])
 
             sized = dst
 
@@ -167,7 +167,7 @@ def image_data_augmentation(mat, w, h, pleft, ptop, swidth, sheight, flip, dhue,
             gaussian_noise = max(gaussian_noise, 0)
             cv2.randn(noise, 0, gaussian_noise)  # mean and variance
             sized = sized + noise
-    except:
+    except:  # noqa
         print("OpenCV can't augment image: " + str(w) + " x " + str(h))
         sized = mat
 
@@ -239,11 +239,9 @@ class YOLODataset(Dataset):
         super().__init__()
 
         if mixup == 2:
-            print("cutmix=1 - isn't supported for Detector")
-            raise
+            raise ValueError("cutmix=1 - isn't supported for Detector")
         elif mixup == 2 and letter_box:
-            print("Combination: letter_box=1 & mosaic=1 - isn't supported, use only 1 of these parameters")
-            raise
+            raise ValueError("Combination: letter_box=1 & mosaic=1 - isn't supported, use only 1 of these parameters")
 
         self.train = train
         self.mixup = mixup
@@ -291,9 +289,7 @@ class YOLODataset(Dataset):
             cut_x = random.randint(int(self.width * min_offset), int(self.width * (1 - min_offset)))
             cut_y = random.randint(int(self.height * min_offset), int(self.height * (1 - min_offset)))
 
-        r1, r2, r3, r4, r_scale = 0, 0, 0, 0, 0
         dhue, dsat, dexp, flip, blur = 0, 0, 0, 0, 0
-        gaussian_noise = 0
 
         out_img = np.zeros([self.height, self.width, 3])
         out_bboxes = []
@@ -406,12 +402,12 @@ class YOLODataset(Dataset):
         num_objs = len(bboxes_with_cls_id)
         target = {}
         # boxes to coco format
-        boxes = bboxes_with_cls_id[...,:4]
+        boxes = bboxes_with_cls_id[..., :4]
         boxes[..., 2:] = boxes[..., 2:] - boxes[..., :2]  # box width, box height
         target['boxes'] = torch.as_tensor(boxes, dtype=torch.float32)
-        target['labels'] = torch.as_tensor(bboxes_with_cls_id[...,-1].flatten(), dtype=torch.int64)
+        target['labels'] = torch.as_tensor(bboxes_with_cls_id[..., -1].flatten(), dtype=torch.int64)
         target['image_id'] = torch.tensor([index])
-        target['area'] = (target['boxes'][:,3])*(target['boxes'][:,2])
+        target['area'] = (target['boxes'][:, 3]) * (target['boxes'][:, 2])
         target['iscrowd'] = torch.zeros((num_objs,), dtype=torch.int64)
         return img, target
 
@@ -434,4 +430,4 @@ def get_image_id(filename: str) -> int:
     lv, no = os.path.splitext(os.path.basename(filename))[0].split("_")
     lv = lv.replace("level", "")
     no = f"{int(no):04d}"
-    return int(lv+no)
+    return int(lv + no)

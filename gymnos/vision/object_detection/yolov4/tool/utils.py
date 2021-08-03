@@ -1,5 +1,4 @@
 import os
-import time
 import math
 import numpy as np
 import torch
@@ -208,7 +207,8 @@ def post_processing(output, conf_thresh, nms_thresh):
                 ll_max_id = ll_max_id[keep]
 
                 for k in range(ll_box_array.shape[0]):
-                    bboxes.append([ll_box_array[k, 0], ll_box_array[k, 1], ll_box_array[k, 2], ll_box_array[k, 3], ll_max_conf[k], ll_max_conf[k], ll_max_id[k]])
+                    bboxes.append([ll_box_array[k, 0], ll_box_array[k, 1], ll_box_array[k, 2], ll_box_array[k, 3],
+                                   ll_max_conf[k], ll_max_conf[k], ll_max_id[k]])
 
         bboxes_batch.append(bboxes)
 
@@ -247,8 +247,8 @@ def bboxes_iou(bboxes_a, bboxes_b, xyxy=True, GIoU=False, DIoU=False, CIoU=False
         con_tl = torch.min(bboxes_a[:, None, :2], bboxes_b[:, :2])
         con_br = torch.max(bboxes_a[:, None, 2:], bboxes_b[:, 2:])
         # centerpoint distance squared
-        rho2 = ((bboxes_a[:, None, 0] + bboxes_a[:, None, 2]) - (bboxes_b[:, 0] + bboxes_b[:, 2])) ** 2 / 4 + (
-                (bboxes_a[:, None, 1] + bboxes_a[:, None, 3]) - (bboxes_b[:, 1] + bboxes_b[:, 3])) ** 2 / 4
+        rho2 = ((bboxes_a[:, None, 0] + bboxes_a[:, None, 2]) - (bboxes_b[:, 0] + bboxes_b[:, 2])) ** 2 / 4 + \
+               ((bboxes_a[:, None, 1] + bboxes_a[:, None, 3]) - (bboxes_b[:, 1] + bboxes_b[:, 3])) ** 2 / 4
 
         w1 = bboxes_a[:, 2] - bboxes_a[:, 0]
         h1 = bboxes_a[:, 3] - bboxes_a[:, 1]

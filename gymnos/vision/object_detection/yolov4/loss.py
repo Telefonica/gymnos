@@ -27,7 +27,8 @@ class YOLOLoss(nn.Module):
         self.anch_masks = [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
         self.ignore_thre = 0.5
 
-        self.masked_anchors, self.ref_anchors, self.grid_x, self.grid_y, self.anchor_w, self.anchor_h = [], [], [], [], [], []
+        self.masked_anchors, self.ref_anchors, self.grid_x, self.grid_y, self.anchor_w, self.anchor_h = ([], [], [], [],
+                                                                                                         [], [])
 
         for i in range(3):
             all_anchors_grid = [(w / self.strides[i], h / self.strides[i]) for w, h in self.anchors]

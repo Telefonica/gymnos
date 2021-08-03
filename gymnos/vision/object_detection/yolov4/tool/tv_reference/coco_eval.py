@@ -164,7 +164,7 @@ def convert_to_xywh(boxes, fmt='voc'):
         return torch.stack((xmin, ymin, xmax - xmin, ymax - ymin), dim=1)
     elif fmt.lower() == 'yolo':
         xcen, ycen, w, h = boxes.unbind(1)
-        return torch.stack((xcen-w/2, ycen-h/2, w, h), dim=1)
+        return torch.stack((xcen - w / 2, ycen - h / 2, w, h), dim=1)
 
 
 def merge(img_ids, eval_imgs):
