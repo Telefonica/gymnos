@@ -1,0 +1,15 @@
+# @package _global_
+# Train YOLOv4 to detect raccoons
+
+defaults:
+    - override /trainer: vision.object_detection.yolov4
+    - override /dataset: raccoon_detection
+
+trainer:
+    classes:
+        - raccoon
+    subdivisions: 8
+    batch_size: 64
+    num_epochs: 3000
+
+dataset: {}
