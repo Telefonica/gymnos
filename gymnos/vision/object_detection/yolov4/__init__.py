@@ -1,5 +1,7 @@
 """
-TODO: Docstring for Yolov4
+Implementation for YOLOv4
+
+Paper: `arxiv.org/abs/2004.10934 <https://arxiv.org/abs/2004.10934>`_
 """
 
 from ....utils import lazy_import

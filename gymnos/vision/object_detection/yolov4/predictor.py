@@ -83,8 +83,9 @@ class Yolov4Predictor(BasePredictor):
         Returns
         -------
         predictions: List[Yolov4BBox]
-            List of bounding boxes with the following properties:
-            - ``bbox``: NumPy array in the following order x1, y, x2, y2
+            List of namedtuple with the following properties:
+
+            - ``bbox``: NumPy array in the following order x1, y1, x2, y2
             - ``bbox_score``: Bounding box confidence
             - ``cls_score``: Class confidence
             - ``cls_label``: Class label

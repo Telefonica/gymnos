@@ -100,7 +100,13 @@ def evaluate(model, data_loader, width, height, device):
 @dataclass
 class Yolov4Trainer(Yolov4HydraConf, BaseTrainer):
     """
-    TODO: docstring for trainer
+    It expects a ``labels.txt`` file with the following structure:
+
+    .. code-block::
+
+        image_path1 x1,y1,x2,y2,id x1,y1,x2,y2,id x1,y1,x2,y2,id ...
+        image_path2 x1,y1,x2,y2,id x1,y1,x2,y2,id x1,y1,x2,y2,id ...
+        ...
     """
 
     def __post_init__(self):
