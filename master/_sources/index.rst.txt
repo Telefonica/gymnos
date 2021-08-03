@@ -23,7 +23,7 @@ Gymnos
 
    datasets/*
 
-.. toctree::
+.. misctoctree::
    :maxdepth: 2
    :name: vision
    :caption: Vision
