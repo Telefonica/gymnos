@@ -1,3 +1,0 @@
-"""
-Miscellaneous vision models
-"""
