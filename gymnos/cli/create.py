@@ -217,7 +217,10 @@ def model(name, domain):
            :members:
     """) + "\n"
 
-    subdomain_title = stringcase.titlecase(domain[1])
+    if domain[1] == "misc":
+        subdomain_title = "Miscellaneous"
+    else:
+        subdomain_title = stringcase.titlecase(domain[1])
 
     docs_subdomain_template = inspect.cleandoc(f"""
         .. _{domain[0]}__{domain[1]}:

@@ -20,6 +20,7 @@ import warnings
 import packaging.version
 
 from git import Repo
+from sphinx.directives.other import TocTree
 
 sys.path.insert(0, os.path.abspath("_ext"))
 
@@ -117,3 +118,20 @@ sphinx_tabs_disable_tab_closing = True
 smv_tag_whitelist = r"^(?!0\.1.*).*"
 
 smv_branch_whitelist = "master"
+
+
+class MiscTocTree(TocTree):
+
+    def run(self):
+        rst = super().run()
+
+        for idx, (_, name) in enumerate(rst[0][0]['entries']):
+            if "/misc/" in name:
+                rst[0][0]['entries'].append(rst[0][0]['entries'].pop(idx))
+
+        return rst
+
+
+def setup(app):
+    # app.connect("doctree-resolved", reverse_toctree)
+    app.add_directive('misctoctree', MiscTocTree)
