@@ -19,6 +19,7 @@ from hydra.core.config_store import ConfigStore
 from hydra.utils import instantiate, get_original_cwd
 from hydra_plugins.sofia_launcher import SOFIALauncherHydraConf
 
+from ..dummy import DummyDataset
 from .utils import (print_requirements, iterate_config, get_missing_requirements, print_install_requirements,
                     iter_modules, find_predictors, find_model_module, find_dataset_module, print_config,
                     print_packages, get_missing_packages, print_install_packages, install_packages_with_apt,
@@ -39,7 +40,7 @@ for module in iter_modules("__model__.py"):
 
 # Register datasets for Hydra
 for module in iter_modules("__dataset__.py"):
-    modname = remove_prefix(module.__package__, "gymnos.datasets.")
+    *_, modname = module.__package__.split(".")
     cs.store(group="dataset", name=modname, node=getattr(module, "hydra_conf"))
 
 
@@ -140,10 +141,14 @@ def main(config: DictConfig):
         trainer = instantiate(config.trainer)
 
         if config.get("dataset") is not None:
-            data_dir = os.path.join(get_gymnos_home(), "datasets", dataset_name)
-            os.makedirs(data_dir, exist_ok=True)
-
             dataset = instantiate(config.dataset)
+
+            if isinstance(dataset, DummyDataset):
+                data_dir = dataset.path
+            else:
+                data_dir = os.path.join(get_gymnos_home(), "datasets", dataset_name)
+                os.makedirs(data_dir, exist_ok=True)
+
             dataset(data_dir)
             trainer.setup(data_dir)
 
