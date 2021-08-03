@@ -1,5 +1,5 @@
 # @package _global_
-# TODO: description about experiment
+# Train YOLOv4 to detect chinese coins
 
 defaults:
     - override /trainer: vision.object_detection.yolov4
