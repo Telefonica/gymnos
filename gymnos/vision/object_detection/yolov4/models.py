@@ -17,25 +17,20 @@ class Upsample(nn.Module):
     def __init__(self):
         super(Upsample, self).__init__()
 
-    def forward(self, x, target_size, inference=False):
+    def forward(self, x, target_size):
         assert (x.data.dim() == 4)
         # _, _, tH, tW = target_size
 
-        if inference:
-
-            #B = x.data.size(0)
-            #C = x.data.size(1)
-            #H = x.data.size(2)
-            #W = x.data.size(3)
-
-            return x.view(x.size(0), x.size(1), x.size(2), 1, x.size(3), 1).\
-                    expand(x.size(0), x.size(1), x.size(2), target_size[2] // x.size(2), x.size(3), target_size[3] // x.size(3)).\
-                    contiguous().view(x.size(0), x.size(1), target_size[2], target_size[3])
-        else:
+        if self.training:
             return F.interpolate(x, size=(target_size[2], target_size[3]), mode='nearest')
+        else:
+            return x.view(x.size(0), x.size(1), x.size(2), 1, x.size(3), 1).\
+                    expand(x.size(0), x.size(1), x.size(2), target_size[2] // x.size(2), x.size(3),
+                           target_size[3] // x.size(3)).contiguous().view(x.size(0), x.size(1), target_size[2],
+                                                                          target_size[3])
 
 
-class Conv_Bn_Activation(nn.Module):
+class ConvBnActivation(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size, stride, activation, bn=True, bias=False):
         super().__init__()
         pad = (kernel_size - 1) // 2
@@ -56,8 +51,7 @@ class Conv_Bn_Activation(nn.Module):
         elif activation == "linear":
             pass
         else:
-            print("activate error !!! {} {} {}".format(sys._getframe().f_code.co_filename,
-                                                       sys._getframe().f_code.co_name, sys._getframe().f_lineno))
+            raise ValueError(f"Unknown activation: {activation}")
 
     def forward(self, x):
         for l in self.conv:
@@ -81,8 +75,8 @@ class ResBlock(nn.Module):
         self.module_list = nn.ModuleList()
         for i in range(nblocks):
             resblock_one = nn.ModuleList()
-            resblock_one.append(Conv_Bn_Activation(ch, ch, 1, 1, 'mish'))
-            resblock_one.append(Conv_Bn_Activation(ch, ch, 3, 1, 'mish'))
+            resblock_one.append(ConvBnActivation(ch, ch, 1, 1, 'mish'))
+            resblock_one.append(ConvBnActivation(ch, ch, 3, 1, 'mish'))
             self.module_list.append(resblock_one)
 
     def forward(self, x):
@@ -97,24 +91,24 @@ class ResBlock(nn.Module):
 class DownSample1(nn.Module):
     def __init__(self):
         super().__init__()
-        self.conv1 = Conv_Bn_Activation(3, 32, 3, 1, 'mish')
+        self.conv1 = ConvBnActivation(3, 32, 3, 1, 'mish')
 
-        self.conv2 = Conv_Bn_Activation(32, 64, 3, 2, 'mish')
-        self.conv3 = Conv_Bn_Activation(64, 64, 1, 1, 'mish')
+        self.conv2 = ConvBnActivation(32, 64, 3, 2, 'mish')
+        self.conv3 = ConvBnActivation(64, 64, 1, 1, 'mish')
         # [route]
         # layers = -2
-        self.conv4 = Conv_Bn_Activation(64, 64, 1, 1, 'mish')
+        self.conv4 = ConvBnActivation(64, 64, 1, 1, 'mish')
 
-        self.conv5 = Conv_Bn_Activation(64, 32, 1, 1, 'mish')
-        self.conv6 = Conv_Bn_Activation(32, 64, 3, 1, 'mish')
+        self.conv5 = ConvBnActivation(64, 32, 1, 1, 'mish')
+        self.conv6 = ConvBnActivation(32, 64, 3, 1, 'mish')
         # [shortcut]
         # from=-3
         # activation = linear
 
-        self.conv7 = Conv_Bn_Activation(64, 64, 1, 1, 'mish')
+        self.conv7 = ConvBnActivation(64, 64, 1, 1, 'mish')
         # [route]
         # layers = -1, -7
-        self.conv8 = Conv_Bn_Activation(128, 64, 1, 1, 'mish')
+        self.conv8 = ConvBnActivation(128, 64, 1, 1, 'mish')
 
     def forward(self, input):
         x1 = self.conv1(input)
@@ -138,17 +132,17 @@ class DownSample1(nn.Module):
 class DownSample2(nn.Module):
     def __init__(self):
         super().__init__()
-        self.conv1 = Conv_Bn_Activation(64, 128, 3, 2, 'mish')
-        self.conv2 = Conv_Bn_Activation(128, 64, 1, 1, 'mish')
+        self.conv1 = ConvBnActivation(64, 128, 3, 2, 'mish')
+        self.conv2 = ConvBnActivation(128, 64, 1, 1, 'mish')
         # r -2
-        self.conv3 = Conv_Bn_Activation(128, 64, 1, 1, 'mish')
+        self.conv3 = ConvBnActivation(128, 64, 1, 1, 'mish')
 
         self.resblock = ResBlock(ch=64, nblocks=2)
 
         # s -3
-        self.conv4 = Conv_Bn_Activation(64, 64, 1, 1, 'mish')
+        self.conv4 = ConvBnActivation(64, 64, 1, 1, 'mish')
         # r -1 -10
-        self.conv5 = Conv_Bn_Activation(128, 128, 1, 1, 'mish')
+        self.conv5 = ConvBnActivation(128, 128, 1, 1, 'mish')
 
     def forward(self, input):
         x1 = self.conv1(input)
@@ -166,13 +160,13 @@ class DownSample2(nn.Module):
 class DownSample3(nn.Module):
     def __init__(self):
         super().__init__()
-        self.conv1 = Conv_Bn_Activation(128, 256, 3, 2, 'mish')
-        self.conv2 = Conv_Bn_Activation(256, 128, 1, 1, 'mish')
-        self.conv3 = Conv_Bn_Activation(256, 128, 1, 1, 'mish')
+        self.conv1 = ConvBnActivation(128, 256, 3, 2, 'mish')
+        self.conv2 = ConvBnActivation(256, 128, 1, 1, 'mish')
+        self.conv3 = ConvBnActivation(256, 128, 1, 1, 'mish')
 
         self.resblock = ResBlock(ch=128, nblocks=8)
-        self.conv4 = Conv_Bn_Activation(128, 128, 1, 1, 'mish')
-        self.conv5 = Conv_Bn_Activation(256, 256, 1, 1, 'mish')
+        self.conv4 = ConvBnActivation(128, 128, 1, 1, 'mish')
+        self.conv5 = ConvBnActivation(256, 256, 1, 1, 'mish')
 
     def forward(self, input):
         x1 = self.conv1(input)
@@ -190,13 +184,13 @@ class DownSample3(nn.Module):
 class DownSample4(nn.Module):
     def __init__(self):
         super().__init__()
-        self.conv1 = Conv_Bn_Activation(256, 512, 3, 2, 'mish')
-        self.conv2 = Conv_Bn_Activation(512, 256, 1, 1, 'mish')
-        self.conv3 = Conv_Bn_Activation(512, 256, 1, 1, 'mish')
+        self.conv1 = ConvBnActivation(256, 512, 3, 2, 'mish')
+        self.conv2 = ConvBnActivation(512, 256, 1, 1, 'mish')
+        self.conv3 = ConvBnActivation(512, 256, 1, 1, 'mish')
 
         self.resblock = ResBlock(ch=256, nblocks=8)
-        self.conv4 = Conv_Bn_Activation(256, 256, 1, 1, 'mish')
-        self.conv5 = Conv_Bn_Activation(512, 512, 1, 1, 'mish')
+        self.conv4 = ConvBnActivation(256, 256, 1, 1, 'mish')
+        self.conv5 = ConvBnActivation(512, 512, 1, 1, 'mish')
 
     def forward(self, input):
         x1 = self.conv1(input)
@@ -214,13 +208,13 @@ class DownSample4(nn.Module):
 class DownSample5(nn.Module):
     def __init__(self):
         super().__init__()
-        self.conv1 = Conv_Bn_Activation(512, 1024, 3, 2, 'mish')
-        self.conv2 = Conv_Bn_Activation(1024, 512, 1, 1, 'mish')
-        self.conv3 = Conv_Bn_Activation(1024, 512, 1, 1, 'mish')
+        self.conv1 = ConvBnActivation(512, 1024, 3, 2, 'mish')
+        self.conv2 = ConvBnActivation(1024, 512, 1, 1, 'mish')
+        self.conv3 = ConvBnActivation(1024, 512, 1, 1, 'mish')
 
         self.resblock = ResBlock(ch=512, nblocks=4)
-        self.conv4 = Conv_Bn_Activation(512, 512, 1, 1, 'mish')
-        self.conv5 = Conv_Bn_Activation(1024, 1024, 1, 1, 'mish')
+        self.conv4 = ConvBnActivation(512, 512, 1, 1, 'mish')
+        self.conv5 = ConvBnActivation(1024, 1024, 1, 1, 'mish')
 
     def forward(self, input):
         x1 = self.conv1(input)
@@ -236,13 +230,12 @@ class DownSample5(nn.Module):
 
 
 class Neck(nn.Module):
-    def __init__(self, inference=False):
+    def __init__(self):
         super().__init__()
-        self.inference = inference
 
-        self.conv1 = Conv_Bn_Activation(1024, 512, 1, 1, 'leaky')
-        self.conv2 = Conv_Bn_Activation(512, 1024, 3, 1, 'leaky')
-        self.conv3 = Conv_Bn_Activation(1024, 512, 1, 1, 'leaky')
+        self.conv1 = ConvBnActivation(1024, 512, 1, 1, 'leaky')
+        self.conv2 = ConvBnActivation(512, 1024, 3, 1, 'leaky')
+        self.conv3 = ConvBnActivation(1024, 512, 1, 1, 'leaky')
         # SPP
         self.maxpool1 = nn.MaxPool2d(kernel_size=5, stride=1, padding=5 // 2)
         self.maxpool2 = nn.MaxPool2d(kernel_size=9, stride=1, padding=9 // 2)
@@ -250,33 +243,33 @@ class Neck(nn.Module):
 
         # R -1 -3 -5 -6
         # SPP
-        self.conv4 = Conv_Bn_Activation(2048, 512, 1, 1, 'leaky')
-        self.conv5 = Conv_Bn_Activation(512, 1024, 3, 1, 'leaky')
-        self.conv6 = Conv_Bn_Activation(1024, 512, 1, 1, 'leaky')
-        self.conv7 = Conv_Bn_Activation(512, 256, 1, 1, 'leaky')
+        self.conv4 = ConvBnActivation(2048, 512, 1, 1, 'leaky')
+        self.conv5 = ConvBnActivation(512, 1024, 3, 1, 'leaky')
+        self.conv6 = ConvBnActivation(1024, 512, 1, 1, 'leaky')
+        self.conv7 = ConvBnActivation(512, 256, 1, 1, 'leaky')
         # UP
         self.upsample1 = Upsample()
         # R 85
-        self.conv8 = Conv_Bn_Activation(512, 256, 1, 1, 'leaky')
+        self.conv8 = ConvBnActivation(512, 256, 1, 1, 'leaky')
         # R -1 -3
-        self.conv9 = Conv_Bn_Activation(512, 256, 1, 1, 'leaky')
-        self.conv10 = Conv_Bn_Activation(256, 512, 3, 1, 'leaky')
-        self.conv11 = Conv_Bn_Activation(512, 256, 1, 1, 'leaky')
-        self.conv12 = Conv_Bn_Activation(256, 512, 3, 1, 'leaky')
-        self.conv13 = Conv_Bn_Activation(512, 256, 1, 1, 'leaky')
-        self.conv14 = Conv_Bn_Activation(256, 128, 1, 1, 'leaky')
+        self.conv9 = ConvBnActivation(512, 256, 1, 1, 'leaky')
+        self.conv10 = ConvBnActivation(256, 512, 3, 1, 'leaky')
+        self.conv11 = ConvBnActivation(512, 256, 1, 1, 'leaky')
+        self.conv12 = ConvBnActivation(256, 512, 3, 1, 'leaky')
+        self.conv13 = ConvBnActivation(512, 256, 1, 1, 'leaky')
+        self.conv14 = ConvBnActivation(256, 128, 1, 1, 'leaky')
         # UP
         self.upsample2 = Upsample()
         # R 54
-        self.conv15 = Conv_Bn_Activation(256, 128, 1, 1, 'leaky')
+        self.conv15 = ConvBnActivation(256, 128, 1, 1, 'leaky')
         # R -1 -3
-        self.conv16 = Conv_Bn_Activation(256, 128, 1, 1, 'leaky')
-        self.conv17 = Conv_Bn_Activation(128, 256, 3, 1, 'leaky')
-        self.conv18 = Conv_Bn_Activation(256, 128, 1, 1, 'leaky')
-        self.conv19 = Conv_Bn_Activation(128, 256, 3, 1, 'leaky')
-        self.conv20 = Conv_Bn_Activation(256, 128, 1, 1, 'leaky')
+        self.conv16 = ConvBnActivation(256, 128, 1, 1, 'leaky')
+        self.conv17 = ConvBnActivation(128, 256, 3, 1, 'leaky')
+        self.conv18 = ConvBnActivation(256, 128, 1, 1, 'leaky')
+        self.conv19 = ConvBnActivation(128, 256, 3, 1, 'leaky')
+        self.conv20 = ConvBnActivation(256, 128, 1, 1, 'leaky')
 
-    def forward(self, input, downsample4, downsample3, inference=False):
+    def forward(self, input, downsample4, downsample3):
         x1 = self.conv1(input)
         x2 = self.conv2(x1)
         x3 = self.conv3(x2)
@@ -291,7 +284,7 @@ class Neck(nn.Module):
         x6 = self.conv6(x5)
         x7 = self.conv7(x6)
         # UP
-        up = self.upsample1(x7, downsample4.size(), self.inference)
+        up = self.upsample1(x7, downsample4.size())
         # R 85
         x8 = self.conv8(downsample4)
         # R -1 -3
@@ -305,7 +298,7 @@ class Neck(nn.Module):
         x14 = self.conv14(x13)
 
         # UP
-        up = self.upsample2(x14, downsample3.size(), self.inference)
+        up = self.upsample2(x14, downsample3.size())
         # R 54
         x15 = self.conv15(downsample3)
         # R -1 -3
@@ -323,8 +316,8 @@ class Yolov4Head(nn.Module):
     def __init__(self, output_ch, n_classes):
         super().__init__()
 
-        self.conv1 = Conv_Bn_Activation(128, 256, 3, 1, 'leaky')
-        self.conv2 = Conv_Bn_Activation(256, output_ch, 1, 1, 'linear', bn=False, bias=True)
+        self.conv1 = ConvBnActivation(128, 256, 3, 1, 'leaky')
+        self.conv2 = ConvBnActivation(256, output_ch, 1, 1, 'linear', bn=False, bias=True)
 
         self.yolo1 = YoloLayer(
                                 anchor_mask=[0, 1, 2], num_classes=n_classes,
@@ -332,16 +325,16 @@ class Yolov4Head(nn.Module):
                                 num_anchors=9, stride=8)
 
         # R -4
-        self.conv3 = Conv_Bn_Activation(128, 256, 3, 2, 'leaky')
+        self.conv3 = ConvBnActivation(128, 256, 3, 2, 'leaky')
 
         # R -1 -16
-        self.conv4 = Conv_Bn_Activation(512, 256, 1, 1, 'leaky')
-        self.conv5 = Conv_Bn_Activation(256, 512, 3, 1, 'leaky')
-        self.conv6 = Conv_Bn_Activation(512, 256, 1, 1, 'leaky')
-        self.conv7 = Conv_Bn_Activation(256, 512, 3, 1, 'leaky')
-        self.conv8 = Conv_Bn_Activation(512, 256, 1, 1, 'leaky')
-        self.conv9 = Conv_Bn_Activation(256, 512, 3, 1, 'leaky')
-        self.conv10 = Conv_Bn_Activation(512, output_ch, 1, 1, 'linear', bn=False, bias=True)
+        self.conv4 = ConvBnActivation(512, 256, 1, 1, 'leaky')
+        self.conv5 = ConvBnActivation(256, 512, 3, 1, 'leaky')
+        self.conv6 = ConvBnActivation(512, 256, 1, 1, 'leaky')
+        self.conv7 = ConvBnActivation(256, 512, 3, 1, 'leaky')
+        self.conv8 = ConvBnActivation(512, 256, 1, 1, 'leaky')
+        self.conv9 = ConvBnActivation(256, 512, 3, 1, 'leaky')
+        self.conv10 = ConvBnActivation(512, output_ch, 1, 1, 'linear', bn=False, bias=True)
 
         self.yolo2 = YoloLayer(
                                 anchor_mask=[3, 4, 5], num_classes=n_classes,
@@ -349,16 +342,16 @@ class Yolov4Head(nn.Module):
                                 num_anchors=9, stride=16)
 
         # R -4
-        self.conv11 = Conv_Bn_Activation(256, 512, 3, 2, 'leaky')
+        self.conv11 = ConvBnActivation(256, 512, 3, 2, 'leaky')
 
         # R -1 -37
-        self.conv12 = Conv_Bn_Activation(1024, 512, 1, 1, 'leaky')
-        self.conv13 = Conv_Bn_Activation(512, 1024, 3, 1, 'leaky')
-        self.conv14 = Conv_Bn_Activation(1024, 512, 1, 1, 'leaky')
-        self.conv15 = Conv_Bn_Activation(512, 1024, 3, 1, 'leaky')
-        self.conv16 = Conv_Bn_Activation(1024, 512, 1, 1, 'leaky')
-        self.conv17 = Conv_Bn_Activation(512, 1024, 3, 1, 'leaky')
-        self.conv18 = Conv_Bn_Activation(1024, output_ch, 1, 1, 'linear', bn=False, bias=True)
+        self.conv12 = ConvBnActivation(1024, 512, 1, 1, 'leaky')
+        self.conv13 = ConvBnActivation(512, 1024, 3, 1, 'leaky')
+        self.conv14 = ConvBnActivation(1024, 512, 1, 1, 'leaky')
+        self.conv15 = ConvBnActivation(512, 1024, 3, 1, 'leaky')
+        self.conv16 = ConvBnActivation(1024, 512, 1, 1, 'leaky')
+        self.conv17 = ConvBnActivation(512, 1024, 3, 1, 'leaky')
+        self.conv18 = ConvBnActivation(1024, output_ch, 1, 1, 'linear', bn=False, bias=True)
 
         self.yolo3 = YoloLayer(
                                 anchor_mask=[6, 7, 8], num_classes=n_classes,
@@ -404,7 +397,7 @@ class Yolov4Head(nn.Module):
 
 
 class Yolov4(nn.Module):
-    def __init__(self, yolov4conv137weight=None, n_classes=80, inference=False):
+    def __init__(self, yolov4conv137weight=None, n_classes=80):
         super().__init__()
 
         output_ch = (4 + 1 + n_classes) * 3
@@ -443,63 +436,3 @@ class Yolov4(nn.Module):
 
         output = self.head(x20, x13, x6)
         return output
-
-
-if __name__ == "__main__":
-    import sys
-    import cv2
-
-    namesfile = None
-    if len(sys.argv) == 6:
-        n_classes = int(sys.argv[1])
-        weightfile = sys.argv[2]
-        imgfile = sys.argv[3]
-        height = int(sys.argv[4])
-        width = int(sys.argv[5])
-    elif len(sys.argv) == 7:
-        n_classes = int(sys.argv[1])
-        weightfile = sys.argv[2]
-        imgfile = sys.argv[3]
-        height = sys.argv[4]
-        width = int(sys.argv[5])
-        namesfile = int(sys.argv[6])
-    else:
-        print('Usage: ')
-        print('  python models.py num_classes weightfile imgfile namefile')
-
-    model = Yolov4(yolov4conv137weight=None, n_classes=n_classes, inference=True)
-
-    pretrained_dict = torch.load(weightfile, map_location=torch.device('cuda'))
-    model.load_state_dict(pretrained_dict)
-
-    use_cuda = True
-    if use_cuda:
-        model.cuda()
-
-    img = cv2.imread(imgfile)
-
-    # Inference input size is 416*416 does not mean training size is the same
-    # Training size could be 608*608 or even other sizes
-    # Optional inference sizes:
-    #   Hight in {320, 416, 512, 608, ... 320 + 96 * n}
-    #   Width in {320, 416, 512, 608, ... 320 + 96 * m}
-    sized = cv2.resize(img, (width, height))
-    sized = cv2.cvtColor(sized, cv2.COLOR_BGR2RGB)
-
-    from tool.utils import load_class_names, plot_boxes_cv2
-    from tool.torch_utils import do_detect
-
-    for i in range(2):  # This 'for' loop is for speed check
-                        # Because the first iteration is usually longer
-        boxes = do_detect(model, sized, 0.4, 0.6, use_cuda)
-
-    if namesfile == None:
-        if n_classes == 20:
-            namesfile = 'data/voc.names'
-        elif n_classes == 80:
-            namesfile = 'data/coco.names'
-        else:
-            print("please give namefile")
-
-    class_names = load_class_names(namesfile)
-    plot_boxes_cv2(img, boxes[0], 'predictions.jpg', class_names)

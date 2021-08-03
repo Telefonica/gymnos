@@ -15,21 +15,6 @@ class Yolov4OptimizerType(enum.Enum):
     SGD = "sgd"
 
 
-class Yolov4IouType(enum.Enum):
-    IOU = "iou"
-    GIOU = "giou"
-    DIOU = "diou"
-    CIOU = "ciou"
-
-
-class DarknetConfigFile(enum.Enum):
-    YOLOV3 = "yolov3.cfg"
-    YOLOV3_TINY = "yolov3-tiny.cfg"
-    YOLOV4 = "yolov4.cfg"
-    YOLOV4_CUSTOM = "yolov4-custom.cfg"
-    YOLOV4_TINY = "yolov4-tiny.cfg"
-
-
 @dataclass
 class Yolov4HydraConf:
 
@@ -39,9 +24,8 @@ class Yolov4HydraConf:
     num_epochs: int = 300
     learning_rate: float = 0.001
     gpus: int = -1
-    num_workers: int = -1
+    num_workers: int = 0
     optimizer: Yolov4OptimizerType = Yolov4OptimizerType.ADAM
-    iou_type: Yolov4IouType = Yolov4IouType.IOU
     log_interval_frequency: int = 20
     train_split: float = 0.6
     val_split: float = 0.2
@@ -64,7 +48,6 @@ class Yolov4HydraConf:
     gaussian: bool = False
     boxes: int = 60
     num_anchors: int = 3
-    config_file: DarknetConfigFile = DarknetConfigFile.YOLOV4
     cutmix: bool = False
     mosaic: bool = True
     use_pretrained: bool = False

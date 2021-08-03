@@ -11,10 +11,12 @@ hydra_conf = Yolov4HydraConf
 pip_dependencies = [
     "torch",
     "numpy",
-    "torchvision",
-    "opencv-python",
+    "Pillow",
     "Cython",
-    "pycocotools>=2.0.2"
+    "torchvision",
+    "bounding-box",
+    "opencv-python",
+    "pycocotools>=2.0.2",
 ]
 
 apt_dependencies = [

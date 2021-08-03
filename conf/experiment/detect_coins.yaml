@@ -10,7 +10,7 @@ trainer:
         - 1yuan
         - 5jiao
         - 1jiao
-    num_epochs: 300
+    num_epochs: 600
     batch_size: 4
     subdivisions: 1
     train_split: 0.8

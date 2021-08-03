@@ -339,19 +339,16 @@ class YOLODataset(Dataset):
                 img_ar = ow / oh
                 net_ar = self.width / self.height
                 result_ar = img_ar / net_ar
-                # print(" ow = %d, oh = %d, w = %d, h = %d, img_ar = %f, net_ar = %f, result_ar = %f \n", ow, oh, w, h, img_ar, net_ar, result_ar);
                 if result_ar > 1:  # sheight - should be increased
                     oh_tmp = ow / net_ar
                     delta_h = (oh_tmp - oh) / 2
                     ptop = ptop - delta_h
                     pbot = pbot - delta_h
-                    # print(" result_ar = %f, oh_tmp = %f, delta_h = %d, ptop = %f, pbot = %f \n", result_ar, oh_tmp, delta_h, ptop, pbot);
                 else:  # swidth - should be increased
                     ow_tmp = oh * net_ar
                     delta_w = (ow_tmp - ow) / 2
                     pleft = pleft - delta_w
                     pright = pright - delta_w
-                    # printf(" result_ar = %f, ow_tmp = %f, delta_w = %d, pleft = %f, pright = %f \n", result_ar, ow_tmp, delta_w, pleft, pright);
 
             swidth = ow - pleft - pright
             sheight = oh - ptop - pbot
@@ -419,7 +416,7 @@ class YOLODataset(Dataset):
         return img, target
 
 
-def get_image_id(filename:str) -> int:
+def get_image_id(filename: str) -> int:
     """
     Convert a string to a integer.
     Make sure that the images and the `image_id`s are in one-one correspondence.
@@ -438,18 +435,3 @@ def get_image_id(filename:str) -> int:
     lv = lv.replace("level", "")
     no = f"{int(no):04d}"
     return int(lv+no)
-
-
-if __name__ == "__main__":
-    from cfg import Cfg
-    import matplotlib.pyplot as plt
-
-    random.seed(2020)
-    np.random.seed(2020)
-    Cfg.dataset_dir = '/mnt/e/Dataset'
-    dataset = Yolo_dataset(Cfg.train_label, Cfg)
-    for i in range(100):
-        out_img, out_bboxes = dataset.__getitem__(i)
-        a = draw_box(out_img.copy(), out_bboxes.astype(np.int32))
-        plt.imshow(a.astype(np.int32))
-        plt.show()
