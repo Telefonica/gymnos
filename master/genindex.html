@@ -99,12 +99,15 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Datasets</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="datasets/coins_detection.html">Coins Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="datasets/dogs_vs_cats.html">Dogs vs Cats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets/raccoon_detection.html">Raccoon Detection</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Vision</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="vision/image_classification/index.html">Image classification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vision/misc/index.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vision/object_detection/index.html">Object Detection</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Audio</span></p>
 <ul>
@@ -140,6 +143,8 @@
 <p class="caption" role="heading"><span class="caption-text">Experiments</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="experiments/classify_dogs_vs_cats.html">Classify dogs vs cats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiments/detect_coins.html">Detect Coins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiments/detect_raccoons.html">Detect Raccoons</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Services</span></p>
 <ul>
@@ -222,11 +227,13 @@
 
 <div class="genindex-jumpbox">
  <a href="#Symbols"><strong>Symbols</strong></a>
+ | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
  | <a href="#P"><strong>P</strong></a>
+ | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
  
@@ -271,6 +278,14 @@
         <li><a href="cli/login.html#cmdoption-gymnos-login-username_or_email">gymnos-login command line option</a>
 </li>
       </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="C">C</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="datasets/coins_detection.html#gymnos.datasets.coins_detection.dataset.CoinsDetection">CoinsDetection (class in gymnos.datasets.coins_detection.dataset)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -348,13 +363,27 @@
         <li><a href="audio/misc/index.html#module-gymnos.audio.misc">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    gymnos.datasets.coins_detection
+
+      <ul>
+        <li><a href="datasets/coins_detection.html#module-gymnos.datasets.coins_detection">module</a>
+</li>
+      </ul></li>
       <li>
     gymnos.datasets.dogs_vs_cats
 
       <ul>
         <li><a href="datasets/dogs_vs_cats.html#module-gymnos.datasets.dogs_vs_cats">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    gymnos.datasets.raccoon_detection
+
+      <ul>
+        <li><a href="datasets/raccoon_detection.html#module-gymnos.datasets.raccoon_detection">module</a>
 </li>
       </ul></li>
       <li>
@@ -406,6 +435,20 @@
         <li><a href="vision/misc/index.html#module-gymnos.vision.misc">module</a>
 </li>
       </ul></li>
+      <li>
+    gymnos.vision.object_detection
+
+      <ul>
+        <li><a href="vision/object_detection/index.html#module-gymnos.vision.object_detection">module</a>
+</li>
+      </ul></li>
+      <li>
+    gymnos.vision.object_detection.yolov4
+
+      <ul>
+        <li><a href="vision/object_detection/yolov4.html#module-gymnos.vision.object_detection.yolov4">module</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -425,7 +468,11 @@
       <ul>
         <li><a href="audio/misc/index.html#module-gymnos.audio.misc">gymnos.audio.misc</a>
 </li>
+        <li><a href="datasets/coins_detection.html#module-gymnos.datasets.coins_detection">gymnos.datasets.coins_detection</a>
+</li>
         <li><a href="datasets/dogs_vs_cats.html#module-gymnos.datasets.dogs_vs_cats">gymnos.datasets.dogs_vs_cats</a>
+</li>
+        <li><a href="datasets/raccoon_detection.html#module-gymnos.datasets.raccoon_detection">gymnos.datasets.raccoon_detection</a>
 </li>
         <li><a href="generative/misc/index.html#module-gymnos.generative.misc">gymnos.generative.misc</a>
 </li>
@@ -440,6 +487,10 @@
         <li><a href="vision/image_classification/transfer_efficientnet.html#module-gymnos.vision.image_classification.transfer_efficientnet">gymnos.vision.image_classification.transfer_efficientnet</a>
 </li>
         <li><a href="vision/misc/index.html#module-gymnos.vision.misc">gymnos.vision.misc</a>
+</li>
+        <li><a href="vision/object_detection/index.html#module-gymnos.vision.object_detection">gymnos.vision.object_detection</a>
+</li>
+        <li><a href="vision/object_detection/yolov4.html#module-gymnos.vision.object_detection.yolov4">gymnos.vision.object_detection.yolov4</a>
 </li>
       </ul></li>
   </ul></td>
@@ -466,6 +517,14 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="vision/image_classification/transfer_efficientnet.html#gymnos.vision.image_classification.transfer_efficientnet.predictor.TransferEfficientNetPredictor.predict">predict() (TransferEfficientNetPredictor method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="datasets/raccoon_detection.html#gymnos.datasets.raccoon_detection.dataset.RaccoonDetection">RaccoonDetection (class in gymnos.datasets.raccoon_detection.dataset)</a>
 </li>
   </ul></td>
 </tr></table>
