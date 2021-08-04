@@ -8,6 +8,7 @@ import os
 import time
 import math
 
+import mlflow
 import torch
 import atexit
 import random
@@ -279,6 +280,8 @@ class Yolov5Trainer(Yolov5HydraConf, BaseTrainer):
                     f'Using {train_loader.num_workers} dataloader workers\n'
                     f'Starting training for {self.num_epochs} epochs...')
 
+        global_step = 0
+
         for epoch in range(start_epoch, self.num_epochs):
             model.train()
 
@@ -310,6 +313,8 @@ class Yolov5Trainer(Yolov5HydraConf, BaseTrainer):
             optimizer.zero_grad()
 
             for i, (imgs, targets, paths, _) in pbar:
+                global_step += 1
+
                 ni = i + nb * epoch  # number integrated batches (since train start)
                 imgs = imgs.to(self._device, non_blocking=True).float() / 255.0  # uint8 to float32, 0-255 to 0.0-1.0
 
@@ -361,6 +366,12 @@ class Yolov5Trainer(Yolov5HydraConf, BaseTrainer):
                     mem = f'{torch.cuda.memory_reserved() / 1E9 if torch.cuda.is_available() else 0:.3g}G'  # (GB)
                     pbar.set_description(('%10s' * 2 + '%10.4g' * 5) % (
                         f'{epoch}/{self.num_epochs - 1}', mem, *mloss, targets.shape[0], imgs.shape[-1]))
+
+                    mlflow.log_metrics({
+                        'train/box_loss': mloss[0],
+                        'train/obj_loss': mloss[1],
+                        'train/cls_loss': mloss[2]
+                    }, global_step)
 
             # Scheduler
             lr = [x['lr'] for x in optimizer.param_groups]  # for loggers
