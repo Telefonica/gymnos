@@ -111,7 +111,7 @@ html_js_files = [
 ]
 
 autodoc_mock_imports = ["tqdm", "numpy", "pandas", "torch", "torchvision", "pytorch_lightning", "torchmetrics",
-                        "efficientnet_pytorch", "PIL", "cv2", "tensorflow", "sklearn"]
+                        "efficientnet_pytorch", "PIL", "cv2", "tensorflow", "sklearn", "bounding_box", "pycocotools"]
 
 sphinx_tabs_disable_tab_closing = True
 
