@@ -70,9 +70,9 @@ class Yolov5Trainer(Yolov5HydraConf, BaseTrainer):
             if not torch.cuda.is_available() or self.gpus == 0:
                 yolo_device = "cpu"
             elif self.gpus < 0:
-                yolo_device = ",".join(range(torch.cuda.device_count()))
+                yolo_device = ",".join([str(gpu) for gpu in range(torch.cuda.device_count())])
             else:
-                yolo_device = ",".join(range(self.gpus))
+                yolo_device = ",".join([str(gpu) for gpu in range(self.gpus)])
         else:
             yolo_device = ",".join([str(gpu) for gpu in self.gpus])
 
