@@ -1,0 +1,14 @@
+# @package _global_
+# TODO: description about experiment
+
+defaults:
+    - override /trainer: vision.object_detection.yolov5
+    - override /dataset: coins_detection
+
+trainer:
+    classes:
+        - 1yuan
+        - 5jiao
+        - 1jiao
+
+dataset: {}
