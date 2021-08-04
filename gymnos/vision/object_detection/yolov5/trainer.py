@@ -50,7 +50,7 @@ WORLD_SIZE = int(os.getenv('WORLD_SIZE', 1))
 
 def download_pretrained(architecture: YOLOArchitecture) -> str:
     return fastdl.download(
-        url=f"http://obiwan.hi.inet/public/gymnos/yolov5/{architecture.value + '.pt'}",
+        url=f"http://obiwan.hi.inet/public/gymnos/yolov5/{architecture.value + '_state_dict.pt'}",
         dir_prefix=os.path.join(get_gymnos_home(), "downloads", "yolov5")
     )
 
@@ -159,11 +159,10 @@ class Yolov5Trainer(Yolov5HydraConf, BaseTrainer):
 
         if self.use_pretrained:
             weights_path = download_pretrained(self.architecture)
-            ckpt = torch.load(weights_path, map_location=self._device)
             model = Model(cfg_path, ch=3, nc=nc, anchors=self.anchors)
+            state_dict = torch.load(weights_path, map_location=self._device)
             exclude = ['anchor']
-            csd = ckpt['model'].float().state_dict()  # checkpoint state_dict as FP32
-            csd = intersect_dicts(csd, model.state_dict(), exclude=exclude)  # intersect
+            csd = intersect_dicts(state_dict, model.state_dict(), exclude=exclude)  # intersect
             model.load_state_dict(csd, strict=False)  # load
             logger.info(f'Transferred {len(csd)}/{len(model.state_dict())} items')  # report
         else:
