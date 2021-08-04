@@ -20,4 +20,6 @@ pip_dependencies = [
     "tqdm>=4.41.0"
 ]
 
-apt_dependencies = []
+apt_dependencies = [
+    "libgl1-mesa-glx"
+]
