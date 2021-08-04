@@ -377,5 +377,7 @@ class Yolov5Trainer(Yolov5HydraConf, BaseTrainer):
             lr = [x['lr'] for x in optimizer.param_groups]  # for loggers
             scheduler.step()
 
+            mlflow.log_metric("epoch", epoch, global_step)
+
     def test(self):
         pass   # OPTIONAL: test code
