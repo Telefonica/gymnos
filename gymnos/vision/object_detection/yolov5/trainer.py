@@ -24,6 +24,7 @@ from tqdm import tqdm
 from PIL import Image
 from pathlib import Path
 from torch.cuda import amp
+from multiprocessing import cpu_count
 from dataclasses import dataclass, asdict
 from torch.optim import Adam, SGD, lr_scheduler
 from torch.nn.parallel import DistributedDataParallel as DDP
@@ -60,6 +61,9 @@ class Yolov5Trainer(Yolov5HydraConf, BaseTrainer):
     """
 
     def __post_init__(self):
+        if self.num_workers < 0:
+            self.num_workers = cpu_count()
+
         assert self.train_split + self.val_split + self.test_split == 1.0
 
         if isinstance(self.gpus, int):
