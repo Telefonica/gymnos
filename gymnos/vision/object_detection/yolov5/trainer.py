@@ -368,9 +368,9 @@ class Yolov5Trainer(Yolov5HydraConf, BaseTrainer):
                         f'{epoch}/{self.num_epochs - 1}', mem, *mloss, targets.shape[0], imgs.shape[-1]))
 
                     mlflow.log_metrics({
-                        'train/box_loss': mloss[0],
-                        'train/obj_loss': mloss[1],
-                        'train/cls_loss': mloss[2]
+                        'train/box_loss': mloss[0].item(),
+                        'train/obj_loss': mloss[1].item(),
+                        'train/cls_loss': mloss[2].item()
                     }, global_step)
 
             # Scheduler
