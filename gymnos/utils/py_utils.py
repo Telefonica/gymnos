@@ -13,3 +13,7 @@ def remove_prefix(text, prefix):
 
 def remove_suffix(text, suffix):
     return text[:-len(suffix)] if text.endswith(suffix) and len(suffix) != 0 else text
+
+
+def lmap(*args, **kwargs):
+    return list(map(*args, **kwargs))
