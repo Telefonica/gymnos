@@ -378,5 +378,8 @@ class Yolov5Trainer(Yolov5HydraConf, BaseTrainer):
 
             mlflow.log_metric("epoch", epoch, global_step)
 
+        torch.save(model.state_dict(), "best.pt")
+        mlflow.log_artifact("best.pt")
+
     def test(self):
         pass   # OPTIONAL: test code
