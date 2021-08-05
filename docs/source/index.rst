@@ -105,6 +105,14 @@ Gymnos
    services/sofia
 
 .. toctree::
+    :maxdepth: 2
+    :name: utils
+    :caption: Utils
+    :glob:
+
+    utils/*
+
+.. toctree::
    :maxdepth: 1
    :name: developer_guide
    :caption: Developer Guide
