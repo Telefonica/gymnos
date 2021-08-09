@@ -39,7 +39,7 @@ class DogsVsCats(DogsVsCatsHydraConf, BaseDataset):
         Max workers for parallel downloads. Defaults to number of CPUs
     """
 
-    def __call__(self, root):
+    def download(self, root):
         logger = logging.getLogger(__name__)
 
         logger.info("Downloading ruben/datasets/dogs-vs-cats")

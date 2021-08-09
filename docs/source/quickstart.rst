@@ -32,7 +32,7 @@ Each model will have their own dependencies, we will use the model :ref:`vision.
 
 Training
 -----------
-First of all, we will train the model :ref:`vision.image_classification.transfer_efficientnet` with the dataset :ref:`dogs_vs_cats` to classify dogs and cats images.
+First of all, we will train the model :ref:`vision.image_classification.transfer_efficientnet` with the dataset :ref:`datasets.dogs_vs_cats` to classify dogs and cats images.
 
 We will use the command ``gymnos-train`` to do the training.
 

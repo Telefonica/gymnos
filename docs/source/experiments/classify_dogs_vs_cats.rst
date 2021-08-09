@@ -7,6 +7,13 @@ Classify dogs vs cats
     :lineno-start: 1
 
 
+.. experiment-install:: conf/experiment/classify_dogs_vs_cats.yaml
+
+
+Usage
+**********
+
+
 .. prompt:: bash
 
     gymnos-train +experiment=classify_dogs_vs_cats
@@ -24,4 +31,4 @@ Classify dogs vs cats
 
         .. autoyaml:: conf/experiment/classify_dogs_vs_cats.yaml
             :key: dataset
-            :caption: :ref:`{defaults[1].override /dataset}`
+            :caption: :ref:`datasets.{defaults[1].override /dataset}`

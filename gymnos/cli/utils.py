@@ -292,6 +292,22 @@ def find_dataset_module(dataset_target):
     return dataset_module
 
 
+def find_env_module(env_target):
+    lib_name, *mod_name, cls_name = env_target.split(".")
+    lib_dir = os.path.dirname(pkgutil.get_loader(lib_name).get_filename())
+    env_dir = find_file_parent_dir("__env__.py", cwd=os.path.join(lib_dir, *mod_name))
+
+    if env_dir is None:
+        raise FileNotFoundError(f"__env__.py not found for {env_target}")
+
+    env_dirpath = os.path.relpath(env_dir, lib_dir)
+    env_modname = env_dirpath.replace(os.path.sep, ".")
+
+    env_module = importlib.import_module("." + env_modname, lib_name)
+
+    return env_module
+
+
 def find_predictors(model_module):
     predictors = []
 
@@ -345,6 +361,9 @@ def find_file_parent_dir(fname, cwd) -> Optional[str]:
             found = True
         else:
             current_dir = os.path.dirname(current_dir)
+
+        if current_dir == os.path.sep:
+            break
 
     if not found:
         return None

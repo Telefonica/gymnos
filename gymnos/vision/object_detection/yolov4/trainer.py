@@ -143,7 +143,7 @@ class Yolov4Trainer(Yolov4HydraConf, BaseTrainer):
 
         self._model.to(self._device)
 
-    def setup(self, root):
+    def prepare_data(self, root):
         labels_fpath = os.path.join(root, "labels.txt")
         assert os.path.isfile(labels_fpath), "labels.txt not found"
 

@@ -70,6 +70,7 @@ extensions = [
     "sphinx_tabs.tabs",
     "sphinx_rtd_theme",
     "autoyaml",
+    "experiment_install",
     "sphinx_click",
     "sphinxcontrib.asciinema",
     "sphinx-prompt",

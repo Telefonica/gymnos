@@ -20,8 +20,12 @@ class DummyDatasetHydraConf:
 
 class DummyDataset(DummyDatasetHydraConf, BaseDataset):
 
-    def __call__(self, root):
+    def download(self, root):
         pass
 
 
 hydra_conf = DummyDatasetHydraConf
+
+pip_dependencies = []
+
+apt_dependencies = []

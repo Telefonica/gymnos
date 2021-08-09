@@ -99,7 +99,7 @@ class BasePredictor(metaclass=abc.ABCMeta):
 
 class BaseTrainer(metaclass=ABCMeta):
 
-    def setup(self, data_dir):
+    def prepare_data(self, data_dir):
         pass
 
     @abstractmethod
@@ -110,8 +110,21 @@ class BaseTrainer(metaclass=ABCMeta):
         raise NotImplementedError(f"Trainer {self.__class__.__name__} does not support test")
 
 
+class BaseRLTrainer(metaclass=ABCMeta):
+
+    def prepare_env(self, env_id):
+        pass
+
+    @abstractmethod
+    def train(self):
+        ...
+
+    def test(self):
+        raise NotImplementedError(f"RL Trainer {self.__class__.__name__} does not support test")
+
+
 class BaseDataset(metaclass=ABCMeta):
 
     @abstractmethod
-    def __call__(self, root):
+    def download(self, root):
         ...

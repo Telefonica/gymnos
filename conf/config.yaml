@@ -1,6 +1,7 @@
 defaults:
     - trainer: ???
-    - dataset: ???
+    - dataset: null
+    - env: null
 
 test: false
 

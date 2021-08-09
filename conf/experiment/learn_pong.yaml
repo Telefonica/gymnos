@@ -1,0 +1,12 @@
+# @package _global_
+# TODO: description about experiment
+
+defaults:
+    - override /trainer: rl.policy_optimization.a2c
+    - override /env: atari
+
+trainer: {}
+
+env:
+    id: PongNoFrameskip-v4
+    frame_stack: 10

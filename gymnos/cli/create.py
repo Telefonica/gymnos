@@ -121,8 +121,37 @@ def model(name, domain):
             TODO: docstring for trainer
             \"""
 
-            def setup(self, root):
+            def prepare_data(self, root):
                 pass   # OPTIONAL: do anything with your data
+
+            def train(self):
+                pass   # TODO: training code
+
+            def test(self):
+                pass   # OPTIONAL: test code
+    """) + "\n"
+
+    rl_trainer_template = inspect.cleandoc(f"""
+        #
+        #
+        #   Trainer
+        #
+        #
+
+        from dataclasses import dataclass
+
+        from ....base import BaseRLTrainer
+        from .hydra_conf import {hydra_conf_classname}
+
+
+        @dataclass
+        class {trainer_classname}({hydra_conf_classname}, BaseRLTrainer):
+            \"""
+            TODO: docstring for trainer
+            \"""
+
+            def prepare_env(self, env_id):
+                pass   # OPTIONAL: prepare environment, use gym.make(env_id) to create it
 
             def train(self):
                 pass   # TODO: training code
@@ -259,6 +288,7 @@ def model(name, domain):
     model_dir = os.path.join("gymnos", domain[0], domain[1], name)
 
     os.makedirs(model_dir)
+    os.makedirs(docs_dir, exist_ok=True)
 
     with open(os.path.join(docs_dir, name + ".rst"), "w") as fp:
         fp.write(docs_template)
@@ -270,7 +300,10 @@ def model(name, domain):
         fp.write(__model__template)
 
     with open(os.path.join(model_dir, "trainer.py"), "w") as fp:
-        fp.write(trainer_template)
+        if domain[0] == "rl":
+            fp.write(rl_trainer_template)
+        else:
+            fp.write(trainer_template)
 
     with open(os.path.join(model_dir, "predictor.py"), "w") as fp:
         fp.write(predictor_template)
@@ -324,6 +357,10 @@ def dataset(name):
         from .hydra_conf import {conf_classname}
 
         hydra_conf = {conf_classname}
+        
+        pip_dependencies = []
+        
+        apt_dependencies = []
     """) + "\n"
 
     hydra_conf_template = inspect.cleandoc(f"""
@@ -341,7 +378,7 @@ def dataset(name):
 
             # TODO: add custom parameters
 
-            _target_: str = field(init=False, default="gymnos.datasets.{name}.dataset.{classname}")
+            _target_: str = field(init=False, repr=False, default="gymnos.datasets.{name}.dataset.{classname}")
     """) + "\n"
 
     dataset_template = inspect.cleandoc(f"""
@@ -367,21 +404,28 @@ def dataset(name):
             TODO: description of each parameter
             \"""
 
-            def __call__(self, root):
+            def download(self, root):
                 pass  # TODO: save dataset files to `root`
     """) + "\n"
 
     docs_template = inspect.cleandoc(f"""
-        .. _{name}:
+        .. _datasets.{name}:
 
         {title}
         {"=" * len(title)}
 
         .. automodule:: gymnos.datasets.{name}
+        
+        .. prompt:: bash
+        
+            pip install gymnos[datasets.{name}]
+            
+        Usage
+        ***********
 
         .. prompt:: bash
 
-            gymnos.train dataset={name}
+            gymnos-train dataset={name}
 
         .. rst-class:: gymnos-hydra
 
@@ -392,6 +436,7 @@ def dataset(name):
     dataset_dir = os.path.join("gymnos", "datasets", name)
 
     os.makedirs(dataset_dir)
+    os.makedirs(docs_dir, exist_ok=True)
 
     with open(os.path.join(dataset_dir, "__init__.py"), "w") as fp:
         fp.write(__init__template)
@@ -427,7 +472,8 @@ def dataset(name):
 
 @main.command()
 @click.argument("name", callback=_validate_name)
-def experiment(name):
+@click.option("--rl", help="Whether or not is an RL experiment", is_flag=True)
+def experiment(name, rl):
     """
     Create new experiment
     """
@@ -448,6 +494,21 @@ def experiment(name):
             <param>: <value>  # TODO: override default dataset params
     """) + "\n"
 
+    rl_template = inspect.cleandoc("""
+        # @package _global_
+        # TODO: description about experiment
+
+        defaults:
+            - override /trainer: <trainer_name>  # TODO: set name of trainer to use
+            - override /env: <env_name>  # TODO: set name of env to use
+
+        trainer:
+            <param>: <value>   # TODO: override default trainer params
+
+        env:
+            <param>: <value>  # TODO: override default env params
+    """) + "\n"
+
     docs_template = inspect.cleandoc(f"""
         .. _{name}_experiment:
 
@@ -456,7 +517,11 @@ def experiment(name):
 
         .. autoyamldoc:: conf/experiment/{name}.yaml
             :lineno-start: 1
-
+            
+        .. experiment-install:: conf/experiment/{name}.yaml
+            
+        Usage
+        **********
 
         .. prompt:: bash
 
@@ -475,7 +540,42 @@ def experiment(name):
 
                 .. autoyaml:: conf/experiment/{name}.yaml
                     :key: dataset
-                    :caption: :ref:`{{defaults[1].override /dataset}}`
+                    :caption: :ref:`datasets.{{defaults[1].override /dataset}}`
+
+    """) + "\n"
+
+    rl_docs_template = inspect.cleandoc(f"""
+        .. _{name}_experiment:
+
+        {title}
+        ==============================
+
+        .. autoyamldoc:: conf/experiment/{name}.yaml
+            :lineno-start: 1
+            
+        .. experiment-install:: conf/experiment/{name}.yaml
+            
+        Usage
+        **********
+
+        .. prompt:: bash
+
+            gymnos-train +experiment={name}
+
+
+        .. tabs::
+
+           .. tab:: Trainer
+
+                .. autoyaml:: conf/experiment/{name}.yaml
+                    :key: trainer
+                    :caption: :ref:`{{defaults[0].override /trainer}}`
+
+           .. tab:: Env
+
+                .. autoyaml:: conf/experiment/{name}.yaml
+                    :key: env
+                    :caption: :ref:`envs.{{defaults[1].override /env}}`
 
     """) + "\n"
 
@@ -485,15 +585,24 @@ def experiment(name):
         raise FileExistsError(f"Experiment {fpath} already exists")
 
     with open(fpath, "w") as fp:
-        fp.write(template)
+        if rl:
+            fp.write(rl_template)
+        else:
+            fp.write(template)
 
-    docs_fpath = os.path.join("docs", "source", "experiments", name + ".rst")
+    docs_dir = os.path.join("docs", "source", "experiments")
+    docs_fpath = os.path.join(docs_dir, name + ".rst")
+
+    os.makedirs(docs_dir, exist_ok=True)
 
     if os.path.isfile(docs_fpath):
         raise FileExistsError(f"Docs {docs_fpath} already exists")
 
     with open(docs_fpath, "w") as fp:
-        fp.write(docs_template)
+        if rl:
+            fp.write(rl_docs_template)
+        else:
+            fp.write(docs_template)
 
     rprint("The following files have been created: ")
 
@@ -506,5 +615,154 @@ def experiment(name):
     docs_source_tree = docs_tree.add("source")
     docs_experiments_tree = docs_source_tree.add("experiments")
     docs_experiments_tree.add(Text(f"📄 {name}.rst", "bold blue"))
+
+    rprint(tree)
+
+
+@main.command()
+@click.argument("name", callback=_validate_name)
+def env(name):
+    title = stringcase.titlecase(name)
+
+    __init__template = inspect.cleandoc(f"""
+        \"""
+        TODO: Docstring for {title}
+        \"""
+    """) + "\n"
+
+    classname = stringcase.pascalcase(name)
+    conf_classname = classname + "HydraConf"
+
+    __env__template = inspect.cleandoc(f"""
+        #
+        #
+        #   {title} gymnos conf
+        #
+        #
+
+        from .hydra_conf import {conf_classname}
+
+        hydra_conf = {conf_classname}
+        
+        reward_threshold = None  # The reward threshold before the task is considered solved
+        nondeterministic = False  # Whether this environment is non-deterministic even after seeding
+        max_episode_steps = None  # The maximum number of steps that an episode can consist of
+        
+        pip_dependencies = []
+        
+        apt_dependencies = []
+    """) + "\n"
+
+    hydra_conf_template = inspect.cleandoc(f"""
+        #
+        #
+        #   {title} Hydra conf
+        #
+        #
+
+        from dataclasses import dataclass, field
+
+
+        @dataclass
+        class {conf_classname}:
+
+            # TODO: define env parameters
+
+            _target_: str = field(init=False, repr=False, default="gymnos.envs.{name}.env.{classname}")
+    """) + "\n"
+
+    env_template = inspect.cleandoc(f"""
+        #
+        #
+        #   {title} env
+        #
+        #
+        
+        import gym
+        
+        from dataclasses import dataclass
+        
+        from .hydra_conf import {conf_classname}
+        
+        
+        @dataclass
+        class {classname}({conf_classname}, gym.Env):
+        
+            metadata = {{"render.modes": ["human"]}}
+        
+            @property
+            def action_space(self) -> gym.spaces.Space:
+                pass  # TODO: define action_space
+        
+            @property
+            def observation_space(self) -> gym.spaces.Space:
+                pass  # TODO: define observation_space
+        
+            def step(self, action):
+                pass  # TODO: Execute one time step within the environment
+                
+            def reset(self):
+                pass  # TODO: Reset the state of the environment to an initial state
+        
+            def render(self, mode="human", close=False):
+                pass  # TODO: Render the environment to the screen
+    """) + "\n"
+
+    docs_template = inspect.cleandoc(f"""
+        .. _envs.{name}:
+
+        {title}
+        {"=" * len(title)}
+
+        .. automodule:: gymnos.envs.{name}
+        
+        .. prompt:: bash
+        
+            pip install gymnos[envs.{name}]
+        
+        Usage
+        ***********
+
+        .. prompt:: bash
+
+            gymnos-train env={name}
+
+        .. rst-class:: gymnos-hydra
+
+            .. autoclass:: gymnos.envs.{name}.env.{classname}
+    """) + "\n"
+
+    docs_dir = os.path.join("docs", "source", "envs")
+    env_dir = os.path.join("gymnos", "envs", name)
+
+    os.makedirs(env_dir)
+    os.makedirs(docs_dir, exist_ok=True)
+
+    with open(os.path.join(env_dir, "__init__.py"), "w") as fp:
+        fp.write(__init__template)
+
+    with open(os.path.join(env_dir, "__env__.py"), "w") as fp:
+        fp.write(__env__template)
+
+    with open(os.path.join(env_dir, "env.py"), "w") as fp:
+        fp.write(env_template)
+
+    with open(os.path.join(env_dir, "hydra_conf.py"), "w") as fp:
+        fp.write(hydra_conf_template)
+
+    with open(os.path.join(docs_dir, f"{name}.rst"), "w") as fp:
+        fp.write(docs_template)
+
+    tree = Tree(":open_file_folder:", guide_style="dim")
+    gymnos_tree = tree.add("gymnos")
+    datasets_tree = gymnos_tree.add("envs")
+    dataset_tree = datasets_tree.add(Text(name, "bold blue"))
+    for fname in ("__init__.py", "__env__.py", "env.py", "hydra_conf.py"):
+        dataset_tree.add(Text(f"📄 {fname}", "bold blue"))
+
+    docs_tree = tree.add("docs")
+    source_tree = docs_tree.add("source")
+    datasets_tree = source_tree.add("envs")
+    datasets_tree.add(Text(name + ".rst", "bold blue"))
 
     rprint(tree)

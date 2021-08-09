@@ -17,11 +17,20 @@ Gymnos
    quickstart
 
 .. toctree::
+   :maxdepth: 1
    :name: datasets
    :caption: Datasets
    :glob:
 
    datasets/*
+
+.. toctree::
+   :maxdepth: 1
+   :name: envs
+   :caption: Envs
+   :glob:
+
+   envs/*
 
 .. misctoctree::
    :maxdepth: 2
@@ -82,7 +91,7 @@ Gymnos
    cli/create
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :name: launchers
    :caption: Launchers
 
@@ -90,6 +99,7 @@ Gymnos
 
 
 .. toctree::
+   :maxdepth: 1
    :name: experiments
    :caption: Experiments
    :glob:
@@ -98,14 +108,14 @@ Gymnos
 
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :name: services
    :caption: Services
 
    services/sofia
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
     :name: utils
     :caption: Utils
     :glob:
