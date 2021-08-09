@@ -13,6 +13,7 @@ nondeterministic = False  # Whether this environment is non-deterministic even a
 max_episode_steps = None  # The maximum number of steps that an episode can consist of
 
 pip_dependencies = [
+    "opencv-python",
     "gym[atari]",
     "atari-py",
     "supersuit"
