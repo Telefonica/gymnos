@@ -9,4 +9,4 @@ trainer: {}
 
 env:
     id: PongNoFrameskip-v4
-    frame_stack: 10
+    frame_stack: 4
