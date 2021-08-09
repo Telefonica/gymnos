@@ -47,6 +47,8 @@ class A2CTrainer(A2CHydraConf, BaseRLTrainer):
         else:
             raise ValueError(f"Unexpected policy {self.policy}")
 
+        policy_network.to(self.device)
+
         policy_optimizer = optim.Adam(policy_network.parameters())
 
         obs = env.reset()
