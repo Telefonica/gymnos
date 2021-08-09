@@ -4,7 +4,6 @@
 #
 #
 
-import gym
 
 from dataclasses import dataclass, field
 
@@ -15,27 +14,9 @@ class DummyEnvHydraConf:
     _target_: str = field(init=False, repr=False, default="gymnos.dummy.__env__.DummyEnv")
 
 
-@dataclass
-class DummyEnv(DummyEnvHydraConf, gym.Env):
-
-    metadata = {'render.modes': ['human']}
-
-    @property
-    def action_space(self) -> gym.Space:
-        return gym.Space()
-
-    @property
-    def observation_space(self) -> gym.Space:
-        return gym.Space()
-
-    def step(self, action):
-        pass
-
-    def reset(self):
-        pass
-
-    def render(self, mode='human', close=False):
-        pass
+def DummyEnv():
+    import gym
+    return gym.Env()
 
 
 hydra_conf = DummyEnvHydraConf
