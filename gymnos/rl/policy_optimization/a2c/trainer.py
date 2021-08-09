@@ -40,7 +40,9 @@ class A2CTrainer(A2CHydraConf, BaseRLTrainer):
         if self.policy == A2CPolicy.CNN:
             wrappers = cnn_wrapper
 
-        env = gym.vector.make(self._env_id, self.num_envs, self.asynchronous, wrappers)
+        # env = gym.vector.make(self._env_id, self.num_envs, self.asynchronous, wrappers)
+        env = gym.vector.make(self._env_id)
+        return
 
         if self.policy == A2CPolicy.CNN:
             policy_network = CNNPolicy(env)
