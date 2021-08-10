@@ -181,7 +181,13 @@ def main(config: DictConfig):
             })
 
         if config.mlflow.log_trainer_params:
-            mlflow.log_params(dict(iterate_config(config.trainer)))
+            mlflow.log_params(dict(iterate_config(config.trainer, "trainer/")))
+
+        if "dataset" in config and config.mlflow.log_dataset_params:
+            mlflow.log_params(dict(iterate_config(config.dataset, "dataset/")))
+
+        if "env" in config and config.mlflow.log_env_params:
+            mlflow.log_params(dict(iterate_config(config.env, "env/")))
 
         trainer = instantiate(config.trainer)
 

@@ -13,3 +13,5 @@ mlflow:
     run_name: null
     experiment_name: Default
     log_trainer_params: true
+    log_dataset_params: true
+    log_env_params: true
