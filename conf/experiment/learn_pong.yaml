@@ -5,8 +5,13 @@ defaults:
     - override /trainer: rl.policy_optimization.a2c
     - override /env: atari
 
-trainer: {}
+trainer:
+    update_frequency: 8
+    num_envs: 8
+
 
 env:
     id: PongNoFrameskip-v4
     frame_stack: 4
+    frame_skip: 1
+    include_actions: [2, 3]
