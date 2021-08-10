@@ -5,6 +5,7 @@
 #
 
 import gym
+import torch
 import torch.nn as nn
 
 from typing import Union
@@ -26,31 +27,33 @@ class CNNPolicy(nn.Module):
         channels = observation_space.shape[0]
 
         self.conv = nn.Sequential(
-            nn.Conv2d(channels, 32, kernel_size=8, stride=4),
+            nn.Conv2d(channels, 32, kernel_size=8, stride=4, padding=0),
             nn.ReLU(),
-            nn.Conv2d(32, 128, kernel_size=4, stride=2),
+            nn.Conv2d(32, 64, kernel_size=4, stride=2, padding=0),
             nn.ReLU(),
-            nn.Conv2d(128, 64, kernel_size=3, stride=1),
-            nn.ReLU()
+            nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=0),
+            nn.ReLU(),
+            nn.Flatten()
         )
 
-        self.flatten = nn.Flatten()
+        # Compute shape by doing one forward pass
+        with torch.no_grad():
+            n_flatten = self.conv(torch.as_tensor(observation_space.sample()[None]).float()).shape[1]
 
         self.critic_fc = nn.Sequential(
-            nn.Linear(3136, 512),
+            nn.Linear(n_flatten, 512),
             nn.ReLU(),
             nn.Linear(512, 1)
         )
 
         self.actor_fc = nn.Sequential(
-            nn.Linear(3136, 512),
+            nn.Linear(n_flatten, 512),
             nn.ReLU(),
             nn.Linear(512, num_actions)
         )
 
     def forward(self, x):
         x = self.conv(x)
-        x = self.flatten(x)
         value = self.critic_fc(x)
         action = self.actor_fc(x)
         return value, action
