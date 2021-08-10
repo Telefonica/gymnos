@@ -61,16 +61,17 @@ class A2CTrainer(A2CHydraConf, BaseRLTrainer):
         def t(x):
             return torch.from_numpy(x).to(self.device)
 
-        cum_rewards = np.zeros(env.num_envs)
+        episode_rewards = np.zeros(env.num_envs)
+        episode_steps = np.zeros(env.num_envs)
 
         def init_n_step():
             return dict(
-                current=0,
+                step=0,
                 entropy=0.0,
-                rewards=torch.empty([self.n_steps, env.num_envs], dtype=torch.float32, device=self.device),
-                dones=torch.empty([self.n_steps, env.num_envs], dtype=torch.int32, device=self.device),
-                state_values=torch.empty([self.n_steps, env.num_envs], dtype=torch.float32, device=self.device),
-                log_probs=torch.empty([self.n_steps, env.num_envs], dtype=torch.float32, device=self.device)
+                rewards=torch.empty([self.update_frequency, env.num_envs], dtype=torch.float32, device=self.device),
+                dones=torch.empty([self.update_frequency, env.num_envs], dtype=torch.int32, device=self.device),
+                state_values=torch.empty([self.update_frequency, env.num_envs], dtype=torch.float32, device=self.device),
+                log_probs=torch.empty([self.update_frequency, env.num_envs], dtype=torch.float32, device=self.device)
             )
 
         n_step = init_n_step()
@@ -85,13 +86,13 @@ class A2CTrainer(A2CHydraConf, BaseRLTrainer):
             action = action_pred.detach().cpu().numpy()
             next_obs, reward, done, info = env.step(action)
 
-            n_step["rewards"][n_step["current"]] = t(reward)
-            n_step["dones"][n_step["current"]] = t(done)
-            n_step["state_values"][n_step["current"]] = state_value.flatten()
+            n_step["rewards"][n_step["step"]] = t(reward)
+            n_step["dones"][n_step["step"]] = t(done)
+            n_step["state_values"][n_step["step"]] = state_value.flatten()
             n_step["entropy"] += action_dist.entropy().mean()
-            n_step["log_probs"][n_step["current"]] = action_dist.log_prob(action_pred)
+            n_step["log_probs"][n_step["step"]] = action_dist.log_prob(action_pred)
 
-            if n_step["current"] == (self.n_steps - 1):
+            if n_step["step"] == (self.update_frequency - 1):
                 v_next_s, _ = policy_network(t(next_obs))
                 v_next_s = v_next_s.view(1, -1)
 
@@ -123,20 +124,25 @@ class A2CTrainer(A2CHydraConf, BaseRLTrainer):
 
                 n_step = init_n_step()
             else:
-                n_step["current"] += 1
+                n_step["step"] += 1
 
             obs = next_obs
 
-            cum_rewards += reward
+            episode_rewards += reward
+            episode_steps += 1
 
             done_envs = np.nonzero(done)[0]
 
-            for i, cum_reward in enumerate(cum_rewards[done_envs]):
-                mlflow.log_metric("train/episode_reward", cum_reward, global_step + i)
+            for i, done_env in enumerate(done_envs):
+                mlflow.log_metrics({
+                    "episode_reward": episode_rewards[done_env],
+                    "episode_steps": episode_steps[done_env]
+                }, global_step + i)
 
             global_step += env.num_envs
 
-            cum_rewards[done_envs] = 0.0
+            episode_steps[done_envs] = 0
+            episode_rewards[done_envs] = 0.0
 
             current_episode += len(done_envs)
 
@@ -144,6 +150,9 @@ class A2CTrainer(A2CHydraConf, BaseRLTrainer):
 
             if len(done_envs) > 0:
                 mlflow.log_metric("train/episode", current_episode, global_step)
+
+        torch.save(policy_network.state_dict(), "policy_state_dict.pth")
+        mlflow.log_artifact("policy_state_dict.pth")
 
     def test(self):
         pass   # OPTIONAL: test code

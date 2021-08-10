@@ -4,6 +4,7 @@
 #
 #
 
+from typing import Optional, List
 from dataclasses import dataclass, field
 
 
@@ -20,5 +21,6 @@ class AtariHydraConf:
     grayscale_newaxis: bool = False
     scale_obs: bool = False
     frame_stack: int = 0
+    include_actions: Optional[List[int]] = None
 
     _target_: str = field(init=False, repr=False, default="gymnos.envs.atari.env.Atari")
