@@ -53,10 +53,8 @@ class Yolov4Predictor(BasePredictor):
 
         self.model = None
 
-    def load(self, artifacts_dir):
-        config = self.info.trainer.config
-
-        model = Yolov4(None, len(config.classes))
+    def load(self, config, run, artifacts_dir):
+        model = Yolov4(None, len(config.trainer.classes))
         state_dict = torch.load(os.path.join(artifacts_dir, "checkpoint.pth"), map_location=self.device)
         # I'm not sure why state_dict is prefixed with module but we need to remove it
         state_dict = {k.partition("module.")[2]: state_dict[k] for k in state_dict.keys()}
@@ -66,12 +64,12 @@ class Yolov4Predictor(BasePredictor):
 
         self.model = model
 
-        self.classes = OmegaConf.to_object(config.classes)
+        self.classes = OmegaConf.to_object(config.trainer.classes)
 
         if self.width is None:
-            self.width = config.width
+            self.width = config.trainer.width
         if self.height is None:
-            self.height = config.height
+            self.height = config.trainer.height
 
     @torch.no_grad()
     def predict(self, img: Union[np.ndarray, str, PIL.Image.Image]):

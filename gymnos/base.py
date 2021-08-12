@@ -10,6 +10,7 @@ import abc
 import mlflow
 import tempfile
 
+from dacite import from_dict
 from typing import Any, Dict, Union
 from dataclasses import dataclass
 from abc import ABCMeta, abstractmethod
@@ -39,8 +40,6 @@ class PredictorInfo:
 
 
 class BasePredictor(metaclass=abc.ABCMeta):
-
-    info: PredictorInfo = None
 
     @classmethod
     def from_pretrained(cls, name_or_run_id, *args, **kwargs):
@@ -72,14 +71,7 @@ class BasePredictor(metaclass=abc.ABCMeta):
 
                 mlflow_run = jsonify_mlflow_run(run)
 
-                predictor.info = PredictorInfo(
-                    trainer=TrainerInfo(
-                        run=mlflow_run,
-                        config=config.trainer,
-                    )
-                )
-
-                predictor.load(tmpdir)
+                predictor.load(config, mlflow_run, tmpdir)
         elif source == "sofia":
             response = SOFIA.get_model(name_or_run_id)
             response.raise_for_status()
@@ -91,20 +83,13 @@ class BasePredictor(metaclass=abc.ABCMeta):
 
             config = OmegaConf.load(os.path.join(artifacts_dir, ".hydra", "config.yaml"))
 
-            predictor.info = PredictorInfo(
-                trainer=TrainerInfo(
-                    run=data["run"],
-                    config=config.trainer
-                )
-            )
-
-            predictor.load(artifacts_dir)
+            predictor.load(config, from_dict(MLFlowRun, data["run"]), artifacts_dir)
         else:
             raise ValueError(f'Unknown source: "{source}". Allowed values: "sofia" | "mlflow"')
 
         return predictor
 
-    def load(self, artifacts_dir: str):
+    def load(self, config: DictConfig, run: MLFlowRun, artifacts_dir: str):
         pass
 
     @abc.abstractmethod
