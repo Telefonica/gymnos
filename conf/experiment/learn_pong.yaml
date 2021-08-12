@@ -6,8 +6,9 @@ defaults:
     - override /env: atari
 
 trainer:
-    update_frequency: 8
     num_envs: 8
+    policy: CNN
+    train_timesteps: 10_000_000
 
 
 env:
