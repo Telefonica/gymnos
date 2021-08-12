@@ -9,9 +9,7 @@ from .hydra_conf import A2CHydraConf
 hydra_conf = A2CHydraConf
 
 pip_dependencies = [
-    "torch",
-    "numpy",
-    "torchvision"
+    "stable-baselines3"
 ]
 
 apt_dependencies = []
