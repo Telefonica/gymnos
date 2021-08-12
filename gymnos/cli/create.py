@@ -146,7 +146,7 @@ def model(name, domain):
             TODO: docstring for predictor
             \"""
 
-            def load(self, artifacts_dir):
+            def load(self, config, run, artifacts_dir):
                 pass   # OPTIONAL: load model from MLFlow artifacts directory
 
             def predict(self, *args, **kwargs):
