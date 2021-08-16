@@ -16,7 +16,8 @@ pip_dependencies = [
     "opencv-python",
     "gym[atari]",
     "atari-py",
-    "supersuit"
+    "supersuit",
+    "numpy"
 ]
 
 apt_dependencies = [
