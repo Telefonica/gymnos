@@ -1,0 +1,21 @@
+#
+#
+#   Box2d gymnos conf
+#
+#
+
+from .hydra_conf import Box2dHydraConf
+
+hydra_conf = Box2dHydraConf
+
+reward_threshold = None  # The reward threshold before the task is considered solved
+nondeterministic = False  # Whether this environment is non-deterministic even after seeding
+max_episode_steps = None  # The maximum number of steps that an episode can consist of
+
+pip_dependencies = [
+    "Box2D"
+]
+
+apt_dependencies = [
+    "swig"
+]
