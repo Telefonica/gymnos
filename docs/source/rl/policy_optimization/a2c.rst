@@ -40,3 +40,4 @@ Predictor
 
 .. autoclass:: gymnos.rl.policy_optimization.a2c.predictor.A2CPredictor
    :members:
+   :inherited-members:

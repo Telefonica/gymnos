@@ -7,5 +7,6 @@ Policy Optimization
 
 .. toctree::
     :glob:
+    :maxdepth: 1
 
     *

@@ -4,13 +4,13 @@
 #
 #
 
+from stable_baselines3 import PPO
+
 from ....base import BasePredictor
 from ...common.sb3_mixins import SB3Predictor
 
-from stable_baselines3 import A2C
 
-
-class A2CPredictor(SB3Predictor, BasePredictor):
+class PPOPredictor(SB3Predictor, BasePredictor):
     """
     TODO: docstring for predictor
     """
@@ -19,4 +19,4 @@ class A2CPredictor(SB3Predictor, BasePredictor):
         self.device = device
 
     def load_model(self, path):
-        return A2C.load(path, device=self.device)
+        return PPO.load(path, device=self.device)
