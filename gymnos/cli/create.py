@@ -166,8 +166,10 @@ def model(name, domain):
         #   Predictor
         #
         #
+        
+        from omegaconf import DictConfig
 
-        from ....base import BasePredictor
+        from ....base import BasePredictor, MLFlowRun
 
 
         class {predictor_classname}(BasePredictor):
@@ -175,7 +177,7 @@ def model(name, domain):
             TODO: docstring for predictor
             \"""
 
-            def load(self, config, run, artifacts_dir):
+            def load(self, config: DictConfig, run: MLFlowRun, artifacts_dir: str):
                 pass   # OPTIONAL: load model from MLFlow artifacts directory
 
             def predict(self, *args, **kwargs):
@@ -261,6 +263,7 @@ def model(name, domain):
 
         .. toctree::
             :glob:
+            :maxdepth: 1
 
             *
     """) + "\n"
@@ -624,14 +627,19 @@ def experiment(name, rl):
 def env(name):
     title = stringcase.titlecase(name)
 
+    classname = stringcase.pascalcase(name)
+    conf_classname = classname + "HydraConf"
+
     __init__template = inspect.cleandoc(f"""
         \"""
         TODO: Docstring for {title}
         \"""
-    """) + "\n"
+        
+        from ....utils import lazy_import
 
-    classname = stringcase.pascalcase(name)
-    conf_classname = classname + "HydraConf"
+        # Public API
+        {classname} = lazy_import("gymnos.envs.{name}.env.{classname}")
+    """) + "\n"
 
     __env__template = inspect.cleandoc(f"""
         #

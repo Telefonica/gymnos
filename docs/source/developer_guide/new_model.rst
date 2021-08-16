@@ -244,17 +244,8 @@ This method must implement the weight loading from the directory containing all 
 
     class MyModelPredictor(BasePredictor):
 
-        def load(self, artifacts_dir):
+        def load(self, config: DictConfig, run: MLFlowRun, artifacts_dir: str):
             # Load model from artifacts directory
-
-
-.. tip::
-    You can access the original config from the trainer with the ``info`` property:
-
-    .. code-block:: python
-
-        def log(self, artifacts_dir):
-            self.info.trainer.config
 
 Predict
 ***********
