@@ -7,5 +7,6 @@ Object Detection
 
 .. toctree::
     :glob:
+    :maxdepth: 1
 
     *
