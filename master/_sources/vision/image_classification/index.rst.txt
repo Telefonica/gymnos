@@ -7,5 +7,6 @@ Image classification
 
 .. toctree::
     :glob:
+    :maxdepth: 1
 
     *
