@@ -85,7 +85,7 @@ First of all, we will write a class docstring explaining about the data structur
             Description about param_2
         """
 
-Then we will implement the ``__call__(root)`` method where root is the directory where dataset files are stored.
+Then we will implement the ``download(root)`` method where root is the directory where dataset files are stored.
 
 .. code-block:: python
     :caption: dataset.py
@@ -95,7 +95,7 @@ Then we will implement the ``__call__(root)`` method where root is the directory
 
     class MyDataset(MyDatasetHydraConf, BaseDataset):
 
-        def __call__(root):
+        def download(root):
             download_dir = SOFIA.download_dataset("johndoe/datasets/my-dataset")  # download all files
 
             extract_archive(os.path.join(download_dir, "data.zip"), os.path.join(root, "data"))  # we will extract data.zip to root/data directory
