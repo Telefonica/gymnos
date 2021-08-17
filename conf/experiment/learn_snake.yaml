@@ -7,7 +7,7 @@ defaults:
 
 trainer:
     policy: CNN
-    num_train_timesteps: 20_00_000
+    num_train_timesteps: 50_00_000
     num_envs: 12
 
 env:
