@@ -1,9 +1,16 @@
-.. _dogs_vs_cats:
+.. _datasets.dogs_vs_cats:
 
 Dogs vs Cats
 ==============================
 
 .. automodule:: gymnos.datasets.dogs_vs_cats
+
+.. prompt:: bash
+
+    pip install gymnos[datasets.dogs_vs_cats]
+
+Usage
+***********
 
 .. prompt:: bash
 

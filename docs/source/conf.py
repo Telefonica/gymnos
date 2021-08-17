@@ -70,6 +70,7 @@ extensions = [
     "sphinx_tabs.tabs",
     "sphinx_rtd_theme",
     "autoyaml",
+    "experiment_install",
     "sphinx_click",
     "sphinxcontrib.asciinema",
     "sphinx-prompt",
@@ -111,7 +112,8 @@ html_js_files = [
 ]
 
 autodoc_mock_imports = ["tqdm", "numpy", "pandas", "torch", "torchvision", "pytorch_lightning", "torchmetrics",
-                        "efficientnet_pytorch", "PIL", "cv2", "tensorflow", "sklearn", "bounding_box", "pycocotools"]
+                        "efficientnet_pytorch", "PIL", "cv2", "tensorflow", "sklearn", "bounding_box", "pycocotools",
+                        "supersuit", "stable_baselines3"]
 
 sphinx_tabs_disable_tab_closing = True
 

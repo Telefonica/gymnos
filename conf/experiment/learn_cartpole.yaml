@@ -1,0 +1,13 @@
+# @package _global_
+# TODO: description about experiment
+
+defaults:
+    - override /trainer: rl.policy_optimization.a2c
+    - override /env: gym
+
+trainer:
+    policy: MLP
+    num_train_timesteps: 100_000
+
+env:
+    id: CartPole-v1

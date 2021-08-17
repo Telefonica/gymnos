@@ -1,0 +1,23 @@
+# @package _global_
+# TODO: description about experiment
+
+defaults:
+    - override /trainer: rl.policy_optimization.a2c
+    - override /env: atari
+
+trainer:
+    num_envs: 12
+    policy: CNN
+    seed: 0
+    entropy_coef: 0.01
+    value_coef: 0.25
+    num_train_timesteps: 10_000_000
+
+env:
+    id: PongNoFrameskip-v4
+    frame_stack: 4
+    frame_skip: 4
+    terminal_on_life_loss: true
+    screen_size: 84
+    clip_reward: true
+    noop_max: 30

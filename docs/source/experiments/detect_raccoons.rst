@@ -6,6 +6,10 @@ Detect Raccoons
 .. autoyamldoc:: conf/experiment/detect_raccoons.yaml
     :lineno-start: 1
 
+.. experiment-install:: conf/experiment/detect_raccoons.yaml
+
+Usage
+**********
 
 .. prompt:: bash
 
@@ -24,4 +28,4 @@ Detect Raccoons
 
         .. autoyaml:: conf/experiment/detect_raccoons.yaml
             :key: dataset
-            :caption: :ref:`{defaults[1].override /dataset}`
+            :caption: :ref:`datasets.{defaults[1].override /dataset}`

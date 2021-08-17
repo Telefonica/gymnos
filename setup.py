@@ -14,26 +14,6 @@ with open(os.path.join(here, "gymnos", "__about__.py"), "r") as f:
     exec(f.read(), about)
 
 
-def parse_dependencies(filepath):
-    with open(filepath, "r") as fp:
-        code = fp.read()
-
-    tree = ast.parse(code)
-
-    assigns = [x for x in tree.body if isinstance(x, ast.Assign)]
-
-    dependencies = None
-
-    for assign in assigns:
-        if assign.targets and isinstance(assign.value, ast.List) and assign.targets[0].id == "pip_dependencies":
-            dependencies = []
-            for elem in assign.value.elts:
-                if isinstance(elem, ast.Str):
-                    dependencies.append(elem.s)
-
-    return dependencies
-
-
 def find_files(directory, pattern):
     for root, dirs, files in os.walk(directory):
         for basename in files:
@@ -59,7 +39,11 @@ def find_model_dependencies():
 
     dependencies_by_model = {}
 
-    for path in glob.iglob(os.path.join(app_dir, "**", "__model__.py"), recursive=True):
+    model_glob = glob.glob(os.path.join(app_dir, "**", "__model__.py"), recursive=True)
+    dataset_glob = glob.glob(os.path.join(app_dir, "**", "__dataset__.py"), recursive=True)
+    env_glob = glob.glob(os.path.join(app_dir, "**", "__env__.py"), recursive=True)
+
+    for path in model_glob + dataset_glob + env_glob:
         with open(path, "r") as fp:
             code = fp.read()
 
@@ -82,12 +66,16 @@ def find_model_dependencies():
         name = os.path.dirname(name)
         name = name.replace(os.path.sep, ".")
 
+        if name == "dummy":
+            continue
+
         dependencies_by_model[name] = dependencies
 
     return dependencies_by_model
 
 
 INSTALL_REQUIRES = [
+    "gym",
     "rich",
     "mlflow",
     "click",

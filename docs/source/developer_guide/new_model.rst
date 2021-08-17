@@ -142,7 +142,7 @@ First of all, we will write a class docstring explaining about the data structur
 
 Once the docstring has been written, we will implement the following methods:
 
-    - ``setup(root)``: optional, method called with data directory as parameter
+    - ``prepare_data(root)``: optional, method called with data directory as parameter
     - ``train()``: required, execute training for model
     - ``test()``: optional, execute testing for model. This method will be called after training.
 
@@ -160,8 +160,8 @@ For any other variable you want to initialize, you can use the method ``__post_i
         def __post_init__(self):
             self._param_3 = self.param_2 + ["hello"]
 
-Setup
-*******
+Prepare data
+*************
 
 This method will be called with the directory where data is stored.
 
@@ -172,7 +172,7 @@ This method will be called with the directory where data is stored.
     @dataclass
     class MyModelTrainer(MyModelHydraConf, BaseTrainer):
 
-        def setup(root):
+        def prepare_data(root):
             self._audio_fpaths = glob(os.path.join(root, "*", "*.wav"))  # we will save all audio file paths
 
 
@@ -244,17 +244,8 @@ This method must implement the weight loading from the directory containing all 
 
     class MyModelPredictor(BasePredictor):
 
-        def load(self, artifacts_dir):
+        def load(self, config: DictConfig, run: MLFlowRun, artifacts_dir: str):
             # Load model from artifacts directory
-
-
-.. tip::
-    You can access the original config from the trainer with the ``info`` property:
-
-    .. code-block:: python
-
-        def log(self, artifacts_dir):
-            self.info.trainer.config
 
 Predict
 ***********

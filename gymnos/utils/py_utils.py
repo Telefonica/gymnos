@@ -37,3 +37,24 @@ def remove_suffix(text: str, suffix: str):
     str
     """
     return text[:-len(suffix)] if text.endswith(suffix) and len(suffix) != 0 else text
+
+
+def rreplace(s, old, new):
+    """
+    Replace 1 ocurrence right to left
+
+    Parameters
+    ----------
+    s
+    old
+    new
+
+    Returns
+    -------
+
+    """
+    try:
+        place = s.rindex(old)
+        return ''.join((s[:place], new, s[place + len(old):]))
+    except ValueError:
+        return s

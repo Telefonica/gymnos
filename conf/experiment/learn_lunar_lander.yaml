@@ -1,0 +1,25 @@
+# @package _global_
+# TODO: description about experiment
+
+defaults:
+    - override /trainer: rl.value_optimization.dqn
+    - override /env: box2d
+
+trainer:
+    num_train_timesteps: 100_000
+    policy: MLP
+    learning_rate: 6.3e-4
+    batch_size: 128
+    buffer_size: 50_000
+    learning_starts: 0
+    discount_rate: 0.99
+    target_update_interval: 250
+    train_freq: 4
+    gradient_steps: -1
+    exploration_fraction: 0.12
+    exploration_final_eps: 0.1
+    policy_kwargs:
+        net_arch: [256, 256]
+
+env:
+    id: LunarLander-v2

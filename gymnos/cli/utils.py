@@ -11,9 +11,8 @@ import glob
 import json
 import pkgutil
 import pathlib
-import importlib
 import warnings
-
+import importlib
 import rich.tree
 import subprocess
 import rich.syntax
@@ -21,6 +20,7 @@ import pkg_resources
 
 from ..base import BasePredictor
 from ..utils.py_utils import remove_suffix
+from ..utils.pypi_utils import parse_egg_from_vcs
 
 from rich.text import Text
 from rich.panel import Panel
@@ -62,16 +62,6 @@ def print_config(
             tree.add(f"{field}: {branch_content}")
 
     rich.print(Panel(tree))
-
-
-def get_missing_requirements(dependencies):
-    missing_dependencies = []
-    for dependency in dependencies:
-        try:
-            pkg_resources.require(dependency)
-        except pkg_resources.DistributionNotFound:
-            missing_dependencies.append(dependency)
-    return missing_dependencies
 
 
 def install_requirements(requirements):
@@ -191,6 +181,9 @@ def print_requirements(dependencies, autocolor=True):
     for dependency in dependencies:
         text = dependency
 
+        if dependency.startswith("git+"):
+            dependency = parse_egg_from_vcs(dependency)
+
         if autocolor:
             try:
                 pkg_resources.require(dependency)
@@ -292,6 +285,22 @@ def find_dataset_module(dataset_target):
     return dataset_module
 
 
+def find_env_module(env_target):
+    lib_name, *mod_name, cls_name = env_target.split(".")
+    lib_dir = os.path.dirname(pkgutil.get_loader(lib_name).get_filename())
+    env_dir = find_file_parent_dir("__env__.py", cwd=os.path.join(lib_dir, *mod_name))
+
+    if env_dir is None:
+        raise FileNotFoundError(f"__env__.py not found for {env_target}")
+
+    env_dirpath = os.path.relpath(env_dir, lib_dir)
+    env_modname = env_dirpath.replace(os.path.sep, ".")
+
+    env_module = importlib.import_module("." + env_modname, lib_name)
+
+    return env_module
+
+
 def find_predictors(model_module):
     predictors = []
 
@@ -345,6 +354,9 @@ def find_file_parent_dir(fname, cwd) -> Optional[str]:
             found = True
         else:
             current_dir = os.path.dirname(current_dir)
+
+        if current_dir == os.path.sep:
+            break
 
     if not found:
         return None

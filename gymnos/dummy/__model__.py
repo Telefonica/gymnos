@@ -22,7 +22,11 @@ apt_dependencies = []
 
 class DummyTrainer:
 
-    def setup(self, root):
+    def prepare_env(self, env_id):
+        import gym
+        gym.make(env_id)
+
+    def prepare_data(self, root):
         pass
 
     def train(self):

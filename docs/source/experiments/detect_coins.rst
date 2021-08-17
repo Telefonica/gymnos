@@ -6,6 +6,11 @@ Detect Coins
 .. autoyamldoc:: conf/experiment/detect_coins.yaml
     :lineno-start: 1
 
+.. experiment-install:: conf/experiment/detect_coins.yaml
+
+Usage
+**********
+
 
 .. prompt:: bash
 
@@ -24,4 +29,4 @@ Detect Coins
 
         .. autoyaml:: conf/experiment/detect_coins.yaml
             :key: dataset
-            :caption: :ref:`{defaults[1].override /dataset}`
+            :caption: :ref:`datasets.{defaults[1].override /dataset}`

@@ -26,7 +26,7 @@ class RaccoonDetection(RaccoonDetectionHydraConf, BaseDataset):
     TODO: description of each parameter
     """
 
-    def __call__(self, root):
+    def download(self, root):
         download_dir = SOFIA.download_dataset("ruben/datasets/racoon-detection")
 
         extract_archive(os.path.join(download_dir, "images.zip"), root)
