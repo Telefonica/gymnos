@@ -64,6 +64,9 @@ def print_config(
 
 
 def install_requirements(requirements):
+    if not requirements:
+        return
+
     subprocess.check_call([sys.executable, "-m", "pip", "install", *requirements])
 
 
