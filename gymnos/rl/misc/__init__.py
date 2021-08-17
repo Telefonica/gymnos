@@ -1,3 +1,3 @@
 """
-Miscellaneous reinforcement learning models
+Models for Miscellaneous
 """
