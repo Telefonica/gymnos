@@ -13,8 +13,8 @@ nondeterministic = False  # Whether this environment is non-deterministic even a
 max_episode_steps = None  # The maximum number of steps that an episode can consist of
 
 pip_dependencies = [
-    "git+https://github.com/ntasfi/PyGame-Learning-Environment.git#egg=ple",
-    "git+https://github.com/lusob/gym-ple.git#egg=gym_ple",
+    "ple @ git+https://github.com/ntasfi/PyGame-Learning-Environment.git",
+    "gym_ple @ git+https://github.com/lusob/gym-ple.git#egg=gym_ple",
     "pygame"
 ]
 

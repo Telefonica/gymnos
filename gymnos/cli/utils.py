@@ -20,7 +20,6 @@ import pkg_resources
 
 from ..base import BasePredictor
 from ..utils.py_utils import remove_suffix
-from ..utils.pypi_utils import parse_egg_from_vcs
 
 from rich.text import Text
 from rich.panel import Panel
@@ -180,9 +179,6 @@ def print_requirements(dependencies, autocolor=True):
     tree = rich.tree.Tree(":package: PIP DEPENDENCIES")
     for dependency in dependencies:
         text = dependency
-
-        if dependency.startswith("git+"):
-            dependency = parse_egg_from_vcs(dependency)
 
         if autocolor:
             try:
