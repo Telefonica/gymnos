@@ -12,4 +12,5 @@ trainer:
 
 env:
     name: Snake
+    grayscale_obs: true
     frame_stack: 4
