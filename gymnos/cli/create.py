@@ -14,7 +14,6 @@ from rich.tree import Tree
 from rich.text import Text
 from rich import print as rprint
 
-
 MAIN_DOMAINS = [
     "vision",
     "generative",
@@ -166,7 +165,7 @@ def model(name, domain):
         #   Predictor
         #
         #
-        
+
         from omegaconf import DictConfig
 
         from ....base import BasePredictor, MLFlowRun
@@ -360,9 +359,9 @@ def dataset(name):
         from .hydra_conf import {conf_classname}
 
         hydra_conf = {conf_classname}
-        
+
         pip_dependencies = []
-        
+
         apt_dependencies = []
     """) + "\n"
 
@@ -418,11 +417,11 @@ def dataset(name):
         {"=" * len(title)}
 
         .. automodule:: gymnos.datasets.{name}
-        
+
         .. prompt:: bash
-        
+
             pip install gymnos[datasets.{name}]
-            
+
         Usage
         ***********
 
@@ -520,9 +519,9 @@ def experiment(name, rl):
 
         .. autoyamldoc:: conf/experiment/{name}.yaml
             :lineno-start: 1
-            
+
         .. experiment-install:: conf/experiment/{name}.yaml
-            
+
         Usage
         **********
 
@@ -555,9 +554,9 @@ def experiment(name, rl):
 
         .. autoyamldoc:: conf/experiment/{name}.yaml
             :lineno-start: 1
-            
+
         .. experiment-install:: conf/experiment/{name}.yaml
-            
+
         Usage
         **********
 
@@ -634,7 +633,7 @@ def env(name):
         \"""
         TODO: Docstring for {title}
         \"""
-        
+
         from ...utils import lazy_import
 
         # Public API
@@ -651,13 +650,13 @@ def env(name):
         from .hydra_conf import {conf_classname}
 
         hydra_conf = {conf_classname}
-        
+
         reward_threshold = None  # The reward threshold before the task is considered solved
         nondeterministic = False  # Whether this environment is non-deterministic even after seeding
         max_episode_steps = None  # The maximum number of steps that an episode can consist of
-        
+
         pip_dependencies = []
-        
+
         apt_dependencies = []
     """) + "\n"
 
@@ -685,33 +684,33 @@ def env(name):
         #   {title} env
         #
         #
-        
+
         import gym
-        
+
         from dataclasses import dataclass
-        
+
         from .hydra_conf import {conf_classname}
-        
-        
+
+
         @dataclass
         class {classname}({conf_classname}, gym.Env):
-        
+
             metadata = {{"render.modes": ["human"]}}
-        
+
             @property
             def action_space(self) -> gym.spaces.Space:
                 pass  # TODO: define action_space
-        
+
             @property
             def observation_space(self) -> gym.spaces.Space:
                 pass  # TODO: define observation_space
-        
+
             def step(self, action):
                 pass  # TODO: Execute one time step within the environment
-                
+
             def reset(self):
                 pass  # TODO: Reset the state of the environment to an initial state
-        
+
             def render(self, mode="human", close=False):
                 pass  # TODO: Render the environment to the screen
     """) + "\n"
@@ -723,11 +722,11 @@ def env(name):
         {"=" * len(title)}
 
         .. automodule:: gymnos.envs.{name}
-        
+
         .. prompt:: bash
-        
+
             pip install gymnos[envs.{name}]
-        
+
         Usage
         ***********
 

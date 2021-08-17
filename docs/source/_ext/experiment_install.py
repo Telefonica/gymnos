@@ -38,7 +38,7 @@ class ExperimentInstallDirective(SphinxDirective):
 
         rst_content = inspect.cleandoc(f"""
         .. prompt:: bash
-        
+
             pip install gymnos[{extras_str}]
         """)
 

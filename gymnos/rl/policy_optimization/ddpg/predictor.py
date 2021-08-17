@@ -6,8 +6,8 @@
 
 from stable_baselines3 import DDPG
 
+from ....base import BasePredictor
 from ...common.sb3_mixins import SB3Predictor
-from ....base import BasePredictor, MLFlowRun
 
 
 class DDPGPredictor(SB3Predictor, BasePredictor):

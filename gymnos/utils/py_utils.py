@@ -55,6 +55,6 @@ def rreplace(s, old, new):
     """
     try:
         place = s.rindex(old)
-        return ''.join((s[:place],new,s[place+len(old):]))
+        return ''.join((s[:place], new, s[place + len(old):]))
     except ValueError:
         return s

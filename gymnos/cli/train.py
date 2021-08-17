@@ -15,7 +15,6 @@ import logging
 import importlib
 
 from rich.panel import Panel
-from omegaconf import OmegaConf
 from collections import defaultdict
 from distutils.util import strtobool
 from omegaconf import DictConfig, open_dict
@@ -30,7 +29,7 @@ from .utils import (print_requirements, iterate_config, print_install_requiremen
                     print_packages, get_missing_packages, print_install_packages, install_packages_with_apt,
                     install_requirements, install_packages_with_cli, find_env_module)
 from ..config import get_gymnos_home
-from ..utils.py_utils import remove_prefix, rreplace
+from ..utils.py_utils import remove_prefix
 from ..utils.pypi_utils import get_missing_dependencies
 
 

@@ -49,7 +49,7 @@ class RandomTrainer(RandomHydraConf, BaseRLTrainer):
                     "train/total_timesteps": timestep,
                     "train/total_episodes": episode,
                     "train/ep_reward": np.mean(metrics["ep_reward"]),
-                    "train/ep_length":  np.mean(metrics["ep_length"])
+                    "train/ep_length": np.mean(metrics["ep_length"])
                 }
 
                 for metric_name, metric_value in log_metrics.items():
