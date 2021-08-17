@@ -126,6 +126,10 @@ def main(config: DictConfig):
         install_requirements(pip_dependencies)
 
     trainer_cls = pydoc.locate(config.trainer["_target_"])
+
+    if trainer_cls is None:
+        raise ImportError(f"Error importing {config.trainer['_target_']}")
+
     if issubclass(trainer_cls, BaseRLTrainer) and "env" not in config:
         with open_dict(config):
             config.env = "???"  # Make env mandatory
@@ -195,8 +199,11 @@ def main(config: DictConfig):
             import gym
 
             env_id = str(uuid.uuid4())[:8] + "-v0"
-            kwargs = OmegaConf.to_container(config.env)
-            entry_point = rreplace(kwargs.pop("_target_"), ".", ":")
+            # kwargs = OmegaConf.to_container(config.env)
+            # entry_point = rreplace(kwargs.pop("_target_"), ".", ":")
+
+            def entry_point():
+                return instantiate(config.env)
 
             gym.envs.register(
                 id=env_id,
@@ -204,7 +211,6 @@ def main(config: DictConfig):
                 max_episode_steps=getattr(env_meta_module, "max_episode_steps", None),
                 reward_threshold=getattr(env_meta_module, "reward_threshold", None),
                 nondeterministic=getattr(env_meta_module, "nondeterministic", False),
-                kwargs=kwargs,
             )
 
             trainer.prepare_env(env_id)
