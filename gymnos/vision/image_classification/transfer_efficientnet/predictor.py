@@ -63,7 +63,7 @@ class TransferEfficientNetPredictor(BasePredictor):
         self.model.to(self.device).eval()
 
     @torch.no_grad()
-    def predict(self, image: Union[np.ndarray, PIL.Image.Image, str]):
+    def predict(self, image: Union[np.ndarray, PIL.Image.Image, str]) -> TransferEfficientNetPrediction:
         """
         Predict class for image.
 
