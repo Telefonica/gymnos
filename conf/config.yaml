@@ -10,6 +10,7 @@ verbose: true
 install: false
 
 mlflow:
+    disable: false
     run_name: null
     experiment_name: Default
     log_trainer_params: true

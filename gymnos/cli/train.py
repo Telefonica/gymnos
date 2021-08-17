@@ -11,6 +11,9 @@ import rich
 import mlflow
 import pydoc
 import hydra
+import shutil
+import atexit
+import tempfile
 import logging
 import importlib
 
@@ -140,7 +143,12 @@ def main(config: DictConfig):
             config.dataset = "???"  # Make dataset mandatory
         _ = config.dataset  # Raise error for mandatory dataset key value
 
-    if "MLFLOW_TRACKING_URI" in os.environ:
+    if config.mlflow.disable:
+        tempfolder = tempfile.mkdtemp()
+        atexit.register(shutil.rmtree, tempfolder)
+
+        tracking_uri = os.path.join(tempfolder, "mlruns")
+    elif "MLFLOW_TRACKING_URI" in os.environ:
         tracking_uri = os.environ["MLFLOW_TRACKING_URI"]
     else:
         tracking_uri = "file://" + os.path.join(get_original_cwd(), "mlruns")
@@ -158,16 +166,18 @@ def main(config: DictConfig):
     mlflow.set_experiment(config.mlflow.experiment_name)
 
     with mlflow.start_run(run_name=config.mlflow.run_name) as run:
-        logger.info(f"MLFlow run id: {run.info.run_id}")
+        if not config.mlflow.disable:
+            logger.info(f"MLFlow run id: {run.info.run_id}")
 
         predictors = find_predictors(model_module)
 
         # Show usage
         usage_strs = []
-        for predictor in predictors:
-            import_str = f"from {model_module.__name__} import {predictor}"
-            use_str = f'predictor = {predictor}.from_pretrained("{run.info.run_id}")'
-            usage_strs.append(import_str + "\n" + use_str)
+        if not config.mlflow.disable:
+            for predictor in predictors:
+                import_str = f"from {model_module.__name__} import {predictor}"
+                use_str = f'predictor = {predictor}.from_pretrained("{run.info.run_id}")'
+                usage_strs.append(import_str + "\n" + use_str)
 
         if config.verbose:
             usage_str = "\nor\n".join(usage_strs)
