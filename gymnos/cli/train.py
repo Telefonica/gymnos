@@ -25,12 +25,13 @@ from hydra_plugins.sofia_launcher import SOFIALauncherHydraConf
 
 from ..dummy import DummyDataset
 from ..base import BaseTrainer, BaseRLTrainer
-from .utils import (print_requirements, iterate_config, get_missing_requirements, print_install_requirements,
+from .utils import (print_requirements, iterate_config, print_install_requirements,
                     iter_modules, find_predictors, find_model_module, find_dataset_module, print_config,
                     print_packages, get_missing_packages, print_install_packages, install_packages_with_apt,
                     install_requirements, install_packages_with_cli, find_env_module)
 from ..config import get_gymnos_home
 from ..utils.py_utils import remove_prefix, rreplace
+from ..utils.pypi_utils import get_missing_dependencies
 
 
 cs = ConfigStore.instance()
@@ -102,7 +103,7 @@ def main(config: DictConfig):
         print_requirements(pip_dependencies)
 
         missing_packages = get_missing_packages(apt_dependencies)
-        missing_dependencies = get_missing_requirements(pip_dependencies)
+        missing_dependencies = get_missing_dependencies(pip_dependencies)
 
         if sys.platform == "linux":
             if missing_packages is None:

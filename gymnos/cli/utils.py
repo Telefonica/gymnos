@@ -11,9 +11,8 @@ import glob
 import json
 import pkgutil
 import pathlib
-import importlib
 import warnings
-
+import importlib
 import rich.tree
 import subprocess
 import rich.syntax
@@ -21,6 +20,7 @@ import pkg_resources
 
 from ..base import BasePredictor
 from ..utils.py_utils import remove_suffix
+from ..utils.pypi_utils import parse_egg_from_vcs
 
 from rich.text import Text
 from rich.panel import Panel
@@ -62,16 +62,6 @@ def print_config(
             tree.add(f"{field}: {branch_content}")
 
     rich.print(Panel(tree))
-
-
-def get_missing_requirements(dependencies):
-    missing_dependencies = []
-    for dependency in dependencies:
-        try:
-            pkg_resources.require(dependency)
-        except pkg_resources.DistributionNotFound:
-            missing_dependencies.append(dependency)
-    return missing_dependencies
 
 
 def install_requirements(requirements):
@@ -190,6 +180,9 @@ def print_requirements(dependencies, autocolor=True):
     tree = rich.tree.Tree(":package: PIP DEPENDENCIES")
     for dependency in dependencies:
         text = dependency
+
+        if dependency.startswith("git+"):
+            dependency = parse_egg_from_vcs(dependency)
 
         if autocolor:
             try:
