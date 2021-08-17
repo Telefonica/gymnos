@@ -635,7 +635,7 @@ def env(name):
         TODO: Docstring for {title}
         \"""
         
-        from ....utils import lazy_import
+        from ...utils import lazy_import
 
         # Public API
         {classname} = lazy_import("gymnos.envs.{name}.env.{classname}")
