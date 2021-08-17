@@ -1,0 +1,15 @@
+# @package _global_
+# TODO: description about experiment
+
+defaults:
+    - override /trainer: rl.policy_optimization.a2c
+    - override /env: ple
+
+trainer:
+    policy: CNN
+    num_train_timesteps: 20_00_000
+    num_envs: 12
+
+env:
+    name: Snake
+    frame_stack: 4
