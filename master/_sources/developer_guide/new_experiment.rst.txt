@@ -1,7 +1,7 @@
 New experiment
 ==============================
 
-In this tutorial we will create a new experiment for image classification using :ref:`vision.image_classification.transfer_efficientnet__trainer` as the trainer and :ref:`dogs_vs_cats` as the dataset.
+In this tutorial we will create a new experiment for image classification using :ref:`vision.image_classification.transfer_efficientnet__trainer` as the trainer and :ref:`datasets.dogs_vs_cats` as the dataset.
 
 The name of the experiment will be ``my_experiment``.
 
@@ -10,6 +10,14 @@ First of all, we will run the command :ref:`gymnos-create`:
 .. prompt:: bash
 
     gymnos-create experiment my_experiment
+
+.. tip::
+    If you're creating an experiment for an RL model, you must append the ``--rl`` flag:
+
+    .. prompt:: bash
+
+        gymnos-create experiment --rl my_experiment
+
 
 This will create the file ``conf/experiment/my_experiment.yaml``.
 
@@ -48,7 +56,7 @@ Now, we will override the trainer with :ref:`vision.image_classification.transfe
 
     - override /trainer: vision.image_classification.transfer_efficientnet
 
-Then, we will override the dataset with :ref:`dogs_vs_cats`
+Then, we will override the dataset with :ref:`datasets.dogs_vs_cats`
 
 .. code-block:: yaml
     :lineno-start: 6
@@ -64,7 +72,7 @@ Now, we can override any :ref:`vision.image_classification.transfer_efficientnet
         classes: [dog, cat]
         batch_size: 64
 
-We can also override any :ref:`dogs_vs_cats` parameter:
+We can also override any :ref:`datasets.dogs_vs_cats` parameter:
 
 .. code-block:: yaml
     :lineno-start: 11

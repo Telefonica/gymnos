@@ -103,10 +103,23 @@
 <li class="toctree-l1"><a class="reference internal" href="datasets/dogs_vs_cats.html">Dogs vs Cats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="datasets/raccoon_detection.html">Raccoon Detection</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Envs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="envs/atari.html">Atari</a></li>
+<li class="toctree-l1"><a class="reference internal" href="envs/box2d.html">Box2d</a></li>
+<li class="toctree-l1"><a class="reference internal" href="envs/gym.html">Gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="envs/ple.html">PLE</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Vision</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="vision/image_classification/index.html">Image classification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vision/object_detection/index.html">Object Detection</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reinforcement Learning</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="rl/misc/index.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rl/policy_optimization/index.html">Policy Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rl/value_optimization/index.html">Value Optimization</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">CLI</span></p>
 <ul>
@@ -124,6 +137,9 @@
 <li class="toctree-l1"><a class="reference internal" href="experiments/classify_dogs_vs_cats.html">Classify dogs vs cats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="experiments/detect_coins.html">Detect Coins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="experiments/detect_raccoons.html">Detect Raccoons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiments/learn_cartpole.html">Learn Cartpole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiments/learn_lunar_lander.html">Learn Lunar Lander</a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiments/learn_pong.html">Learn Cartpole</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Services</span></p>
 <ul>
@@ -133,6 +149,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="utils/data_utils.html">Data utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils/py_utils.html">Python utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils/pypi_utils.html">PyPi utilities</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
 <ul>
@@ -211,6 +228,8 @@
 
 <div class="genindex-jumpbox">
  <a href="#Symbols"><strong>Symbols</strong></a>
+ | <a href="#A"><strong>A</strong></a>
+ | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
@@ -258,12 +277,41 @@
 </li>
       </ul></li>
       <li>
+    --rl
+
+      <ul>
+        <li><a href="cli/create.html#cmdoption-gymnos-create-experiment-rl">gymnos-create-experiment command line option</a>
+</li>
+      </ul></li>
+      <li>
     --username_or_email &lt;username_or_email&gt;
 
       <ul>
         <li><a href="cli/login.html#cmdoption-gymnos-login-username_or_email">gymnos-login command line option</a>
 </li>
       </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="A">A</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="rl/policy_optimization/a2c.html#gymnos.rl.policy_optimization.a2c.predictor.A2CPredictor">A2CPredictor (class in gymnos.rl.policy_optimization.a2c.predictor)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="rl/policy_optimization/a2c.html#gymnos.rl.policy_optimization.a2c.trainer.A2CTrainer">A2CTrainer (class in gymnos.rl.policy_optimization.a2c.trainer)</a>
+</li>
+      <li><a href="utils/pypi_utils.html#gymnos.utils.pypi_utils.assert_dependencies">assert_dependencies() (in module gymnos.utils.pypi_utils)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="B">B</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="envs/box2d.html#gymnos.envs.box2d.env.Box2d">Box2d (class in gymnos.envs.box2d.env)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -278,6 +326,10 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="rl/policy_optimization/ddpg.html#gymnos.rl.policy_optimization.ddpg.predictor.DDPGPredictor">DDPGPredictor (class in gymnos.rl.policy_optimization.ddpg.predictor)</a>
+</li>
+      <li><a href="rl/policy_optimization/ddpg.html#gymnos.rl.policy_optimization.ddpg.trainer.DDPGTrainer">DDPGTrainer (class in gymnos.rl.policy_optimization.ddpg.trainer)</a>
+</li>
       <li><a href="datasets/dogs_vs_cats.html#gymnos.datasets.dogs_vs_cats.dataset.DogsVsCats">DogsVsCats (class in gymnos.datasets.dogs_vs_cats.dataset)</a>
 </li>
       <li>
@@ -290,6 +342,10 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="services/sofia.html#gymnos.services.sofia.SOFIA.download_dataset">download_dataset() (SOFIA class method)</a>
+</li>
+      <li><a href="rl/value_optimization/dqn.html#gymnos.rl.value_optimization.dqn.predictor.DQNPredictor">DQNPredictor (class in gymnos.rl.value_optimization.dqn.predictor)</a>
+</li>
+      <li><a href="rl/value_optimization/dqn.html#gymnos.rl.value_optimization.dqn.trainer.DQNTrainer">DQNTrainer (class in gymnos.rl.value_optimization.dqn.trainer)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -305,6 +361,8 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="envs/gym.html#gymnos.envs.gym.env.Gym">Gym (class in gymnos.envs.gym.env)</a>
+</li>
       <li>
     gymnos-create-dataset command line option
 
@@ -313,9 +371,18 @@
 </li>
       </ul></li>
       <li>
+    gymnos-create-env command line option
+
+      <ul>
+        <li><a href="cli/create.html#cmdoption-gymnos-create-env-arg-NAME">NAME</a>
+</li>
+      </ul></li>
+      <li>
     gymnos-create-experiment command line option
 
       <ul>
+        <li><a href="cli/create.html#cmdoption-gymnos-create-experiment-rl">--rl</a>
+</li>
         <li><a href="cli/create.html#cmdoption-gymnos-create-experiment-arg-NAME">NAME</a>
 </li>
       </ul></li>
@@ -357,8 +424,6 @@
         <li><a href="datasets/coins_detection.html#module-gymnos.datasets.coins_detection">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     gymnos.datasets.dogs_vs_cats
 
@@ -374,6 +439,106 @@
 </li>
       </ul></li>
       <li>
+    gymnos.envs.atari
+
+      <ul>
+        <li><a href="envs/atari.html#module-gymnos.envs.atari">module</a>
+</li>
+      </ul></li>
+      <li>
+    gymnos.envs.box2d
+
+      <ul>
+        <li><a href="envs/box2d.html#module-gymnos.envs.box2d">module</a>
+</li>
+      </ul></li>
+      <li>
+    gymnos.envs.gym
+
+      <ul>
+        <li><a href="envs/gym.html#module-gymnos.envs.gym">module</a>
+</li>
+      </ul></li>
+      <li>
+    gymnos.envs.ple
+
+      <ul>
+        <li><a href="envs/ple.html#module-gymnos.envs.ple">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    gymnos.rl.misc
+
+      <ul>
+        <li><a href="rl/misc/index.html#module-gymnos.rl.misc">module</a>
+</li>
+      </ul></li>
+      <li>
+    gymnos.rl.misc.random
+
+      <ul>
+        <li><a href="rl/misc/random.html#module-gymnos.rl.misc.random">module</a>
+</li>
+      </ul></li>
+      <li>
+    gymnos.rl.policy_optimization
+
+      <ul>
+        <li><a href="rl/policy_optimization/index.html#module-gymnos.rl.policy_optimization">module</a>
+</li>
+      </ul></li>
+      <li>
+    gymnos.rl.policy_optimization.a2c
+
+      <ul>
+        <li><a href="rl/policy_optimization/a2c.html#module-gymnos.rl.policy_optimization.a2c">module</a>
+</li>
+      </ul></li>
+      <li>
+    gymnos.rl.policy_optimization.ddpg
+
+      <ul>
+        <li><a href="rl/policy_optimization/ddpg.html#module-gymnos.rl.policy_optimization.ddpg">module</a>
+</li>
+      </ul></li>
+      <li>
+    gymnos.rl.policy_optimization.ppo
+
+      <ul>
+        <li><a href="rl/policy_optimization/ppo.html#module-gymnos.rl.policy_optimization.ppo">module</a>
+</li>
+      </ul></li>
+      <li>
+    gymnos.rl.policy_optimization.sac
+
+      <ul>
+        <li><a href="rl/policy_optimization/sac.html#module-gymnos.rl.policy_optimization.sac">module</a>
+</li>
+      </ul></li>
+      <li>
+    gymnos.rl.policy_optimization.td3
+
+      <ul>
+        <li><a href="rl/policy_optimization/td3.html#module-gymnos.rl.policy_optimization.td3">module</a>
+</li>
+      </ul></li>
+      <li>
+    gymnos.rl.value_optimization
+
+      <ul>
+        <li><a href="rl/value_optimization/index.html#module-gymnos.rl.value_optimization">module</a>
+</li>
+      </ul></li>
+      <li>
+    gymnos.rl.value_optimization.dqn
+
+      <ul>
+        <li><a href="rl/value_optimization/dqn.html#module-gymnos.rl.value_optimization.dqn">module</a>
+</li>
+      </ul></li>
+      <li>
     gymnos.utils.data_utils
 
       <ul>
@@ -385,6 +550,13 @@
 
       <ul>
         <li><a href="utils/py_utils.html#module-gymnos.utils.py_utils">module</a>
+</li>
+      </ul></li>
+      <li>
+    gymnos.utils.pypi_utils
+
+      <ul>
+        <li><a href="utils/pypi_utils.html#module-gymnos.utils.pypi_utils">module</a>
 </li>
       </ul></li>
       <li>
@@ -438,9 +610,39 @@
 </li>
         <li><a href="datasets/raccoon_detection.html#module-gymnos.datasets.raccoon_detection">gymnos.datasets.raccoon_detection</a>
 </li>
+        <li><a href="envs/atari.html#module-gymnos.envs.atari">gymnos.envs.atari</a>
+</li>
+        <li><a href="envs/box2d.html#module-gymnos.envs.box2d">gymnos.envs.box2d</a>
+</li>
+        <li><a href="envs/gym.html#module-gymnos.envs.gym">gymnos.envs.gym</a>
+</li>
+        <li><a href="envs/ple.html#module-gymnos.envs.ple">gymnos.envs.ple</a>
+</li>
+        <li><a href="rl/misc/index.html#module-gymnos.rl.misc">gymnos.rl.misc</a>
+</li>
+        <li><a href="rl/misc/random.html#module-gymnos.rl.misc.random">gymnos.rl.misc.random</a>
+</li>
+        <li><a href="rl/policy_optimization/index.html#module-gymnos.rl.policy_optimization">gymnos.rl.policy_optimization</a>
+</li>
+        <li><a href="rl/policy_optimization/a2c.html#module-gymnos.rl.policy_optimization.a2c">gymnos.rl.policy_optimization.a2c</a>
+</li>
+        <li><a href="rl/policy_optimization/ddpg.html#module-gymnos.rl.policy_optimization.ddpg">gymnos.rl.policy_optimization.ddpg</a>
+</li>
+        <li><a href="rl/policy_optimization/ppo.html#module-gymnos.rl.policy_optimization.ppo">gymnos.rl.policy_optimization.ppo</a>
+</li>
+        <li><a href="rl/policy_optimization/sac.html#module-gymnos.rl.policy_optimization.sac">gymnos.rl.policy_optimization.sac</a>
+</li>
+        <li><a href="rl/policy_optimization/td3.html#module-gymnos.rl.policy_optimization.td3">gymnos.rl.policy_optimization.td3</a>
+</li>
+        <li><a href="rl/value_optimization/index.html#module-gymnos.rl.value_optimization">gymnos.rl.value_optimization</a>
+</li>
+        <li><a href="rl/value_optimization/dqn.html#module-gymnos.rl.value_optimization.dqn">gymnos.rl.value_optimization.dqn</a>
+</li>
         <li><a href="utils/data_utils.html#module-gymnos.utils.data_utils">gymnos.utils.data_utils</a>
 </li>
         <li><a href="utils/py_utils.html#module-gymnos.utils.py_utils">gymnos.utils.py_utils</a>
+</li>
+        <li><a href="utils/pypi_utils.html#module-gymnos.utils.pypi_utils">gymnos.utils.pypi_utils</a>
 </li>
         <li><a href="vision/image_classification/index.html#module-gymnos.vision.image_classification">gymnos.vision.image_classification</a>
 </li>
@@ -463,6 +665,8 @@
       <ul>
         <li><a href="cli/create.html#cmdoption-gymnos-create-dataset-arg-NAME">gymnos-create-dataset command line option</a>
 </li>
+        <li><a href="cli/create.html#cmdoption-gymnos-create-env-arg-NAME">gymnos-create-env command line option</a>
+</li>
         <li><a href="cli/create.html#cmdoption-gymnos-create-experiment-arg-NAME">gymnos-create-experiment command line option</a>
 </li>
         <li><a href="cli/create.html#cmdoption-gymnos-create-model-arg-NAME">gymnos-create-model command line option</a>
@@ -474,9 +678,25 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="vision/image_classification/transfer_efficientnet.html#gymnos.vision.image_classification.transfer_efficientnet.predictor.TransferEfficientNetPredictor.predict">predict() (TransferEfficientNetPredictor method)</a>
+      <li><a href="rl/policy_optimization/ppo.html#gymnos.rl.policy_optimization.ppo.predictor.PPOPredictor">PPOPredictor (class in gymnos.rl.policy_optimization.ppo.predictor)</a>
+</li>
+      <li><a href="rl/policy_optimization/ppo.html#gymnos.rl.policy_optimization.ppo.trainer.PPOTrainer">PPOTrainer (class in gymnos.rl.policy_optimization.ppo.trainer)</a>
+</li>
+      <li><a href="rl/policy_optimization/a2c.html#gymnos.rl.policy_optimization.a2c.predictor.A2CPredictor.predict">predict() (A2CPredictor method)</a>
 
       <ul>
+        <li><a href="rl/policy_optimization/ddpg.html#gymnos.rl.policy_optimization.ddpg.predictor.DDPGPredictor.predict">(DDPGPredictor method)</a>
+</li>
+        <li><a href="rl/value_optimization/dqn.html#gymnos.rl.value_optimization.dqn.predictor.DQNPredictor.predict">(DQNPredictor method)</a>
+</li>
+        <li><a href="rl/policy_optimization/ppo.html#gymnos.rl.policy_optimization.ppo.predictor.PPOPredictor.predict">(PPOPredictor method)</a>
+</li>
+        <li><a href="rl/policy_optimization/sac.html#gymnos.rl.policy_optimization.sac.predictor.SACPredictor.predict">(SACPredictor method)</a>
+</li>
+        <li><a href="rl/policy_optimization/td3.html#gymnos.rl.policy_optimization.td3.predictor.TD3Predictor.predict">(TD3Predictor method)</a>
+</li>
+        <li><a href="vision/image_classification/transfer_efficientnet.html#gymnos.vision.image_classification.transfer_efficientnet.predictor.TransferEfficientNetPredictor.predict">(TransferEfficientNetPredictor method)</a>
+</li>
         <li><a href="vision/object_detection/yolov4.html#gymnos.vision.object_detection.yolov4.predictor.Yolov4Predictor.predict">(Yolov4Predictor method)</a>
 </li>
       </ul></li>
@@ -488,11 +708,17 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="datasets/raccoon_detection.html#gymnos.datasets.raccoon_detection.dataset.RaccoonDetection">RaccoonDetection (class in gymnos.datasets.raccoon_detection.dataset)</a>
 </li>
+      <li><a href="rl/misc/random.html#gymnos.rl.misc.random.predictor.RandomPredictor">RandomPredictor (class in gymnos.rl.misc.random.predictor)</a>
+</li>
+      <li><a href="rl/misc/random.html#gymnos.rl.misc.random.trainer.RandomTrainer">RandomTrainer (class in gymnos.rl.misc.random.trainer)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="utils/py_utils.html#gymnos.utils.py_utils.remove_prefix">remove_prefix() (in module gymnos.utils.py_utils)</a>
 </li>
       <li><a href="utils/py_utils.html#gymnos.utils.py_utils.remove_suffix">remove_suffix() (in module gymnos.utils.py_utils)</a>
+</li>
+      <li><a href="utils/py_utils.html#gymnos.utils.py_utils.rreplace">rreplace() (in module gymnos.utils.py_utils)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -500,6 +726,12 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="rl/policy_optimization/sac.html#gymnos.rl.policy_optimization.sac.predictor.SACPredictor">SACPredictor (class in gymnos.rl.policy_optimization.sac.predictor)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="rl/policy_optimization/sac.html#gymnos.rl.policy_optimization.sac.trainer.SACTrainer">SACTrainer (class in gymnos.rl.policy_optimization.sac.trainer)</a>
+</li>
       <li><a href="services/sofia.html#gymnos.services.sofia.SOFIA">SOFIA (class in gymnos.services.sofia)</a>
 </li>
   </ul></td>
@@ -508,10 +740,14 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="vision/image_classification/transfer_efficientnet.html#gymnos.vision.image_classification.transfer_efficientnet.predictor.TransferEfficientNetPredictor">TransferEfficientNetPredictor (class in gymnos.vision.image_classification.transfer_efficientnet.predictor)</a>
+      <li><a href="rl/policy_optimization/td3.html#gymnos.rl.policy_optimization.td3.predictor.TD3Predictor">TD3Predictor (class in gymnos.rl.policy_optimization.td3.predictor)</a>
+</li>
+      <li><a href="rl/policy_optimization/td3.html#gymnos.rl.policy_optimization.td3.trainer.TD3Trainer">TD3Trainer (class in gymnos.rl.policy_optimization.td3.trainer)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="vision/image_classification/transfer_efficientnet.html#gymnos.vision.image_classification.transfer_efficientnet.predictor.TransferEfficientNetPredictor">TransferEfficientNetPredictor (class in gymnos.vision.image_classification.transfer_efficientnet.predictor)</a>
+</li>
       <li><a href="vision/image_classification/transfer_efficientnet.html#gymnos.vision.image_classification.transfer_efficientnet.trainer.TransferEfficientNetTrainer">TransferEfficientNetTrainer (class in gymnos.vision.image_classification.transfer_efficientnet.trainer)</a>
 </li>
   </ul></td>

@@ -104,10 +104,23 @@
 <li class="toctree-l1"><a class="reference internal" href="../datasets/dogs_vs_cats.html">Dogs vs Cats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../datasets/raccoon_detection.html">Raccoon Detection</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Envs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../envs/atari.html">Atari</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../envs/box2d.html">Box2d</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../envs/gym.html">Gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../envs/ple.html">PLE</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Vision</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../vision/image_classification/index.html">Image classification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../vision/object_detection/index.html">Object Detection</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reinforcement Learning</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../rl/misc/index.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rl/policy_optimization/index.html">Policy Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rl/value_optimization/index.html">Value Optimization</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">CLI</span></p>
 <ul class="current">
@@ -116,6 +129,7 @@
 <li class="toctree-l1"><a class="reference internal" href="upload.html">gymnos-upload</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">gymnos-create</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#gymnos-create-dataset">dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gymnos-create-env">env</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#gymnos-create-experiment">experiment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#gymnos-create-model">model</a></li>
 </ul>
@@ -130,6 +144,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../experiments/classify_dogs_vs_cats.html">Classify dogs vs cats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../experiments/detect_coins.html">Detect Coins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../experiments/detect_raccoons.html">Detect Raccoons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/learn_cartpole.html">Learn Cartpole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/learn_lunar_lander.html">Learn Lunar Lander</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/learn_pong.html">Learn Cartpole</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Services</span></p>
 <ul>
@@ -139,6 +156,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../utils/data_utils.html">Data utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../utils/py_utils.html">Python utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils/pypi_utils.html">PyPi utilities</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
 <ul>
@@ -233,12 +251,32 @@
 </dd></dl>
 
 </div>
+<div class="section" id="gymnos-create-env">
+<h2>env<a class="headerlink" href="#gymnos-create-env" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>gymnos-create env <span class="o">[</span>OPTIONS<span class="o">]</span> NAME
+</pre></div>
+</div>
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-gymnos-create-env-arg-NAME">
+<span id="cmdoption-gymnos-create-env-arg-name"></span><span class="sig-name descname"><span class="pre">NAME</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-gymnos-create-env-arg-NAME" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</div>
 <div class="section" id="gymnos-create-experiment">
 <h2>experiment<a class="headerlink" href="#gymnos-create-experiment" title="Permalink to this headline">¶</a></h2>
 <p>Create new experiment</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>gymnos-create experiment <span class="o">[</span>OPTIONS<span class="o">]</span> NAME
 </pre></div>
 </div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-gymnos-create-experiment-rl">
+<span class="sig-name descname"><span class="pre">--rl</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-gymnos-create-experiment-rl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether or not is an RL experiment</p>
+</dd></dl>
+
 <p class="rubric">Arguments</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-gymnos-create-experiment-arg-NAME">

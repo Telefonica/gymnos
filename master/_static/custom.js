@@ -88,7 +88,7 @@ function editHydraParamsTable() {
         }
     })
 
-    Array.from(document.querySelectorAll(".field-list li p")).forEach(elem => {
+    Array.from(document.querySelectorAll(".gymnos-hydra .field-list li p")).forEach(elem => {
         const paramNameElem = elem.querySelector("strong")
 
         if (!paramNameElem) {

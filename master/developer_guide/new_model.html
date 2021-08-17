@@ -103,10 +103,23 @@
 <li class="toctree-l1"><a class="reference internal" href="../datasets/dogs_vs_cats.html">Dogs vs Cats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../datasets/raccoon_detection.html">Raccoon Detection</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Envs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../envs/atari.html">Atari</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../envs/box2d.html">Box2d</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../envs/gym.html">Gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../envs/ple.html">PLE</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Vision</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../vision/image_classification/index.html">Image classification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../vision/object_detection/index.html">Object Detection</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reinforcement Learning</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../rl/misc/index.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rl/policy_optimization/index.html">Policy Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rl/value_optimization/index.html">Value Optimization</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">CLI</span></p>
 <ul>
@@ -124,6 +137,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../experiments/classify_dogs_vs_cats.html">Classify dogs vs cats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../experiments/detect_coins.html">Detect Coins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../experiments/detect_raccoons.html">Detect Raccoons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/learn_cartpole.html">Learn Cartpole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/learn_lunar_lander.html">Learn Lunar Lander</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/learn_pong.html">Learn Cartpole</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Services</span></p>
 <ul>
@@ -133,6 +149,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../utils/data_utils.html">Data utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../utils/py_utils.html">Python utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils/pypi_utils.html">PyPi utilities</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
 <ul class="current">
@@ -148,7 +165,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#defining-the-trainer-parameters">Defining the trainer parameters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#implementing-the-trainer">Implementing the trainer</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#constructor">Constructor</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#setup">Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#prepare-data">Prepare data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#train">Train</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#test">Test</a></li>
 </ul>
@@ -366,7 +383,7 @@ span.prompt1:before {
 <p>Once the docstring has been written, we will implement the following methods:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">setup(root)</span></code>: optional, method called with data directory as parameter</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">prepare_data(root)</span></code>: optional, method called with data directory as parameter</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">train()</span></code>: required, execute training for model</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">test()</span></code>: optional, execute testing for model. This method will be called after training.</p></li>
 </ul>
@@ -383,15 +400,15 @@ For any other variable you want to initialize, you can use the method <code clas
 </pre></div>
 </div>
 </div>
-<div class="section" id="setup">
-<h3>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="prepare-data">
+<h3>Prepare data<a class="headerlink" href="#prepare-data" title="Permalink to this headline">¶</a></h3>
 <p>This method will be called with the directory where data is stored.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">glob</span> <span class="kn">import</span> <span class="n">glob</span>
 
 <span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">MyModelTrainer</span><span class="p">(</span><span class="n">MyModelHydraConf</span><span class="p">,</span> <span class="n">BaseTrainer</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="n">root</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">prepare_data</span><span class="p">(</span><span class="n">root</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_audio_fpaths</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;*.wav&quot;</span><span class="p">))</span>  <span class="c1"># we will save all audio file paths</span>
 </pre></div>
 </div>
@@ -452,17 +469,9 @@ You must implement two methods:</p>
 <p>This method must implement the weight loading from the directory containing all artifacts saved by the trainer.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyModelPredictor</span><span class="p">(</span><span class="n">BasePredictor</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">artifacts_dir</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">DictConfig</span><span class="p">,</span> <span class="n">run</span><span class="p">:</span> <span class="n">MLFlowRun</span><span class="p">,</span> <span class="n">artifacts_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="c1"># Load model from artifacts directory</span>
 </pre></div>
-</div>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>You can access the original config from the trainer with the <code class="docutils literal notranslate"><span class="pre">info</span></code> property:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">artifacts_dir</span><span class="p">):</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">config</span>
-</pre></div>
-</div>
 </div>
 </div>
 <div class="section" id="predict">

@@ -100,14 +100,30 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Datasets</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Coins Detection</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Coins Detection</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="dogs_vs_cats.html">Dogs vs Cats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="raccoon_detection.html">Raccoon Detection</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Envs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../envs/atari.html">Atari</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../envs/box2d.html">Box2d</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../envs/gym.html">Gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../envs/ple.html">PLE</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Vision</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../vision/image_classification/index.html">Image classification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../vision/object_detection/index.html">Object Detection</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reinforcement Learning</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../rl/misc/index.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rl/policy_optimization/index.html">Policy Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rl/value_optimization/index.html">Value Optimization</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">CLI</span></p>
 <ul>
@@ -125,6 +141,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../experiments/classify_dogs_vs_cats.html">Classify dogs vs cats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../experiments/detect_coins.html">Detect Coins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../experiments/detect_raccoons.html">Detect Raccoons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/learn_cartpole.html">Learn Cartpole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/learn_lunar_lander.html">Learn Lunar Lander</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/learn_pong.html">Learn Cartpole</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Services</span></p>
 <ul>
@@ -134,6 +153,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../utils/data_utils.html">Data utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../utils/py_utils.html">Python utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils/pypi_utils.html">PyPi utilities</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
 <ul>
@@ -210,13 +230,16 @@
            <div itemprop="articleBody">
             
   <div class="section" id="module-gymnos.datasets.coins_detection">
-<span id="id1"></span><span id="coins-detection"></span><h1>Coins Detection<a class="headerlink" href="#module-gymnos.datasets.coins_detection" title="Permalink to this headline">¶</a></h1>
+<span id="coins-detection"></span><span id="datasets-coins-detection"></span><h1>Coins Detection<a class="headerlink" href="#module-gymnos.datasets.coins_detection" title="Permalink to this headline">¶</a></h1>
 <p>TODO: Docstring for Coins Detection</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><style type="text/css">
 span.prompt1:before {
   content: "$ ";
 }
-</style><span class="prompt1">gymnos.train <span class="nv">dataset</span><span class="o">=</span>coins_detection</span>
+</style><span class="prompt1">pip install gymnos<span class="o">[</span>datasets.coins_detection<span class="o">]</span></span>
+</pre></div></div><div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">gymnos.train <span class="nv">dataset</span><span class="o">=</span>coins_detection</span>
 </pre></div></div><dl class="py class gymnos-hydra">
 <dt class="sig sig-object py" id="gymnos.datasets.coins_detection.dataset.CoinsDetection">
 <em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">CoinsDetection</span></span><a class="headerlink" href="#gymnos.datasets.coins_detection.dataset.CoinsDetection" title="Permalink to this definition">¶</a></dt>
@@ -228,6 +251,7 @@ span.prompt1:before {
 </dl>
 </dd></dl>
 
+</div>
 </div>
 
 

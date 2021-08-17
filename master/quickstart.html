@@ -119,10 +119,23 @@
 <li class="toctree-l1"><a class="reference internal" href="datasets/dogs_vs_cats.html">Dogs vs Cats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="datasets/raccoon_detection.html">Raccoon Detection</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Envs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="envs/atari.html">Atari</a></li>
+<li class="toctree-l1"><a class="reference internal" href="envs/box2d.html">Box2d</a></li>
+<li class="toctree-l1"><a class="reference internal" href="envs/gym.html">Gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="envs/ple.html">PLE</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Vision</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="vision/image_classification/index.html">Image classification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vision/object_detection/index.html">Object Detection</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reinforcement Learning</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="rl/misc/index.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rl/policy_optimization/index.html">Policy Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rl/value_optimization/index.html">Value Optimization</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">CLI</span></p>
 <ul>
@@ -140,6 +153,9 @@
 <li class="toctree-l1"><a class="reference internal" href="experiments/classify_dogs_vs_cats.html">Classify dogs vs cats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="experiments/detect_coins.html">Detect Coins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="experiments/detect_raccoons.html">Detect Raccoons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiments/learn_cartpole.html">Learn Cartpole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiments/learn_lunar_lander.html">Learn Lunar Lander</a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiments/learn_pong.html">Learn Cartpole</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Services</span></p>
 <ul>
@@ -149,6 +165,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="utils/data_utils.html">Data utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils/py_utils.html">Python utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils/pypi_utils.html">PyPi utilities</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
 <ul>
@@ -270,7 +287,7 @@ span.prompt1:before {
 </pre></div></div></div>
 <div class="section" id="training">
 <h3><a class="toc-backref" href="#id5">Training</a><a class="headerlink" href="#training" title="Permalink to this headline">¶</a></h3>
-<p>First of all, we will train the model <a class="reference internal" href="vision/image_classification/transfer_efficientnet.html#vision-image-classification-transfer-efficientnet"><span class="std std-ref">Transfer Efficientnet</span></a> with the dataset <a class="reference internal" href="datasets/dogs_vs_cats.html#dogs-vs-cats"><span class="std std-ref">Dogs vs Cats</span></a> to classify dogs and cats images.</p>
+<p>First of all, we will train the model <a class="reference internal" href="vision/image_classification/transfer_efficientnet.html#vision-image-classification-transfer-efficientnet"><span class="std std-ref">Transfer Efficientnet</span></a> with the dataset <a class="reference internal" href="datasets/dogs_vs_cats.html#datasets-dogs-vs-cats"><span class="std std-ref">Dogs vs Cats</span></a> to classify dogs and cats images.</p>
 <p>We will use the command <code class="docutils literal notranslate"><span class="pre">gymnos-train</span></code> to do the training.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">gymnos-train <span class="nv">dataset</span><span class="o">=</span>dogs_vs_cats <span class="nv">trainer</span><span class="o">=</span>vision.image_classification.transfer_efficientnet trainer.classes<span class="o">=</span><span class="s2">&quot;[dog,cat]&quot;</span> trainer.num_epochs<span class="o">=</span><span class="m">1</span></span>
 </pre></div></div><p>Let’s split the command:</p>
