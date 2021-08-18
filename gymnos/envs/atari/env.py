@@ -12,11 +12,10 @@ from .utils import import_atari_roms
 from .wrappers import AtariWrapper, DiscreteActionsWrapper
 
 
-import_atari_roms()
-
-
 def Atari(id, use_wrapper=True, noop_max=30, frame_skip=4, screen_size=84, terminal_on_life_loss=False,
           frame_stack=0, include_actions=None, clip_reward=True):
+    import_atari_roms()
+
     env = gym.make(id)
 
     if use_wrapper:
