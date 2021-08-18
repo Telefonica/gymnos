@@ -31,6 +31,8 @@ jobs:
           echo "<meta http-equiv='refresh' content='0; url=./master/index.html'>"  >> docs/build/index.html
           echo "</head>"  >> docs/build/index.html
           echo "</html>"  >> docs/build/index.html
+      - name: Build meta
+        run: python scripts/build_meta.py docs/build/meta.yaml
       - name: Deploy to Github Pages 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
