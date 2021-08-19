@@ -20,11 +20,13 @@ SOFIA
         <p style='text-align: center'>&#11093;</p>
      -
      - SOFIA project name to associate training
+   * - device
+     - .. raw:: html
+
+        <p style='text-align: center'>&#11093;</p>
+     -
+     - Device to execute training. One of the following: ``"CPU"``, ``"GPU"``
    * - ref
      -
      - ``<HEAD>``
      - Gymnos release, branch or commit. It will be the environment where training will be executed. If command is executed on gymnos git directory, it will try to infer the current commit.
-   * - device
-     -
-     - ``"CPU"``
-     - Device to execute training. One of the following: ``"CPU"``, ``"GPU"``
