@@ -1,3 +1,5 @@
 [flake8]
 ignore = E221,W504
 max-line-length = 120
+per-file-ignores =
+    examples/*.py: E402
