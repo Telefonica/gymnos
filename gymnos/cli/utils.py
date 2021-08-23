@@ -335,8 +335,9 @@ def confirm_prompt(question: str) -> bool:
             print("Please use y/n or yes/no.")
 
 
-def iter_modules(fname):
-    root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+def iter_modules(fname, root=None):
+    if root is None:
+        root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
     for path in glob.iglob(os.path.join(root, "**", fname), recursive=True):
         module_path = os.path.relpath(path, root)
