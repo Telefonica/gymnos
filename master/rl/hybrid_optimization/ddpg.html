@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Value Optimization &mdash; gymnos  documentation</title>
+  <title>DDPG &mdash; gymnos  documentation</title>
   
 
   
@@ -46,9 +46,7 @@
 
     
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="DQN" href="dqn.html" />
-    <link rel="prev" title="PPO" href="../policy_optimization/ppo.html" /> 
+    <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -117,13 +115,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../vision/object_detection/index.html">Object Detection</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reinforcement Learning</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../misc/index.html">Miscellaneous</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../policy_optimization/index.html">Policy Optimization</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Value Optimization</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dqn.html">DQN</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../value_optimization/index.html">Value Optimization</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">CLI</span></p>
 <ul>
@@ -211,13 +206,13 @@
     
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Value Optimization</li>
+      <li>DDPG</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../../_sources/rl/value_optimization/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/rl/hybrid_optimization/ddpg.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -230,13 +225,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-gymnos.rl.value_optimization">
-<span id="value-optimization"></span><span id="rl-value-optimization"></span><h1>Value Optimization<a class="headerlink" href="#module-gymnos.rl.value_optimization" title="Permalink to this headline">¶</a></h1>
-<p>Models for Value Optimization</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="dqn.html">DQN</a></li>
+  <div class="section" id="ddpg">
+<span id="rl-policy-optimization-ddpg"></span><h1>DDPG<a class="headerlink" href="#ddpg" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-default notranslate"><div class="highlight"><pre><style type="text/css">
+span.prompt1:before {
+  content: "$ ";
+}
+</style><span class="prompt1">pip install gymnos<span class="o">[</span>rl.policy_optimization.ddpg<span class="o">]</span></span>
+</pre></div></div><div class="contents local topic" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#trainer" id="id1">Trainer</a></p></li>
+<li><p><a class="reference internal" href="#predictor" id="id2">Predictor</a></p></li>
 </ul>
+</div>
+<div class="section" id="trainer">
+<span id="rl-policy-optimization-ddpg-trainer"></span><h2><a class="toc-backref" href="#id1">Trainer</a><a class="headerlink" href="#trainer" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">gymnos-train <span class="nv">trainer</span><span class="o">=</span>rl.policy_optimization.ddpg</span>
+</pre></div></div></div>
+<div class="section" id="predictor">
+<span id="rl-policy-optimization-ddpg-predictor"></span><h2><a class="toc-backref" href="#id2">Predictor</a><a class="headerlink" href="#predictor" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gymnos.rl.policy_optimization.ddpg</span> <span class="kn">import</span> <span class="n">DDPGPredictor</span>
+
+<span class="n">DDPGPredictor</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;johndoe/models/pretrained&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+</div>
 </div>
 </div>
 
@@ -245,10 +257,6 @@
            
           </div>
           <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="dqn.html" class="btn btn-neutral float-right" title="DQN" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="../policy_optimization/ppo.html" class="btn btn-neutral float-left" title="PPO" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-    </div>
 
   <hr/>
 
@@ -288,7 +296,7 @@
     </dl>
     <dl>
       <dt>Branches</dt>
-      <dd><a href="index.html">master</a></dd>
+      <dd><a href="ddpg.html">master</a></dd>
     </dl>
   </div>
 </div>
