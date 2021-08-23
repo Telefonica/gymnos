@@ -210,7 +210,7 @@ class SOFIA:
             response = cls.get_dataset_files(dataset)
             response.raise_for_status()
 
-            files = response.json()
+            files = [file["name"] for file in response.json()]
         else:
             _ = cls.session()  # check credentials are stored
 
@@ -227,7 +227,7 @@ class SOFIA:
 
             for file in files:
                 download = p.download(
-                    url=urljoin(cls.domain, "api", "datasets", dataset.username, dataset.name, "files", file["name"],
+                    url=urljoin(cls.domain, "api", "datasets", dataset.username, dataset.name, "files", file,
                                 "download"),
                     headers={
                         "Authorization": f"Bearer {config.sofia.access_token}"
