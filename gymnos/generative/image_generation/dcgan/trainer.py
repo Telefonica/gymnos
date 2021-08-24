@@ -65,8 +65,8 @@ class DCGANTrainer(DCGANHydraConf, BaseTrainer):
             generator = nn.DataParallel(generator, range(self.gpus))
             discriminator = nn.DataParallel(discriminator, range(self.gpus))
 
-        generator_optimizer = optim.Adam(generator.parameters(), lr=1e-3)
-        discriminator_optimizer = optim.Adam(discriminator.parameters(), lr=1e-3)
+        generator_optimizer = optim.Adam(generator.parameters(), lr=self.generator_learning_rate)
+        discriminator_optimizer = optim.Adam(discriminator.parameters(), lr=self.discriminator_learning_rate)
 
         transform = build_transform()
 

@@ -21,6 +21,9 @@ class DCGANHydraConf:
     generator_depth: int = 64
     discriminator_depth: int = 64
     log_images_interval: Optional[int] = 5
+    generator_learning_rate: float = 1e-3
+    discriminator_learning_rate: float = 1e-3
+
     gpus: int = -1
 
     _target_: str = field(init=False, repr=False, default="gymnos.generative.image_generation.dcgan."
