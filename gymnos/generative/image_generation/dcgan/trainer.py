@@ -3,7 +3,7 @@
 #   Trainer
 #
 #
-
+import logging
 import os
 import mlflow
 import torch
@@ -30,9 +30,19 @@ from .networks import Generator, Discriminator
 def build_transform():
     return T.Compose([
         T.Resize(64),
+        T.CenterCrop(64),
         T.ToTensor(),
         T.Lambda(lambda img: (img * 2) - 1)  # normalize values between -1 and 1
     ])
+
+
+def weights_init(m):
+    classname = m.__class__.__name__
+    if classname.find('Conv') != -1:
+        nn.init.normal_(m.weight.data, 0.0, 0.02)
+    elif classname.find('BatchNorm') != -1:
+        nn.init.normal_(m.weight.data, 1.0, 0.02)
+        nn.init.constant_(m.bias.data, 0)
 
 
 @dataclass
@@ -50,9 +60,11 @@ class DCGANTrainer(DCGANHydraConf, BaseTrainer):
         assert self.num_epochs > 0
 
     def prepare_data(self, root):
-        filepaths = (glob(os.path.join(root, "*.png")) + glob(os.path.join(root, "*.jpg")) +
-                     glob(os.path.join(root, "*.gif")))
-        self._train_img_paths, self._test_img_paths = np.split(filepaths, [int(len(filepaths) * self.train_split)])
+        logger = logging.getLogger(__name__)
+
+        self._filepaths = (glob(os.path.join(root, "*.png")) + glob(os.path.join(root, "*.jpg")) +
+                           glob(os.path.join(root, "*.gif")))
+        logger.info(f"Found {len(self._filepaths)} images")
 
     def train(self):
         device = "cuda" if (torch.cuda.is_available() and self.gpus > 0) else "cpu"
@@ -65,12 +77,17 @@ class DCGANTrainer(DCGANHydraConf, BaseTrainer):
             generator = nn.DataParallel(generator, range(self.gpus))
             discriminator = nn.DataParallel(discriminator, range(self.gpus))
 
-        generator_optimizer = optim.Adam(generator.parameters(), lr=self.generator_learning_rate)
-        discriminator_optimizer = optim.Adam(discriminator.parameters(), lr=self.discriminator_learning_rate)
+        generator.apply(weights_init)
+        discriminator.apply(weights_init)
+
+        generator_optimizer = optim.Adam(generator.parameters(), lr=self.generator_learning_rate,
+                                         betas=(self.beta1, 0.999))
+        discriminator_optimizer = optim.Adam(discriminator.parameters(), lr=self.discriminator_learning_rate,
+                                             betas=(self.beta1, 0.999))
 
         transform = build_transform()
 
-        dataset = DCGANDataset(self._train_img_paths, transform)
+        dataset = DCGANDataset(self._filepaths, transform)
 
         loader = DataLoader(dataset, self.batch_size, num_workers=self.num_workers)
 
