@@ -133,3 +133,4 @@ class DCGANTrainer(DCGANHydraConf, BaseTrainer):
                 mlflow.log_image(val_img, f"epoch-{epoch}.png")
 
         torch.save(generator.state_dict(), f"generator_epoch={epoch}.pt")
+        mlflow.log_artifact(f"generator_epoch={epoch}.pt")
