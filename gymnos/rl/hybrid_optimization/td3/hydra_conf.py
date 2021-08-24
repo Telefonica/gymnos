@@ -40,5 +40,5 @@ class TD3HydraConf(SB3TrainerHydraConf):
     device: str = "auto"
     seed: int = 0
 
-    _target_: str = field(init=False, repr=False, default="gymnos.rl.policy_optimization.td3."
+    _target_: str = field(init=False, repr=False, default="gymnos.rl.hybrid_optimization.td3."
                                                           "trainer.TD3Trainer")

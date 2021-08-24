@@ -43,5 +43,5 @@ class SACHydraConf(SB3TrainerHydraConf):
     seed: int = 0
     device: str = "auto"
 
-    _target_: str = field(init=False, repr=False, default="gymnos.rl.policy_optimization.sac."
+    _target_: str = field(init=False, repr=False, default="gymnos.rl.hybrid_optimization.sac."
                                                           "trainer.SACTrainer")

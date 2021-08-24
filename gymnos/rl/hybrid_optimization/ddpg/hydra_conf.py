@@ -38,5 +38,5 @@ class DDPGHydraConf(SB3TrainerHydraConf):
     optimize_memory_usage: bool = False
     device: str = "auto"
 
-    _target_: str = field(init=False, repr=False, default="gymnos.rl.policy_optimization.ddpg."
+    _target_: str = field(init=False, repr=False, default="gymnos.rl.hybrid_optimization.ddpg."
                                                           "trainer.DDPGTrainer")
