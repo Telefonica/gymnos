@@ -122,7 +122,8 @@ class DCGANTrainer(DCGANHydraConf, BaseTrainer):
             mean_epoch_metrics = {k: v / len(loader) for k, v in running_metrics.items()}
             mlflow.log_metrics({**mean_epoch_metrics, "epoch": epoch})
 
-            if self.log_images_interval is not None and (epoch % self.log_images_interval) == 0:
+            if (epoch == self.num_epochs - 1) or (self.log_images_interval is not None and
+                                                  (epoch % self.log_images_interval) == 0):
                 with torch.no_grad():
                     fake_imgs = generator(noise)
 
