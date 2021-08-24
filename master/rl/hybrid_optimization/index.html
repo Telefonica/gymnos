@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Random &mdash; gymnos  documentation</title>
+  <title>Hybrid Optimization &mdash; gymnos  documentation</title>
   
 
   
@@ -47,8 +47,8 @@
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Policy Optimization" href="../policy_optimization/index.html" />
-    <link rel="prev" title="Miscellaneous" href="index.html" /> 
+    <link rel="next" title="DDPG" href="ddpg.html" />
+    <link rel="prev" title="Yolov4" href="../../vision/object_detection/yolov4.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -118,15 +118,13 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reinforcement Learning</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../hybrid_optimization/index.html">Hybrid Optimization</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">Miscellaneous</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Random</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#trainer">Trainer</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#predictor">Predictor</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Hybrid Optimization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ddpg.html">DDPG</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sac.html">SAC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="td3.html">TD3</a></li>
 </ul>
 </li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../misc/index.html">Miscellaneous</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../policy_optimization/index.html">Policy Optimization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../value_optimization/index.html">Value Optimization</a></li>
 </ul>
@@ -216,15 +214,13 @@
     
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
-          <li><a href="index.html">Miscellaneous</a> &raquo;</li>
-        
-      <li>Random</li>
+      <li>Hybrid Optimization</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../../_sources/rl/misc/random.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/rl/hybrid_optimization/index.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -237,43 +233,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-gymnos.rl.misc.random">
-<span id="random"></span><span id="rl-misc-random"></span><h1>Random<a class="headerlink" href="#module-gymnos.rl.misc.random" title="Permalink to this headline">¶</a></h1>
-<p>TODO: Docstring for Random</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><style type="text/css">
-span.prompt1:before {
-  content: "$ ";
-}
-</style><span class="prompt1">pip install gymnos<span class="o">[</span>rl.misc.random<span class="o">]</span></span>
-</pre></div></div><div class="contents local topic" id="contents">
-<ul class="simple">
-<li><p><a class="reference internal" href="#trainer" id="id1">Trainer</a></p></li>
-<li><p><a class="reference internal" href="#predictor" id="id2">Predictor</a></p></li>
+  <div class="section" id="module-gymnos.rl.hybrid_optimization">
+<span id="hybrid-optimization"></span><span id="rl-hybrid-optimization"></span><h1>Hybrid Optimization<a class="headerlink" href="#module-gymnos.rl.hybrid_optimization" title="Permalink to this headline">¶</a></h1>
+<p>Models for Hybrid Optimization</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ddpg.html">DDPG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sac.html">SAC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="td3.html">TD3</a></li>
 </ul>
-</div>
-<div class="section" id="trainer">
-<span id="rl-misc-random-trainer"></span><h2><a class="toc-backref" href="#id1">Trainer</a><a class="headerlink" href="#trainer" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">gymnos-train <span class="nv">trainer</span><span class="o">=</span>rl.misc.random</span>
-</pre></div></div><dl class="py class gymnos-hydra">
-<dt class="sig sig-object py" id="gymnos.rl.misc.random.trainer.RandomTrainer">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">RandomTrainer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_train_timesteps</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_test_episodes</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_interval</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gymnos.rl.misc.random.trainer.RandomTrainer" title="Permalink to this definition">¶</a></dt>
-<dd><p>TODO: docstring for trainer</p>
-</dd></dl>
-
-</div>
-<div class="section" id="predictor">
-<span id="rl-misc-random-predictor"></span><h2><a class="toc-backref" href="#id2">Predictor</a><a class="headerlink" href="#predictor" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gymnos.rl.misc.random</span> <span class="kn">import</span> <span class="n">RandomPredictor</span>
-
-<span class="n">RandomPredictor</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;johndoe/models/pretrained&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="py class">
-<dt class="sig sig-object py" id="gymnos.rl.misc.random.predictor.RandomPredictor">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">RandomPredictor</span></span><a class="headerlink" href="#gymnos.rl.misc.random.predictor.RandomPredictor" title="Permalink to this definition">¶</a></dt>
-<dd><p>TODO: docstring for predictor</p>
-</dd></dl>
-
 </div>
 </div>
 
@@ -283,8 +251,8 @@ span.prompt1:before {
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="../policy_optimization/index.html" class="btn btn-neutral float-right" title="Policy Optimization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="index.html" class="btn btn-neutral float-left" title="Miscellaneous" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ddpg.html" class="btn btn-neutral float-right" title="DDPG" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../../vision/object_detection/yolov4.html" class="btn btn-neutral float-left" title="Yolov4" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
@@ -325,7 +293,7 @@ span.prompt1:before {
     </dl>
     <dl>
       <dt>Branches</dt>
-      <dd><a href="random.html">master</a></dd>
+      <dd><a href="index.html">master</a></dd>
     </dl>
   </div>
 </div>

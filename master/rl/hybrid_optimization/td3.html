@@ -46,7 +46,9 @@
 
     
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" /> 
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Miscellaneous" href="../misc/index.html" />
+    <link rel="prev" title="SAC" href="sac.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -115,7 +117,17 @@
 <li class="toctree-l1"><a class="reference internal" href="../../vision/object_detection/index.html">Object Detection</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reinforcement Learning</span></p>
-<ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Hybrid Optimization</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ddpg.html">DDPG</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sac.html">SAC</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">TD3</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#trainer">Trainer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#predictor">Predictor</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../misc/index.html">Miscellaneous</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../policy_optimization/index.html">Policy Optimization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../value_optimization/index.html">Value Optimization</a></li>
@@ -206,6 +218,8 @@
     
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
+          <li><a href="index.html">Hybrid Optimization</a> &raquo;</li>
+        
       <li>TD3</li>
     
     
@@ -225,13 +239,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="td3">
-<span id="rl-policy-optimization-td3"></span><h1>TD3<a class="headerlink" href="#td3" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-gymnos.rl.hybrid_optimization.td3">
+<span id="td3"></span><span id="rl-hybrid-optimization-td3"></span><h1>TD3<a class="headerlink" href="#module-gymnos.rl.hybrid_optimization.td3" title="Permalink to this headline">¶</a></h1>
+<p>TODO: Docstring for Td3</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><style type="text/css">
 span.prompt1:before {
   content: "$ ";
 }
-</style><span class="prompt1">pip install gymnos<span class="o">[</span>rl.policy_optimization.td3<span class="o">]</span></span>
+</style><span class="prompt1">pip install gymnos<span class="o">[</span>rl.hybrid_optimization.td3<span class="o">]</span></span>
 </pre></div></div><div class="contents local topic" id="contents">
 <ul class="simple">
 <li><p><a class="reference internal" href="#trainer" id="id1">Trainer</a></p></li>
@@ -239,16 +254,50 @@ span.prompt1:before {
 </ul>
 </div>
 <div class="section" id="trainer">
-<span id="rl-policy-optimization-td3-trainer"></span><h2><a class="toc-backref" href="#id1">Trainer</a><a class="headerlink" href="#trainer" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">gymnos-train <span class="nv">trainer</span><span class="o">=</span>rl.policy_optimization.td3</span>
-</pre></div></div></div>
+<span id="rl-hybrid-optimization-td3-trainer"></span><h2><a class="toc-backref" href="#id1">Trainer</a><a class="headerlink" href="#trainer" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">gymnos-train <span class="nv">trainer</span><span class="o">=</span>rl.hybrid_optimization.td3</span>
+</pre></div></div><dl class="py class gymnos-hydra">
+<dt class="sig sig-object py" id="gymnos.rl.hybrid_optimization.td3.trainer.TD3Trainer">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">TD3Trainer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_train_timesteps</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_strategy</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">gymnos.rl.common.sb3_mixins_hydra_conf.SaveStrategy</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">SaveStrategy.LAST</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_freq</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">10000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_eval_episodes</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_num_train_episodes</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_training_reward_threshold</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_interval</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_test_episodes</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">policy</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">gymnos.rl.hybrid_optimization.td3.hydra_conf.TD3Policy</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">TD3Policy.MLP</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">policy_kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer_size</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1000000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_starts</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discount_rate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0.99</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_freq</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">(1,</span> <span class="pre">'episode')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient_steps</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimize_memory_usage</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">policy_delay</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_policy_noise</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_noise_clip</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gymnos.rl.hybrid_optimization.td3.trainer.TD3Trainer" title="Permalink to this definition">¶</a></dt>
+<dd><p>TODO: docstring for trainer</p>
+</dd></dl>
+
+</div>
 <div class="section" id="predictor">
-<span id="rl-policy-optimization-td3-predictor"></span><h2><a class="toc-backref" href="#id2">Predictor</a><a class="headerlink" href="#predictor" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gymnos.rl.policy_optimization.td3</span> <span class="kn">import</span> <span class="n">TD3Predictor</span>
+<span id="rl-hybrid-optimization-td3-predictor"></span><h2><a class="toc-backref" href="#id2">Predictor</a><a class="headerlink" href="#predictor" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gymnos.rl.hybrid_optimization.td3</span> <span class="kn">import</span> <span class="n">TD3Predictor</span>
 
 <span class="n">TD3Predictor</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;johndoe/models/pretrained&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 </div>
+<dl class="py class">
+<dt class="sig sig-object py" id="gymnos.rl.hybrid_optimization.td3.predictor.TD3Predictor">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">TD3Predictor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gymnos.rl.hybrid_optimization.td3.predictor.TD3Predictor" title="Permalink to this definition">¶</a></dt>
+<dd><p>TODO: docstring for predictor</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="gymnos.rl.hybrid_optimization.td3.predictor.TD3Predictor.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deterministic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">,</span> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#gymnos.rl.hybrid_optimization.td3.predictor.TD3Predictor.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the model’s action(s) from an observation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obs</strong> – Input observation</p></li>
+<li><p><strong>state</strong> – The last states (can be None, used in recurrent policies)</p></li>
+<li><p><strong>done</strong> – The last masks (can be None, used in recurrent policies)</p></li>
+<li><p><strong>deterministic</strong> – Whether or not to return deterministic actions.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The model’s action and the next state (used in recurrent policies)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Tuple[ndarray, Optional[ndarray]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 </div>
 
@@ -257,6 +306,10 @@ span.prompt1:before {
            
           </div>
           <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="../misc/index.html" class="btn btn-neutral float-right" title="Miscellaneous" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="sac.html" class="btn btn-neutral float-left" title="SAC" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
 
   <hr/>
 

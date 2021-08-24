@@ -1,43 +1,43 @@
-.. _rl.policy_optimization.sac:
+.. _rl.hybrid_optimization.sac:
 
 SAC
 ===
 
-.. automodule:: gymnos.rl.policy_optimization.sac
+.. automodule:: gymnos.rl.hybrid_optimization.sac
 
 .. prompt:: bash
 
-    pip install gymnos[rl.policy_optimization.sac]
+    pip install gymnos[rl.hybrid_optimization.sac]
 
 .. contents::
     :local:
 
-.. _rl.policy_optimization.sac__trainer:
+.. _rl.hybrid_optimization.sac__trainer:
 
 Trainer
 *********
 
 .. prompt:: bash
 
-    gymnos-train trainer=rl.policy_optimization.sac
+    gymnos-train trainer=rl.hybrid_optimization.sac
 
 .. rst-class:: gymnos-hydra
 
-    .. autoclass:: gymnos.rl.policy_optimization.sac.trainer.SACTrainer
+    .. autoclass:: gymnos.rl.hybrid_optimization.sac.trainer.SACTrainer
         :inherited-members:
 
 
-.. _rl.policy_optimization.sac__predictor:
+.. _rl.hybrid_optimization.sac__predictor:
 
 Predictor
 ***********
 
 .. code-block:: py
 
-    from gymnos.rl.policy_optimization.sac import SACPredictor
+    from gymnos.rl.hybrid_optimization.sac import SACPredictor
 
     SACPredictor.from_pretrained("johndoe/models/pretrained", *args, **kwargs)
 
-.. autoclass:: gymnos.rl.policy_optimization.sac.predictor.SACPredictor
+.. autoclass:: gymnos.rl.hybrid_optimization.sac.predictor.SACPredictor
    :members:
    :inherited-members:
