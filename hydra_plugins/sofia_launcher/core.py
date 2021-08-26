@@ -27,11 +27,11 @@ class SOFIAProjectNotFound(Exception):
         super().__init__(message)
 
 
-def launch_job(args: Sequence[str], project_name: str, ref: str, device: Device) -> Callable:
+def launch_job(args: Sequence[str], project_name: str, ref: str, device: Device, notify_on_completion: bool) -> Callable:
     def entrypoint(config):
         logger = logging.getLogger(__name__)
 
-        response = SOFIA.create_project_job(args, project_name, ref, device.value)
+        response = SOFIA.create_project_job(args, project_name, ref, device.value, notify_on_completion)
 
         if not response.ok:
             if response.status_code == 404:
@@ -75,7 +75,7 @@ def launch(launcher, job_overrides: Sequence[Sequence[str]], initial_job_idx: in
             print_packages(getattr(model_meta_module, "apt_dependencies", []), autocolor=False)
 
         job_return = run_job(
-            launch_job(args, launcher.project_name, launcher.ref, launcher.device),
+            launch_job(args, launcher.project_name, launcher.ref, launcher.device, launcher.notify_on_completion),
             config=sweep_config,
             hydra_context=launcher.hydra_context,
             job_dir_key="hydra.sweep.dir",

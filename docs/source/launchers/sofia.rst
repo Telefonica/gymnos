@@ -30,3 +30,7 @@ SOFIA
      -
      - ``<HEAD>``
      - Gymnos release, branch or commit. It will be the environment where training will be executed. If command is executed on gymnos git directory, it will try to infer the current commit.
+   * - notify_on_completion
+     -
+     - false
+     - Whether or not send email when job has completed

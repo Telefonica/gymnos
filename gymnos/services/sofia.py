@@ -139,7 +139,8 @@ class SOFIA:
         return os.path.join(save_dir, "artifacts")
 
     @classmethod
-    def create_project_job(cls, args, project_name, ref=None, device="CPU", name=None, description=None):
+    def create_project_job(cls, args, project_name, ref=None, device="CPU", name=None, description=None,
+                           notify_on_completion=False):
         response = cls.get_current_user()
         response.raise_for_status()
 
@@ -149,7 +150,8 @@ class SOFIA:
             "args": args,
             "ref": ref,
             "device": device,
-            "description": description
+            "description": description,
+            "notify_on_completion": notify_on_completion
         }
 
         if name is not None:
