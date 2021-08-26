@@ -31,7 +31,7 @@ def launch_job(args: Sequence[str], project_name: str, ref: str, device: Device,
     def entrypoint(config):
         logger = logging.getLogger(__name__)
 
-        response = SOFIA.create_project_job(args, project_name, ref, device.value, notify_on_completion)
+        response = SOFIA.create_project_job(args, project_name, ref, device.value, None, notify_on_completion)
 
         if not response.ok:
             if response.status_code == 404:
