@@ -20,8 +20,8 @@ import importlib
 from rich.panel import Panel
 from collections import defaultdict
 from distutils.util import strtobool
-from omegaconf import DictConfig, open_dict
 from hydra.core.config_store import ConfigStore
+from omegaconf import DictConfig, open_dict, OmegaConf
 from hydra.utils import instantiate, get_original_cwd
 from hydra_plugins.sofia_launcher import SOFIALauncherHydraConf
 
@@ -30,7 +30,7 @@ from ..base import BaseTrainer, BaseRLTrainer
 from .utils import (print_requirements, iterate_config, print_install_requirements,
                     iter_modules, find_predictors, find_model_module, find_dataset_module, print_config,
                     print_packages, get_missing_packages, print_install_packages, install_packages_with_apt,
-                    install_requirements, install_packages_with_cli, find_env_module)
+                    install_requirements, install_packages_with_cli, find_env_module, build_meta)
 from ..config import get_gymnos_home
 from ..utils.py_utils import remove_prefix
 from ..utils.pypi_utils import get_missing_dependencies
@@ -191,7 +191,9 @@ def main(config: DictConfig):
                 "run_id": run.info.run_id,
                 "experiment_id": run.info.experiment_id,
                 "module": model_module.__name__,
-                "predictors": predictors
+                "predictors": predictors,
+                "config": OmegaConf.to_yaml(config),
+                "meta": OmegaConf.to_yaml(build_meta())
             })
 
         if config.mlflow.log_trainer_params:
