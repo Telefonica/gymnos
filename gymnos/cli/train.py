@@ -62,6 +62,13 @@ def main(config: DictConfig):
 
     is_sofia_env = strtobool(os.getenv("SOFIA", "false"))
 
+    if is_sofia_env:
+        print({
+            "sofia": True,
+            "config": OmegaConf.to_yaml(config),
+            "meta": OmegaConf.to_yaml(build_meta())
+        })
+
     logger.info(f"Outputs will be stored on: {os.getcwd()}")
 
     if config.verbose:
@@ -191,9 +198,7 @@ def main(config: DictConfig):
                 "run_id": run.info.run_id,
                 "experiment_id": run.info.experiment_id,
                 "module": model_module.__name__,
-                "predictors": predictors,
-                "config": OmegaConf.to_yaml(config),
-                "meta": OmegaConf.to_yaml(build_meta())
+                "predictors": predictors
             })
 
         if config.mlflow.log_trainer_params:
@@ -211,8 +216,6 @@ def main(config: DictConfig):
             import gym
 
             env_id = str(uuid.uuid4())[:8] + "-v0"
-            # kwargs = OmegaConf.to_container(config.env)
-            # entry_point = rreplace(kwargs.pop("_target_"), ".", ":")
 
             def entry_point():
                 return instantiate(config.env)
