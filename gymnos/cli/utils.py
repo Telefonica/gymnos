@@ -19,7 +19,7 @@ import rich.syntax
 import pkg_resources
 
 from ..base import BasePredictor
-from ..utils.py_utils import remove_suffix
+from ..utils.py_utils import remove_suffix, remove_prefix
 
 from rich.text import Text
 from rich.panel import Panel
@@ -362,3 +362,27 @@ def find_file_parent_dir(fname, cwd) -> Optional[str]:
         return None
 
     return current_dir
+
+
+def build_meta():
+    meta = OmegaConf.create()
+
+    meta["models"] = OmegaConf.create()
+    meta["envs"] = OmegaConf.create()
+    meta["datasets"] = OmegaConf.create()
+
+    for module in iter_modules("__model__.py"):
+        modname = remove_prefix(module.__package__, "gymnos.")
+        meta["models"][modname] = OmegaConf.structured(getattr(module, "hydra_conf"))
+
+    # Register datasets for Hydra
+    for module in iter_modules("__dataset__.py"):
+        *_, modname = module.__package__.split(".")
+        meta["datasets"][modname] = OmegaConf.structured(getattr(module, "hydra_conf"))
+
+    # Register envs for Hydra
+    for module in iter_modules("__env__.py"):
+        *_, modname = module.__package__.split(".")
+        meta["envs"][modname] = OmegaConf.structured(getattr(module, "hydra_conf"))
+
+    return meta
