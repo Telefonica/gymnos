@@ -27,7 +27,8 @@ class SOFIAProjectNotFound(Exception):
         super().__init__(message)
 
 
-def launch_job(args: Sequence[str], project_name: str, ref: str, device: Device, notify_on_completion: bool) -> Callable:
+def launch_job(args: Sequence[str], project_name: str, ref: str, device: Device,
+               notify_on_completion: bool) -> Callable:
     def entrypoint(config):
         logger = logging.getLogger(__name__)
 
