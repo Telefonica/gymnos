@@ -15,7 +15,7 @@ max_episode_steps = None  # The maximum number of steps that an episode can cons
 pip_dependencies = [
     "opencv-python",
     "gym[atari]",
-    "atari-py",
+    "atari-py>=0.2.9",
     "supersuit",
     "numpy"
 ]
