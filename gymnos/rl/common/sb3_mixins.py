@@ -80,7 +80,7 @@ class SB3Trainer:
             model.learn(self.num_train_timesteps, callback=callbacks, log_interval=self.log_interval)
         finally:
             if self.save_strategy == SaveStrategy.BEST:
-                mlflow.log_artifact(eval_callback.best_model_save_path)
+                mlflow.log_artifact(os.path.join(eval_callback.best_model_save_path, "best_model.zip"))
             elif self.save_strategy == SaveStrategy.LAST:
                 os.makedirs("saved_models", exist_ok=True)
                 model.save(os.path.join("saved_models", "last_model"))
