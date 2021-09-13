@@ -1,0 +1,16 @@
+# @package _global_
+# TODO: description about experiment
+
+defaults:
+    - override /trainer: generative.image_generation.dcgan
+    - override /dataset: celeba_imgs
+
+trainer:
+    generator_depth: 64
+    discriminator_depth: 64
+    num_channels: 3
+    num_epochs: 15
+    num_workers: -1
+    batch_size: 128
+
+dataset: {}
