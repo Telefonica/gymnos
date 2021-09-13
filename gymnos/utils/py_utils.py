@@ -58,3 +58,22 @@ def rreplace(s, old, new):
         return ''.join((s[:place], new, s[place + len(old):]))
     except ValueError:
         return s
+
+
+def lmap(func, iterator):
+    """
+    Returns a list of the results after applying the given function to each item of a given iterable
+
+    Parameters
+    ----------
+    func
+        Function to run for each item
+    iterator
+        Iterator
+
+    Returns
+    -------
+    list
+        List with applied function for each item
+    """
+    return list(map(func, iterator))
