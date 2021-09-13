@@ -99,8 +99,10 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Datasets</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="datasets/celeba_imgs.html">Celeba Imgs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="datasets/coins_detection.html">Coins Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="datasets/dogs_vs_cats.html">Dogs vs Cats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets/mnist_imgs.html">Mnist Imgs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="datasets/raccoon_detection.html">Raccoon Detection</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Envs</span></p>
@@ -114,6 +116,10 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="vision/image_classification/index.html">Image classification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vision/object_detection/index.html">Object Detection</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Generative</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="generative/image_generation/index.html">Image Generation</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reinforcement Learning</span></p>
 <ul>
@@ -138,6 +144,8 @@
 <li class="toctree-l1"><a class="reference internal" href="experiments/classify_dogs_vs_cats.html">Classify dogs vs cats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="experiments/detect_coins.html">Detect Coins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="experiments/detect_raccoons.html">Detect Raccoons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiments/generate_celebs.html">Generate Celebs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiments/generate_numbers.html">Generate Numbers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="experiments/learn_cartpole.html">Learn Cartpole</a></li>
 <li class="toctree-l1"><a class="reference internal" href="experiments/learn_lunar_lander.html">Learn Lunar Lander</a></li>
 <li class="toctree-l1"><a class="reference internal" href="experiments/learn_pong.html">Learn Cartpole</a></li>
@@ -236,6 +244,7 @@
  | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
  | <a href="#G"><strong>G</strong></a>
+ | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
  | <a href="#P"><strong>P</strong></a>
@@ -322,6 +331,10 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="datasets/celeba_imgs.html#gymnos.datasets.celeba_imgs.dataset.CelebaImgs">CelebaImgs (class in gymnos.datasets.celeba_imgs.dataset)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="datasets/coins_detection.html#gymnos.datasets.coins_detection.dataset.CoinsDetection">CoinsDetection (class in gymnos.datasets.coins_detection.dataset)</a>
 </li>
   </ul></td>
@@ -330,12 +343,18 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="generative/image_generation/dcgan.html#gymnos.generative.image_generation.dcgan.predictor.DCGANPredictor">DCGANPredictor (class in gymnos.generative.image_generation.dcgan.predictor)</a>
+</li>
+      <li><a href="generative/image_generation/dcgan.html#gymnos.generative.image_generation.dcgan.trainer.DCGANTrainer">DCGANTrainer (class in gymnos.generative.image_generation.dcgan.trainer)</a>
+</li>
       <li><a href="rl/hybrid_optimization/ddpg.html#gymnos.rl.hybrid_optimization.ddpg.predictor.DDPGPredictor">DDPGPredictor (class in gymnos.rl.hybrid_optimization.ddpg.predictor)</a>
 </li>
       <li><a href="rl/hybrid_optimization/ddpg.html#gymnos.rl.hybrid_optimization.ddpg.trainer.DDPGTrainer">DDPGTrainer (class in gymnos.rl.hybrid_optimization.ddpg.trainer)</a>
 </li>
       <li><a href="datasets/dogs_vs_cats.html#gymnos.datasets.dogs_vs_cats.dataset.DogsVsCats">DogsVsCats (class in gymnos.datasets.dogs_vs_cats.dataset)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     DOMAIN
 
@@ -343,8 +362,6 @@
         <li><a href="cli/create.html#cmdoption-gymnos-create-model-arg-DOMAIN">gymnos-create-model command line option</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="services/sofia.html#gymnos.services.sofia.SOFIA.download_dataset">download_dataset() (SOFIA class method)</a>
 </li>
       <li><a href="rl/value_optimization/dqn.html#gymnos.rl.value_optimization.dqn.predictor.DQNPredictor">DQNPredictor (class in gymnos.rl.value_optimization.dqn.predictor)</a>
@@ -422,6 +439,13 @@
 </li>
       </ul></li>
       <li>
+    gymnos.datasets.celeba_imgs
+
+      <ul>
+        <li><a href="datasets/celeba_imgs.html#module-gymnos.datasets.celeba_imgs">module</a>
+</li>
+      </ul></li>
+      <li>
     gymnos.datasets.coins_detection
 
       <ul>
@@ -433,6 +457,13 @@
 
       <ul>
         <li><a href="datasets/dogs_vs_cats.html#module-gymnos.datasets.dogs_vs_cats">module</a>
+</li>
+      </ul></li>
+      <li>
+    gymnos.datasets.mnist_imgs
+
+      <ul>
+        <li><a href="datasets/mnist_imgs.html#module-gymnos.datasets.mnist_imgs">module</a>
 </li>
       </ul></li>
       <li>
@@ -471,14 +502,28 @@
 </li>
       </ul></li>
       <li>
+    gymnos.generative.image_generation
+
+      <ul>
+        <li><a href="generative/image_generation/index.html#module-gymnos.generative.image_generation">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    gymnos.generative.image_generation.dcgan
+
+      <ul>
+        <li><a href="generative/image_generation/dcgan.html#module-gymnos.generative.image_generation.dcgan">module</a>
+</li>
+      </ul></li>
+      <li>
     gymnos.rl.hybrid_optimization
 
       <ul>
         <li><a href="rl/hybrid_optimization/index.html#module-gymnos.rl.hybrid_optimization">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     gymnos.rl.hybrid_optimization.ddpg
 
@@ -601,6 +646,14 @@
   </ul></td>
 </tr></table>
 
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="utils/py_utils.html#gymnos.utils.py_utils.lmap">lmap() (in module gymnos.utils.py_utils)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -611,13 +664,19 @@
         <li><a href="cli/upload.html#cmdoption-gymnos-upload-arg-MLFLOW_RUN_ID">gymnos-upload command line option</a>
 </li>
       </ul></li>
+      <li><a href="datasets/mnist_imgs.html#gymnos.datasets.mnist_imgs.dataset.MnistImgs">MnistImgs (class in gymnos.datasets.mnist_imgs.dataset)</a>
+</li>
       <li>
     module
 
       <ul>
+        <li><a href="datasets/celeba_imgs.html#module-gymnos.datasets.celeba_imgs">gymnos.datasets.celeba_imgs</a>
+</li>
         <li><a href="datasets/coins_detection.html#module-gymnos.datasets.coins_detection">gymnos.datasets.coins_detection</a>
 </li>
         <li><a href="datasets/dogs_vs_cats.html#module-gymnos.datasets.dogs_vs_cats">gymnos.datasets.dogs_vs_cats</a>
+</li>
+        <li><a href="datasets/mnist_imgs.html#module-gymnos.datasets.mnist_imgs">gymnos.datasets.mnist_imgs</a>
 </li>
         <li><a href="datasets/raccoon_detection.html#module-gymnos.datasets.raccoon_detection">gymnos.datasets.raccoon_detection</a>
 </li>
@@ -628,6 +687,10 @@
         <li><a href="envs/gym.html#module-gymnos.envs.gym">gymnos.envs.gym</a>
 </li>
         <li><a href="envs/ple.html#module-gymnos.envs.ple">gymnos.envs.ple</a>
+</li>
+        <li><a href="generative/image_generation/index.html#module-gymnos.generative.image_generation">gymnos.generative.image_generation</a>
+</li>
+        <li><a href="generative/image_generation/dcgan.html#module-gymnos.generative.image_generation.dcgan">gymnos.generative.image_generation.dcgan</a>
 </li>
         <li><a href="rl/hybrid_optimization/index.html#module-gymnos.rl.hybrid_optimization">gymnos.rl.hybrid_optimization</a>
 </li>
@@ -700,6 +763,8 @@
       <li><a href="rl/policy_optimization/a2c.html#gymnos.rl.policy_optimization.a2c.predictor.A2CPredictor.predict">predict() (A2CPredictor method)</a>
 
       <ul>
+        <li><a href="generative/image_generation/dcgan.html#gymnos.generative.image_generation.dcgan.predictor.DCGANPredictor.predict">(DCGANPredictor method)</a>
+</li>
         <li><a href="rl/hybrid_optimization/ddpg.html#gymnos.rl.hybrid_optimization.ddpg.predictor.DDPGPredictor.predict">(DDPGPredictor method)</a>
 </li>
         <li><a href="rl/value_optimization/dqn.html#gymnos.rl.value_optimization.dqn.predictor.DQNPredictor.predict">(DQNPredictor method)</a>

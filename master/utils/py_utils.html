@@ -100,8 +100,10 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Datasets</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../datasets/celeba_imgs.html">Celeba Imgs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../datasets/coins_detection.html">Coins Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../datasets/dogs_vs_cats.html">Dogs vs Cats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../datasets/mnist_imgs.html">Mnist Imgs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../datasets/raccoon_detection.html">Raccoon Detection</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Envs</span></p>
@@ -115,6 +117,10 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../vision/image_classification/index.html">Image classification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../vision/object_detection/index.html">Object Detection</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Generative</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../generative/image_generation/index.html">Image Generation</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reinforcement Learning</span></p>
 <ul>
@@ -139,6 +145,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../experiments/classify_dogs_vs_cats.html">Classify dogs vs cats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../experiments/detect_coins.html">Detect Coins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../experiments/detect_raccoons.html">Detect Raccoons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/generate_celebs.html">Generate Celebs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/generate_numbers.html">Generate Numbers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../experiments/learn_cartpole.html">Learn Cartpole</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../experiments/learn_lunar_lander.html">Learn Lunar Lander</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../experiments/learn_pong.html">Learn Cartpole</a></li>
@@ -230,6 +238,26 @@
             
   <div class="section" id="module-gymnos.utils.py_utils">
 <span id="python-utilities"></span><h1>Python utilities<a class="headerlink" href="#module-gymnos.utils.py_utils" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="gymnos.utils.py_utils.lmap">
+<span class="sig-name descname"><span class="pre">lmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterator</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gymnos.utils.py_utils.lmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of the results after applying the given function to each item of a given iterable</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> – Function to run for each item</p></li>
+<li><p><strong>iterator</strong> – Iterator</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List with applied function for each item</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="gymnos.utils.py_utils.remove_prefix">
 <span class="sig-name descname"><span class="pre">remove_prefix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gymnos.utils.py_utils.remove_prefix" title="Permalink to this definition">¶</a></dt>

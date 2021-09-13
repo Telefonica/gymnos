@@ -49,6 +49,20 @@ models:
     test_split: 0.2
     accelerator: null
     _target_: gymnos.vision.image_classification.transfer_efficientnet.trainer.TransferEfficientNetTrainer
+  generative.image_generation.dcgan:
+    batch_size: 64
+    num_epochs: 100
+    num_workers: 0
+    latent_size: 128
+    num_channels: 3
+    generator_depth: 64
+    discriminator_depth: 64
+    log_images_interval: 5
+    generator_learning_rate: 0.0002
+    discriminator_learning_rate: 0.0002
+    gpus: -1
+    beta1: 0.5
+    _target_: gymnos.generative.image_generation.dcgan.trainer.DCGANTrainer
   rl.misc.random:
     num_train_timesteps: 1000
     num_test_episodes: 1
@@ -264,3 +278,9 @@ datasets:
     _target_: gymnos.datasets.dogs_vs_cats.dataset.DogsVsCats
   raccoon_detection:
     _target_: gymnos.datasets.raccoon_detection.dataset.RaccoonDetection
+  celeba_imgs:
+    force_extract: false
+    _target_: gymnos.datasets.celeba_imgs.dataset.CelebaImgs
+  mnist_imgs:
+    force_extract: false
+    _target_: gymnos.datasets.mnist_imgs.dataset.MnistImgs
