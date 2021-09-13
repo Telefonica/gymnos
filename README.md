@@ -4,6 +4,9 @@
 
 Gymnos is a model training library in Python for Machine Learning.
 
+## Documentation
+Checkout the [documentation](https://telefonica.github.io/gymnos/) for more details 
+
 ## Development
 Gymnos is still under development. Contributions are always welcome!.
 
