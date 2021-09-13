@@ -3,11 +3,11 @@
 #   Trainer
 #
 #
-import logging
+
 import os
 import mlflow
 import torch
-import numpy as np
+import logging
 import torch.nn as nn
 import torch.optim as optim
 import multiprocessing as mp

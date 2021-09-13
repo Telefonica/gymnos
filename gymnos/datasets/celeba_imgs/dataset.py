@@ -10,7 +10,6 @@ import zipfile
 from ...base import BaseDataset
 from ...services.sofia import SOFIA
 from .hydra_conf import CelebaImgsHydraConf
-from ...utils.data_utils import extract_archive
 
 from dataclasses import dataclass
 
