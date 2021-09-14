@@ -4,6 +4,8 @@
 #
 #
 
+from typing import List, Callable, Iterable
+
 
 def remove_prefix(text: str, prefix: str):
     """
@@ -60,7 +62,7 @@ def rreplace(s, old, new):
         return s
 
 
-def lmap(func, iterator):
+def lmap(func: Callable, iterator: Iterable) -> List:
     """
     Returns a list of the results after applying the given function to each item of a given iterable
 
