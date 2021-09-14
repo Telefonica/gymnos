@@ -48,6 +48,10 @@ class DCGANPredictor(BasePredictor):
 
         self._generator = Generator(latent_size=config.trainer.latent_size, num_channels=config.trainer.num_channels,
                                     depth=config.trainer.generator_depth)
+        state_dict = torch.load(checkpoints[0], map_location=self.device)
+        # I'm not sure why state_dict is prefixed with module but we need to remove it
+        state_dict = {k.partition("module.")[2]: state_dict[k] for k in state_dict.keys()}
+        self._generator.load_state_dict(state_dict)
         self._generator.eval().to(self.device)
 
     @torch.no_grad()
