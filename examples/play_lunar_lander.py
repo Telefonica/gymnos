@@ -7,6 +7,7 @@
 from gymnos.utils import assert_dependencies
 
 assert_dependencies([
+    "box2d-py",
     "gymnos[rl.value_optimization.dqn]"
 ])
 
