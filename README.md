@@ -4,8 +4,29 @@
 
 Gymnos is a model training library in Python for Machine Learning.
 
+## Installation
+```console
+$ git clone https://github.com/Telefonica/gymnos.git
+$ cd gymnos
+$ pip install -e .
+```
+
 ## Documentation
 Checkout the [documentation](https://telefonica.github.io/gymnos/) for more details 
+
+## Examples
+
+```console
+$ python examples/classify_dog_or_cat.py <img_path>
+```
+
+```console
+$ python examples/generate_celebs.py
+```
+
+```console
+$ python examples/play_lunar_lander.py
+```
 
 ## Development
 Gymnos is still under development. Contributions are always welcome!.
