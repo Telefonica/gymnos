@@ -56,9 +56,6 @@ class TransferEfficientNetTrainer(TransferEfficientNetHydraConf, BaseTrainer):
         if self.num_workers < 0:
             self.num_workers = cpu_count()
 
-        if self.gpus > 0:
-            self.accelerator = "dp"
-
         self.model = TransferEfficientNetModule(len(self.classes))
 
         self.trainer = pl.Trainer(

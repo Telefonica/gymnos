@@ -173,6 +173,8 @@ def main(config: DictConfig):
     mlflow.set_experiment(config.mlflow.experiment_name)
 
     with mlflow.start_run(run_name=config.mlflow.run_name) as run:
+        os.environ["MLFLOW_RUN_ID"] = run.info.run_id  # for DDP scripts
+
         if not config.mlflow.disable:
             logger.info(f"MLFlow run id: {run.info.run_id}")
 

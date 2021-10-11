@@ -21,7 +21,7 @@ class TransferEfficientNetHydraConf:
     train_split: float = 0.6
     val_split: float = 0.2
     test_split: float = 0.2
-    accelerator: Optional[str] = None
+    accelerator: Optional[str] = "ddp"
 
     _target_: str = field(init=False, repr=False, default="gymnos.vision.image_classification.transfer_efficientnet."
                                                           "trainer.TransferEfficientNetTrainer")
