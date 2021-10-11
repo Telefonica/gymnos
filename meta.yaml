@@ -47,7 +47,7 @@ models:
     train_split: 0.6
     val_split: 0.2
     test_split: 0.2
-    accelerator: null
+    accelerator: ddp
     _target_: gymnos.vision.image_classification.transfer_efficientnet.trainer.TransferEfficientNetTrainer
   generative.image_generation.dcgan:
     batch_size: 64
