@@ -5,8 +5,11 @@
 #
 
 import os
+import random
 import sys
 import uuid
+
+import omegaconf
 import rich
 import mlflow
 import pydoc
@@ -23,10 +26,10 @@ from distutils.util import strtobool
 from hydra.core.config_store import ConfigStore
 from omegaconf import DictConfig, open_dict, OmegaConf
 from hydra.utils import instantiate, get_original_cwd
-from hydra_plugins.sofia_launcher import SOFIALauncherHydraConf
 
 from ..dummy import DummyDataset
 from ..base import BaseTrainer, BaseRLTrainer
+from ..hydra_plugins.sofia_launcher import SOFIALauncherHydraConf
 from .utils import (print_requirements, iterate_config, print_install_requirements,
                     iter_modules, find_predictors, find_model_module, find_dataset_module, print_config,
                     print_packages, get_missing_packages, print_install_packages, install_packages_with_apt,
@@ -249,10 +252,43 @@ def main(config: DictConfig):
         if config.test:
             trainer.test()
 
+        optimized_metric = config.get("optimized_metric")
+
+        if optimized_metric is not None:
+            is_list_optimized_metric = isinstance(optimized_metric, omegaconf.ListConfig)
+
+            if not is_list_optimized_metric:
+                optimized_metric = [optimized_metric]
+
+            client = mlflow.tracking.MlflowClient()
+
+            metrics = []
+            for optim_metric in optimized_metric:
+                if isinstance(optim_metric, str):
+                    optim_metric = {
+                        "mode": "last",
+                        "metric": optim_metric
+                    }
+
+                if optim_metric["mode"] == "min":
+                    op = min
+                elif optim_metric["mode"] == "max":
+                    op = max
+                else:
+                    op = lambda elem: elem[-1]
+
+                history_metrics = client.get_metric_history(run.info.run_id, optim_metric["metric"])
+                metrics.append(op([metric.value for metric in history_metrics]))
+
+            if is_list_optimized_metric:
+                return metrics
+            else:
+                return metrics[-1]  # return only single metric
+
 
 @hydra.main(config_path="../../conf", config_name="config")
-def hydra_entry(cfg: DictConfig) -> None:
-    main(cfg)
+def hydra_entry(cfg: DictConfig):
+    return main(cfg)
 
 
 if __name__ == "__main__":

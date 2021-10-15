@@ -1,6 +1,6 @@
 #
 #
-#   Core
+#   Launcher
 #
 #
 
@@ -8,16 +8,22 @@ import uuid
 import logging
 import importlib
 
+from .hydra_conf import Device
+from .utils import print_launcher
+from .utils import get_current_revision
+from .hydra_conf import SOFIALauncherHydraConf
+
+from omegaconf import DictConfig
 from omegaconf import open_dict
+from dataclasses import dataclass
 from typing import Sequence, Callable
 from posixpath import join as urljoin
 from gymnos.services.sofia import SOFIA
+from hydra.plugins.launcher import Launcher
 from hydra.core.hydra_config import HydraConfig
-from hydra.core.utils import JobReturn, run_job, configure_log
+from hydra.types import TaskFunction, HydraContext
+from hydra.core.utils import JobReturn, run_job, configure_log, setup_globals
 from gymnos.cli.utils import print_config, find_model_module, print_requirements, print_packages
-
-from .hydra_conf import Device
-from .utils import print_launcher
 
 
 class SOFIAProjectNotFound(Exception):
@@ -87,3 +93,34 @@ def launch(launcher, job_overrides: Sequence[Sequence[str]], initial_job_idx: in
         configure_log(launcher.config.hydra.hydra_logging, launcher.config.hydra.verbose)
 
     return job_returns
+
+
+@dataclass
+class SOFIALauncher(SOFIALauncherHydraConf, Launcher):
+    """
+    Launch training on the SOFIA platform
+
+    Parameters
+    ------------
+    project_name:
+        SOFIA project name
+    ref:
+        Gymnos release, branch or commit to execute training. Defaults to current commit.
+    device:
+        Device to execute training. One of the following: ``CPU``, ``GPU``.
+    """
+
+    def setup(self, *, hydra_context: HydraContext, task_function: TaskFunction, config: DictConfig):
+        self.config = config
+        self.hydra_context = hydra_context
+        self.task_function = task_function
+
+    def launch(self, job_overrides: Sequence[Sequence[str]], initial_job_idx: int) -> Sequence[JobReturn]:
+        # Configure launcher
+        setup_globals()
+        configure_log(self.config.hydra.hydra_logging, self.config.hydra.verbose)
+
+        if self.ref is None:
+            self.ref = get_current_revision() or "master"
+
+        return launch(self, job_overrides, initial_job_idx)
