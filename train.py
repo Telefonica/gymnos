@@ -13,7 +13,7 @@ from gymnos.cli.train import main
 
 @hydra.main(config_path="./conf", config_name="config")
 def hydra_entry(cfg: DictConfig) -> None:
-    main(cfg)
+    return main(cfg)
 
 
 if __name__ == "__main__":

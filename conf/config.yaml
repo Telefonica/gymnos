@@ -9,6 +9,8 @@ verbose: true
 
 install: false
 
+optimized_metric: null
+
 mlflow:
     disable: false
     run_name: null

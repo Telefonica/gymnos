@@ -21,6 +21,8 @@ class SOFIALauncherHydraConf:
     project_name: str
     device: Device
     ref: Optional[str] = None
+    name: Optional[str] = None
+    description: Optional[str] = None
     verbose: bool = True
     notify_on_completion: bool = False
 
