@@ -22,10 +22,10 @@ Usage
 
         .. autoyaml:: conf/experiment/learn_pong.yaml
             :key: trainer
-            :caption: :ref:`{defaults[0].override /trainer}`
+            :caption: :ref:`{defaults[0]|override /trainer}`
 
    .. tab:: Env
 
         .. autoyaml:: conf/experiment/learn_pong.yaml
             :key: env
-            :caption: :ref:`envs.{defaults[1].override /env}`
+            :caption: :ref:`envs.{defaults[1]|override /env}`

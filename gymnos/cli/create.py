@@ -536,13 +536,13 @@ def experiment(name, rl):
 
                 .. autoyaml:: conf/experiment/{name}.yaml
                     :key: trainer
-                    :caption: :ref:`{{defaults[0].override /trainer}}`
+                    :caption: :ref:`{{defaults[0]|override /trainer}}`
 
            .. tab:: Dataset
 
                 .. autoyaml:: conf/experiment/{name}.yaml
                     :key: dataset
-                    :caption: :ref:`datasets.{{defaults[1].override /dataset}}`
+                    :caption: :ref:`datasets.{{defaults[1]|override /dataset}}`
 
     """) + "\n"
 
@@ -571,13 +571,13 @@ def experiment(name, rl):
 
                 .. autoyaml:: conf/experiment/{name}.yaml
                     :key: trainer
-                    :caption: :ref:`{{defaults[0].override /trainer}}`
+                    :caption: :ref:`{{defaults[0]|override /trainer}}`
 
            .. tab:: Env
 
                 .. autoyaml:: conf/experiment/{name}.yaml
                     :key: env
-                    :caption: :ref:`envs.{{defaults[1].override /env}}`
+                    :caption: :ref:`envs.{{defaults[1]|override /env}}`
 
     """) + "\n"
 

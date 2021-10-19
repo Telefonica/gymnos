@@ -9,6 +9,8 @@ defaults:
 env:
     id: CartPole-v1
 
+trainer: {}
+
 optimized_metric:
     metric: rollout/ep_rew_mean
     mode: max
