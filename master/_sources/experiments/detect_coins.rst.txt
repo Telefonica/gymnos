@@ -23,10 +23,10 @@ Usage
 
         .. autoyaml:: conf/experiment/detect_coins.yaml
             :key: trainer
-            :caption: :ref:`{defaults[0].override /trainer}`
+            :caption: :ref:`{defaults[0]|override /trainer}`
 
    .. tab:: Dataset
 
         .. autoyaml:: conf/experiment/detect_coins.yaml
             :key: dataset
-            :caption: :ref:`datasets.{defaults[1].override /dataset}`
+            :caption: :ref:`datasets.{defaults[1]|override /dataset}`
