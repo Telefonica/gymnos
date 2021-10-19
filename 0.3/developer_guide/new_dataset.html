@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New dataset &mdash; gymnos  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/asciinema-player_2.6.1.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/asciinema-custom.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/asciinema-player_2.6.1.js"></script>
+        <script src="../_static/custom.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="New model" href="new_model.html" />
+    <link rel="prev" title="New experiment" href="new_experiment.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> gymnos
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Get started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hyperparameter_tuning.html">Hyperparameter tuning</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Datasets</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../datasets/celeba_imgs.html">Celeba Imgs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../datasets/coins_detection.html">Coins Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../datasets/dogs_vs_cats.html">Dogs vs Cats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../datasets/mnist_imgs.html">Mnist Imgs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../datasets/raccoon_detection.html">Raccoon Detection</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Envs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../envs/atari.html">Atari</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../envs/box2d.html">Box2d</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../envs/gym.html">Gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../envs/ple.html">PLE</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Vision</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../vision/image_classification/index.html">Image classification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vision/object_detection/index.html">Object Detection</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Generative</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../generative/image_generation/index.html">Image Generation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reinforcement Learning</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../rl/hybrid_optimization/index.html">Hybrid Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rl/misc/index.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rl/policy_optimization/index.html">Policy Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rl/value_optimization/index.html">Value Optimization</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">CLI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cli/login.html">gymnos-login</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/train.html">gymnos-train</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/upload.html">gymnos-upload</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/create.html">gymnos-create</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Launchers</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../launchers/sofia.html">SOFIA</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Experiments</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/classify_dogs_vs_cats.html">Classify dogs vs cats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/detect_coins.html">Detect Coins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/detect_raccoons.html">Detect Raccoons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/generate_celebs.html">Generate Celebs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/generate_numbers.html">Generate Numbers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/learn_cartpole.html">Learn Cartpole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/learn_lunar_lander.html">Learn Lunar Lander</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/learn_pong.html">Learn Cartpole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/learn_snake.html">Learn Snake</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Services</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../services/sofia.html">SOFIA</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Utils</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../utils/data_utils.html">Data utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils/py_utils.html">Python utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils/pypi_utils.html">PyPi utilities</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="style_guide.html">Style guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="new_experiment.html">New experiment</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">New dataset</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#adding-the-docstring">Adding the docstring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-the-parameters">Defining the parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-the-dataset">Defining the dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-the-dataset">Running the dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="new_model.html">New model</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">gymnos</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>New dataset</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/developer_guide/new_dataset.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="new-dataset">
+<h1>New dataset<a class="headerlink" href="#new-dataset" title="Permalink to this headline"></a></h1>
+<p>In this tutorial we will create a new dataset.</p>
+<p>The name of the dataset will be <code class="docutils literal notranslate"><span class="pre">my_dataset</span></code>.</p>
+<p>First of all, we will run the command <a class="reference internal" href="../cli/create.html#gymnos-create"><span class="std std-ref">gymnos-create</span></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><style type="text/css">
+span.prompt1:before {
+  content: "$ ";
+}
+</style><span class="prompt1">gymnos-create dataset my_dataset</span>
+</pre></div></div><p>This will create the Python module <code class="docutils literal notranslate"><span class="pre">gymnos/datasets/my_dataset</span></code> with the following files:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">__init__.py</span></code>: entrypoint for the dataset. It contains the docstring for the module.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">__dataset__.py</span></code>: gymnos configuration for dataset</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dataset.py</span></code>: dataset class. Here we will define the dataset</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hydra_conf.py</span></code>: Hydra configuration definition. Here we will define the parameters for the dataset.</p></li>
+</ul>
+</div></blockquote>
+<div class="section" id="adding-the-docstring">
+<h2>Adding the docstring<a class="headerlink" href="#adding-the-docstring" title="Permalink to this headline"></a></h2>
+<p>First of all, we will modify the docstring for the module:</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">__init__.py</span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Small description about the dataset</span>
+<span class="sd">&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="defining-the-parameters">
+<h2>Defining the parameters<a class="headerlink" href="#defining-the-parameters" title="Permalink to this headline"></a></h2>
+<p>Now we will define the dataset parameters using a <a class="reference external" href="https://docs.python.org/3/library/dataclasses.html">dataclass</a>.</p>
+<p>We will add two parameters as example:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>A required string parameter named <code class="docutils literal notranslate"><span class="pre">param_1</span></code></p></li>
+<li><p>An optional int parameter named <code class="docutils literal notranslate"><span class="pre">param_2</span></code> with default value: <code class="docutils literal notranslate"><span class="pre">2</span></code></p></li>
+</ul>
+</div></blockquote>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">hydra_conf.py</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">MyDatasetHydraConf</span><span class="p">:</span>
+
+    <span class="n">param_1</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">param_2</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>
+
+
+    <span class="n">_target_</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;gymnos.datasets.my_dataset.dataset.MyDataset&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">_target_</span></code> parameter is mandatory and must default to the path of the dataset. This will be automatically defined by <code class="docutils literal notranslate"><span class="pre">gymnos-create</span></code>. It is used by <a class="reference external" href="https://hydra.cc/docs/next/advanced/instantiate_objects/overview/">Hydra</a>.</p>
+</div>
+<div class="section" id="defining-the-dataset">
+<h2>Defining the dataset<a class="headerlink" href="#defining-the-dataset" title="Permalink to this headline"></a></h2>
+<p>First of all, we will write a class docstring explaining about the data structure and class parameters.</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">dataset.py</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">MyDataset</span><span class="p">(</span><span class="n">MyDatasetHydraConf</span><span class="p">,</span> <span class="n">BaseDataset</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Data has the following structure:</span>
+
+<span class="sd">    .. code-block::</span>
+
+<span class="sd">        index.csv  # CSV file with 3 columns (row_1, row_2, row_3)</span>
+<span class="sd">        data/</span>
+<span class="sd">            class1.json  # data for class1 with the following keys -&gt; age, gender</span>
+<span class="sd">            class2.json  # data for class2 with the following keys -&gt; age, gender</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    -------------</span>
+<span class="sd">    param_1:</span>
+<span class="sd">        Description about param_1</span>
+<span class="sd">    param_2:</span>
+<span class="sd">        Description about param_2</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</div>
+<p>Then we will implement the <code class="docutils literal notranslate"><span class="pre">download(root)</span></code> method where root is the directory where dataset files are stored.</p>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">dataset.py</span><a class="headerlink" href="#id4" title="Permalink to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">...utils</span> <span class="kn">import</span> <span class="n">extract_archive</span>
+
+
+<span class="k">class</span> <span class="nc">MyDataset</span><span class="p">(</span><span class="n">MyDatasetHydraConf</span><span class="p">,</span> <span class="n">BaseDataset</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="n">root</span><span class="p">):</span>
+        <span class="n">download_dir</span> <span class="o">=</span> <span class="n">SOFIA</span><span class="o">.</span><span class="n">download_dataset</span><span class="p">(</span><span class="s2">&quot;johndoe/datasets/my-dataset&quot;</span><span class="p">)</span>  <span class="c1"># download all files</span>
+
+        <span class="n">extract_archive</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">download_dir</span><span class="p">,</span> <span class="s2">&quot;data.zip&quot;</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">))</span>  <span class="c1"># we will extract data.zip to root/data directory</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s2">&quot;index.csv&quot;</span><span class="p">)):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">symlink</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">download_dir</span><span class="p">,</span> <span class="s2">&quot;index.csv&quot;</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s2">&quot;index.csv&quot;</span><span class="p">))</span>  <span class="c1"># instead of copying the file, we will symlink the file to optimize storage</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="running-the-dataset">
+<h2>Running the dataset<a class="headerlink" href="#running-the-dataset" title="Permalink to this headline"></a></h2>
+<p>Once finished, you can run your dataset with Hydra using the command <code class="docutils literal notranslate"><span class="pre">gymnos-train</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">gymnos-train <span class="nv">dataset</span><span class="o">=</span>my_dataset dataset.param_1<span class="o">=</span><span class="s2">&quot;example string&quot;</span> dataset.param_2<span class="o">=</span><span class="m">5</span></span>
+</pre></div></div><div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You can use <code class="docutils literal notranslate"><span class="pre">trainer=dummy</span></code> to check that your dataset is working properly, e.g:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">gymnos-train <span class="nv">dataset</span><span class="o">=</span>my_dataset <span class="nv">trainer</span><span class="o">=</span>dummy</span>
+</pre></div></div></div>
+</div>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline"></a></h2>
+<p>Remember to check the <a class="reference internal" href="documentation.html#documentation"><span class="std std-ref">Documentation</span></a> for your new dataset</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="new_experiment.html" class="btn btn-neutral float-left" title="New experiment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="new_model.html" class="btn btn-neutral float-right" title="New model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Telefonica.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    v: 0.3
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl>
+      <dt>Tags</dt>
+      <dd><a href="../../0.2/index.html">0.2</a></dd>
+      <dd><a href="new_dataset.html">0.3</a></dd>
+    </dl>
+    <dl>
+      <dt>Branches</dt>
+      <dd><a href="../../master/developer_guide/new_dataset.html">master</a></dd>
+    </dl>
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

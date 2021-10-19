@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New model &mdash; gymnos  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/asciinema-player_2.6.1.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/asciinema-custom.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/asciinema-player_2.6.1.js"></script>
+        <script src="../_static/custom.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="New dataset" href="new_dataset.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> gymnos
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Get started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hyperparameter_tuning.html">Hyperparameter tuning</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Datasets</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../datasets/celeba_imgs.html">Celeba Imgs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../datasets/coins_detection.html">Coins Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../datasets/dogs_vs_cats.html">Dogs vs Cats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../datasets/mnist_imgs.html">Mnist Imgs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../datasets/raccoon_detection.html">Raccoon Detection</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Envs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../envs/atari.html">Atari</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../envs/box2d.html">Box2d</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../envs/gym.html">Gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../envs/ple.html">PLE</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Vision</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../vision/image_classification/index.html">Image classification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vision/object_detection/index.html">Object Detection</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Generative</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../generative/image_generation/index.html">Image Generation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reinforcement Learning</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../rl/hybrid_optimization/index.html">Hybrid Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rl/misc/index.html">Miscellaneous</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rl/policy_optimization/index.html">Policy Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rl/value_optimization/index.html">Value Optimization</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">CLI</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cli/login.html">gymnos-login</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/train.html">gymnos-train</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/upload.html">gymnos-upload</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/create.html">gymnos-create</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Launchers</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../launchers/sofia.html">SOFIA</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Experiments</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/classify_dogs_vs_cats.html">Classify dogs vs cats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/detect_coins.html">Detect Coins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/detect_raccoons.html">Detect Raccoons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/generate_celebs.html">Generate Celebs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/generate_numbers.html">Generate Numbers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/learn_cartpole.html">Learn Cartpole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/learn_lunar_lander.html">Learn Lunar Lander</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/learn_pong.html">Learn Cartpole</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experiments/learn_snake.html">Learn Snake</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Services</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../services/sofia.html">SOFIA</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Utils</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../utils/data_utils.html">Data utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils/py_utils.html">Python utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils/pypi_utils.html">PyPi utilities</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="style_guide.html">Style guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="new_experiment.html">New experiment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="new_dataset.html">New dataset</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">New model</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#defining-pip-dependencies">Defining pip dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-apt-dependencies">Defining apt dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-the-public-api">Defining the public API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adding-the-docstring">Adding the docstring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-the-trainer-parameters">Defining the trainer parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#implementing-the-trainer">Implementing the trainer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#constructor">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#prepare-data">Prepare data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#train">Train</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test">Test</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#implementing-the-predictor">Implementing the predictor</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#load-weights">Load weights</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#predict">Predict</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#running-the-model">Running the model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">gymnos</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>New model</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/developer_guide/new_model.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="new-model">
+<h1>New model<a class="headerlink" href="#new-model" title="Permalink to this headline"></a></h1>
+<p>In this tutorial we will create a new model.</p>
+<p>The name of the model will be <code class="docutils literal notranslate"><span class="pre">my_model</span></code> and the domain will be <code class="docutils literal notranslate"><span class="pre">audio/audio_classification</span></code>.</p>
+<p>First of all, we will run the command <a class="reference internal" href="../cli/create.html#gymnos-create"><span class="std std-ref">gymnos-create</span></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><style type="text/css">
+span.prompt1:before {
+  content: "$ ";
+}
+</style><span class="prompt1">gymnos-create model my_model audio/audio_classification</span>
+</pre></div></div><p>This wil create the Python module <code class="docutils literal notranslate"><span class="pre">gymnos/audio/audio_classification/my_model</span></code> with the following files:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">__init__.py</span></code>: entrypoint for the model. It contains the docstring for the module and the public API.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">__model__.py</span></code>: gymnos configuration for model</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trainer.py</span></code>: trainer class. Here we will define the trainer</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">predictor</span></code>: predictor class. Here we will define the predictor.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hydra_conf</span></code>: Hydra configuration definition. Here we will define the parameters for the trainer</p></li>
+</ul>
+</div></blockquote>
+<div class="section" id="defining-pip-dependencies">
+<h2>Defining pip dependencies<a class="headerlink" href="#defining-pip-dependencies" title="Permalink to this headline"></a></h2>
+<p>You can add any pip dependency needed for your model by editing the <code class="docutils literal notranslate"><span class="pre">pip_dependencies</span></code> variable in <code class="docutils literal notranslate"><span class="pre">__model__.py</span></code>:</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">__model__.py</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pip_dependencies</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;torch&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;torchaudio&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;scikit-learn&lt;1.0,</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="defining-apt-dependencies">
+<h2>Defining apt dependencies<a class="headerlink" href="#defining-apt-dependencies" title="Permalink to this headline"></a></h2>
+<p>You can add any <code class="docutils literal notranslate"><span class="pre">apt-get</span></code> package needed for your model by editing the <code class="docutils literal notranslate"><span class="pre">apt_dependencies</span></code> variable in <code class="docutils literal notranslate"><span class="pre">__model__.py</span></code>.</p>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">__model__.py</span><a class="headerlink" href="#id4" title="Permalink to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">apt_dependencies</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;ffmpeg&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;libsm6&quot;</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="defining-the-public-api">
+<h2>Defining the public API<a class="headerlink" href="#defining-the-public-api" title="Permalink to this headline"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> will define the public API for your module.</p>
+<p>If you open the file you will see something like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">....utils</span> <span class="kn">import</span> <span class="n">lazy_import</span>
+
+<span class="n">MyModelPredictor</span> <span class="o">=</span> <span class="n">lazy_import</span><span class="p">(</span><span class="s2">&quot;gymnos.audio.audio_classification.my_model.predictor.MyModelPredictor&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>By lazy importing the predictor we prevent import errors for dependencies not installed until MyModelPredictor is used.</p>
+<p>This public API will allow us to import the predictor like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gymnos.audio.audio_classification.my_model</span> <span class="kn">import</span> <span class="n">MyModelPredictor</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="adding-the-docstring">
+<h2>Adding the docstring<a class="headerlink" href="#adding-the-docstring" title="Permalink to this headline"></a></h2>
+<p>First of all, we will modify the docstring for the module:</p>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">__init__.py</span><a class="headerlink" href="#id5" title="Permalink to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Small description about the model</span>
+<span class="sd">&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="defining-the-trainer-parameters">
+<h2>Defining the trainer parameters<a class="headerlink" href="#defining-the-trainer-parameters" title="Permalink to this headline"></a></h2>
+<p>Now we will define the trainer parameters using a <a class="reference external" href="https://docs.python.org/3/library/dataclasses.html">dataclass</a>.</p>
+<p>We will add two parameters as example:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>A required boolean parameter named <code class="docutils literal notranslate"><span class="pre">param_1</span></code></p></li>
+<li><p>An optional list parameter named <code class="docutils literal notranslate"><span class="pre">param_2</span></code> with default value <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">hydra_conf.py</span><a class="headerlink" href="#id6" title="Permalink to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">MyModelHydraConf</span><span class="p">:</span>
+
+    <span class="n">param_1</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">param_2</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">_target_</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;gymnos.audio.audio_classification.trainer.MyModelTrainer&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">_target_</span></code> parameter is mandatory and must default to the path of the trainer. This will be automatically defined by <code class="docutils literal notranslate"><span class="pre">gymnos-create</span></code>. It is used by <a class="reference external" href="https://hydra.cc/docs/next/advanced/instantiate_objects/overview/">Hydra</a>.</p>
+</div>
+<div class="section" id="implementing-the-trainer">
+<h2>Implementing the trainer<a class="headerlink" href="#implementing-the-trainer" title="Permalink to this headline"></a></h2>
+<p>First of all, we will write a class docstring explaining about the data structure expected by model and the class parameters.</p>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">trainer.py</span><a class="headerlink" href="#id7" title="Permalink to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">MyModelTrainer</span><span class="p">(</span><span class="n">MyModelHydraConf</span><span class="p">,</span> <span class="n">BaseTrainer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Trainer expects a directory for each class where each directory contains the audio samples in .wav format.</span>
+
+<span class="sd">    .. code-block::</span>
+
+<span class="sd">        class1/</span>
+<span class="sd">            audio1.wav</span>
+<span class="sd">            audio2.wav</span>
+<span class="sd">            ...</span>
+<span class="sd">        class2/</span>
+<span class="sd">            audio1.wav</span>
+<span class="sd">            audio2.wav</span>
+<span class="sd">            ....</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    -------------</span>
+<span class="sd">    param_1:</span>
+<span class="sd">        Description about param_1</span>
+<span class="sd">    param_2:</span>
+<span class="sd">        Description about param_2</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</div>
+<p>Once the docstring has been written, we will implement the following methods:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">prepare_data(root)</span></code>: optional, method called with data directory as parameter</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">train()</span></code>: required, execute training for model</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test()</span></code>: optional, execute testing for model. This method will be called after training.</p></li>
+</ul>
+</div></blockquote>
+<div class="section" id="constructor">
+<h3>Constructor<a class="headerlink" href="#constructor" title="Permalink to this headline"></a></h3>
+<p>Any parameter defined on <code class="docutils literal notranslate"><span class="pre">MyModelHydraConf</span></code> will be available using <code class="docutils literal notranslate"><span class="pre">self</span></code>, e.g <code class="docutils literal notranslate"><span class="pre">self.param_1</span></code>.
+For any other variable you want to initialize, you can use the method <code class="docutils literal notranslate"><span class="pre">__post_init</span></code> from the <a class="reference external" href="https://docs.python.org/3/library/dataclasses.html">dataclass</a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">MyModelTrainer</span><span class="p">(</span><span class="n">MyModelHydraConf</span><span class="p">,</span> <span class="n">BaseTrainer</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_param_3</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_2</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;hello&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="prepare-data">
+<h3>Prepare data<a class="headerlink" href="#prepare-data" title="Permalink to this headline"></a></h3>
+<p>This method will be called with the directory where data is stored.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">glob</span> <span class="kn">import</span> <span class="n">glob</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">MyModelTrainer</span><span class="p">(</span><span class="n">MyModelHydraConf</span><span class="p">,</span> <span class="n">BaseTrainer</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">prepare_data</span><span class="p">(</span><span class="n">root</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_audio_fpaths</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;*.wav&quot;</span><span class="p">))</span>  <span class="c1"># we will save all audio file paths</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="train">
+<h3>Train<a class="headerlink" href="#train" title="Permalink to this headline"></a></h3>
+<p>This method must implement the training code and the checkpoint saving</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">MyModelTrainer</span><span class="p">(</span><span class="n">MyModelHydraConf</span><span class="p">,</span> <span class="n">BaseTrainer</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">train</span><span class="p">():</span>
+        <span class="o">...</span>   <span class="c1"># Execute training</span>
+        <span class="n">mlflow</span><span class="o">.</span><span class="n">log_artifact</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Any artifact saved using <a class="reference external" href="https://www.mlflow.org/docs/latest/python_api/mlflow.html#mlflow.log_artifact">mlflow.log_artifact</a>
+will be available to the predictor so make sure you save your model weights using <code class="docutils literal notranslate"><span class="pre">mlflow.log_artifact</span></code>.
+Refer to <a class="reference external" href="https://www.mlflow.org/docs/latest/python_api/mlflow.html">mlflow documentation</a> for more information.</p>
+</div>
+<div class="section" id="test">
+<h3>Test<a class="headerlink" href="#test" title="Permalink to this headline"></a></h3>
+<p>This method must implement the testing code.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">MyModelTrainer</span><span class="p">(</span><span class="n">MyModelHydraConf</span><span class="p">,</span> <span class="n">BaseTrainer</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
+        <span class="o">...</span>   <span class="c1"># Execute testing</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="implementing-the-predictor">
+<h2>Implementing the predictor<a class="headerlink" href="#implementing-the-predictor" title="Permalink to this headline"></a></h2>
+<p>The predictor is the class responsible for end-to-end predictions.
+You must implement two methods:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">load(self,</span> <span class="pre">artifacts_dir)</span></code>: load weights from artifacts directory. This directory will contain any artifact saved by the trainer using <code class="docutils literal notranslate"><span class="pre">mlflow.log_artifact</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">predict(self,</span> <span class="pre">*args,</span> <span class="pre">**kwargs)</span></code>: method responsible for predictions. Parameters are not defined so it’s up to you.</p></li>
+</ul>
+</div></blockquote>
+<div class="section" id="id2">
+<h3>Constructor<a class="headerlink" href="#id2" title="Permalink to this headline"></a></h3>
+<p>Optionally, you can add any parameter to the constructor:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyModelPredictor</span><span class="p">(</span><span class="n">BasePredictor</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_1</span><span class="p">,</span> <span class="n">param_2</span><span class="p">):</span>
+        <span class="o">...</span>
+</pre></div>
+</div>
+<p>It will be instantiated as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">predictor</span> <span class="o">=</span> <span class="n">MyModelPredictor</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="o">&lt;</span><span class="n">MLFLOW_RUN_ID_OR_SOFIA_MODEL</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">param_1</span><span class="o">=...</span><span class="p">,</span> <span class="n">param_2</span><span class="o">=...</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="load-weights">
+<h3>Load weights<a class="headerlink" href="#load-weights" title="Permalink to this headline"></a></h3>
+<p>This method must implement the weight loading from the directory containing all artifacts saved by the trainer.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyModelPredictor</span><span class="p">(</span><span class="n">BasePredictor</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">DictConfig</span><span class="p">,</span> <span class="n">run</span><span class="p">:</span> <span class="n">MLFlowRun</span><span class="p">,</span> <span class="n">artifacts_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="c1"># Load model from artifacts directory</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="predict">
+<h3>Predict<a class="headerlink" href="#predict" title="Permalink to this headline"></a></h3>
+<p>This method must implement the end-to-end predictions. Parameters for this method will be defined by you.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Parameters should be framework-agnostic, e.g instead of having a <code class="docutils literal notranslate"><span class="pre">torch.tensor</span></code> as a parameter,
+you can use a <code class="docutils literal notranslate"><span class="pre">np.array</span></code> and then convert it to <code class="docutils literal notranslate"><span class="pre">torch.tensor</span></code>.
+As a general rule, a Python primitive or a NumPy array is a safe bet but you can also include multiple options
+e.g a <code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> or a <code class="docutils literal notranslate"><span class="pre">torch.tensor</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">Union[np.ndarray,</span> <span class="pre">torch.tensor]</span></code>.</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
+
+<span class="k">class</span> <span class="nc">MyModelPredictor</span><span class="p">(</span><span class="n">BasePredictor</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">audio</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Predict class from audio</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        audio:</span>
+<span class="sd">            Filepath or numpy array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="c1"># load audio from filepath</span>
+        <span class="o">...</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="running-the-model">
+<h2>Running the model<a class="headerlink" href="#running-the-model" title="Permalink to this headline"></a></h2>
+<p>Once finished, you can run your model with Hydra using the command <code class="docutils literal notranslate"><span class="pre">gymnos-train</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">gymnos-train <span class="nv">trainer</span><span class="o">=</span>audio.audio_classification.my_model trainer.param_1<span class="o">=</span><span class="nb">false</span> trainer.param_2<span class="o">=</span><span class="s2">&quot;[dog,cat]&quot;</span></span>
+</pre></div></div><div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You can use <code class="docutils literal notranslate"><span class="pre">dataset=dummy</span></code> to check that your model is working properly, e.g:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">gymnos-train <span class="nv">trainer</span><span class="o">=</span>audio.audio_classification.my_model <span class="nv">dataset</span><span class="o">=</span>dummy</span>
+</pre></div></div></div>
+</div>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline"></a></h2>
+<p>Remember to check the <a class="reference internal" href="documentation.html#documentation"><span class="std std-ref">Documentation</span></a> for your new model</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="new_dataset.html" class="btn btn-neutral float-left" title="New dataset" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Telefonica.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    v: 0.3
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl>
+      <dt>Tags</dt>
+      <dd><a href="../../0.2/index.html">0.2</a></dd>
+      <dd><a href="new_model.html">0.3</a></dd>
+    </dl>
+    <dl>
+      <dt>Branches</dt>
+      <dd><a href="../../master/developer_guide/new_model.html">master</a></dd>
+    </dl>
+  </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
