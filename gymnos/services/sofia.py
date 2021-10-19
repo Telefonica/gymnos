@@ -161,6 +161,15 @@ class SOFIA:
                                   json=json_data)
 
     @classmethod
+    def get_project_job(cls, username, project_name, job_name):
+        return cls.session().get(urljoin(cls.domain, "api", "projects", username, project_name, "jobs", job_name))
+
+    @classmethod
+    def get_project_job_logs(cls, username, project_name, job_name, lineno: int = 0):
+        return cls.session().get(urljoin(cls.domain, "api", "projects", username, project_name, "jobs", job_name,
+                                         "task_logs"), params={"lineno": lineno})
+
+    @classmethod
     def create_model(cls, name, description, is_public, module, predictors, config, run_info, artifacts_path):
         model = {
             "name": name,
