@@ -15,6 +15,7 @@ Gymnos
 
    installation
    quickstart
+   hyperparameter_tuning
 
 .. toctree::
    :maxdepth: 1
