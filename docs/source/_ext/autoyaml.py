@@ -47,7 +47,7 @@ class AutoYAMLDirective(SphinxDirective):
             match = re.match(pattern, caption)
             if match:
                 key_ref = match.group(2)
-                replace_val = benedict(OmegaConf.to_object(config), keypath_separator="|")[key_ref]
+                replace_val = benedict(OmegaConf.to_object(config), keypath_separator="|")[key_ref.replace(".", "|")]
                 caption = re.sub(pattern, "\\1" + replace_val + "\\3", caption)
 
             rst_content += f"\n    :caption: {caption}"
