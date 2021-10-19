@@ -79,7 +79,7 @@ class SOFIA:
     Downloads will be stored on GYMNOS_HOME/downloads/sofia/
     """
 
-    domain = os.getenv("SOFIA_DOMAIN", "http://obiwan.hi.inet:7272")
+    domain = os.getenv("SOFIA_DOMAIN", "https://sofia.eu.ngrok.io")
 
     @classmethod
     def session(cls):
