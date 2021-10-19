@@ -80,7 +80,7 @@ def create_job_on_sofia(idx, args: Sequence[str], project_name: str, ref: str, n
                           "jobs", job_name)
         logger.info(f"Project job successfully created at {job_url}")
 
-        logger.info(f"Polling job statuses every 30 sec")
+        logger.info("Polling job statuses every 30 sec")
 
         job_prefix = f"[color({(idx + 1) % 255})]{job_name}  | [/]"
 

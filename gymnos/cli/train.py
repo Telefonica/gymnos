@@ -274,7 +274,7 @@ def main(config: DictConfig):
                 elif optim_metric["mode"] == "max":
                     op = max
                 else:  # last
-                    op = lambda elem: elem[-1]
+                    op = lambda elem: elem[-1]  # noqa: E731
 
                 history_metrics = client.get_metric_history(run.info.run_id, optim_metric["metric"])
                 metrics.append(op([metric.value for metric in history_metrics]))
