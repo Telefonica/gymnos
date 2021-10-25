@@ -64,3 +64,9 @@ Now we will customize the parameters for the algorithm:
     You can also tune hyperparameters with SOFIA but you will need to keep the terminal open.
     This is because although the trainings are run in SOFIA, the management of the hyperparameters is decided locally,
     i.e. your machine tells SOFIA which hyperparameters to test.
+
+Finally, run your experiment with ``-m`` argument:
+
+.. prompt:: bash
+
+    gymnos-train -m +experiment=<experiment>
