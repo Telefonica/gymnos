@@ -28,6 +28,14 @@ $ python examples/generate_celebs.py
 $ python examples/play_lunar_lander.py
 ```
 
+```console
+$ python examples/play_cartpole.py
+```
+
+```console
+$ python examples/detect_chinese_coins.py <img_path>
+```
+
 ## Development
 Gymnos is still under development. Contributions are always welcome!.
 
