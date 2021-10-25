@@ -19,7 +19,7 @@ from gymnos.vision.image_classification.transfer_efficientnet import TransferEff
 @click.command()
 @click.argument("img_path")
 def predict(img_path):
-    predictor = TransferEfficientNetPredictor.from_pretrained("ruben/models/dogs-vs-cats-4")
+    predictor = TransferEfficientNetPredictor.from_pretrained("ruben/models/dogs-vs-cats")
     pred = predictor.predict(img_path)
 
     print(inspect.cleandoc(f"""
