@@ -34,3 +34,11 @@ SOFIA
      -
      - false
      - Whether or not send email when job has completed
+   * - name
+     -
+     - ``<RANDOM>``
+     - Name for the job
+   * - description
+     -
+     -
+     - Description for the job
