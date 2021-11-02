@@ -1,0 +1,10 @@
+# @package _global_
+# Baby cry classifiation experiment
+
+defaults:
+    - override /trainer: audio.audio_classification.lenet_audio  # TODO: set name of trainer to use
+    - override /dataset: donateacry  # TODO: set name of dataset to use
+
+trainer: {}
+
+dataset: {}
