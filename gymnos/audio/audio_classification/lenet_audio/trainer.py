@@ -11,7 +11,7 @@ from sklearn.metrics import roc_curve, roc_auc_score, classification_report
 import logging
 import inspect
 import time
-import os
+import random
 
 from dataclasses import dataclass
 
@@ -28,6 +28,8 @@ class LenetAudioTrainer(LenetAudioHydraConf, BaseTrainer):
     """
 
     def __post_init__(self):
+
+        self._set_seed()
 
         self._model = LeNetAudio(
             self.num_classes,
@@ -235,6 +237,8 @@ class LenetAudioTrainer(LenetAudioHydraConf, BaseTrainer):
 
     def test(self):
 
+        logger = logging.getLogger(__name__)
+
         # Loss function
         criterion = torch.nn.CrossEntropyLoss()
 
@@ -273,7 +277,7 @@ class LenetAudioTrainer(LenetAudioHydraConf, BaseTrainer):
 
                 # Present intermediate results
                 if (counter%n_intermediate_steps == 0):
-                    print("Epoch {}......Step: {}/{}....... Average Loss for Step: {} | Accuracy: {}".format(
+                    logger.info("Epoch {}......Step: {}/{}....... Average Loss for Step: {} | Accuracy: {}".format(
                         1,
                         counter,
                         len(test_loader),
@@ -390,3 +394,14 @@ class LenetAudioTrainer(LenetAudioHydraConf, BaseTrainer):
             predicted_labels[:, i] = (torch.tensor(outputs_array[:, i]) > thresholds[i]).float()
         
         return predicted_labels.data.numpy().tolist()
+
+    def _set_seed(self):
+        """
+        Fix seed of torch, numpy and random.
+        """
+        torch.manual_seed(self.seed)
+        np.random.seed(self.seed)
+        if torch.cuda.is_available():
+            torch.cuda.manual_seed(self.seed)
+            torch.backends.cudnn.deterministic = True
+        random.seed(self.seed)
