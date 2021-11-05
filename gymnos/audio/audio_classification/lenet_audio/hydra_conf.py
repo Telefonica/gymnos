@@ -13,7 +13,7 @@ class LenetAudioHydraConf:
     optimizer: str = 'adam'
     momentum: float = 0.9
     weight_decay: float = 0.0
-
+    seed: int = 2021
     epochs: int = 80
     batch_size: int = 12
     patience: int = 10
@@ -23,7 +23,6 @@ class LenetAudioHydraConf:
     sampling_rate: int = 16000
 
     cuda: bool = True
-
     balance: bool = True
 
     num_classes: int = 5
