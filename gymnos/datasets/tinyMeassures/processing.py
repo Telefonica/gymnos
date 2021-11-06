@@ -1,15 +1,21 @@
 
 import pandas as pd
 import os
+from tqdm import tqdm
 
-def split_in_csv(temp,humidity,pres,download_dir,type_meassures):
+def split_in_csv(temp,humidity,pres,root,type_meassures):
 
     spltting_temp = []
     spltting_hum = []
     spltting_pres = []
     add = 0
-    os.mkdir(download_dir+'/'+type_meassures+"/")
-    for i in range(len(temp)):
+    try:
+        os.mkdir(root +'/'+type_meassures+"/")
+    except Exception as e:
+        pass
+
+    for i in tqdm(range(len(temp))):
+
         spltting_temp.append(temp[i])
         spltting_hum.append(humidity[i])
         spltting_pres.append(pres[i])
@@ -24,4 +30,4 @@ def split_in_csv(temp,humidity,pres,download_dir,type_meassures):
             spltting_temp = []
             spltting_hum = []
             spltting_pres = []
-            df.to_csv(download_dir+'/'+type_meassures+"/"+type_meassures+str(i)+'.csv',encoding='utf-8',  header=None,index=False)
+            df.to_csv(root+'/'+type_meassures+"/"+type_meassures+str(i)+'.csv',encoding='utf-8',  header=None,index=False)
