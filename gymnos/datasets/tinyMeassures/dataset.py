@@ -14,6 +14,7 @@ from dataclasses import dataclass
 from ...services.sofia import SOFIA
 from .processing import split_in_csv
 
+
 @dataclass
 class TinyMeassures(TinyMeassuresHydraConf, BaseDataset):
 
@@ -36,12 +37,15 @@ class TinyMeassures(TinyMeassuresHydraConf, BaseDataset):
     def download(self, root):
 
         logger = logging.getLogger(__name__)
-        download_dir =  SOFIA.download_dataset("IndIAna_jones/datasets/Arduino_environmental_data")
+        download_dir = SOFIA.download_dataset(
+            "IndIAna_jones/datasets/Arduino_environmental_data")
         logger.info("Extracting some magic powder ...")
-        print(root)
-        arduino_data = open(download_dir +'/arduino_meassures.txt', 'r')
+
+        # Reading txt with all meassures
+        arduino_data = open(download_dir + '/arduino_meassures.txt', 'r')
         Lines = arduino_data.readlines()
 
+        # Lists to hold the meassures
         temp = []
         humidity = []
         pres = []
@@ -51,16 +55,15 @@ class TinyMeassures(TinyMeassuresHydraConf, BaseDataset):
 
         for line in Lines:
             meassurements = line.split("*")
-            try:                                 #avoiding meassurements errors
+            try:  # avoiding meassurements errors
                 if len(meassurements) == 3:
 
-
-                    if float(meassurements[0].strip()) >= 33:   #Anomaly threshold
+                    if float(meassurements[0].strip()) >= 33:  # Anomaly threshold
                         temp_anomal.append(meassurements[0].strip())
                         humidity_anomal.append(meassurements[1].strip())
                         preassure_anomal.append(meassurements[2].strip())
                     else:
-                        temp.append(meassurements[0].strip()) #deleting \n
+                        temp.append(meassurements[0].strip())  # deleting \n
                         humidity.append(meassurements[1].strip())
                         pres.append(meassurements[2].strip())
 
@@ -68,7 +71,11 @@ class TinyMeassures(TinyMeassuresHydraConf, BaseDataset):
                 continue
 
         logger.info("Preparing samples")
-        split_in_csv(temp,humidity,pres,root,"normal")
+        logger.info("It will take a little")
+        logger.info("Grab some coffee ☕")
+        # spltting samples in csv files
+        split_in_csv(temp, humidity, pres, root, "normal")
         logger.info("normal samples prepared")
-        split_in_csv(temp_anomal,humidity_anomal,preassure_anomal,root,"anomal")
+        split_in_csv(temp_anomal, humidity_anomal,
+                     preassure_anomal, root, "anomal")
         logger.info("All samples prepared! :D")

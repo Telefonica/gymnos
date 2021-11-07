@@ -7,7 +7,6 @@
 from dataclasses import dataclass, field
 
 
-
 @dataclass
 class TinyAnomalyDetectionHydraConf:
 
@@ -22,6 +21,8 @@ class TinyAnomalyDetectionHydraConf:
     sensor_sample_rate: int = 15
     sample_time: int = 1
     samples_per_file: int = 15
+    model_name: str = 'TinyAutoencoder'
+    tflite_model_name: str = 'TinyAutoencoderLite'
 
     _target_: str = field(init=False, repr=False, default="gymnos.tabular.anomaly_detection.tiny_anomaly_detection."
                                                           "trainer.TinyAnomalyDetectionTrainer")
