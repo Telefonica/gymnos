@@ -20,6 +20,8 @@ class WganGpHydraConf:
     features_g: int = 16
     critic_iterations: int = 5
     lambda_gp: int = 10
+    gpus: int = -1
+    num_workers: int = 0
 
     _target_: str = field(init=False, repr=False, default="gymnos.generative.image_generation.wgan_gp."
                                                           "trainer.WganGpTrainer")

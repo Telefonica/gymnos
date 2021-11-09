@@ -39,6 +39,7 @@ def initialize_weights(model):
         if isinstance(m, (nn.Conv2d, nn.ConvTranspose2d, nn.BatchNorm2d)):
             nn.init.normal_(m.weight.data, 0.0, 0.02)
 
+
 def build_transform():
     return T.Compose([
         transforms.Resize(WganGpHydraConf.image_size),
@@ -48,11 +49,20 @@ def build_transform():
             [0.5 for _ in range(WganGpHydraConf.channels_img)], [0.5 for _ in range(WganGpHydraConf.channels_img)]),
     ])
 
+
 @dataclass
 class WganGpTrainer(WganGpHydraConf, BaseTrainer):
     """
     TODO: docstring for trainer
     """
+
+    def __post_init__(self):
+        if self.num_workers < 0:
+            self.num_workers = mp.cpu_count()
+        if self.gpus < 0:
+            self.gpus = torch.cuda.device_count()
+
+        assert self.num_epochs > 0
 
     def prepare_data(self, root):
         logger = logging.getLogger(__name__)
@@ -64,9 +74,9 @@ class WganGpTrainer(WganGpHydraConf, BaseTrainer):
     def train(self):
         device = "cuda" if (torch.cuda.is_available() and self.gpus > 0) else "cpu"
 
-        gen = Generator(channels_noise = self.z_dim, channels_img = self.channels_img, 
-            features_g = self.features_g).to(device)
-        critic = Critic(channels_img = self.channels_img, features_c = self.features_c).to(device)
+        gen = Generator(channels_noise=self.z_dim, channels_img=self.channels_img,
+                        features_g=self.features_g).to(device)
+        critic = Critic(channels_img=self.channels_img, features_c=self.features_c).to(device)
 
         initialize_weights(gen)
         initialize_weights(critic)
@@ -74,18 +84,17 @@ class WganGpTrainer(WganGpHydraConf, BaseTrainer):
         opt_gen = optim.Adam(gen.parameters(), lr=self.learning_rate, betas=(0.0, 0.9))
         opt_critic = optim.Adam(critic.parameters(), lr=self.learning_rate, betas=(0.0, 0.9))
 
-
         transform = build_transform()
 
         dataset = WGANGPDataset(self._filepaths, transform)
         #dataset = datasets.MNIST(root="dataset/", transform=transforms, download=True)
-        loader = DataLoader(dataset, batch_size = self.batch_size, shuffle = True)
+        loader = DataLoader(dataset, batch_size=self.batch_size, shuffle=True, num_workers=self.num_workers)
 
-        noise = torch.randn(10, self.z_dim, 1, 1, device=device)   
+        noise = torch.randn(10, self.z_dim, 1, 1, device=device)
 
         for epoch in range(self.num_epochs):
             running_metrics = {}
-            
+
             for real in tqdm(loader, leave=False):
                 real = real.to(device)
                 cur_batch_size = real.shape[0]
@@ -106,8 +115,6 @@ class WganGpTrainer(WganGpHydraConf, BaseTrainer):
                 gen.zero_grad()
                 loss_gen.backward()
                 opt_gen.step()
-
-
 
                 log_metrics = [
                     ("train/discriminator_loss", loss_critic.item()),
