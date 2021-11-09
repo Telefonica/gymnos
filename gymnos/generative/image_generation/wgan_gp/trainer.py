@@ -132,7 +132,7 @@ class WganGpTrainer(WganGpHydraConf, BaseTrainer):
 
                 fake_imgs = (fake_imgs + 1) / 2  # denormalize
 
-                val_img = to_pil_image(make_grid(fake_imgs, 5)).convert("L" if self.num_channels == 1 else "RGB")
+                val_img = to_pil_image(make_grid(fake_imgs, 5)).convert("L" if self.channels_img == 1 else "RGB")
                 mlflow.log_image(val_img, f"epoch-{epoch}.png")
 
         torch.save(generator.state_dict(), f"generator_epoch={epoch}.pt")
