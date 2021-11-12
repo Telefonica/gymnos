@@ -159,7 +159,7 @@ class SAGANTrainer(SAGANHydraConf, BaseTrainer):
             if (step == self.total_step - 1) or (self.log_images_interval is not None and
                                                  (step % self.log_images_interval) == 0):
                 with torch.no_grad():
-                    fake_imgs = self.G(self.noise)
+                    fake_imgs, _, _ = self.G(self.noise)
 
                 fake_imgs = (fake_imgs + 1) / 2  # denormalize
 

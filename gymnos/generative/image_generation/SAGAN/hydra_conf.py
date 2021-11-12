@@ -22,7 +22,8 @@ class SAGANHydraConf:
     parallel: bool = False
     adv_loss: str = 'hinge'
     gpus: int = -1
-
+    num_channels: int = 3
+    
     lambda_gp: int = 10
     total_step: int = 1000000
     d_iters: int = 5
@@ -46,8 +47,6 @@ class SAGANHydraConf:
     sample_step: int = 10
     model_save_step: float = 1.0
     version = 'sagan_celeb'
-
-
 
     _target_: str = field(init=False, repr=False, default="gymnos.generative.image_generation.SAGAN."
                                                           "trainer.SAGANTrainer")
