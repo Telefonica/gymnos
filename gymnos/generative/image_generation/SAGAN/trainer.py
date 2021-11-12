@@ -30,8 +30,8 @@ from .networks import Generator, Discriminator
 
 def build_transform():
     return T.Compose([
-        T.Resize(64),
-        T.CenterCrop(64),
+        T.Resize(SAGANHydraConf.imsize),
+        T.CenterCrop(SAGANHydraConf.imsize),
         T.ToTensor(),
         T.Lambda(lambda img: (img * 2) - 1)  # normalize values between -1 and 1
     ])
