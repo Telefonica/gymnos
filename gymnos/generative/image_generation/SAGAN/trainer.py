@@ -19,8 +19,7 @@ from torch.autograd import Variable
 import torchvision.transforms as T
 from torchvision.utils import save_image
 
-from networks import Generator, Discriminator
-from utils import *
+from .utils import *
 
 from ....base import BaseTrainer
 from .dataset import SAGANDataset
