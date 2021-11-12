@@ -153,7 +153,7 @@ class SAGANTrainer(SAGANHydraConf, BaseTrainer):
                 for metric_name, metric_value in log_metrics:
                     running_metrics[metric_name] = running_metrics.get(metric_name, 0) + metric_value
 
-            mean_epoch_metrics = {k: v / len(self.data_loader) for k, v in running_metrics.items()}
+            mean_epoch_metrics = {k: v / len(data_loader) for k, v in running_metrics.items()}
             mlflow.log_metrics({**mean_epoch_metrics, "epoch": step})
 
             if (step == self.total_step - 1) or (self.log_images_interval is not None and
