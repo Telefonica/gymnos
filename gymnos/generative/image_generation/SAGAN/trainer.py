@@ -9,6 +9,7 @@ import logging
 
 from glob import glob
 from tqdm import tqdm, trange
+import multiprocessing as mp
 from dataclasses import dataclass
 from torch.utils.data import DataLoader
 from torchvision.utils import make_grid
@@ -43,6 +44,13 @@ class SAGANTrainer(SAGANHydraConf, BaseTrainer):
     TODO: docstring for trainer
     """
 
+    def __post_init__(self):
+        if self.num_workers < 0:
+            self.num_workers = mp.cpu_count()
+        if self.gpus < 0:
+            self.gpus = torch.cuda.device_count()
+
+        assert self.total_step > 0
 
     def prepare_data(self, root):
         logger = logging.getLogger(__name__)
@@ -58,7 +66,7 @@ class SAGANTrainer(SAGANHydraConf, BaseTrainer):
         dataset = SAGANDataset(self._filepaths, transform)
         data_loader = DataLoader(dataset, self.batch_size, num_workers=self.num_workers)
 
-        self.build_model()  
+        self.build_model()
 
         # Start with trained model
         if self.pretrained_model:
@@ -103,15 +111,16 @@ class SAGANTrainer(SAGANHydraConf, BaseTrainer):
                 if self.adv_loss == 'wgan-gp':
                     # Compute gradient penalty
                     alpha = torch.rand(real_images.size(0), 1, 1, 1).cuda().expand_as(real_images)
-                    interpolated = Variable(alpha * real_images.data + (1 - alpha) * fake_images.data, requires_grad=True)
+                    interpolated = Variable(alpha * real_images.data + (1 - alpha) *
+                                            fake_images.data, requires_grad=True)
                     out, _, _ = self.D(interpolated)
 
                     grad = torch.autograd.grad(outputs=out,
-                                            inputs=interpolated,
-                                            grad_outputs=torch.ones(out.size()).cuda(),
-                                            retain_graph=True,
-                                            create_graph=True,
-                                            only_inputs=True)[0]
+                                               inputs=interpolated,
+                                               grad_outputs=torch.ones(out.size()).cuda(),
+                                               retain_graph=True,
+                                               create_graph=True,
+                                               only_inputs=True)[0]
 
                     grad = grad.view(grad.size(0), -1)
                     grad_l2norm = torch.sqrt(torch.sum(grad ** 2, dim=1))
@@ -137,19 +146,18 @@ class SAGANTrainer(SAGANHydraConf, BaseTrainer):
                 g_loss_fake.backward()
                 self.g_optimizer.step()
 
-                
                 log_metrics = [
                     ("train/discriminator_loss", d_loss.item()),
                     ("train/generator_loss", g_loss_fake.item())
                 ]
                 for metric_name, metric_value in log_metrics:
                     running_metrics[metric_name] = running_metrics.get(metric_name, 0) + metric_value
-            
+
             mean_epoch_metrics = {k: v / len(self.data_loader) for k, v in running_metrics.items()}
             mlflow.log_metrics({**mean_epoch_metrics, "epoch": step})
 
             if (step == self.total_step - 1) or (self.log_images_interval is not None and
-                                                  (step % self.log_images_interval) == 0):
+                                                 (step % self.log_images_interval) == 0):
                 with torch.no_grad():
                     fake_imgs = self.G(self.noise)
 
@@ -175,7 +183,6 @@ class SAGANTrainer(SAGANHydraConf, BaseTrainer):
             filter(lambda p: p.requires_grad, self.D.parameters()), self.d_lr, [self.beta1, self.beta2])
 
         self.c_loss = torch.nn.CrossEntropyLoss()
-
 
     def reset_grad(self):
         self.d_optimizer.zero_grad()

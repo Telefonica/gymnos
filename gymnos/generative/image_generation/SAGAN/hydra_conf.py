@@ -21,6 +21,7 @@ class SAGANHydraConf:
     d_conv_dim: int = 64
     parallel: bool = False
     adv_loss: str = 'hinge'
+    gpus: int = -1
 
     lambda_gp: int = 10
     total_step: int = 1000000
