@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from spectral import SpectralNorm
+from .spectral import SpectralNorm
 import numpy as np
 
 class Self_Attn(nn.Module):

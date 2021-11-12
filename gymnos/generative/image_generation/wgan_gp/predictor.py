@@ -18,7 +18,9 @@ from .networks import Generator
 from ....utils.py_utils import lmap
 from ....base import BasePredictor, MLFlowRun
 
-
+def img_tensor_to_array(img_tensor):
+    return np.array(to_pil_image(img_tensor))
+    
 class WganGpPredictor(BasePredictor):
 
     def __init__(self, device: str = "auto"):
@@ -43,8 +45,8 @@ class WganGpPredictor(BasePredictor):
         self._gen.eval().to(self.device)
 
     @torch.no_grad()
-    def predict(self, *args, **kwargs):
-        fake_imgs = self._generator(torch.from_numpy(latent_vector).float().to(self.device))
+    def predict(self, latent_vector: np.ndarray):
+        fake_imgs = self._gen(torch.from_numpy(latent_vector).float().to(self.device))
         fake_imgs = (fake_imgs + 1) / 2  # denormalize
         np_imgs = lmap(img_tensor_to_array, fake_imgs)
 
