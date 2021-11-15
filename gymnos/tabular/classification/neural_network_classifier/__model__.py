@@ -4,15 +4,16 @@
 #
 #
 
-from .hydra_conf import RandomForestClassifierHydraConf
+from .hydra_conf import NeuralNetworkClassifierHydraConf
 
-hydra_conf = RandomForestClassifierHydraConf
+hydra_conf = NeuralNetworkClassifierHydraConf
 
 pip_dependencies = [
     'pandas',
     'os',
     'numpy',
     'sklearn',
+    'tensorflow',
     'joblib'
 ]
 

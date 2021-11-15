@@ -8,6 +8,8 @@ from .hydra_conf import CaloriesIntakeHydraConf
 
 hydra_conf = CaloriesIntakeHydraConf
 
-pip_dependencies = []
+pip_dependencies = [
+    'os'
+]
 
 apt_dependencies = []

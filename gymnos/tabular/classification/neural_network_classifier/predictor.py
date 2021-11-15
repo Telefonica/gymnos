@@ -8,17 +8,22 @@ from omegaconf import DictConfig
 
 from ....base import BasePredictor, MLFlowRun
 import os
+import tensorflow as tf
 import joblib
+import numpy as np
 
-class RandomForestClassifierPredictor(BasePredictor):
+class NeuralNetworkClassifierPredictor(BasePredictor):
     """
     TODO: docstring for predictor
     """
 
     def load(self, config: DictConfig, run: MLFlowRun, artifacts_dir: str):
         # Load model
-        model_path = os.path.join(artifacts_dir,'rf_model')
-        self.rf_model = joblib.load(model_path)
+        model_path = os.path.join(artifacts_dir,'nn_classifier_cal_intake.h5')
+        self.nn_classifier = tf.keras.models.load_model(model_path)
+        # Load scaler
+        scaler_path = os.path.join(artifacts_dir,'scaler')
+        self.scaler = joblib.load(scaler_path)
 
     def predict(self, X):
         '''
@@ -32,4 +37,9 @@ class RandomForestClassifierPredictor(BasePredictor):
                    2 if the dayly calories intaked have been over the adequate).
                    pred will be a single value or a list depending the components of the input X
         '''
-        self.pred = self.rf_model.predict(X)
+        # Normalize input using the loaded scaler
+        X = self.scaler.transform(X)
+        predictions = self.nn_classifier.predict(X)
+        self.pred = []
+        for i in range(len(predictions)):
+            self.pred.append(np.argmax(predictions[i])) # Gives the 0,1 or 2
