@@ -9,11 +9,16 @@ def create_tiny_model(encoding_dim, dropout, sample_shape):
 
     # Creating the keras model
     model = models.Sequential([
-        layers.InputLayer(input_shape=(3,)),
-        layers.Dense(encoding_dim, activation='relu'),
-        layers.Dense(encoding_dim - 1, activation='relu'),
+        layers.InputLayer(input_shape=(30,)),
+        layers.Dense(30, activation='relu'),
         layers.Dropout(dropout),
-        layers.Dense(encoding_dim - 1, activation='relu'),
+        layers.Dense(15, activation='relu'),
+        layers.Dropout(dropout),
+        layers.Dense(5 , activation='relu'),
+        layers.Dropout(dropout),
+        layers.Dense(5 , activation='relu'),
+        layers.Dropout(dropout),
+        layers.Dense(15, activation='relu'),
         layers.Dense(*sample_shape, activation='relu')
     ])
 

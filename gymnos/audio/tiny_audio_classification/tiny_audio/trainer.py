@@ -7,102 +7,114 @@
 from dataclasses import dataclass
 from ....base import BaseTrainer
 from .hydra_conf import TinyAudioHydraConf
-from .model import settings, create_model
 import logging
 from .utils import *
 import tensorflow as tf
+from .model_tiny import *
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-from IPythson import display
-from model import create_model, export_to_lite
+import datetime
 
 @dataclass
 class TinyAudioTrainer(TinyAudioHydraConf, BaseTrainer):
-    """
-    TODO: docstring for trainer
-    """
+
 
     def prepare_data(self, root):
-        print(root)
 
-        speech_commands_dataset_basepath = root + "/audios"
+        logger = logging.getLogger(__name__)
+        logger.info("Preparing wavs files ...")
+        speech_commands_dataset_basepath = root
         list_classes = self.sounds_to_detect
         classes = list_classes.split(",")
-        sample_rate = self.sample_rate
-        channels = self.channels
+
         count = 0
         count_train = 0
 
-        fullpaths,targets,folds = create_file_lists()
-        #Creting tf dataset
+        fullpaths,targets,folds = create_file_lists(classes,speech_commands_dataset_basepath)
+
         fullpaths_ds = tf.data.Dataset.from_tensor_slices(
             (fullpaths, targets, folds))
 
-        #Loading wav files
         wav_ds = fullpaths_ds.map(load_wav_map)
-        #Splitting samples longer than 1sg
-        split_wav_ds = wav_ds.flat_map(split_wav_map)
-        split_wav_ds = split_wav_ds.filter(lambda x, y, z: wav_not_empty(x))
+        wav_ds = wav_ds.filter(lambda x, y, z: wav_not_empty(x))
+        logger.info("Preparing spectrograms ...")
+        spectogram = wav_ds.map(create_spectrogram_map)
+        spectogram = spectogram.map(create_mel_map)
 
-        #Creating spectograms for model
-        spectrograms_ds = split_wav_ds.map(create_spectrogram_map)
-        random_seed = self.random_seed
+        split_wav_ds = wav_ds.filter(lambda x, y, z: wav_not_empty(x))
+        # #Creating spectograms for model
+        spectrograms_ds = spectogram.cache()
 
-        tf.random.set_seed(random_seed)
-        np.random.seed(random_seed)
 
-        #Catching the wav files
-        cached_ds = spectrograms_ds.cache().take(300)
+        # #Catching the spectrograms files
+        self.cached_ds = spectrograms_ds.cache().take(len(targets))
+        inputs_x = []
+        inputs_y = []
+        inputs_z = []
+        for x,y,z in self.cached_ds:
+            inputs_x.append(x.numpy().flatten())
+            inputs_y.append(y)
+            inputs_z.append(z)
 
-        #Splitting into train and validation datasets
-        self.train_ds = cached_ds.filter(lambda spectrogram, label, fold: fold == 0)
-        self.val_ds = cached_ds.filter(lambda spectrogram, label, fold: fold == 1)
+
+        self.cached_ds = tf.data.Dataset.from_tensor_slices(
+            (inputs_x, inputs_y, inputs_z))
+
+        # #Splitting into train and validation datasets
+
+        self.train_ds = self.cached_ds.filter(lambda spectrogram, label, fold: fold == 1)
+        self.val_ds = self.cached_ds.filter(lambda spectrogram, label, fold: fold == 0)
 
         remove_fold_column = lambda spectrogram, label, fold: (tf.expand_dims(spectrogram, axis=-1), label)
         self.train_ds = self.train_ds.map(remove_fold_column)
         self.val_ds = self.val_ds.map(remove_fold_column)
-
-        self.train_ds = self.train_ds.cache().shuffle(10, seed=random_seed).batch(32).prefetch(tf.data.AUTOTUNE)
+        #
+        self.train_ds = self.train_ds.cache().batch(32).prefetch(tf.data.AUTOTUNE)
         self.val_ds = self.val_ds.cache().batch(32).prefetch(tf.data.AUTOTUNE)
-
-        for spectrogram, _, _ in cached_ds.take(1):
+        for spectrogram, _, _ in self.cached_ds.take(1):
             self.input_shape = tf.expand_dims(spectrogram, axis=-1).shape
 
-
-
-
-
+        self.root = root
 
     def train(self):
 
         input_shape = self.input_shape
-        model = create_model()
-        model.compile(
-        optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),
-        loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False),
-        metrics=["Accuracy"],
-        )
+        logger = logging.getLogger(__name__)
+        logger.info("Start training! ")
+
+        model = create_model(self)
+        opt = Adam(lr=0.001, beta_1=0.9, beta_2=0.999)
+
+        model.compile(loss='sparse_categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
+        log_dir = self.root+"/"+"logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+
+        tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+        early = tf.keras.callbacks.EarlyStopping(
+                monitor='val_loss', min_delta=0, patience=0, verbose=0,
+                mode='auto', baseline=None, restore_best_weights=False
+                )
 
         callbacks = [
-            tf.keras.callbacks.EarlyStopping(verbose=1, patience=25),
-            tf.keras.callbacks.LearningRateScheduler(scheduler)
+            early,
+            tf.keras.callbacks.LearningRateScheduler(scheduler),
+            tensorboard_callback
             ]
 
         model.summary()
-        EPOCHS = 250
+        EPOCHS = self.epochs
         history = model.fit(
         self.train_ds,
         validation_data=self.val_ds,
-        epochs=self.epochs,
+        epochs=EPOCHS,
         callbacks=callbacks,
         )
 
         #Saving the trained model
-        model.save('sounds_model')
+        model.save(self.root+"/"+'sounds_model')
 
         #Exporting model to tf lite
-        export_to_lite(model)
+        export_to_lite(model,self)
 
 
 

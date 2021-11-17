@@ -11,7 +11,9 @@ from .hydra_conf import TinyAnomalyDetectionHydraConf
 from .utils import createFilenameList, extract_features, create_feature_set, convert_to_tiny
 from .model import create_tiny_model
 from .c_writer import create_array
-
+import numpy as np
+import datetime
+import tensorflow as tf
 
 @dataclass
 class TinyAnomalyDetectionTrainer(TinyAnomalyDetectionHydraConf, BaseTrainer):
@@ -51,12 +53,14 @@ class TinyAnomalyDetectionTrainer(TinyAnomalyDetectionHydraConf, BaseTrainer):
         logger.info('Creating sets...')
         # Extracting features to feed the model
         self.x_train = create_feature_set(filenames_train, max_measurements)
+        self.x_anomal = create_feature_set(anomaly_op_filenames, max_measurements)
 
         self.x_val = create_feature_set(filenames_val, max_measurements)
 
         self.x_test = create_feature_set(filenames_test, max_measurements)
 
-        self.x_train = self.x_train.reshape((len(self.x_train), 3))
+        self.x_train = self.x_train.reshape((len(self.x_train), 30))
+        print(self.x_train)
         self.sample_shape = (self.x_train.shape[1:])
         self.directory = root
 
@@ -65,24 +69,46 @@ class TinyAnomalyDetectionTrainer(TinyAnomalyDetectionHydraConf, BaseTrainer):
         logger = logging.getLogger(__name__)
         logger.info('Creating model...')
         self.model = create_tiny_model(
-            self.encoding_dim, self.dropout, self.sample_shape)
+            self.encoding_dim, self.dropout, self.sample_shape,self)
         self.model.summary()
 
         self.model.compile(optimizer=self.optimizer,
                            loss=self.loss)
 
         logger.info('Start training')
+        log_dir = self.directory+"/"+"logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
         history = self.model.fit(self.x_train,
                                  self.x_train,
                                  epochs=self.epochs,
                                  batch_size=self.batch_size,
                                  validation_data=(self.x_val, self.x_val),
+                                 callbacks=tensorboard_callback,
                                  verbose=1)
 
         logger.info('End training')
         self.model.save(
             self.directory + "/" + self.model_name + '.h5')
+            # Calculate MSE from validation set
+        predictions = self.model.predict(self.x_val)
+        normal_mse = np.mean(np.power(self.x_val - predictions, 2), axis=1)
+        logger.info('Average MSE for normal validation set: ' +
+                        str(np.average(normal_mse)))
+        logger.info('Standard deviation of MSE for normal validation set: ' +
+                        str(np.std(normal_mse)))
+        logger.info('Recommended threshold (3x std dev + avg): ' +
+                        str((3 * np.std(normal_mse)) + np.average(normal_mse)))
 
+        self.model.save(self.directory + "/" + self.model_name + '.h5')
+        logger.info('-----------------------------------------')
+        predictions = self.model.predict(self.x_anomal)
+        normal_mse = np.mean(np.power(self.x_anomal - predictions, 2), axis=1)
+        logger.info('Average MSE for normal validation set: ' +
+                    str(np.average(normal_mse)))
+        logger.info('Standard deviation of MSE for normal validation set: ' +
+                    str(np.std(normal_mse)))
+        logger.info('Recommended threshold (3x std dev + avg): ' +
+                    str((3 * np.std(normal_mse)) + np.average(normal_mse)))
         # Converting models to fit on MCUs
         convert_to_tiny(self)
 
@@ -93,6 +119,14 @@ class TinyAnomalyDetectionTrainer(TinyAnomalyDetectionHydraConf, BaseTrainer):
         # Calculate MSE from validation set
         predictions = self.model.predict(self.x_val)
         normal_mse = np.mean(np.power(self.x_val - predictions, 2), axis=1)
+        logger.info('Average MSE for normal validation set: ' +
+                    str(np.average(normal_mse)))
+        logger.info('Standard deviation of MSE for normal validation set: ' +
+                    str(np.std(normal_mse)))
+        logger.info('Recommended threshold (3x std dev + avg): ' +
+                    str((3 * np.std(normal_mse)) + np.average(normal_mse)))
+        predictions = self.model.predict(self.x_anomal)
+        normal_mse = np.mean(np.power(self.x_anomal - predictions, 2), axis=1)
         logger.info('Average MSE for normal validation set: ' +
                     str(np.average(normal_mse)))
         logger.info('Standard deviation of MSE for normal validation set: ' +

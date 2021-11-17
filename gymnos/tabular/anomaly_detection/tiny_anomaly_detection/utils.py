@@ -37,14 +37,20 @@ def extract_features(sample, max_measurements=0, scale=1):
 def create_feature_set(filenames, max_measurements):
     x_out = []
     # For each of the samples files, we extract the MAD
+    number_files = 0
+    partial_features = []
     for file in filenames:
 
         sample = np.genfromtxt(file, delimiter=',')
         features = extract_features(sample, max_measurements)
-
-        if len(features) >= 3:
-            features = features.reshape(1, 3)
+        partial_features.append(features)
+        number_files += 1
+        if number_files == 10:
+            features = np.array(partial_features).reshape(1, 30)
+            partial_features = []
             x_out.append(features)
+            number_files = 0
+
 
     return np.array(x_out)
 
