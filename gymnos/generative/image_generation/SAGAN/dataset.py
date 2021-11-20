@@ -16,6 +16,10 @@ class SAGANDataset(Dataset):
 
     def __getitem__(self, index):
         img = Image.open(self.imgs[index])
+
+        if len(img.split()) != 3:
+            img = img.convert('RGB')
+
         if self.transform is not None:
             img = self.transform(img)
         return img
