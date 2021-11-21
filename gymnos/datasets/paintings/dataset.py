@@ -22,11 +22,11 @@ class Paintings(PaintingsHydraConf, BaseDataset):
         
         logger = logging.getLogger(__name__)
 
-        download_dir = SOFIA.download_dataset("alvaromarcom/datasets/pandorIA_dataset0", files=["archive_5.zip"])
+        download_dir = SOFIA.download_dataset("alvaromarcom/datasets/pandorIA_dataset0", files=["archive_7.zip"])
 
-        logger.info("Extracting archive_5.zip ...")
+        logger.info("Extracting archive_7.zip ...")
 
-        with zipfile.ZipFile(os.path.join(download_dir, "archive_5.zip")) as zip:
+        with zipfile.ZipFile(os.path.join(download_dir, "archive_7.zip")) as zip:
             for zip_info in zip.infolist():
                 if zip_info.filename[-1] == '/':
                     continue
