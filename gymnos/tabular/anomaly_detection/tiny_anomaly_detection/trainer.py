@@ -68,8 +68,7 @@ class TinyAnomalyDetectionTrainer(TinyAnomalyDetectionHydraConf, BaseTrainer):
 
         logger = logging.getLogger(__name__)
         logger.info('Creating model...')
-        self.model = create_tiny_model(
-            self.encoding_dim, self.dropout, self.sample_shape,self)
+        self.model = create_tiny_model(self.encoding_dim, self.dropout, self.sample_shape)
         self.model.summary()
 
         self.model.compile(optimizer=self.optimizer,

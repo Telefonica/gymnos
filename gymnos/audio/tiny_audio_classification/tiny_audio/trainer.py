@@ -106,7 +106,7 @@ class TinyAudioTrainer(TinyAudioHydraConf, BaseTrainer):
         history = model.fit(
         self.train_ds,
         validation_data=self.val_ds,
-        epochs=EPOCHS,
+        epochs=self.epochs,
         callbacks=callbacks,
         )
 
