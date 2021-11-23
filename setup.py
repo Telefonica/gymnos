@@ -4,6 +4,10 @@ import glob
 import fnmatch
 import setuptools
 
+import site
+import sys
+site.ENABLE_USER_SITE = "--user" in sys.argv[1:]
+
 here = os.path.abspath(os.path.dirname(__file__))
 
 with open("README.md", "r") as f:
