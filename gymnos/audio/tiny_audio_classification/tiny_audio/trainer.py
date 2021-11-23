@@ -35,7 +35,8 @@ class TinyAudioTrainer(TinyAudioHydraConf, BaseTrainer):
 
         fullpaths_ds = tf.data.Dataset.from_tensor_slices(
             (fullpaths, targets, folds))
-
+        print(targets)
+        print(folds)
         wav_ds = fullpaths_ds.map(load_wav_map)
         wav_ds = wav_ds.filter(lambda x, y, z: wav_not_empty(x))
         logger.info("Preparing spectrograms ...")
@@ -48,7 +49,7 @@ class TinyAudioTrainer(TinyAudioHydraConf, BaseTrainer):
 
 
         # #Catching the spectrograms files
-        self.cached_ds = spectrograms_ds.cache().take(len(targets))
+        self.cached_ds = spectrograms_ds.cache().take(len(targets)).shuffle(len(targets))
         inputs_x = []
         inputs_y = []
         inputs_z = []
@@ -57,7 +58,8 @@ class TinyAudioTrainer(TinyAudioHydraConf, BaseTrainer):
             inputs_y.append(y)
             inputs_z.append(z)
 
-
+        self.inputs_x = inputs_x
+        self.inputs_y = inputs_y
         self.cached_ds = tf.data.Dataset.from_tensor_slices(
             (inputs_x, inputs_y, inputs_z))
 
@@ -70,12 +72,15 @@ class TinyAudioTrainer(TinyAudioHydraConf, BaseTrainer):
         self.train_ds = self.train_ds.map(remove_fold_column)
         self.val_ds = self.val_ds.map(remove_fold_column)
         #
+
+
         self.train_ds = self.train_ds.cache().batch(32).prefetch(tf.data.AUTOTUNE)
         self.val_ds = self.val_ds.cache().batch(32).prefetch(tf.data.AUTOTUNE)
         for spectrogram, _, _ in self.cached_ds.take(1):
             self.input_shape = tf.expand_dims(spectrogram, axis=-1).shape
 
         self.root = root
+        self.test = self.val_ds
 
     def train(self):
 
@@ -91,7 +96,7 @@ class TinyAudioTrainer(TinyAudioHydraConf, BaseTrainer):
 
         tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
         early = tf.keras.callbacks.EarlyStopping(
-                monitor='val_loss', min_delta=0, patience=0, verbose=0,
+                monitor='val_loss', min_delta=0, patience=20, verbose=0,
                 mode='auto', baseline=None, restore_best_weights=False
                 )
 
@@ -115,6 +120,7 @@ class TinyAudioTrainer(TinyAudioHydraConf, BaseTrainer):
 
         #Exporting model to tf lite
         export_to_lite(model,self)
+
 
 
 

@@ -64,7 +64,7 @@ def export_to_lite(model,self):
     quant_aware_history = quant_aware_model.fit(
     self.train_ds,
     validation_data=self.val_ds,
-    epochs=EPOCHS
+    epochs=1
     )
 
     #Converting to TF lite
